@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<!--
+  ATVANTAGE-Academy – Layout „simulation“ (Jekyll)
+  ------------------------------------------------
+  Bühne für BEWEGTE Abläufe. Anders als eine Präsentation, die Folien wechselt,
+  zeigt eine Simulation EINEN Schauplatz, der sich Schritt für Schritt verändert:
+  Kästen entstehen, Werte wandern, Pfeile werden gezogen. Der Ablauf lässt sich
+  vorwärts und rückwärts durchgehen, zurücksetzen und automatisch abspielen.
+
+  Optisch ist die Seite an das Layout „presentation“ angelehnt – dieselbe schmale
+  Kopfleiste mit Logo, Titel, QR-Code und Farbschema-Umschalter. Drei Zonen:
+
+    ┌──────────────────────────────────────────────┐
+    │ Kopfleiste  Logo · Titel · Schritt · Werkzeug│
+    ├───────────────────────────────┬──────────────┤
+    │ Bühne (der Inhalt dieser Datei)│ Erklärtext   │
+    │                               │ (je Schritt) │
+    ├───────────────────────────────┴──────────────┤
+    │ Fortschritt + Steuerleiste (⟲ ‹ ▶ Abspielen 1×▴ ›)│
+    └──────────────────────────────────────────────┘
+
+  AUFZEICHNEN: Der Capture-Modus (Taste C oder ?capture in der Adresse) räumt alles
+  weg, was nicht zur Sache gehört – Kopfleiste, Erklärspalte, Fortschritt,
+  Steuerleiste – und blendet den Mauszeiger aus. Die Bühne füllt das Fenster. Der
+  Erklärtext ist dann nicht verloren: Taste T holt ihn als Einblendung (OST) an den
+  unteren Rand zurück, für den Fall, dass beim Aufzeichnen niemand spricht.
+
+  NICHT DRUCKBAR – bewusst. Eine Simulation lebt von der Bewegung; ein Ausdruck
+  wäre ein willkürliches Standbild. Es gibt daher weder Druck-Knopf noch
+  Drucklayout; wer die Seite trotzdem druckt, bekommt den gerade sichtbaren
+  Schritt und den QR-Code als Rückweg zur Online-Fassung.
+
+  Front Matter (alles optional außer `layout`):
+    layout: simulation
+    title:        "…"            → Titel in der Kopfleiste; sonst die erste #-Überschrift
+    description:  "…"            → Meta-Description
+    simulation:
+      aside: false               → rechte Spalte weglassen (Bühne über volle Breite)
+      intro: "…"                 → ein Satz auf der Szenario-Übersicht (nur bei mehreren)
+      speed: 0.5 | 1 | 2 | 5     → Start-Tempo des automatischen Abspielens
+      step:
+        interval: 2500           → Grunddauer je Schritt beim Abspielen (ms)
+
+  MEHRERE SZENARIEN: Meldet die Seite über `registerScenario` mehr als einen
+  Ablauf an, bekommt sie eine Reiterleiste und eine Übersicht als Startbild. Je
+  Szenario liefert die Seite ein eigenes Bühnenbild in einem Container mit
+  `data-avd-academy-sim-scene="«id»"`; sichtbar ist immer genau eines. Mit nur
+  einem Szenario (oder bloßem `registerStep`) ändert sich nichts.
+
+  Der INHALT dieser Seite ist das BÜHNENBILD: die Kulisse (Kästen, Beschriftungen,
+  Container) plus ein <script>, das die Schritte anmeldet. Das Miniframework dazu
+  liefert theme/jekyll/simulation.js als `AvdSimulation` – es wird ABSICHTLICH
+  ohne `defer` geladen, damit ein Inline-<script> im Body es bereits vorfindet.
+
+  Ohne JavaScript bleibt die Seite lesbar: Die Kulisse steht da, Steuerleiste und
+  Erklärspalte bleiben leer – der Ablauf ist eine Zutat, keine Voraussetzung.
+
+  Anleitung und Beispiel: /templates/simulations/.
+--><html lang="de">
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Der Lebenszyklus eines Containers · Containertechnologien (Academy)</title><meta name="description" content="Vom Image in der Registry bis zum gelöschten Container – und was passiert, wenn in der Registry ein neuer Stand liegt."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta property="og:title" content="Der Lebenszyklus eines Containers">
+<meta property="og:description" content="Vom Image in der Registry bis zum gelöschten Container – und was passiert, wenn in der Registry ein neuer Stand liegt.">
+<meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790162032"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790162032">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790162032">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790162032">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790162032"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790162032">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790162032" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790162032" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790162032">
+<script type="module">
+  const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
+  const _hlsprachen = ["java", "http", "json", "xml"];
+  Promise.all([import(_hlbase + "core.min.js"), ..._hlsprachen.map((s) => import(_hlbase + s + ".min.js"))])
+    .then(([core, ...grammatiken]) => {
+      const hljs = core.default;
+      _hlsprachen.forEach((s, i) => hljs.registerLanguage(s, grammatiken[i].default));
+      const _auswahl = _hlsprachen.map((s) => "pre code.language-" + s).join(",");
+      const _faerben = (wurzel) => (wurzel || document)
+        .querySelectorAll(_auswahl)
+        .forEach((el) => { if (!el.dataset.highlighted) { hljs.highlightElement(el); } });
+      _faerben(document);
+
+      /* NACHTRAEGLICH EINGEFUEGTER CODE. Die Hervorhebung laeuft einmal beim Laden.
+         Eine Seite, die ihre Codebloecke per Skript einsetzt - eine Visualisierung,
+         die rohe Nachrichten durchschaltet -, bekam deshalb gar keine Farben und
+         baute sich einen eigenen Hervorheber. Genau die Kopie, die das Theme
+         verhindern soll.
+
+         `AvdHighlight.apply(knoten)` faerbt, was seither dazugekommen ist; `hljs`
+         liegt daneben fuer Faelle, die mehr brauchen. Das Ereignis sagt Seiten, die
+         frueh zeichnen, wann der Haken da ist - die Module laden asynchron. */
+      window.AvdHighlight = { hljs, apply: _faerben, languages: _hlsprachen.slice() };
+      document.dispatchEvent(new CustomEvent("avd-academy-highlight-ready"));
+
+      /* Statuszeile nach Klasse einfaerben. highlight.js gibt jedem dreistelligen
+         Code dieselbe Klasse `hljs-number` - in einem Mitschnitt ist aber genau das
+         die Stelle, auf die man zuerst sieht: 2xx ist etwas anderes als 4xx.
+         Deshalb hier die einzige eigene Zutat, und bewusst nur diese: Die
+         Statusklassen von HTTP aendern sich nicht, das bleibt stabil. */
+      document.querySelectorAll("pre code.language-http .hljs-number").forEach((el) => {
+        const code = parseInt(el.textContent, 10);
+        if (code >= 100 && code <= 599) {
+          el.classList.add("avd-academy-http-status--" + Math.floor(code / 100) + "xx");
+        }
+      });
+    });
+</script>
+<link rel="apple-touch-icon" sizes="180x180" href="/training-material-container-technologies/theme/atvantage/assets/icon-180.png">
+<link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
+<link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/simulation.css?v=1790162032"><script src="/training-material-container-technologies/theme/jekyll/simulation.js?v=1790162032"></script>
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790162032"></head>
+<body class="avd-academy-sim" data-avd-academy-sim data-avd-academy-sim-title="Der Lebenszyklus eines Containers"
+      data-avd-academy-sim-speed="1"
+      data-avd-academy-sim-step-interval="3000">
+  <a class="avd-academy-skip-link" href="#avd-academy-sim-stage">Zum Inhalt springen</a>
+
+  <header class="avd-academy-sim__bar">
+    <img class="avd-academy-sim__logo" src="/training-material-container-technologies/assets/logo-schulung.svg" alt="ATVANTAGE Academy"><span class="avd-academy-sim__title">Der Lebenszyklus eines Containers</span>
+    <span class="avd-academy-sim__counter" data-avd-academy-sim-counter aria-live="off"></span>
+    <div class="avd-academy-sim__tools"><button type="button" class="avd-academy-sim__back" data-avd-academy-back hidden
+              title="Zurück" aria-label="Zurück">← Zurück</button><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
+                title="Diese Seite auf Deinem Smartphone öffnen"
+                aria-label="Diese Seite auf Deinem Smartphone öffnen"></button><button type="button" class="avd-academy-tool avd-academy-tool--theme avd-academy-theme-toggle" data-avd-academy-theme-toggle
+              title="Farbschema umschalten (hell/dunkel)"
+              aria-label="Farbschema umschalten">◐</button><button type="button" class="avd-academy-tool avd-academy-tool--full"
+              data-avd-academy-sim-full
+              title="Vollbild (Taste F)" aria-label="Vollbild">⛶</button></div>
+  </header><nav class="avd-academy-sim__tabs" data-avd-academy-sim-tabs hidden aria-label="Szenarien"></nav>
+
+  <main class="avd-academy-sim__main"><div class="avd-academy-sim__stage" id="avd-academy-sim-stage" data-avd-academy-sim-stage>
+      <style>
+  /* Nur Anordnung. Farben, Radien und Schatten kommen aus den Academy-Tokens
+     bzw. den Bausteinen `avd-academy-sim-*`. */
+  .lz {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(0.75rem, 0.4rem + 1.4vw, 1.75rem);
+    align-content: center;
+    min-height: 100%;
+  }
+  @media (max-width: 60rem) {
+    .lz { grid-template-columns: 1fr; }
+  }
+
+  /* Die beiden Orte. Gestrichelt, weil sie keine Sache sind, sondern ein Ort –
+     die Tafeln darin sind die Sachen. */
+  .lz__ort {
+    display: flex;
+    flex-direction: column;
+    gap: var(--avd-academy-space-3);
+    padding: clamp(0.6rem, 0.4rem + 0.8vw, 1.1rem);
+    border: 2px dashed var(--avd-academy-color-border);
+    border-radius: var(--avd-academy-radius-lg);
+  }
+  .lz__ort-titel {
+    margin: 0;
+    font-size: var(--avd-academy-fs-sm);
+    font-weight: var(--avd-academy-fw-bold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--avd-academy-color-ink-muted);
+  }
+  .lz__ort-titel span {
+    letter-spacing: 0;
+    text-transform: none;
+    font-weight: var(--avd-academy-fw-normal);
+  }
+  .lz__tafeln {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--avd-academy-space-3);
+    align-items: start;
+  }
+  @media (max-width: 48rem) {
+    .lz__tafeln { grid-template-columns: 1fr; }
+  }
+
+  /* Platz des GRÖSSTEN Zustands von Anfang an reservieren – sonst schiebt die
+     wachsende Tafel alles darunter nach, und das sieht aus wie eine zweite
+     Animation. */
+  #reg-images     { min-height: 4.2rem; }
+  #lok-images     { min-height: 8.4rem; }
+  #lok-container  { min-height: 8.4rem; }
+
+  /* Eine Zeile in einer Tafel: links der Name, rechts der Befund. */
+  .lz-zeile__links,
+  .lz-zeile__rechts {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+  .lz-zeile__rechts { align-items: flex-end; text-align: right; }
+  .lz-zeile__name {
+    font-weight: var(--avd-academy-fw-bold);
+    font-size: 0.92em;
+    overflow-wrap: anywhere;
+  }
+  .lz-zeile__id {
+    font-family: var(--avd-academy-font-mono);
+    font-size: 0.72em;
+    color: var(--avd-academy-color-ink-muted);
+  }
+  .lz-zeile__status { font-size: 0.78em; font-weight: var(--avd-academy-fw-bold); }
+  .lz-zeile__status--laeuft      { color: var(--avd-academy-color-success-ink); }
+  .lz-zeile__status--angehalten  { color: var(--avd-academy-color-ink-muted); }
+  .lz-zeile__zustand {
+    font-family: var(--avd-academy-font-mono);
+    font-size: 0.72em;
+    color: var(--avd-academy-color-ink-muted);
+  }
+  /* Kein Zustand ist auch eine Aussage – der Platz bleibt, damit die Zeile beim
+     Schreiben der Datei nicht springt. */
+  .lz-zeile__zustand:empty::before { content: "—"; }
+
+  /* Die Kommandozeile. Sie füllt sich, statt sich zu ersetzen: Am Ende steht
+     alles da, was man getippt hat – das ist der Zettel, den man abfotografiert. */
+  .lz__term { grid-column: 1 / -1; }
+  #term {
+    gap: 0;
+    min-height: 7.5rem;
+    padding: var(--avd-academy-space-3);
+    border-radius: var(--avd-academy-radius);
+    background: var(--avd-academy-code-bg);
+    font-family: var(--avd-academy-font-mono);
+    font-size: clamp(0.72rem, 0.62rem + 0.35vw, 0.92rem);
+    line-height: 1.75;
+  }
+  .lz-cmd { display: flex; gap: 0.55em; color: var(--avd-academy-color-ink-muted); }
+  .lz-cmd__prompt { flex: 0 0 auto; }
+  .lz-cmd__text { overflow-wrap: anywhere; }
+  /* Der zuletzt getippte Befehl ist der, um den es gerade geht. */
+  .lz-cmd.is-active { color: var(--avd-academy-color-ink); }
+  .lz-cmd.is-active .lz-cmd__prompt { color: var(--avd-academy-color-accent); }
+  .lz-cmd.is-active .lz-cmd__text { font-weight: var(--avd-academy-fw-bold); }
+  /* Solange nichts getippt wurde, steht der leere Prompt da – eine leere Fläche
+     wäre nicht als Kommandozeile erkennbar. */
+  #term:empty::before {
+    content: "$";
+    color: var(--avd-academy-color-accent);
+  }
+
+  /* Nebenbemerkung in der Erklärspalte: leiser als die Aussage des Schritts.
+     Die Erklärspalte liegt im selben Dokument, diese Regel greift also dort. */
+  .lz-nb {
+    font-size: 0.88em;
+    color: var(--avd-academy-color-ink-muted);
+  }
+</style>
+
+<div class="lz" data-avd-academy-sim-scene="container">
+
+  <div class="lz__ort">
+    <p class="lz__ort-titel">Registry <span>· irgendwo im Netz</span></p>
+    <div class="avd-academy-sim-panel avd-academy-sim-panel--ton-1" id="reg-panel-1">
+      <h2 class="avd-academy-sim-panel__title">Images</h2>
+      <div class="avd-academy-sim-panel__body" id="reg-images"></div>
+    </div>
+  </div>
+
+  <div class="lz__ort">
+    <p class="lz__ort-titel">Dein Rechner <span>· lokal</span></p>
+    <div class="lz__tafeln">
+      <div class="avd-academy-sim-panel avd-academy-sim-panel--ton-1">
+        <h2 class="avd-academy-sim-panel__title">Images</h2>
+        <div class="avd-academy-sim-panel__body" id="lok-images"></div>
+      </div>
+      <div class="avd-academy-sim-panel avd-academy-sim-panel--ton-3">
+        <h2 class="avd-academy-sim-panel__title">Container</h2>
+        <div class="avd-academy-sim-panel__body" id="lok-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lz__term">
+    <div class="avd-academy-sim-panel">
+      <h2 class="avd-academy-sim-panel__title">Kommandozeile <span class="avd-academy-sim-panel__hint">alles, was bisher getippt wurde</span></h2>
+      <div class="avd-academy-sim-panel__body" id="term"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="lz" data-avd-academy-sim-scene="aktualisierung">
+
+  <div class="lz__ort">
+    <p class="lz__ort-titel">Registry <span>· irgendwo im Netz</span></p>
+    <div class="avd-academy-sim-panel avd-academy-sim-panel--ton-1" id="reg-panel-2">
+      <h2 class="avd-academy-sim-panel__title">Images</h2>
+      <div class="avd-academy-sim-panel__body" id="reg-images-2"></div>
+    </div>
+  </div>
+
+  <div class="lz__ort">
+    <p class="lz__ort-titel">Dein Rechner <span>· lokal</span></p>
+    <div class="lz__tafeln">
+      <div class="avd-academy-sim-panel avd-academy-sim-panel--ton-1">
+        <h2 class="avd-academy-sim-panel__title">Images</h2>
+        <div class="avd-academy-sim-panel__body" id="lok-images-2"></div>
+      </div>
+      <div class="avd-academy-sim-panel avd-academy-sim-panel--ton-3">
+        <h2 class="avd-academy-sim-panel__title">Container</h2>
+        <div class="avd-academy-sim-panel__body" id="lok-container-2"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lz__term">
+    <div class="avd-academy-sim-panel">
+      <h2 class="avd-academy-sim-panel__title">Kommandozeile <span class="avd-academy-sim-panel__hint">alles, was bisher getippt wurde</span></h2>
+      <div class="avd-academy-sim-panel__body" id="term-2"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var sim = window.AvdSimulation;
+
+  /* Beide Szenarien teilen sich die Bühne. Die Kennung aus `ctx.scenario`
+     entscheidet nur, WELCHE Tafeln gezeichnet werden – gezeichnet wird gleich. */
+  var ZIELE = {
+    container:      { reg: "reg-images",   img: "lok-images",   ctr: "lok-container",   term: "term",   panel: "reg-panel-1" },
+    aktualisierung: { reg: "reg-images-2", img: "lok-images-2", ctr: "lok-container-2", term: "term-2", panel: "reg-panel-2" }
+  };
+
+  function hebt(s, id) { return (s.hebe || []).indexOf(id) !== -1; }
+
+  /* Eine Image-Zeile: Name links, kurze ID rechts. Die ID ist der Beleg dafür,
+     dass zwei gleich benannte Images nicht dasselbe sein müssen. */
+  function imageZeile() {
+    var el = document.createElement("div");
+    el.className = "avd-academy-sim-cell";
+    el.innerHTML =
+      '<span class="lz-zeile__links">' +
+        '<span class="lz-zeile__name"></span>' +
+      '</span>' +
+      '<span class="lz-zeile__rechts">' +
+        '<span class="lz-zeile__id"></span>' +
+      '</span>';
+    return el;
+  }
+
+  function containerZeile() {
+    var el = document.createElement("div");
+    el.className = "avd-academy-sim-cell";
+    el.innerHTML =
+      '<span class="lz-zeile__links">' +
+        '<span class="lz-zeile__name"></span>' +
+        '<span class="lz-zeile__id"></span>' +
+      '</span>' +
+      '<span class="lz-zeile__rechts">' +
+        '<span class="lz-zeile__status"></span>' +
+        '<span class="lz-zeile__zustand"></span>' +
+      '</span>';
+    return el;
+  }
+
+  function zeichneImages(s, knotenId, liste, ctx) {
+    sim.list(document.getElementById(knotenId), liste, {
+      animated: ctx.animated,
+      key: function (x) { return x.id; },
+      create: imageZeile,
+      update: function (el, x) {
+        el.querySelector(".lz-zeile__name").textContent = x.name;
+        el.querySelector(".lz-zeile__id").textContent = x.kurz;
+        el.classList.toggle("is-active", hebt(s, x.id));
+      }
+    });
+  }
+
+  function zeichne(s, ctx) {
+    var ziel = ZIELE[ctx.scenario] || ZIELE.container;
+
+    zeichneImages(s, ziel.reg, s.remote, ctx);
+    zeichneImages(s, ziel.img, s.images, ctx);
+
+    sim.list(document.getElementById(ziel.ctr), s.container, {
+      animated: ctx.animated,
+      key: function (c) { return c.id; },
+      create: containerZeile,
+      update: function (el, c) {
+        el.querySelector(".lz-zeile__name").textContent = c.name;
+        el.querySelector(".lz-zeile__id").textContent = "aus " + c.kurz;
+        var st = el.querySelector(".lz-zeile__status");
+        st.textContent = c.status === "laeuft" ? "läuft" : "angehalten";
+        st.className = "lz-zeile__status lz-zeile__status--" +
+                       (c.status === "laeuft" ? "laeuft" : "angehalten");
+        el.querySelector(".lz-zeile__zustand").textContent = c.zustand || "";
+        el.classList.toggle("is-active", hebt(s, c.id));
+      }
+    });
+
+    sim.list(document.getElementById(ziel.term), s.term, {
+      animated: ctx.animated,
+      key: function (t) { return t.id; },
+      create: function () {
+        var el = document.createElement("div");
+        el.className = "lz-cmd";
+        el.innerHTML = '<span class="lz-cmd__prompt">$</span>' +
+                       '<span class="lz-cmd__text"></span>';
+        return el;
+      },
+      update: function (el, t, i) {
+        el.querySelector(".lz-cmd__text").textContent = t.cmd;
+        el.classList.toggle("is-active", i === s.term.length - 1);
+      }
+    });
+
+    /* Die Registry meldet sich nur, wenn sich dort etwas getan hat – der einzige
+       Moment im ganzen Ablauf, in dem die Bewegung NICHT vom Befehl ausgeht. */
+    var panel = document.getElementById(ziel.panel);
+    if (panel) {
+      panel.classList.toggle("is-active", !!s.registryMeldet);
+      if (s.registryMeldet && ctx.animated) { sim.pulse(panel); }
+    }
+  }
+
+  sim.setup({
+    state: function () {
+      return { remote: [], images: [], container: [], term: [], hebe: [], registryMeldet: false };
+    },
+    render: zeichne
+  });
+
+  /* Hilfen, damit ein Schritt genau das sagt, was er tut. */
+  function tippt(s, nr, befehl) { s.term.push({ id: "t" + nr, cmd: befehl }); }
+  function findeContainer(s, id) {
+    for (var i = 0; i < s.container.length; i++) { if (s.container[i].id === id) return s.container[i]; }
+    return null;
+  }
+
+  sim.registerScenario({
+    id: "container",
+    title: "Vom Image zum Container",
+    description: "Ein Image wird gezogen, ein Container daraus erzeugt, gestartet, beschrieben, gestoppt und gelöscht – und ein zweiter zeigt, wem der Zustand gehört.",
+    state: function () {
+      return {
+        remote: [{ id: "r1", name: "webserver:latest", kurz: "a1b2c3" }],
+        images: [], container: [], term: [], hebe: ["r1"], registryMeldet: false
+      };
+    },
+    steps: [
+      {
+        title: "Die Ausgangslage",
+        text: "<p>In der <b>Registry</b> liegt ein Image: <code>webserver:latest</code>. " +
+              "Dein Rechner kennt es noch nicht – die Tafeln rechts sind leer.</p>" +
+              "<p>Die kurze Kennung <code>a1b2c3</code> daneben ist der Fingerabdruck dieses Standes. " +
+              "Merk sie Dir; gleich wird sie wichtig.</p>",
+        apply: function (s) { s.hebe = ["r1"]; }
+      },
+      {
+        title: "Das Image herunterladen",
+        text: "<p>Das Image liegt jetzt <b>zweimal</b> – in der Registry und bei Dir. " +
+              "Gleicher Name, gleiche Kennung: <b>derselbe Stand</b>.</p>" +
+              "<p>Ein Image ist damit noch nichts, was läuft. Es ist der Bauplan.</p>",
+        apply: function (s) {
+          tippt(s, 1, "docker image pull webserver:latest");
+          s.images.push({ id: "i1", name: "webserver:latest", kurz: "a1b2c3" });
+          s.hebe = ["i1"];
+        }
+      },
+      {
+        title: "Einen Container erzeugen",
+        text: "<p>Aus dem Bauplan entsteht ein <b>Container</b> – und zwar einer, der noch " +
+              "<b>nicht läuft</b>. Erzeugen und Starten sind zwei verschiedene Dinge.</p>" +
+              "<p>Das Image hat sich dabei nicht verändert. Es verändert sich nie.</p>",
+        apply: function (s) {
+          tippt(s, 2, "docker container create --name web-1 webserver:latest");
+          s.container.push({ id: "c1", name: "web-1", kurz: "a1b2c3", status: "angehalten", zustand: "" });
+          s.hebe = ["c1"];
+        }
+      },
+      {
+        title: "Den Container starten",
+        text: "<p>Jetzt läuft er. Nur dieser Schritt hat den Prozess gestartet – " +
+              "erzeugt war der Container schon vorher.</p>" +
+              "<p><code>docker container ls</code> zeigt ab hier etwas an. " +
+              "Vorher hätte man <code>ls -a</code> gebraucht: <i>„mein Container ist weg“</i> heißt " +
+              "meistens <i>„er läuft nur nicht“</i>.</p>",
+        apply: function (s) {
+          tippt(s, 3, "docker container start web-1");
+          findeContainer(s, "c1").status = "laeuft";
+          s.hebe = ["c1"];
+        }
+      },
+      {
+        title: "Im Container entsteht etwas",
+        text: "<p>Eine Datei wird geschrieben. Sie liegt <b>im Container</b> – nicht im Image.</p>" +
+              "<p>Das ist der Unterschied, um den es hier geht: Der Bauplan links ist unverändert, " +
+              "der Container rechts hat jetzt eine eigene Geschichte.</p>",
+        apply: function (s) {
+          tippt(s, 4, "docker container exec web-1 touch /tmp/notiz.txt");
+          findeContainer(s, "c1").zustand = "notiz.txt";
+          s.hebe = ["c1"];
+        }
+      },
+      {
+        title: "Stoppen – und die Datei bleibt",
+        text: "<p><code>stop</code> hält den Prozess an. <b>Der Container bleibt bestehen</b>, " +
+              "mit allem, was in ihm entstanden ist.</p>" +
+              "<p>Ein <code>start</code> würde ihn mit der Datei wieder hochfahren. " +
+              "Merk Dir diesen Zustand – zwei Schritte weiter wird er gelöscht.</p>",
+        apply: function (s) {
+          tippt(s, 5, "docker container stop web-1");
+          findeContainer(s, "c1").status = "angehalten";
+          s.hebe = ["c1"];
+        }
+      },
+      {
+        title: "Ein zweiter Container aus demselben Image",
+        text: "<p>Derselbe Bauplan, ein zweiter Container – und der weiß <b>nichts</b> von " +
+              "<code>notiz.txt</code>. Er startet im Auslieferungszustand.</p>" +
+              "<p>Der Zustand gehört dem Container, nicht dem Image. Deshalb ergibt ein Image " +
+              "beliebig viele Container.</p>" +
+              "<p class=\"lz-nb\"><code>run</code> ist dabei nur die Abkürzung für " +
+              "<code>create</code> plus <code>start</code> – dieselben zwei Schritte wie oben, in einem Befehl.</p>",
+        apply: function (s) {
+          tippt(s, 6, "docker container run -d --name web-2 webserver:latest");
+          s.container.push({ id: "c2", name: "web-2", kurz: "a1b2c3", status: "laeuft", zustand: "" });
+          s.hebe = ["c2"];
+        }
+      },
+      {
+        title: "Löschen – und die Datei ist weg",
+        text: "<p><code>rm</code> wirft den Container weg, und mit ihm alles, was in ihm lag. " +
+              "<code>notiz.txt</code> gibt es nicht mehr.</p>" +
+              "<p><b>Das Image ist unberührt.</b> Aus ihm lässt sich jederzeit ein neuer Container " +
+              "erzeugen – nur eben wieder ohne die Datei.</p>",
+        apply: function (s) {
+          tippt(s, 7, "docker container rm web-1");
+          s.container = s.container.filter(function (c) { return c.id !== "c1"; });
+          s.hebe = ["i1"];
+        }
+      },
+      {
+        title: "Das Image ist der Bauplan, der Container sein Zustand",
+        text: "<p>Nach dem Löschen steht das Image unverändert da. Es hat den Container überlebt, " +
+              "weil es ihn nie enthalten hat.</p>" +
+              "<p><b>Ein Image ist der Bauplan. Ein Container ist ein Ablauf mit eigenem Zustand – " +
+              "und dieser Zustand stirbt mit ihm.</b></p>" +
+              "<p class=\"lz-nb\">Wo die Daten stattdessen liegen könnten, damit sie das " +
+              "überleben, ist eine eigene Frage – und eine eigene Antwort.</p>",
+        apply: function (s) {
+          tippt(s, 8, "docker image ls");
+          s.hebe = ["i1"];
+        },
+        duration: 5000
+      }
+    ]
+  });
+
+  sim.registerScenario({
+    id: "aktualisierung",
+    title: "Ein neuer Stand in der Registry",
+    description: "In der Registry liegt plötzlich eine neue Fassung. Was davon lokal ankommt, was nicht – und warum der laufende Container am alten Stand hängen bleibt.",
+    state: function () {
+      return {
+        remote:    [{ id: "r1", name: "webserver:latest", kurz: "a1b2c3" }],
+        images:    [{ id: "i1", name: "webserver:latest", kurz: "a1b2c3" }],
+        container: [{ id: "c1", name: "web-1", kurz: "a1b2c3", status: "laeuft", zustand: "" }],
+        term: [], hebe: [], registryMeldet: false
+      };
+    },
+    steps: [
+      {
+        title: "Die Ausgangslage",
+        text: "<p>Alles steht: Das Image liegt in der Registry und lokal, ein Container läuft daraus. " +
+              "Überall dieselbe Kennung <code>a1b2c3</code>.</p>" +
+              "<p>So sieht der Normalfall aus – bis jemand anderes etwas tut.</p>",
+        apply: function (s) { s.hebe = []; }
+      },
+      {
+        title: "In der Registry wird neu gebaut",
+        text: "<p>Eine Kollegin hat das Image neu gebaut und hochgeladen. In der Registry steht " +
+              "jetzt <code>a4f901</code> – <b>unter demselben Namen</b>.</p>" +
+              "<p>Sieh auf Deinen Rechner: <b>Dort hat sich nichts geändert.</b> Kein Befehl ist " +
+              "gelaufen, nichts hat sich gemeldet. Der Container läuft weiter wie bisher – und " +
+              "niemand merkt es.</p>",
+        apply: function (s) {
+          s.remote = [{ id: "r2", name: "webserver:latest", kurz: "a4f901" }];
+          s.hebe = ["r2"];
+          s.registryMeldet = true;
+        }
+      },
+      {
+        title: "Den neuen Stand holen",
+        text: "<p>Der neue Stand ist jetzt lokal. Der alte ist <b>nicht weg</b> – er hat nur seinen " +
+              "Namen verloren, denn der Name zeigt jetzt auf den neuen.</p>" +
+              "<p><b>Und der laufende Container hängt weiter am alten.</b> Ein <code>pull</code> " +
+              "fasst keinen Container an; er legt nur ein Image daneben.</p>",
+        apply: function (s) {
+          tippt(s, 1, "docker image pull webserver:latest");
+          s.images = [
+            { id: "i1", name: "<none>", kurz: "a1b2c3" },
+            { id: "i2", name: "webserver:latest", kurz: "a4f901" }
+          ];
+          s.hebe = ["i2", "c1"];
+          s.registryMeldet = false;
+        }
+      },
+      {
+        title: "Den laufenden Container anhalten",
+        text: "<p>Ein Container lässt sich nicht auf einen neuen Stand umheben – er ist an das " +
+              "Image gebunden, aus dem er erzeugt wurde.</p>" +
+              "<p>Also anhalten. Der erste von drei Schritten, die zusammengehören.</p>",
+        apply: function (s) {
+          tippt(s, 2, "docker container stop web-1");
+          findeContainer(s, "c1").status = "angehalten";
+          s.hebe = ["c1"];
+        }
+      },
+      {
+        title: "Den alten Container löschen",
+        text: "<p>Weg damit. Jetzt ist auch das alte Image nicht mehr in Benutzung – " +
+              "es könnte aufgeräumt werden.</p>" +
+              "<p>Der Name <code>web-1</code> ist damit wieder frei. Das ist kein Detail: " +
+              "Solange der alte Container existiert, kann kein neuer so heißen.</p>",
+        apply: function (s) {
+          tippt(s, 3, "docker container rm web-1");
+          s.container = [];
+          s.hebe = ["i1"];
+        }
+      },
+      {
+        title: "Einen neuen Container erzeugen",
+        text: "<p>Derselbe Befehl wie beim ersten Mal, derselbe Name – aber der Bauplan dahinter " +
+              "ist ein anderer: <code>a4f901</code>.</p>" +
+              "<p>Er ist noch angehalten. Erzeugen und Starten bleiben zwei Dinge.</p>",
+        apply: function (s) {
+          tippt(s, 4, "docker container create --name web-1 webserver:latest");
+          s.container = [{ id: "c2", name: "web-1", kurz: "a4f901", status: "angehalten", zustand: "" }];
+          s.hebe = ["c2"];
+        }
+      },
+      {
+        title: "Ein Container wird nicht aktualisiert – er wird ersetzt",
+        text: "<p>Es läuft wieder, auf dem neuen Stand. Von außen sieht es aus wie vorher; " +
+              "es ist aber ein anderer Container aus einem anderen Image.</p>" +
+              "<p><b>Ein Container wird nie aktualisiert. Er wird gelöscht und neu erzeugt.</b> " +
+              "Genau deshalb darf nichts Wichtiges in ihm liegen.</p>" +
+              "<p class=\"lz-nb\">Und weil <code>webserver:latest</code> eben noch auf " +
+              "<code>a1b2c3</code> zeigte und jetzt auf <code>a4f901</code>: Ein Tag ist ein Etikett, " +
+              "das jemand verschieben kann – keine Version.</p>",
+        apply: function (s) {
+          tippt(s, 5, "docker container start web-1");
+          findeContainer(s, "c2").status = "laeuft";
+          s.hebe = ["c2"];
+        },
+        duration: 5000
+      }
+    ]
+  });
+})();
+</script>
+
+
+    </div><div class="avd-academy-sim__intro" data-avd-academy-sim-intro hidden
+         data-lead="Zwei Abläufe an derselben Bühne: links die Registry, rechts Dein Rechner, unten die Kommandozeile mit allem, was Du getippt hast."></div><div class="avd-academy-sim__ost" data-avd-academy-sim-ost hidden aria-hidden="true">
+      <p class="avd-academy-sim__ost-title" data-avd-academy-sim-ost-title></p>
+      <div class="avd-academy-sim__ost-text" data-avd-academy-sim-ost-text></div>
+    </div>
+    <aside class="avd-academy-sim__aside" aria-label="Erklärung zum aktuellen Schritt">
+      <h2 class="avd-academy-sim__note-title" data-avd-academy-sim-note-title></h2>
+      <div class="avd-academy-sim__note" data-avd-academy-sim-note aria-live="polite"></div>
+    </aside>
+  </main>
+
+  <div class="avd-academy-sim__progress" aria-hidden="true">
+    <div class="avd-academy-sim__progress-fill" data-avd-academy-sim-progress></div>
+  </div>
+
+  <footer class="avd-academy-sim__controls" aria-label="Simulation steuern" data-avd-academy-sim-controls>
+    <button type="button" class="avd-academy-sim__btn" data-avd-academy-sim-reset
+            title="Zurück auf Anfang (Taste R)" aria-label="Zurück auf Anfang">⟲</button>
+    <button type="button" class="avd-academy-sim__btn" data-avd-academy-sim-prev
+            title="Schritt zurück (←)" aria-label="Schritt zurück">‹</button><div class="avd-academy-sim__play-group">
+      <button type="button" class="avd-academy-sim__btn avd-academy-sim__btn--play" data-avd-academy-sim-play
+              title="Abspielen (Leertaste)" aria-label="Abspielen">
+        <span class="avd-academy-sim__btn-icon" data-avd-academy-sim-play-icon>▶</span>
+        <span class="avd-academy-sim__btn-text" data-avd-academy-sim-play-text>Abspielen</span>
+      </button>
+      <button type="button" class="avd-academy-sim__btn avd-academy-sim__btn--speed" data-avd-academy-sim-speed-toggle
+              title="Tempo wählen (Taste T)" aria-label="Tempo wählen"
+              aria-haspopup="true" aria-expanded="false">
+        <span data-avd-academy-sim-speed-label>1×</span>
+        <span class="avd-academy-sim__caret" aria-hidden="true">▴</span>
+      </button>
+      <ul class="avd-academy-sim__speed-menu" data-avd-academy-sim-speed-menu hidden role="menu"
+          aria-label="Tempo"><li role="none"><button type="button" role="menuitemradio" aria-checked="false" data-avd-academy-sim-speed-value="0.5">0,5×<span> langsam</span></button></li>
+        <li role="none"><button type="button" role="menuitemradio" aria-checked="true"  data-avd-academy-sim-speed-value="1">1×<span> normal</span></button></li>
+        <li role="none"><button type="button" role="menuitemradio" aria-checked="false" data-avd-academy-sim-speed-value="2">2×<span> zügig</span></button></li>
+        <li role="none"><button type="button" role="menuitemradio" aria-checked="false" data-avd-academy-sim-speed-value="5">5×<span> im Zeitraffer</span></button></li>
+      </ul>
+    </div>
+    <button type="button" class="avd-academy-sim__btn" data-avd-academy-sim-next
+            title="Schritt vor (→)" aria-label="Schritt vor">›</button>
+  </footer><p class="avd-academy-sim__capture-hint" data-avd-academy-sim-capture-hint hidden aria-hidden="true">
+    Capture-Modus · <b>C</b> beenden · <b>T</b> Text einblenden
+  </p><p class="avd-academy-sim__print-hint" aria-hidden="true">
+    Diese Simulation lebt von der Bewegung. Auf Papier steht nur der gerade sichtbare Schritt – der QR-Code oben führt zurück zur laufenden Fassung.
+  </p>
+</body>
+</html>
