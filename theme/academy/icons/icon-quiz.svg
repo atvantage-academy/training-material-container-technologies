@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Wissens-Check">
+  <!-- Farben aus dem ATVANTAGE-Fundament: Slate #303E4F, Orange #FF5401. -->
+  <rect width="32" height="32" fill="#303E4F"/>
+  <g fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Drei Antworten zur Wahl -->
+    <path d="M9 11h14M9 16h14M9 21h8"/>
+  </g>
+  <!-- Die eine, die stimmt -->
+  <path d="M20 21l2.2 2.2L27 18.4" fill="none" stroke="#FF5401" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -1,0 +1,12 @@
+:root{
+--content-inline-padding:24px;
+--section-padding-block:5rem; /* 5–6rem Standard, 1rem kompakt */
+--section-padding-block-compact:1rem;
+--module-gap:1rem; /* 2rem global default */
+--module-gap-global:2rem;
+--topnav-height:80px;
+--shadow:0 0 10px #5F5F5F;
+--radius:5px; /* Standard */
+--radius-dark:8px; /* auf dunklen Sektionen */
+/* Breakpoints: 576 / 768 / 992 / 1200 / 1440 / 2000 px */
+}

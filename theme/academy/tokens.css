@@ -1,0 +1,391 @@
+/* =============================================================================
+   ATVANTAGE Academy – Token-Mapping auf das ATVANTAGE-Fundament
+   -----------------------------------------------------------------------------
+   Farben und Schriften kommen AUSSCHLIESSLICH aus dem ATVANTAGE-Design-System
+   (`../atvantage/`, unveränderlich). Diese Datei definiert KEINE eigenen
+   Markenfarben/Schriften mehr, sondern bildet die intern genutzten
+   `--avd-academy-*`-Variablen auf die atvantage-Tokens (`--avd-*` / `--color-*` /
+   `--font-family` / `--radius` / `--shadow`) ab. Zusätzlich stehen hier nur die
+   Tokens, die atvantage NICHT definiert und die der Schulungsunterlagen-Bereich
+   braucht (modulare Typo-Skala, Diagramm-Füllpalette, Layoutbreiten, Dark-Mode).
+
+   Voraussetzung: `../atvantage/styles.css` ist VOR dieser Datei geladen.
+
+   Präfixe: `avd` (AVD = AtVantage Deutschland) ist die Abkürzung auf ATVANTAGE-
+   Ebene; die **Academy-Schicht** namespaced ihre Tokens/Klassen daher unter
+   `--avd-academy-` / `avd-academy-`. Die Foundation-Tokens `--avd-*` / `--color-*`
+   gehören dem Fundament (`../atvantage/`) und werden hier nur referenziert.
+   ============================================================================= */
+
+:root {
+  /* --- Markenfarben: Aliase auf atvantage (keine eigenen Werte!) ---------- */
+  --avd-academy-color-primary:         var(--avd-slate);       /* dunkle Flächen, Kopfzeile */
+  --avd-academy-color-primary-dark:    var(--avd-ink);         /* kräftigste Fläche (Topbar) */
+  --avd-academy-color-primary-light:   var(--avd-gray-mid);    /* Rahmen/neutrale Linien */
+  --avd-academy-color-primary-tint:    var(--avd-blue-light);  /* abgesetzte Flächen */
+  --avd-academy-color-primary-contrast:var(--avd-white);
+  /* Schalter: mit `--avd-academy-accent-base` die Ableitung, sonst wie bisher. */
+  --avd-academy-color-accent:          var(--avd-academy-accent-from-base, var(--avd-orange));
+  /* Weiche Akzentfläche. Hängt am AKZENT, nicht an --avd-orange: Ein Projekt
+     mit eigenem Akzent bekam sonst eine orange getönte Fläche zu einer Farbe,
+     die gar nicht mehr orange ist. Im Auslieferungszustand ändert das nichts –
+     dort IST der Akzent das ATVANTAGE-Orange. Gemischt wird in die Seitenfläche
+     statt in festes #fff, damit die Mischung auch einer überschriebenen
+     Seitenfläche folgt (im Light-Theme ist beides #FFFFFF). */
+  --avd-academy-color-accent-soft:     color-mix(in srgb, var(--avd-academy-color-accent) 12%, var(--avd-academy-color-bg));
+  /* Text auf Akzentfläche. Der feste Wert ist nur der Rückfall für Engines ohne
+     relative Farbsyntax; darunter leitet ein @supports-Block ihn aus dem Akzent
+     ab (siehe „Text auf Akzentfläche“ weiter unten). */
+  --avd-academy-color-accent-contrast: var(--avd-white);
+
+  /* --- Verweisfarbe: die Marke, bewusst --------------------------------------
+     Als SCHRIFT erreicht `#FF5401` auf Weiß nur 3,22:1; WCAG 1.4.3 verlangt 4,5:1.
+     Das ist eine ENTSCHEIDUNG, keine Übersehung: Die Marke trägt die Verweise, und
+     dass sie Verweise SIND, zeigt die Unterstreichung im Fließtext (1.4.1). Die
+     Abweichung steht mit Begründung und Datum in `docs/theme/barrierefreiheit.md`
+     und als benannte Ausnahme in `theme/jekyll/a11y.mjs`; die Prüfung zählt sie in
+     jedem Lauf sichtbar mit, statt sie zu verschweigen.
+     Die beiden Token bleiben bestehen – ein Projekt, das die Abweichung nicht
+     mitgehen will, setzt sie auf eine dunklere Mischung und ist ohne weiteres
+     Zutun konform. */
+  --avd-academy-color-link:       var(--avd-academy-color-accent);
+  --avd-academy-color-link-hover: var(--avd-academy-color-accent);
+  --color-link: var(--avd-academy-color-link);
+
+  /* --- Neutrale / Flächenfarben (theme-fähig; Light-Defaults) -------------
+     Light-Werte kommen aus atvantage. Das Dark-Theme kennt atvantage NICHT –
+     wir erarbeiten es selbst (siehe Dark-Block unten). Deshalb liegen alle
+     umschaltbaren Oberflächen als eigene Academy-Tokens vor. */
+  --avd-academy-color-ink:        var(--avd-anthracite);       /* Fließtext */
+  --avd-academy-color-ink-muted:  var(--avd-gray-footer);      /* sekundärer Text */
+  --avd-academy-color-headline:   var(--avd-ink);              /* Überschriften */
+  --avd-academy-color-bg:         var(--avd-white);            /* Seitenfläche */
+  --avd-academy-color-bg-subtle:  var(--avd-gray-card);        /* Karten/erhöhte Flächen */
+  --avd-academy-color-border:     color-mix(in srgb, var(--avd-slate) 18%, #fff);
+  --avd-academy-border-soft:      #e6e8ea;                     /* Hairlines */
+  --avd-academy-hero-bg:          var(--avd-academy-hero-bg-from-base, var(--color-surface-blue));
+  --avd-academy-topbar-bg:        var(--avd-white);            /* Kopfzeile */
+  --avd-academy-metanav-bg:       var(--avd-gray-metanav);     /* Meta-Nav */
+  /* Nicht gray-metatext: auf der Metanav-Fläche (#F4F4F4) sind das 4,44:1 und
+     damit unter AA für Kleintext – auf jeder Seite des Themes. In 2.7.0 stand
+     hier ausdrücklich „dort ist es richtig“; die Zahl war schon damals gemessen
+     und die Einstufung schlicht falsch. Mit gray-footer sind es 5,81:1. */
+  --avd-academy-metanav-text:     var(--avd-gray-footer);
+  --avd-academy-code-bg:          var(--avd-gray-card);        /* Inline-/Block-Code (hell) */
+
+  /* --- Statusfarben: Danger aus atvantage; Success/Warning ergänzt academy
+     (atvantage definiert nur Danger). Info = Slate. ------------------------- */
+  --avd-academy-color-info:     var(--avd-slate);
+  --avd-academy-color-success:  #2f855a;
+  --avd-academy-color-warning:  #c9a227;
+  --avd-academy-color-danger:   var(--avd-red);
+
+  /* --- Kategoriale Füllpalette (academy-spezifisch; atvantage kennt keine).
+     Orientiert an atvantage: Füllung 2 = ATVANTAGE-Orange. ------------------ */
+  --avd-academy-fill-1: var(--avd-slate);  --avd-academy-fill-1-bg: var(--avd-blue-light);
+  --avd-academy-fill-2: var(--avd-orange); --avd-academy-fill-2-bg: color-mix(in srgb, var(--avd-orange) 18%, #fff);
+  --avd-academy-fill-3: #c9a227;           --avd-academy-fill-3-bg: #f6ecc4;
+  --avd-academy-fill-4: #7a6fb3;           --avd-academy-fill-4-bg: #e5e1f4;
+
+  /* --- Töne zum Unterscheiden von Gruppen (gruppierte Tabellen) -----------
+     Vier gegeneinander unterscheidbare Töne plus ein Signalton. Sie leiten sich
+     aus der kategorialen Füllpalette oben ab und tragen deshalb keine eigenen
+     Farbwerte; genutzt werden sie von `.avd-academy-grouptable` (components.css)
+     als schmaler Streifen, nicht als Fläche. Im Dark-Theme werden sie
+     aufgehellt (siehe Dark-Block unten) – die Füllpalette selbst ist auf helle
+     Flächen gerechnet und würde auf dunklem Grund verschwinden. */
+  --avd-academy-tone-1: var(--avd-academy-fill-1);
+  --avd-academy-tone-2: var(--avd-academy-fill-2);
+  --avd-academy-tone-3: var(--avd-academy-fill-3);
+  --avd-academy-tone-4: var(--avd-academy-fill-4);
+  --avd-academy-tone-alert: var(--avd-academy-color-danger);
+
+  /* --- Typografie: Familie aus atvantage; modulare Skala academy-spezifisch. */
+  --avd-academy-font-sans:  var(--font-family, "Outfit", system-ui, sans-serif);
+  --avd-academy-font-head:  var(--avd-academy-font-sans);
+  --avd-academy-font-mono:  "Consolas", "SF Mono", ui-monospace, monospace;
+
+  /* KEIN `--avd-academy-fs-root` MEHR. Es stand hier mit 16px, wurde aber von
+     KEINER Regel gelesen - ein Wert, der aussieht, als liesse sich die
+     Grundschrift damit einstellen, und es nicht tut. Die Grundschrift gehoert
+     ohnehin dem Browser: Wer sie hochstellt, tut das aus einem Grund, und das
+     Theme rechnet ueber `rem` von dort aus weiter. */
+  --avd-academy-lh-body:      var(--text-line-height, 1.6);
+  --avd-academy-lh-heading:   1.2;
+  --avd-academy-fw-normal:    var(--text-weight, 400);
+  --avd-academy-fw-medium:    var(--headline-weight-content, 500);
+  --avd-academy-fw-bold:      var(--headline-weight, 600);
+
+  /* Modulare Skala (fluid) für Doku-/Unterlagen-Inhalte (nicht in atvantage). */
+  --avd-academy-fs-sm:   clamp(0.82rem, 0.8rem + 0.1vw, 0.9rem);
+  --avd-academy-fs-base: 1rem;
+  --avd-academy-fs-md:   clamp(1.1rem,  1rem + 0.4vw, 1.25rem);
+  --avd-academy-fs-lg:   clamp(1.4rem,  1.2rem + 0.8vw, 1.8rem);
+  --avd-academy-fs-xl:   clamp(1.9rem,  1.5rem + 1.6vw, 2.6rem);
+  --avd-academy-fs-2xl:  clamp(2.4rem,  1.8rem + 2.6vw, 3.6rem);
+
+  /* --- Abstände (8px-Raster; atvantage-Spacing ist sektionsbezogen) ------- */
+  --avd-academy-space-1: 0.25rem;  --avd-academy-space-2: 0.5rem;   --avd-academy-space-3: 0.75rem;
+  --avd-academy-space-4: 1rem;     --avd-academy-space-6: 1.5rem;   --avd-academy-space-8: 2rem;
+  --avd-academy-space-12: 3rem;    --avd-academy-space-16: 4rem;
+
+  /* --- Radien, Schatten: an atvantage orientiert -------------------------- */
+  --avd-academy-radius-sm: 4px;
+  --avd-academy-radius:    var(--radius, 5px);       /* atvantage: kleine Radien */
+  --avd-academy-radius-lg: var(--radius-dark, 8px);
+  --avd-academy-shadow-1:  0 1px 2px rgba(26, 38, 39, 0.08);
+  --avd-academy-shadow-2:  var(--shadow, 0 0 10px #5F5F5F);
+
+  /* --- Layout (academy-spezifisch) --------------------------------------- */
+  --avd-academy-content-width: 72ch;
+  --avd-academy-page-width:   1180px;
+
+
+  /* --- Vordergrundfassungen: dieselbe Farbe, aber als SCHRIFT ------------
+     Eine Farbe der Palette ist als Fläche gedacht. Als Schrift trägt sie nicht:
+     `--avd-academy-color-danger` auf der Seitenfläche ergibt 4,39:1 im Light- und
+     3,81:1 im Dark-Theme, auf `-bg-subtle` 3,75:1 bzw. 3,29:1. Das Theme selbst
+     benutzt Danger nur als RAHMEN (Callout, Fehler-Tafel) – dort ist es richtig,
+     und deshalb ist es lange nicht aufgefallen. Sobald ein Repo eine Fehlermeldung
+     schreibt statt sie zu umranden, fehlte ein Token, das trägt.
+
+     Warum Tokens und nicht nur eine dokumentierte Rezeptur: Im Inline-SVG steht
+     `fill="var(…)"`. Dort lässt sich nichts zusammenmischen – man kann nur auf ein
+     Token zeigen. Genau an diesen Stellen sind die gemeldeten Fälle durchgefallen,
+     während dieselben Projekte es im CSS selbst lösen konnten.
+
+     Eine Regel für alle: 45 % Farbe in den Fließtext. Weil
+     `--avd-academy-color-ink` mit dem Farbschema kippt, trägt derselbe Ausdruck in
+     beiden – im Light-Theme dunkelt er ab, im Dark-Theme hellt er auf. Deshalb
+     stehen diese Tokens auch nur EINMAL hier und nicht in den Dark-Blöcken.
+
+     ZUSAGE: AA (4,5:1) auf `--avd-academy-color-bg` und `--avd-academy-color-bg-subtle`
+     in beiden Schemata; Engpass über alle sechs ist 4,56:1 (Ton 3, Gold).
+     NICHT zugesagt auf den Füllflächen `--avd-academy-fill-*-bg` – dort trägt Gold
+     nur 4,17:1. Text auf einer Füllfläche nimmt `--avd-academy-color-ink` oder
+     `--avd-academy-color-ink-muted`.
+
+     Die getönten Tafeln (`simulation.css`) mischen mit 35 % stärker. Das ist kein
+     Widerspruch, sondern ein anderer Fall: Dort ist die Fläche mit DERSELBEN Farbe
+     getönt, Schrift und Grund wandern also miteinander. */
+  --avd-academy-color-danger-ink:  color-mix(in srgb, var(--avd-academy-color-danger) 45%, var(--avd-academy-color-ink));
+  --avd-academy-color-success-ink: color-mix(in srgb, var(--avd-academy-color-success) 45%, var(--avd-academy-color-ink));
+  --avd-academy-color-warning-ink: color-mix(in srgb, var(--avd-academy-color-warning) 45%, var(--avd-academy-color-ink));
+  --avd-academy-color-accent-ink: color-mix(in srgb, var(--avd-academy-color-accent) 45%, var(--avd-academy-color-ink));
+  --avd-academy-tone-1-ink:       color-mix(in srgb, var(--avd-academy-tone-1) 45%, var(--avd-academy-color-ink));
+  --avd-academy-tone-2-ink:       color-mix(in srgb, var(--avd-academy-tone-2) 45%, var(--avd-academy-color-ink));
+  --avd-academy-tone-3-ink:       color-mix(in srgb, var(--avd-academy-tone-3) 45%, var(--avd-academy-color-ink));
+  --avd-academy-tone-4-ink:       color-mix(in srgb, var(--avd-academy-tone-4) 45%, var(--avd-academy-color-ink));
+  --avd-academy-tone-alert-ink:   color-mix(in srgb, var(--avd-academy-tone-alert) 45%, var(--avd-academy-color-ink));
+
+
+  /* --- Schulungsfarbe aus EINEM Wert ------------------------------------
+     Ein Schulungs-Repo trägt laut Vorgabe eine eigene Akzentfarbe. Bisher hiess
+     das VIER Handwerte: Akzent und Hero-Band, je für Light und Dark, wobei der
+     Dark-Wert doppelt steht (Attribut- und `prefers-color-scheme`-Block). Das
+     geht schief, und zwar unbemerkt: In einem Repo wurde ein Wert geändert und
+     drei nicht – die Unterlage trug Blau im Light- und Grün im Dark-Modus. Der
+     Build zeigt immer nur einen Modus, also meldet ihn nichts.
+
+     Schlimmer noch: Von drei frei gewählten Schulungsfarben lag JEDE in einem
+     der beiden Modi unter AA, ohne dass es jemand wusste – gemessen 3,03:1
+     (Blau, Light), 3,26:1 (Grün, Dark) und 2,52:1 (Violett, Dark).
+
+     Deshalb: Das Repo gibt nur noch den FARBTON an, die HELLIGKEIT kommt aus
+     dem Theme. `--avd-academy-color-ink` und `-bg` kippen mit dem Farbschema,
+     also fallen Light und Dark aus DERSELBEN Formel – und der Kontrast hängt am
+     Mischanteil statt am Zufall. Nach der Ableitung: 5,38 / 6,10 / 8,06:1 im
+     Light- und 7,54 / 7,33 / 4,92:1 im Dark-Theme.
+
+     Zwei Schritte, weil eine relative Farbe nur EINE Ursprungsfarbe hat, wir
+     aber aus zweien etwas brauchen: `color-mix` setzt die modusrichtige
+     Helligkeit und nimmt dabei Buntheit (die Textfarbe ist fast neutral),
+     `oklch(from …) calc(c * 3)` dreht sie wieder auf. `in oklab`, NICHT
+     `in oklch`: Die polare Mischung interpoliert auch den Farbwinkel und zieht
+     die Farbe Richtung Textfarbe.
+
+     NICHT auf das ATVANTAGE-Orange anwenden. Gemessen wird es dadurch
+     SCHLECHTER (5,19 → 4,18:1 im Dark) und zu reinem Rot – der Farbwinkel des
+     Orange verträgt den Buntheits-Anschlag nicht. Die Marke wird nicht
+     abgeleitet; ohne `--avd-academy-accent-base` bleibt alles wie bisher.
+
+     Angeschlossen ist es hier, nicht im Repo. Ein Ausdruck, der ein NICHT
+     gesetztes Token liest, wird beim Rechnen ungültig – und genau das nutzen
+     Akzent und Hero-Band als Schalter: `var(--…-from-base, «bisher»)` nimmt den
+     Rückfall, solange keine Basis gesetzt ist. Ein Repo schreibt deshalb nur:
+
+       :root { --avd-academy-accent-base: «hex»; }
+
+     Und die Regel, die man nicht sieht: WER DANEBEN EINEN
+     `[data-avd-academy-theme="dark"]`- ODER `prefers-color-scheme`-BLOCK
+     SCHREIBT, HEBELT DIE ABLEITUNG AUS. Ein solcher Block gewinnt gegen die
+     Formel und friert genau einen Modus auf einen Handwert ein. Farbe ändern
+     heißt: `--avd-academy-accent-base` ändern, sonst nichts. */
+  --avd-academy-accent-from-base:  var(--avd-academy-accent-base);
+  --avd-academy-hero-bg-from-base: color-mix(in oklab, var(--avd-academy-accent-base) 12%, var(--avd-academy-color-bg));
+
+
+  /* --- Vertikaler Rhythmus, gemeinsam fuer BEIDE Inhaltsspalten -----------
+     Das Theme fuehrte dafuer zwei Systeme: Die gewoehnliche Seite hat eine
+     Hierarchie (Abstand vor einem Abschnitt, kleiner Abstand zwischen Bloecken,
+     fast keiner NACH einer Ueberschrift - dadurch bindet sie an ihren Text). Die
+     Guide-Spalte hatte `display: flex; gap: 3.5rem` und damit gar keine: Ein
+     `gap` behandelt alle Bloecke gleich.
+
+     Gemessen an einer Guide-Seite ergab das 60px zwischen einer Ueberschrift und
+     ihrem eigenen ersten Absatz - und ebenso 60px zum vorigen Absatz. Die
+     Ueberschrift gehoerte optisch zu nichts. Zwischen zwei Ueberschriften ohne
+     Text dazwischen waren es 84px.
+
+     Beide Spalten lesen jetzt dieselben drei Masse. Wer den Rhythmus einer
+     Unterlage anpassen will, setzt sie um - und muss nicht mehr die Klassen des
+     Themes ueberschreiben, was bei jeder Aenderung hier bricht. */
+  --avd-academy-rhythm-block:   1.1rem;   /* zwischen zwei Bloecken im Fluss */
+  --avd-academy-rhythm-section: 2.75rem;  /* vor einer neuen Abschnitts-Ueberschrift */
+  --avd-academy-rhythm-heading: 0.25rem;  /* NACH einer Ueberschrift - bindet sie an ihren Text */
+
+  --avd-academy-transition: 160ms ease;
+}
+
+/* Die Buntheits-Korrektur braucht relative Farbsyntax. Fehlt sie, bleibt es bei
+   der rohen Basisfarbe – das ist der Zustand, den die Repos heute ohnehin haben,
+   und damit ein Rückfall und kein Bruch. Warum @supports und nicht zwei
+   Deklarationen: Custom Properties nehmen beim Parsen jede Zeichenfolge an, die
+   zweite gewinnt immer, und eine Engine ohne die Syntax lässt die Farbe erst
+   beim Rechnen ungültig werden – das Ergebnis wäre Schwarz, nicht der Rückfall. */
+@supports (color: oklch(from red l c h)) {
+  :root {
+    --avd-academy-accent-from-base:
+      oklch(from color-mix(in oklab, var(--avd-academy-accent-base) 55%, var(--avd-academy-color-ink)) l calc(c * 3) h);
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   Dark-Theme – SELBST ERARBEITET (atvantage liefert keins). Startpunkt ist Light;
+   die Systempräferenz greift als Default (`prefers-color-scheme`), eine explizite
+   Wahl per data-Attribut hat Vorrang. Damit explizites Light auch bei
+   System-Dark gewinnt, ist der System-Dark-Block gegen [data-…="light"]
+   ausgenommen. Dark-Werte an den atvantage-Neutraltönen (Ink/Slate) orientiert.
+   ----------------------------------------------------------------------------- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-avd-academy-theme="light"]) {
+    --avd-academy-color-ink:       #e8edee;
+    --avd-academy-color-ink-muted: #9fb0b3;
+    --avd-academy-color-headline:  #f3f6f6;
+    --avd-academy-color-bg:        #14201f;
+    --avd-academy-color-bg-subtle: #1f2c2b;
+    --avd-academy-color-border:    color-mix(in srgb, #fff 14%, #1f2c2b);
+    --avd-academy-border-soft:     color-mix(in srgb, #fff 12%, #1f2c2b);
+    --avd-academy-hero-bg:         var(--avd-academy-hero-bg-from-base, var(--avd-slate));
+    --avd-academy-topbar-bg:       #16211f;
+    --avd-academy-metanav-bg:      #101a18;
+    --avd-academy-metanav-text:    #93a5a2;
+    --avd-academy-code-bg:         #24332f;
+    /* Gruppen-Töne aufhellen: Die Füllpalette ist auf helle Flächen gerechnet;
+       auf dunklem Grund wäre besonders Ton 1 (Slate) nicht mehr zu sehen. Kein
+       eigener Farbwert – dieselben Töne, nur zu Weiß hin gemischt. */
+    --avd-academy-tone-1: color-mix(in srgb, var(--avd-academy-fill-1) 45%, #fff);
+    --avd-academy-tone-2: color-mix(in srgb, var(--avd-academy-fill-2) 60%, #fff);
+    --avd-academy-tone-3: color-mix(in srgb, var(--avd-academy-fill-3) 60%, #fff);
+    --avd-academy-tone-4: color-mix(in srgb, var(--avd-academy-fill-4) 55%, #fff);
+    --avd-academy-tone-alert: color-mix(in srgb, var(--avd-academy-color-danger) 55%, #fff);
+
+    /* Füllflächen für das Dark-Theme. Dieselbe Begründung wie bei den Tönen
+       darüber, nur andersherum gelesen: Die Flächen der Füllpalette sind helle
+       Pastelltöne, die dunklen Text tragen sollen. Im Dark-Theme ist der Text
+       hell (`--avd-academy-color-ink` = #e8edee) – auf #DDE4EE ergibt das 1,08:1
+       und auf #f6ecc4 glatte 1,00:1, also Schrift, die schlicht nicht da ist.
+       Wer eine Fläche damit füllt und den Text in `currentColor` setzt – der
+       naheliegende Weg für ein Inline-SVG – bekam genau das.
+
+       Abgeleitet wird aus dem bereits aufgehellten TON, nicht aus der rohen
+       Füllung: Ton 1 (Slate) ist selbst so dunkel, dass er in die Seitenfläche
+       hineingemischt kaum von ihr abstände – als Kategorie nicht mehr erkennbar.
+       Eigene Farbwerte kommen wieder nicht hinzu.
+
+       Der Anteil stand bis 2.9.x auf 26 %. Das war gegen `--avd-academy-color-ink`
+       gerechnet – und nur dagegen. Sekundärtext auf derselben Fläche fiel bei drei
+       von vier Füllungen durch AA (3,98–4,53:1), was erst auffiel, als Projekte die
+       Flächen nach der Korrektur von 2.7.0 überhaupt zu nutzen begannen. Bei 18 %
+       trägt auch er: ink 9,33–10,21:1, ink-muted 4,90–5,36:1. Der Preis ist ein
+       schwächerer Abstand zur Seitenfläche (1,39–1,52:1 statt 1,64–1,87:1); die
+       Kategorie wird ohnehin auch vom Strich `--avd-academy-fill-N` getragen. */
+    --avd-academy-fill-1-bg: color-mix(in srgb, var(--avd-academy-tone-1) 18%, var(--avd-academy-color-bg));
+    --avd-academy-fill-2-bg: color-mix(in srgb, var(--avd-academy-tone-2) 18%, var(--avd-academy-color-bg));
+    --avd-academy-fill-3-bg: color-mix(in srgb, var(--avd-academy-tone-3) 18%, var(--avd-academy-color-bg));
+    --avd-academy-fill-4-bg: color-mix(in srgb, var(--avd-academy-tone-4) 18%, var(--avd-academy-color-bg));
+    /* Ebenso die weiche Akzentfläche: gegen Weiß gemischt trägt sie im
+       Dark-Theme keinen hellen Text (1,02:1). Sie folgt dem Akzent, damit ein
+       Projekt mit eigenem Akzent keine orange getönte Fläche behält. */
+    --avd-academy-color-accent-soft: color-mix(in srgb, var(--avd-academy-color-accent) 22%, var(--avd-academy-color-bg));
+  }
+}
+:root[data-avd-academy-theme="dark"] {
+  --avd-academy-color-ink:       #e8edee;
+  --avd-academy-color-ink-muted: #9fb0b3;
+  --avd-academy-color-headline:  #f3f6f6;
+  --avd-academy-color-bg:        #14201f;
+  --avd-academy-color-bg-subtle: #1f2c2b;
+  --avd-academy-color-border:    color-mix(in srgb, #fff 14%, #1f2c2b);
+  --avd-academy-border-soft:     color-mix(in srgb, #fff 12%, #1f2c2b);
+  --avd-academy-hero-bg:         var(--avd-academy-hero-bg-from-base, var(--avd-slate));
+  --avd-academy-topbar-bg:       #16211f;
+  --avd-academy-metanav-bg:      #101a18;
+  --avd-academy-metanav-text:    #93a5a2;
+  --avd-academy-code-bg:         #24332f;
+  /* Gruppen-Töne aufhellen – Begründung siehe System-Dark-Block oben. */
+  --avd-academy-tone-1: color-mix(in srgb, var(--avd-academy-fill-1) 45%, #fff);
+  --avd-academy-tone-2: color-mix(in srgb, var(--avd-academy-fill-2) 60%, #fff);
+  --avd-academy-tone-3: color-mix(in srgb, var(--avd-academy-fill-3) 60%, #fff);
+  --avd-academy-tone-4: color-mix(in srgb, var(--avd-academy-fill-4) 55%, #fff);
+  --avd-academy-tone-alert: color-mix(in srgb, var(--avd-academy-color-danger) 55%, #fff);
+
+  /* Füllflächen fürs Dark-Theme – Begründung siehe System-Dark-Block oben. */
+  --avd-academy-fill-1-bg: color-mix(in srgb, var(--avd-academy-tone-1) 18%, var(--avd-academy-color-bg));
+  --avd-academy-fill-2-bg: color-mix(in srgb, var(--avd-academy-tone-2) 18%, var(--avd-academy-color-bg));
+  --avd-academy-fill-3-bg: color-mix(in srgb, var(--avd-academy-tone-3) 18%, var(--avd-academy-color-bg));
+  --avd-academy-fill-4-bg: color-mix(in srgb, var(--avd-academy-tone-4) 18%, var(--avd-academy-color-bg));
+  /* Weiche Akzentfläche – Begründung siehe System-Dark-Block oben. */
+  --avd-academy-color-accent-soft: color-mix(in srgb, var(--avd-academy-color-accent) 22%, var(--avd-academy-color-bg));
+}
+
+/* -----------------------------------------------------------------------------
+   Text auf Akzentfläche – aus dem Akzent abgeleitet
+   -----------------------------------------------------------------------------
+   `--avd-academy-color-accent-contrast` ist das Token für Schrift, die AUF der
+   Akzentfarbe steht (Abspiel-Knopf und Tab-Nummer der Simulation, Intro-Nummer,
+   Hover-Zustand der Knöpfe, Sprechblase der Präsentation). Es stand fest auf
+   Weiß – und Weiß trägt auf ATVANTAGE-Orange nur 3,22:1. Für Kleintext verlangt
+   WCAG 2.1 AA 4,5:1; `.avd-academy-sim__btn-text` steht auf `--avd-academy-fs-sm`
+   (≈13 px) und ist damit Kleintext. Der Auslieferungszustand war also schon im
+   Light-Theme unter AA, nicht erst im Dark-Theme.
+
+   Verschärft hat es sich, sobald ein Projekt einen eigenen, helleren Akzent
+   setzt: Weiß auf einem hellen Grün ergibt 1,9:1. Ein Kippen im Dark-Block hätte
+   das nicht behoben – der Akzent des Themes wechselt zwischen den Schemata gar
+   nicht, der Fehler steht in beiden.
+
+   Deshalb wird der Wert nicht gesetzt, sondern ABGELEITET: Ist der Akzent hell,
+   wird die Schrift schwarz, ist er dunkel, bleibt sie weiß. `clamp()` macht aus
+   der Helligkeit einen harten Schalter (der große Faktor treibt alles über bzw.
+   unter die Grenzen), Chroma 0 nimmt dem Ergebnis die Farbe. Die Schwelle 0,58
+   ist nicht geschätzt: Über 60 000 Zufallsfarben geprüft, trennt sie schwarz und
+   weiß am zuverlässigsten (≈2 % suboptimal; bei 0,62 waren es 9,5 %).
+
+   Damit kann kein Projekt den Knopf mehr unlesbar machen, indem es nur den
+   Akzent überschreibt – genau der Fehler, der das hier ausgelöst hat.
+
+   Das @supports-Gate ist NICHT schmückend. Zwei Deklarationen hintereinander
+   (erst Weiß, dann die abgeleitete) tragen hier nicht: Custom Properties nehmen
+   beim Parsen jede Zeichenfolge an, die zweite gewinnt also immer, und eine
+   Engine ohne relative Farbsyntax lässt `color` erst beim Rechnen ungültig
+   werden – das Ergebnis ist SCHWARZ, nicht der Rückfall auf Weiß. Auf einem
+   dunklen Akzent wäre das exakt der Fehler, der hier behoben wird. Mit dem Gate
+   bleibt es bei Weiß wie bisher. (In Chrome nachgemessen, beide Varianten.)
+   ----------------------------------------------------------------------------- */
+@supports (color: oklch(from red l c h)) {
+  :root {
+    --avd-academy-color-accent-contrast:
+      oklch(from var(--avd-academy-color-accent) clamp(0, (l - 0.58) * -1e5, 1) 0 h);
+  }
+}

@@ -1,0 +1,836 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Academy-Theme – _config.yml einer Site",
+  "description": "Die Jekyll-Konfiguration einer Site, die das Academy-Theme nutzt: der von Jekyll selbst gelesene Standard PLUS die Schlüssel, die das Theme ausliest. Schema-Version 2. An der Oberfläche bewusst OFFEN (`additionalProperties`): Jekyll-Plugins und die Site selbst dürfen eigene Schlüssel setzen. Getippte Schlüssel werden geprüft, unbekannte durchgelassen.",
+  "type": "object",
+  "properties": {
+    "title": {
+      "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+      "description": "JEKYLL-STANDARD – Titel der Site – erscheint in der Kopfzeile neben dem Logo und in `<title>`. STANDARD: „ATVANTAGE Academy“. MEHRSPRACHIG: auch als Sprachkarte `{ de: …, en: … }`."
+    },
+    "description": {
+      "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+      "description": "JEKYLL-STANDARD – Kurzbeschreibung der Site; Rückfall für `<meta name=\"description\">`, wenn eine Seite keine eigene trägt. STANDARD: keine. MEHRSPRACHIG: auch als Sprachkarte."
+    },
+    "lang": {
+      "type": "string",
+      "default": "de",
+      "description": "Sprache der Site (BCP-47) – landet in `<html lang>` und ist zugleich die STANDARDSPRACHE: Bei Mehrsprachigkeit wohnt ihr Sprachbaum in der Wurzel (ohne Pfad-Präfix), und eine fehlende Übersetzung fällt auf sie zurück. Einzelne Seiten überschreiben sie im Front Matter."
+    },
+    "url": {
+      "type": "string",
+      "description": "JEKYLL-STANDARD – Basis-URL der Site OHNE Pfad (z. B. `https://example.github.io`)."
+    },
+    "baseurl": {
+      "type": "string",
+      "default": "",
+      "description": "JEKYLL-STANDARD – Pfadpräfix der Site (Projektseiten: `/reponame`, eigene Domain: leer). Muss dem veröffentlichten Pfad entsprechen, sonst brechen alle Asset-Pfade."
+    },
+    "layouts_dir": {
+      "type": "string",
+      "description": "JEKYLL-STANDARD – Verzeichnis der Layouts. Für das Academy-Theme `theme/jekyll/_layouts`."
+    },
+    "includes_dir": {
+      "type": "string",
+      "description": "JEKYLL-STANDARD – Verzeichnis der Includes. Für das Academy-Theme `theme/jekyll/_includes`."
+    },
+    "plugins": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "JEKYLL-STANDARD – aktive Plugins. Das Theme setzt `jekyll-optional-front-matter` (Markdown ohne Front Matter) und `jekyll-relative-links` (relative `.md`-Links) voraus."
+    },
+    "markdown": {
+      "type": "string",
+      "default": "kramdown",
+      "description": "JEKYLL-STANDARD – Markdown-Prozessor. Das Theme ist auf `kramdown` im GFM-Modus abgestimmt."
+    },
+    "kramdown": {
+      "type": "object",
+      "description": "JEKYLL-STANDARD – kramdown-Optionen. Das Theme erwartet `input: GFM` und `hard_wrap: false`."
+    },
+    "theme": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "JEKYLL-STANDARD – Theme-Gem. Das Academy-Theme ist KEIN Gem – die Defaults setzen `theme: null`."
+    },
+    "exclude": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "JEKYLL-STANDARD – Pfade, die NICHT in die Ausgabe wandern. Auch die Schema-Prüfung überspringt sie."
+    },
+    "include": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "JEKYLL-STANDARD – Pfade, die trotz führendem Punkt/Unterstrich in die Ausgabe wandern."
+    },
+    "keep_files": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "JEKYLL-STANDARD – Pfade in der Ausgabe, die ein Build nicht löscht."
+    },
+    "defaults": {
+      "type": "array",
+      "description": "JEKYLL-STANDARD – Front-Matter-Vorgaben je Pfad/Typ. Das Theme setzt hier `layout: page` für die ganze Site – deshalb braucht eine Seite kein `layout:`. ACHTUNG: Jekyll ERSETZT diese Liste, wenn eine Site sie selbst definiert; die Layout-Regel gehört dann mit hinein. Das Wort gehört Jekyll – die Bausteine des Themes stehen unter `components`.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "scope": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "Pfadpräfix, für das die Vorgaben gelten. Leerer String = die ganze Site."
+              },
+              "type": {
+                "type": "string",
+                "description": "Beschränkung auf einen Typ (`pages`, `posts`, Collection-Name)."
+              }
+            }
+          },
+          "values": {
+            "$ref": "frontmatter.schema.json",
+            "description": "Die vorgegebenen Front-Matter-Werte – geprüft gegen dasselbe Schema wie das Front Matter der Seiten."
+          }
+        }
+      }
+    },
+    "permalink": {
+      "type": "string",
+      "description": "JEKYLL-STANDARD – URL-Muster der Seiten."
+    },
+    "timezone": {
+      "type": "string",
+      "description": "JEKYLL-STANDARD – Zeitzone (IANA), z. B. `Europe/Berlin`."
+    },
+    "encoding": {
+      "type": "string",
+      "default": "utf-8",
+      "description": "JEKYLL-STANDARD – Zeichenkodierung der Quelldateien."
+    },
+    "strict_front_matter": {
+      "type": "boolean",
+      "description": "JEKYLL-STANDARD – bricht den Build bei syntaktisch fehlerhaftem Front Matter ab. Prüft NUR die YAML-Syntax – die Feldnamen prüft dieses Schema."
+    },
+    "collections": {
+      "type": [
+        "object",
+        "array"
+      ],
+      "items": {
+        "type": "string"
+      },
+      "description": "JEKYLL-STANDARD – eigene Collections. Als Abschnitt (`neuigkeiten: { output: true }`) oder als bloße Namensliste. Die Schema-Prüfung liest diesen Schlüssel: Dokumente der hier erklärten Collections werden wie Seiten geprüft – zusammen mit `_posts`, das Jekyll eingebaut kennt."
+    },
+    "relative_links": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optionen von `jekyll-relative-links` – dem Plugin, das relative Verweise auf `.md`-Quelldateien in die Adressen der gebauten Seiten umschreibt.",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "`false` schaltet das Umschreiben ab. Dann zeigt jeder `.md`-Verweis im Markdown ins Leere – das Theme setzt das Umschreiben voraus."
+        },
+        "collections": {
+          "type": "boolean",
+          "default": false,
+          "description": "Auch Collection-Dokumente umschreiben. OHNE diesen Schalter bleibt ein `.md`-Verweis in einem Collection-Dokument unverändert stehen und ist im Browser tot; Jekyll meldet dabei nichts. Die Theme-Defaults setzen ihn auf `true` – wer sie nicht lädt, setzt ihn selbst."
+        },
+        "exclude": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Dateien, deren Verweise unangetastet bleiben (Glob-Muster relativ zur Quelle)."
+        }
+      }
+    },
+    "sass": {
+      "type": "object",
+      "description": "JEKYLL-STANDARD – Sass-Optionen. Das Theme liefert fertiges CSS und braucht sie nicht."
+    },
+    "source": {
+      "type": "string",
+      "default": ".",
+      "description": "JEKYLL-STANDARD – Quellverzeichnis des Builds. Die Pipelines übergeben es als `--source`; in der Datei nur nötig, wenn die Quellen NICHT im Wurzelverzeichnis liegen."
+    },
+    "destination": {
+      "type": "string",
+      "default": "./_site",
+      "description": "JEKYLL-STANDARD – Zielverzeichnis des Builds. Die Pipelines übergeben es als `--destination` – ein Wert hier wird davon überstimmt."
+    },
+    "data_dir": {
+      "type": "string",
+      "default": "_data",
+      "description": "JEKYLL-STANDARD – Verzeichnis der Datendateien; sie stehen als `site.data` in Liquid."
+    },
+    "collections_dir": {
+      "type": "string",
+      "description": "JEKYLL-STANDARD – Verzeichnis, unter dem die Collections liegen. STANDARD: das Wurzelverzeichnis."
+    },
+    "markdown_ext": {
+      "type": "string",
+      "default": "markdown,mkdown,mkdn,mkd,md",
+      "description": "JEKYLL-STANDARD – Dateiendungen, die als Markdown verarbeitet werden. Wer hier kürzt, nimmt Dateien aus der Ausgabe – die Schema-Prüfung schaut sie trotzdem an."
+    },
+    "highlighter": {
+      "type": "string",
+      "default": "rouge",
+      "description": "JEKYLL-STANDARD – serverseitige Syntax-Hervorhebung. Das Theme färbt Code CLIENTSEITIG mit highlight.js (`code.highlight`) und schaltet Rouge in seinen Defaults ab; beides zugleich erzeugt doppeltes Markup."
+    },
+    "liquid": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "JEKYLL-STANDARD – Liquid-Optionen. `error_mode: strict` meldet einen Tippfehler in Liquid, statt ihn still auszugeben.",
+      "properties": {
+        "error_mode": {
+          "type": "string",
+          "enum": [
+            "lax",
+            "warn",
+            "strict"
+          ],
+          "default": "warn",
+          "description": "Wie streng Liquid-Fehler behandelt werden."
+        },
+        "strict_filters": {
+          "type": "boolean",
+          "default": false,
+          "description": "Unbekannter Filter bricht den Build ab."
+        },
+        "strict_variables": {
+          "type": "boolean",
+          "default": false,
+          "description": "Unbekannte Variable bricht den Build ab."
+        }
+      }
+    },
+    "future": {
+      "type": "boolean",
+      "default": false,
+      "description": "JEKYLL-STANDARD – ob Seiten mit einem `date` in der ZUKUNFT gebaut werden. STANDARD: nein – eine solche Seite fehlt dann in der Ausgabe, ohne Fehlermeldung."
+    },
+    "unpublished": {
+      "type": "boolean",
+      "default": false,
+      "description": "JEKYLL-STANDARD – ob Seiten mit `published: false` gebaut werden. STANDARD: nein."
+    },
+    "incremental": {
+      "type": "boolean",
+      "default": false,
+      "description": "JEKYLL-STANDARD – experimenteller inkrementeller Build. Beschleunigt die lokale Vorschau, baut aber nicht zuverlässig vollständig – für die Pipeline ungeeignet."
+    },
+    "audiences": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      },
+      "description": "Die Zielgruppen, die diese Site kennt – die Deklaration, gegen die alle `audiences`-Angaben geprüft werden (Seiten, `resources`, `nav.items`, `footer.links.items`) sowie `audience` des Builds. Das Theme legt die Werte NICHT fest: Welche Zielgruppen es gibt und wie sie heißen, ist eine Festlegung des Werkzeugs, das die Site baut. STANDARD: keine – dann ist jede Zielgruppen-Angabe ein Fehler, weil nicht prüfbar."
+    },
+    "audience": {
+      "type": "string",
+      "description": "Die Zielgruppe DIESES Builds. Wird nicht von Hand gesetzt, sondern vom Build als Overlay (`_config.audience.yml`); Seiten und Einträge fremder Zielgruppe entfallen dann. STANDARD: keine – dann ist alles sichtbar (die lokale Vorschau). Der Wert muss in `audiences` deklariert sein."
+    },
+    "audience_filter": {
+      "type": "object",
+      "description": "Welche Zielgruppen eine GEFILTERTE Ausgabe bekommen – gelesen von der Baukomponente `theme/jekyll/_bin/build.sh`. Ein Schlüssel ist eine Zielgruppe aus `audiences`; wer hier steht, bekommt nur Seiten, die ihn in ihrem `audiences` nennen oder gar keine Angabe tragen. Wer hier NICHT steht, bekommt alles Publizierbare. DIE ASYMMETRIE IST ABSICHT UND GEHÖRT DER SITE: „Material der einen Gruppe nicht an die andere“ gilt oft nur in eine Richtung. Das Theme legt die Werte NICHT fest – wie bei `audiences` ist das eine Festlegung des Werkzeugs, das die Site baut. STANDARD: keiner – dann ist jede Ausgabe ungefiltert.",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "exclude_names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Zusätzlich entfallen Dateien, deren DATEINAME auf eines dieser Glob-Muster passt (z. B. `intern-*`) – die Namenskonvention als Rückfall für Seiten ohne `audiences` im Front Matter. EIN AUSDRÜCKLICHES `audiences` STICHT: Eine Seite, die diese Zielgruppe nennt, bleibt auch dann, wenn ihr Name auf ein Muster passt. STANDARD: keine – dann entscheidet allein das Front Matter."
+          }
+        }
+      }
+    },
+    "i18n": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Mehrsprachigkeit. OHNE DIESEN SCHLÜSSEL IST DIE SITE EINSPRACHIG – kein Pfad-Präfix, kein Umschalter, alles wie bisher in `lang`. Je Sprache ein Ordnerbaum; die Standardsprache (`lang`) wohnt in der Wurzel, jede weitere unter `/«code»/`. Zusammengehörende Seiten verbindet `page_id` im Front Matter – nicht der Pfad, denn Ordner und Dateien tragen je Sprache ihre eigenen Namen. Konfigurierte Texte und Adressen dürfen überall eine Sprachkarte sein (`title: { de: …, en: … }`).",
+      "properties": {
+        "languages": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Die Sprachen, die diese Site führt – die Deklaration, gegen die `lang` je Seite, jede `page_id` und jede Sprachkarte geprüft wird. Die Standardsprache (`lang` der Site) gehört mit in die Liste. Mit weniger als zwei Einträgen bleibt die Site einsprachig.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code"
+            ],
+            "description": "Eine Sprache der Site.",
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "Sprachcode (BCP-47, meist zweistellig) – erscheint in `<html lang>`, im Pfad-Präfix und auf dem Umschalter.",
+                "examples": [
+                  "de",
+                  "en"
+                ]
+              },
+              "base": {
+                "type": "string",
+                "description": "Wurzel des Sprachbaums in der URL. STANDARD: `/` für die Standardsprache, sonst `/«code»/`. Nur setzen, wer anders ausliefert.",
+                "examples": [
+                  "/",
+                  "/en/"
+                ]
+              },
+              "label": {
+                "type": "string",
+                "description": "Beschriftung im Umschalter-Tooltip. STANDARD: der Eigenname der Sprache (Deutsch, English, …), sonst der Code in Großbuchstaben.",
+                "examples": [
+                  "Deutsch",
+                  "English"
+                ]
+              }
+            }
+          }
+        },
+        "switch": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Der Sprachumschalter in der Werkzeugleiste (neben dem Farbschema-Umschalter).",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "Umschalter anbieten. STANDARD: an – er erscheint aber nur dort, wo es die Seite in einer anderen Sprache überhaupt gibt. Auf `false` für eine Site, die beide Fassungen getrennt verteilt."
+            },
+            "fallback": {
+              "type": "string",
+              "enum": [
+                "none",
+                "base"
+              ],
+              "default": "none",
+              "description": "Wohin, wenn es zu DIESER Seite keine Fassung in der Zielsprache gibt. `none` = kein Knopf (Standard). `base` = auf die Wurzel des anderen Sprachbaums – sinnvoll bei einer erst teilweise übersetzten Site."
+            }
+          }
+        },
+        "detect": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Auswertung der Browsersprache (`navigator.languages`; ein Accept-Language-Header ist auf einem statischen Hoster nicht lesbar).",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": false,
+              "description": "Beim ersten Aufruf einer Sitzung auf die bevorzugte Sprache umleiten, sofern es diese Seite darin gibt. STANDARD: aus – eine Umleitung ist eine Verhaltensänderung. Eine ausdrückliche Wahl am Umschalter gewinnt immer, `?nolang` schaltet sie fallweise ab."
+            }
+          }
+        }
+      }
+    },
+    "brand": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x_": {
+          "description": "Repo-eigenes Feld – vom Theme nicht gelesen."
+        }
+      },
+      "description": "Die Marke der Site: Logo, Icons, Markentext.",
+      "properties": {
+        "logo": {
+          "type": "string",
+          "default": "/theme/atvantage/assets/logo-orange.svg",
+          "description": "Logo (Wortmarke) in der Kopfzeile, site-relativer Pfad."
+        },
+        "logo_ratio": {
+          "type": "string",
+          "description": "Seitenverhältnis des Logos als «Breite / Höhe», exakt die viewBox der SVG-Datei (z. B. \"260 / 24\"). NUR setzen, wenn das Logo die Akzentfarbe tragen soll: Dann rendert das Theme es als Maske statt als Bild, und dabei geht die Eigengröße der Datei verloren – das Verhältnis ersetzt sie. Ohne dieses Feld bleibt das Logo ein gewöhnliches <img> in seinen eigenen Farben."
+        },
+        "tagline": {
+          "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+          "description": "Eine Zeile Markentext in der Metaleiste über der Kopfzeile. MEHRSPRACHIG: auch als Sprachkarte."
+        },
+        "website": {
+          "type": "string",
+          "description": "VERALTET seit 2.1.0 – die Angabe heißt jetzt `contact.website` und steht bei den übrigen Kontaktangaben. Wird nur noch gelesen, wenn `contact.website` fehlt, und entfällt mit Theme 3.0 (Register „Kompatibilitätsschichten“ im CHANGELOG des Themes)."
+        },
+        "icon": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Favicons. Die Wortmarke taugt hier nicht: In 16×16 wird sie zum unkenntlichen Strich – deshalb die quadratische Bildmarke.",
+          "properties": {
+            "default": {
+              "type": "string",
+              "default": "/theme/atvantage/assets/icon-32.png",
+              "description": "Favicon 32×32 – der einfache Fall, wird ohne `type`/`sizes` ausgegeben (auch SVG möglich)."
+            },
+            "small": {
+              "type": "string",
+              "default": "/theme/atvantage/assets/icon-16.png",
+              "description": "Favicon 16×16 – im Tab schärfer als das herunterskalierte 32er."
+            },
+            "apple": {
+              "type": "string",
+              "default": "/theme/atvantage/assets/icon-180.png",
+              "description": "Apple-Touch-Icon 180×180 für den iOS-Homescreen."
+            }
+          }
+        },
+        "og_image": {
+          "type": "string",
+          "description": "VORSCHAUBILD DER SITE für geteilte Links – Rückfall, wenn eine Seite kein eigenes `image` trägt. Setzt `og:image`. Ohne diesen Schlüssel und ohne `image` entsteht kein `og:image`. Empfohlen ist ein Bild im Seitenverhältnis 1,91:1 (z. B. 1200×630); kleinere werden von manchen Diensten nicht als grosse Karte gezeigt."
+        }
+      }
+    },
+    "code": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Darstellung von Code.",
+      "properties": {
+        "highlight": {
+          "type": "boolean",
+          "default": false,
+          "description": "Lädt die Syntax-Hervorhebung (highlight.js aus dem Theme). Nur einschalten, wenn die Site Code zeigt."
+        }
+      }
+    },
+    "styles": {
+      "description": "Eigenes Stylesheet der Site NACH den Theme-Stilen – ein einzelner Pfad oder eine Liste. STANDARD: keines. Hier gehört nur hinein, was site-spezifisch ist; alles Allgemeine gehört ins Theme.",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        }
+      ]
+    },
+    "nav": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x_": {
+          "description": "Repo-eigenes Feld – vom Theme nicht gelesen."
+        }
+      },
+      "description": "Die Kopfnavigation. STANDARD: keine – dann zeigt die Kopfzeile nur Logo und Werkzeuge.",
+      "properties": {
+        "items": {
+          "type": "array",
+          "description": "Die Einträge – dieselbe Form wie `footer.links.items` und `resources`, zusätzlich mit Untermenü. Ein Eintrag ist entweder ein Verweis (`url`) oder eine Gruppe (`children`).",
+          "items": {
+            "$ref": "#/definitions/navEintrag"
+          }
+        },
+        "compact_after": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 5,
+          "description": "Ab wie vielen Top-Level-Einträgen die Leiste als Burger erscheint – auch am Schreibtisch. STANDARD: 5. Eine zweizeilige Navigationsleiste sieht nicht nach Absicht aus. Zusätzlich misst das Theme den tatsächlichen Umbruch; diese Zahl gilt auch ohne JavaScript."
+        }
+      }
+    },
+    "contact": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x_": {
+          "description": "Repo-eigenes Feld – vom Theme nicht gelesen."
+        }
+      },
+      "description": "Kontaktangaben. Getrennt von `footer`, weil auch das Drucklayout sie braucht: Ein Blatt Papier hat keine Adresszeile. Ausgegeben wird in der Reihenfolge Website, E-Mail, Telefon – im Footer wie im Ausdruck.",
+      "properties": {
+        "website": {
+          "type": "string",
+          "default": "https://www.atvantage.com",
+          "description": "URL der Academy-Website – erscheint in der Footer-Spalte „Kontakt“ als Link mit der Beschriftung „Website“ und in der Druck-Kontaktzeile als ausgeschriebene URL. In den Pipelines aus der Org-Variablen `ACADEMY_WEBSITE` gesetzt, damit die URL an genau einer Stelle steht. Ersetzt `brand.website`."
+        },
+        "email": {
+          "type": "string",
+          "default": "academy@atvantage.com",
+          "description": "E-Mail-Adresse – erscheint im Footer und in der Druck-Kontaktzeile (dort ohne `mailto:`-Verweis: Auf Papier ist ein Link nur sein Text)."
+        },
+        "phone": {
+          "type": "string",
+          "description": "Telefonnummer – erscheint in der Footer-Spalte „Kontakt“ und in der Druck-Kontaktzeile. STANDARD: keine."
+        }
+      }
+    },
+    "footer": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x_": {
+          "description": "Repo-eigenes Feld – vom Theme nicht gelesen."
+        }
+      },
+      "description": "Fußzeile der Site.",
+      "properties": {
+        "tagline": {
+          "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+          "description": "Ein Satz unter dem Site-Titel in der linken Spalte. STANDARD: keiner. Nicht zu verwechseln mit `brand.tagline`, der Zeile in der Metaleiste über der Kopfzeile. MEHRSPRACHIG: auch als Sprachkarte."
+        },
+        "legal": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Rechtliche Verweise in der Schlusszeile. STANDARD: keine – dann zeigt die Zeile nur das Copyright.",
+          "properties": {
+            "imprint": {
+              "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+              "description": "Ziel des Impressum-Links. MEHRSPRACHIG: auch als Sprachkarte – Rechtstexte liegen je Sprache unter eigener Adresse."
+            },
+            "privacy": {
+              "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+              "description": "Ziel des Datenschutz-Links. MEHRSPRACHIG: auch als Sprachkarte – Rechtstexte liegen je Sprache unter eigener Adresse."
+            }
+          }
+        },
+        "links": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Rechte Spalte der Fußzeile. STANDARD: keine – ohne `items` wird die Spalte gar nicht gerendert.",
+          "properties": {
+            "title": {
+              "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+              "description": "Überschrift der Spalte. MEHRSPRACHIG: auch als Sprachkarte."
+            },
+            "items": {
+              "type": "array",
+              "minItems": 1,
+              "description": "Die Verweise – dieselbe Form wie `nav.items` und `resources`.",
+              "items": {
+                "$ref": "frontmatter.schema.json#/definitions/verweis"
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Bausteine zu- und abschalten – site-weite Vorgaben. Auflösung von schwach nach stark: harte Vorgabe je Layout → `components.«gruppe»` → `components.layouts.«layout».«gruppe»` → Front Matter der Seite. Die Form ist auf allen Ebenen dieselbe wie im Front Matter.",
+      "properties": {
+        "sidebar": {
+          "$ref": "#/definitions/sidebarSiteweit"
+        },
+        "toolbar": {
+          "$ref": "frontmatter.schema.json#/properties/toolbar"
+        },
+        "layouts": {
+          "type": "object",
+          "description": "Vorgaben je Layout. Der Schlüssel ist der Layout-Name aus dem Front Matter der Seite. Angeboten wird je Layout nur, was dieses Layout auch AUSLIEST.",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Eigenes Layout des Repos: Welche Gruppen es liest, weiß nur das Layout selbst – hier sind daher alle erlaubt.",
+            "properties": {
+              "sidebar": {
+                "$ref": "#/definitions/sidebarSchalter"
+              },
+              "toolbar": {
+                "$ref": "frontmatter.schema.json#/properties/toolbar"
+              }
+            }
+          },
+          "properties": {
+            "page": {
+              "$ref": "#/definitions/seitenlayout"
+            },
+            "guide": {
+              "$ref": "#/definitions/seitenlayout"
+            },
+            "visualization": {
+              "type": "object",
+              "additionalProperties": false,
+              "description": "Vollflächen-Ansicht: keine Sidebar, daher keine `sidebar`-Gruppe.",
+              "properties": {
+                "toolbar": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "description": "Werkzeuge im Hero der Visualisierung.",
+                  "properties": {
+                    "copy": {
+                      "$ref": "frontmatter.schema.json#/properties/toolbar/properties/copy"
+                    },
+                    "print": {
+                      "$ref": "frontmatter.schema.json#/properties/toolbar/properties/print"
+                    },
+                    "qr": {
+                      "$ref": "frontmatter.schema.json#/properties/toolbar/properties/qr"
+                    },
+                    "lang": {
+                      "$ref": "frontmatter.schema.json#/properties/toolbar/properties/lang"
+                    }
+                  }
+                }
+              }
+            },
+            "presentation": {
+              "type": "object",
+              "additionalProperties": false,
+              "description": "Folien: eigenes Layout ohne Sidebar und ohne Kopier-Knopf. Die Fortschrittsleiste gehört zum Ablauf und ist nicht schaltbar.",
+              "properties": {
+                "toolbar": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "description": "Werkzeuge der Kopfleiste.",
+                  "properties": {
+                    "print": {
+                      "$ref": "frontmatter.schema.json#/properties/toolbar/properties/print"
+                    },
+                    "qr": {
+                      "$ref": "frontmatter.schema.json#/properties/toolbar/properties/qr"
+                    },
+                    "lang": {
+                      "$ref": "frontmatter.schema.json#/properties/toolbar/properties/lang"
+                    }
+                  }
+                }
+              }
+            },
+            "simulation": {
+              "type": "object",
+              "additionalProperties": false,
+              "description": "Ablauf: eigenes Layout ohne Sidebar und ohne Drucken-Knopf. Bleibt der QR-Code.",
+              "properties": {
+                "toolbar": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "description": "Werkzeuge der Kopfleiste.",
+                  "properties": {
+                    "qr": {
+                      "$ref": "frontmatter.schema.json#/properties/toolbar/properties/qr"
+                    },
+                    "lang": {
+                      "$ref": "frontmatter.schema.json#/properties/toolbar/properties/lang"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "seitenlayout": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Gewöhnliche Seite bzw. Übung (`page`, `guide`) – die einzigen Layouts mit Sidebar. Kein `toolbar.print`: Dort wäre er eine Dopplung von Strg/Cmd+P.",
+      "properties": {
+        "sidebar": {
+          "$ref": "#/definitions/sidebarSchalter"
+        },
+        "toolbar": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Werkzeuge der Kopfzeile.",
+          "properties": {
+            "copy": {
+              "$ref": "frontmatter.schema.json#/properties/toolbar/properties/copy"
+            },
+            "qr": {
+              "$ref": "frontmatter.schema.json#/properties/toolbar/properties/qr"
+            },
+            "lang": {
+              "$ref": "frontmatter.schema.json#/properties/toolbar/properties/lang"
+            }
+          }
+        }
+      }
+    },
+    "navEintrag": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x_": {
+          "description": "Repo-eigenes Feld – vom Theme nicht gelesen."
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "url"
+          ],
+          "description": "gewöhnlicher Verweis (`url`)"
+        },
+        {
+          "required": [
+            "page"
+          ],
+          "description": "Verweis auf eine Seite dieser Site (`page`)"
+        },
+        {
+          "required": [
+            "children"
+          ],
+          "description": "Gruppe mit Untermenü"
+        }
+      ],
+      "description": "Ein Eintrag der Kopfnavigation: dieselben Felder wie ein Verweis, zusätzlich `children` für ein Untermenü.",
+      "properties": {
+        "title": {
+          "$ref": "frontmatter.schema.json#/definitions/verweis/properties/title"
+        },
+        "url": {
+          "$ref": "frontmatter.schema.json#/definitions/verweis/properties/url"
+        },
+        "page": {
+          "$ref": "frontmatter.schema.json#/definitions/seitenverweis"
+        },
+        "icon": {
+          "$ref": "frontmatter.schema.json#/definitions/verweis/properties/icon"
+        },
+        "audiences": {
+          "$ref": "frontmatter.schema.json#/definitions/verweis/properties/audiences"
+        },
+        "children": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Die Einträge des Untermenüs. Sie dürfen ihrerseits `children` tragen – bis zu DREI Ebenen insgesamt. Wie die dritte Ebene erscheint, steuert `menu` am Eintrag der zweiten.",
+          "items": {
+            "$ref": "#/definitions/navEintrag"
+          }
+        },
+        "menu": {
+          "type": "string",
+          "enum": [
+            "flyout",
+            "embedded"
+          ],
+          "default": "flyout",
+          "description": "Nur bei einem Eintrag der ZWEITEN Ebene mit `children`: wie sein Untermenü erscheint. `flyout` fährt am Schreibtisch zur Seite aus (Standard), `embedded` stellt die Kinder IM Menü dar, abgetrennt durch einen Querstrich, mit dem Titel als Überschrift. Auf der DRITTEN Ebene wird der Schlüssel nicht gelesen – dort ist es immer `embedded`, weil ein viertes Aufklappmenü nicht mehr zu treffen wäre."
+        }
+      }
+    },
+    "sidebarSchalter": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Sidebar-Karten dieses Layouts: `enabled` und `title`. NICHT `open` und `open_threshold` – Anfangszustand und Schwelle werden je Layout nicht ausgelesen; sie stehen site-weit unter `components.sidebar` bzw. im Front Matter der Seite. Ein Eintrag ohne Wirkung wäre schlimmer als keiner.",
+      "properties": {
+        "toc": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Karte „Auf dieser Seite“.",
+          "properties": {
+            "enabled": {
+              "$ref": "frontmatter.schema.json#/properties/sidebar/properties/toc/properties/enabled"
+            },
+            "title": {
+              "$ref": "frontmatter.schema.json#/properties/sidebar/properties/toc/properties/title"
+            }
+          }
+        },
+        "progress": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Karte „Fortschritt“.",
+          "properties": {
+            "enabled": {
+              "$ref": "frontmatter.schema.json#/properties/sidebar/properties/progress/properties/enabled"
+            },
+            "title": {
+              "$ref": "frontmatter.schema.json#/properties/sidebar/properties/progress/properties/title"
+            }
+          }
+        },
+        "resources": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Karte „Weiterführende Informationen“.",
+          "properties": {
+            "enabled": {
+              "$ref": "frontmatter.schema.json#/properties/sidebar/properties/resources/properties/enabled"
+            },
+            "title": {
+              "$ref": "frontmatter.schema.json#/properties/sidebar/properties/resources/properties/title"
+            }
+          }
+        }
+      }
+    },
+    "sidebarSiteweit": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Sidebar-Karten site-weit. Hier – und nur hier – stehen die Schwellen `open_threshold`: Sie sind eine Regel für die ganze Site. Der Anfangszustand einer einzelnen Seite gehört in ihr Front Matter.",
+      "properties": {
+        "toc": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Karte „Auf dieser Seite“.",
+          "properties": {
+            "enabled": {
+              "$ref": "frontmatter.schema.json#/properties/sidebar/properties/toc/properties/enabled"
+            },
+            "title": {
+              "$ref": "frontmatter.schema.json#/properties/sidebar/properties/toc/properties/title"
+            },
+            "open": {
+              "$ref": "frontmatter.schema.json#/properties/sidebar/properties/toc/properties/open"
+            },
+            "open_threshold": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 12,
+              "description": "Zahl der Überschriften, ab der das Inhaltsverzeichnis ZUGEKLAPPT startet. Es klappt nur zu, wenn unter ihm noch eine Karte steht, die es sonst aus dem Bild schiebt; ist es das letzte Element der Sidebar, bleibt es offen. STANDARD: 12. Nur hier, nicht im Front Matter: Eine Schwelle ist eine Regel für die ganze Site – je Seite ist `sidebar.toc.open` gemeint."
+            }
+          }
+        },
+        "progress": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Karte „Fortschritt“.",
+          "properties": {
+            "enabled": {
+              "$ref": "frontmatter.schema.json#/properties/sidebar/properties/progress/properties/enabled"
+            },
+            "title": {
+              "$ref": "frontmatter.schema.json#/properties/sidebar/properties/progress/properties/title"
+            }
+          }
+        },
+        "resources": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Karte „Weiterführende Informationen“.",
+          "properties": {
+            "enabled": {
+              "$ref": "frontmatter.schema.json#/properties/sidebar/properties/resources/properties/enabled"
+            },
+            "title": {
+              "$ref": "frontmatter.schema.json#/properties/sidebar/properties/resources/properties/title"
+            },
+            "open": {
+              "$ref": "frontmatter.schema.json#/properties/sidebar/properties/resources/properties/open"
+            },
+            "open_threshold": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Zahl der Einträge, ab der die Karte „Weiterführende Informationen“ ZUGEKLAPPT startet. OHNE ANGABE ist die Karte gar nicht klappbar: Unter ihr steht nichts mehr, sie verdeckt also nichts. Nur hier, nicht im Front Matter."
+            }
+          }
+        }
+      }
+    }
+  }
+}

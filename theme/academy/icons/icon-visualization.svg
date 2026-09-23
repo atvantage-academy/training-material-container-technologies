@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Visualisierung">
+  <!-- Farben aus dem ATVANTAGE-Fundament: Slate #303E4F, Orange #FF5401. -->
+  <rect width="32" height="32" fill="#303E4F"/>
+  <g fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round">
+    <!-- Ein Bild, das für sich steht -->
+    <path d="M10 23V15M16 23V10"/>
+  </g>
+  <path d="M22 23v-6" stroke="#FF5401" stroke-width="2.4" stroke-linecap="round"/>
+</svg>

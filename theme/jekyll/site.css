@@ -1,0 +1,219 @@
+/* =============================================================================
+   Web / GitHub Pages – Seitenlayout
+   -----------------------------------------------------------------------------
+   Layout- und Seitenstile für allgemeine Webseiten (Doku, Landing Pages,
+   Teilnehmerunterlagen als Website). Baut auf dem ATVANTAGE-Fundament (theme/)
+   auf und nutzt ausschließlich dessen Tokens – KEINE eigenen Farben/Schriften.
+
+   Verlinkt wird zusätzlich zu theme/academy/atvantage.css:
+     <link rel="stylesheet" href="<BASISPFAD>/theme/academy/atvantage.css">
+     <link rel="stylesheet" href="<BASISPFAD>/theme/jekyll/site.css">
+   ============================================================================= */
+
+/* --- Grundgerüst: sticky Footer via Flow ---------------------------------- */
+body { min-height: 100vh; display: flex; flex-direction: column; }
+.avd-academy-site-main { flex: 1 0 auto; width: 100%; }
+
+/* --- Zentrierter Inhaltsbereich ------------------------------------------- */
+.avd-academy-container {
+  width: 100%;
+  max-width: var(--avd-academy-page-width);
+  margin-inline: auto;
+  padding: var(--avd-academy-space-8) var(--avd-academy-space-6);
+}
+
+/* --- Doku-Layout mit Seitenleiste ----------------------------------------- */
+.avd-academy-doc {
+  display: grid;
+  gap: var(--avd-academy-space-8);
+  grid-template-columns: 1fr;
+}
+@media (min-width: 960px) {
+  .avd-academy-doc { grid-template-columns: 240px minmax(0, 1fr); }
+}
+.avd-academy-doc__nav {
+  align-self: start;
+  position: sticky; top: var(--avd-academy-space-4);
+  font-size: var(--avd-academy-fs-sm);
+}
+.avd-academy-doc__nav ul { list-style: none; padding: 0; }
+.avd-academy-doc__nav a { display: block; padding: var(--avd-academy-space-1) 0; text-decoration: none; }
+.avd-academy-doc__nav a[aria-current="page"] { font-weight: var(--avd-academy-fw-bold); color: var(--avd-academy-color-accent); }
+
+/* --- Lesekomfort für Fließtext-Seiten ------------------------------------- */
+.avd-academy-prose { max-width: var(--avd-academy-content-width); }
+.avd-academy-prose > * + * { margin-top: var(--avd-academy-space-4); }
+.avd-academy-prose h2 { margin-top: var(--avd-academy-space-12); }
+.avd-academy-prose h3 { margin-top: var(--avd-academy-space-8); }
+
+/* --- Überschriften-Abstände auf Web-Seiten -------------------------------
+   Gilt für direkte Überschriften im Inhaltsbereich (nicht für Kacheln, deren
+   Abstände in components.css definiert sind). Sorgt für klare Trennung von
+   Überschrift und Folgetext. */
+.avd-academy-container > h1 { margin-bottom: var(--avd-academy-space-6); }
+.avd-academy-container > h2 { margin-top: var(--avd-academy-space-12); margin-bottom: var(--avd-academy-space-4); }
+.avd-academy-container > h3 { margin-top: var(--avd-academy-space-8);  margin-bottom: var(--avd-academy-space-3); }
+.avd-academy-container > h4 { margin-top: var(--avd-academy-space-6);  margin-bottom: var(--avd-academy-space-2); }
+
+/* --- Kachel-Raster als Flow-Layout ---------------------------------------
+   Kacheln brechen wie Wörter im Fließtext auf die nächste Zeile um (Flexbox
+   statt starrem Grid). Basisbreite 320px; die Kacheln einer Zeile wachsen
+   gleichmäßig auf die verfügbare Breite (z. B. drei Kacheln füllen eine Zeile). */
+.avd-academy-grid {
+  margin-top: var(--avd-academy-space-8);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--avd-academy-space-6);
+}
+.avd-academy-grid > * { flex: 1 1 320px; }   /* min. 320px, wachsen zum Füllen der Zeile */
+
+/* Kachel-Variante: feste Breite, annähernd quadratisch (Verhältnis max. 3:2).
+   Anders als das Standard-Raster wachsen die Kacheln NICHT auf die Zeilenbreite –
+   sie behalten ihre Breite und stehen linksbündig nebeneinander. */
+.avd-academy-grid--tiles { justify-content: flex-start; }
+.avd-academy-grid--tiles > * {
+  flex: 0 0 300px;      /* feste Breite */
+  max-width: 300px;
+  min-height: 200px;    /* 300×200 = 3:2 (flachster Fall); mehr Inhalt → quadratischer */
+}
+
+/* Smartphone: einspaltig mit voller Breite. Breakpoint 600px (gängige Grenze
+   zwischen Smartphone-Hochformat und größer). */
+@media (max-width: 600px) {
+  .avd-academy-grid > * { flex-basis: 100%; }
+  .avd-academy-grid--tiles > * { flex-basis: 100%; max-width: none; min-height: 0; }
+}
+
+/* --- Skip-Link (Zugänglichkeit) ------------------------------------------- */
+.avd-academy-skip-link {
+  position: absolute; left: var(--avd-academy-space-2); top: -3rem;
+  background: var(--avd-academy-color-primary); color: var(--avd-academy-color-primary-contrast);
+  padding: var(--avd-academy-space-2) var(--avd-academy-space-4); border-radius: var(--avd-academy-radius);
+  transition: top var(--avd-academy-transition); z-index: 100;
+}
+.avd-academy-skip-link:focus { top: var(--avd-academy-space-2); }
+
+/* --- Doku-Seiten: Hero + rechte Sidebar (an das Guide-Layout angeglichen) --
+   Das default-Layout zeigt oben ein graues Hero-Band mit dem Seitentitel und
+   rechts eine sticky Sidebar mit automatischem Inhaltsverzeichnis. Ohne
+   ##/###-Überschriften klappt die Sidebar per JS weg (…--single). */
+:root { --avd-academy-doc-gutter: max(24px, calc((100% - var(--avd-academy-page-width, 1180px)) / 2)); }
+
+.avd-academy-doc-page .avd-academy-doc-layout { flex: 1 0 auto; }  /* Footer unten halten */
+
+.avd-academy-doc-hero {
+  background: var(--avd-academy-hero-bg);
+  padding: 2.25rem var(--avd-academy-doc-gutter);
+}
+.avd-academy-doc-hero__crumbs {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  font-size: 0.9375rem; color: var(--avd-academy-color-ink-muted);
+  margin-bottom: 1.25rem;
+}
+.avd-academy-doc-hero__crumbs a { color: inherit; text-decoration: none; }
+.avd-academy-doc-hero__crumbs a:hover { color: var(--avd-orange); }
+.avd-academy-doc-hero__crumbs [aria-current] { color: var(--avd-academy-color-headline); }
+.avd-academy-doc-hero h1 {
+  margin: 0; max-width: 900px;
+  font-size: calc(var(--h1-base, 38px) * 1.1); line-height: 1.15;
+  color: var(--avd-academy-color-headline); font-weight: var(--headline-weight, 600);
+}
+
+/* Standardmäßig einspaltig; die rechte Sidebar wird per JS eingeblendet
+   (…--with-sidebar), sobald sie Inhalt hat (TOC ab 2 Überschriften und/oder
+   „Weiterführende Informationen“). So bleibt ohne/vor JS keine leere Spalte. */
+.avd-academy-doc-layout {
+  padding: 3rem var(--avd-academy-doc-gutter);
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 3.5rem;
+  align-items: start;
+}
+@media (min-width: 961px) {
+  .avd-academy-doc-layout--with-sidebar { grid-template-columns: minmax(0, 1fr) 280px; }
+}
+.avd-academy-doc-main { min-width: 0; }
+.avd-academy-doc-main > * + * { margin-top: var(--avd-academy-rhythm-block); }
+.avd-academy-doc-main > h2 { margin-top: var(--avd-academy-rhythm-section); margin-bottom: var(--avd-academy-rhythm-heading); }
+.avd-academy-doc-main > h3 { margin-top: 1.75rem; margin-bottom: var(--avd-academy-rhythm-heading); }
+.avd-academy-doc-main > h4 { margin-top: 1.25rem; margin-bottom: var(--avd-academy-rhythm-heading); }
+
+/* --- Rhythmus AUCH INNERHALB der Fluss-Container --------------------------
+   `* { margin: 0 }` aus base.css raeumt alle Abstaende ab; zurueck holt sie die
+   Eulenregel darueber - aber nur fuer DIREKTE Kinder. Alles, was in einem
+   Container steckt, blieb damit ohne Abstand: Zwei Absaetze in einem Callout, in
+   einem Zitat oder in einer Tabellenzelle klebten aneinander.
+
+   GEMESSEN an einer echten Seite (Trainerleitfaden eines Schulungsrepos): 2 von 3
+   `blockquote` und der einzige Callout hatten je zwei Absaetze ohne einen Pixel
+   dazwischen. Auf dem Bildschirm liest sich das wie ein einziger Block - und es
+   traf jede Seite jedes Repos, nicht eine einzelne.
+
+   `:where()` HAELT DIE SPEZIFITAET BEI NULL: Ein Repo, das in seiner custom.css
+   einen dieser Container eigens setzt, gewinnt weiterhin ohne `!important`. Und
+   die Regel zaehlt nur Geschwister - ein einzelnes Kind bekommt nichts.
+   ------------------------------------------------------------------------- */
+.avd-academy-doc-main :where(blockquote, li, td, th, figure,
+  .avd-academy-callout, .avd-academy-reveal__body, .avd-academy-fold__body) > * + * {
+  margin-top: var(--avd-academy-rhythm-block);
+}
+
+
+.avd-academy-doc-sidebar {
+  position: sticky; top: calc(var(--topnav-height, 80px) + 1.5rem);
+  align-self: start;
+  display: flex; flex-direction: column; gap: 1.5rem;
+}
+.avd-academy-doc-side {
+  border-radius: var(--radius-dark, 8px);
+  padding: 24px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.avd-academy-doc-side--toc { background: var(--avd-academy-color-bg-subtle); }
+.avd-academy-doc-side--bordered { border: 1px solid var(--avd-academy-border-soft); }
+.avd-academy-doc-side[hidden], .avd-academy-doc-sidebar[hidden] { display: none; }
+.avd-academy-doc-side__label {
+  font-size: 0.875rem; font-weight: 500; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--avd-academy-color-ink-muted);
+}
+.avd-academy-doc-side__links { display: flex; flex-direction: column; gap: 10px; }
+.avd-academy-doc-side__links a { color: var(--avd-orange); text-decoration: none; font-size: 1rem; }
+.avd-academy-doc-side__links a:hover { text-decoration: underline; }
+.avd-academy-toc { display: flex; flex-direction: column; gap: 10px; }
+.avd-academy-toc a { color: var(--avd-academy-color-ink); text-decoration: none; font-size: 1rem; }
+.avd-academy-toc a:hover { color: var(--avd-orange); }
+.avd-academy-toc a[aria-current="true"] { color: var(--avd-orange); font-weight: 500; }
+.avd-academy-toc .avd-academy-toc--h3 { padding-left: 14px; font-size: 0.9375rem; }
+
+@media (max-width: 960px) {
+  .avd-academy-doc-sidebar { position: static; order: -1; }
+}
+
+/* --- Doku: Checklisten & Fortschritt ---------------------------------------
+   GFM-Task-Listen im default-Layout als Checklisten-Karte (grau hinterlegt, nur
+   Checkboxen, KEINE Aufzählungspunkte) – analog zur Definition of Done in den
+   Übungen (guide.css). Plus Fortschrittsanzeiger in der Sidebar. Zentral im Theme
+   gelöst, damit jede Consumer-Seite es ohne eigenes CSS erbt.
+
+   Die Checkbox wird absolut positioniert (NICHT das <li> als Flex-Container) –
+   sonst würde jedes Inline-Kind (Text, <code>, <a>) zu einem eigenen Flex-Item
+   mit Abständen. So fließt der Inhalt als normaler Text. */
+.avd-academy-doc-main ul:has(> li > input[type="checkbox"]) {
+  list-style: none;
+  margin: 0;
+  padding: 24px 28px;
+  background: var(--avd-academy-color-bg-subtle);
+  border-radius: var(--radius-dark, 8px);
+  display: flex; flex-direction: column; gap: 14px;
+}
+.avd-academy-doc-main ul:has(> li > input[type="checkbox"]) > li {
+  position: relative; padding-left: 30px; line-height: 1.5;
+}
+.avd-academy-doc-main ul:has(> li > input[type="checkbox"]) > li > input[type="checkbox"] {
+  position: absolute; left: 0; top: 0.25em; margin: 0;
+  width: 18px; height: 18px;
+  accent-color: var(--avd-orange); cursor: pointer;
+}
+
+/* Fortschrittsanzeiger (identisch zum Guide-Layout, hier fürs default-Layout). */
+.avd-academy-progress__bar { height: 6px; border-radius: 3px; background: var(--avd-academy-border-soft); overflow: hidden; }
+.avd-academy-progress__fill { height: 100%; background: var(--avd-orange); transition: width .2s; width: 0; }
+.avd-academy-progress__text { font-size: 1.0625rem; color: var(--avd-academy-color-headline); }

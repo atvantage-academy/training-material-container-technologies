@@ -1,0 +1,461 @@
+/* =============================================================================
+   ATVANTAGE Academy – Guide-Layout (Schulungsunterlagen, Anleitungen)
+   -----------------------------------------------------------------------------
+   Academy-spezifische Styles für eine Guide-Seite (Meta-Nav, Kopf, Hero mit
+   Zeitschätzung, zweispaltiges Layout mit rechter Sidebar: Inhaltsverzeichnis,
+   Fortschritt, Selbstlernmaterial). Farben/Schriften stammen aus atvantage; alle
+   theme-umschaltbaren Flächen laufen über die theme-fähigen Academy-Tokens
+   (--avd-academy-*), damit Light/Dark funktioniert. Überschriften OHNE Emoji;
+   Arbeitsschritte-Nummern als Kästchen (CSS-Counter, wie in der ATVANTAGE-Vorlage).
+   ============================================================================= */
+
+.avd-academy-guide {
+  --avd-academy-guide-max: 1200px;
+  --avd-academy-guide-gutter: max(24px, calc((100% - var(--avd-academy-guide-max)) / 2));
+  font-family: var(--font-family);
+  color: var(--avd-academy-color-ink);
+  background: var(--avd-academy-color-bg);
+}
+
+/* Meta-Navigation ist site-weit in components.css definiert. */
+
+/* --- Kopfzeile (sticky) --------------------------------------------------- */
+.avd-academy-topbar {
+  height: var(--topnav-height, 80px);
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 0 var(--avd-academy-guide-gutter);
+  border-bottom: 1px solid var(--avd-academy-border-soft);
+  position: sticky;
+  top: 0;
+  background: var(--avd-academy-topbar-bg);
+  z-index: 5;
+}
+.avd-academy-topbar__logo { height: 22px; display: block; }
+.avd-academy-topbar__nav { display: flex; gap: 26px; margin-left: auto; align-items: center; flex-wrap: wrap; }
+.avd-academy-topbar__nav a {
+  color: var(--avd-academy-color-headline);
+  font-weight: 500;
+  font-size: 1.0625rem;
+  text-decoration: none;
+}
+.avd-academy-topbar__nav a:hover,
+.avd-academy-topbar__nav a[aria-current] { color: var(--avd-orange); }
+
+/* --- Hero-Band ------------------------------------------------------------ */
+.avd-academy-guide-hero {
+  background: var(--avd-academy-hero-bg);
+  padding: 2.25rem var(--avd-academy-guide-gutter);
+}
+.avd-academy-guide-hero__crumbs {
+  display: flex;
+  gap: 10px;
+  font-size: 0.9375rem;
+  color: var(--avd-academy-color-ink-muted);
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.avd-academy-guide-hero__crumbs a { color: inherit; text-decoration: none; }
+.avd-academy-guide-hero__crumbs a:hover { color: var(--avd-orange); }
+.avd-academy-guide-hero__crumbs [aria-current] { color: var(--avd-academy-color-headline); }
+/* Meta-Zeile im Hero: Tags links, Werkzeuge rechts (auf Topics-Höhe). */
+.avd-academy-guide-hero__meta {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; margin-bottom: 1rem;
+}
+.avd-academy-guide-hero__tags { display: flex; gap: 12px; flex-wrap: wrap; }
+/* Werkzeuge der Meta-Zeile („Markdown kopieren“, QR-Code) als EINE Gruppe:
+   `justify-content: space-between` würde sie sonst über die Zeile verteilen und
+   den Kopier-Button in die Mitte stellen. */
+.avd-academy-guide-hero__actions {
+  display: flex; align-items: center; gap: var(--avd-academy-space-2); flex: none;
+}
+.avd-academy-guide-hero__meta .avd-academy-copy-md { flex: none; }
+.avd-academy-guide-hero h1 {
+  margin: 0;
+  font-size: calc(var(--h1-base, 38px) * 1.15);
+  line-height: 1.15;
+  color: var(--avd-academy-color-headline);
+  max-width: 900px;
+  font-weight: var(--headline-weight, 600);
+}
+
+/* --- Visualisierung (layout: visualization) ------------------------------- */
+/* Fokussierte, ablenkungsarme Ansicht: keine obere Navigation, keine Brotkrumen
+   (im Layout ausgeblendet), schmalerer Hero-Balken. */
+.avd-academy-guide-hero--slim {
+  padding-top: 1.1rem;
+  padding-bottom: 1.1rem;
+}
+.avd-academy-guide-hero--slim h1 { font-size: var(--h1-base, 38px); }
+
+/* Der rechte Bereich wird bei Visualisierungen gar nicht gerendert (default.html).
+   Das Raster ist deshalb EINSPALTIG, und der Inhalt bekommt mehr Breite als im
+   zweispaltigen Layout (~836px) – aber deutlich weniger als die volle Seite.
+
+   Warum 1040px: Für Fließtext gilt der typografische Korridor von 45–75 Zeichen je
+   Zeile (Ideal ~66, Bringhurst). Bei 18px Fließtext (`--text-size: 1.125rem`)
+   entspricht das ca. 580–690px. Eine Visualisierung ist aber kein Fließtext: Sie
+   braucht Platz für Diagramme, Raster und Simulationen. 1040px ist der Mittelweg –
+   gut 200px mehr Raum für Grafik als vorher, und auf einem 1512px-Schirm bleiben
+   je Seite 236px Rand, der Inhalt wirkt also gerahmt statt randlos.
+
+   Der Wert wirkt über den Gutter auch auf den Hero – Hero-Balken und Inhalt bleiben
+   damit auf derselben Kante.
+
+   Kompound-Selektor (beide Klassen, Spezifität 0,2,0), damit die Überschreibung
+   unabhängig von der Quellordnung gegen `.avd-academy-guide` (0,1,0) gewinnt. */
+/* EINE VISUALISIERUNG IST EIN AUSGESCHALTETER RECHTER BEREICH - nicht mehr. Eine
+   gewoehnliche Seite, deren rechter Bereich nur ZUFAELLIG leer bleibt (kein
+   Inhaltsverzeichnis, kein Fortschritt, keine weiterfuehrenden Links), soll
+   deshalb genauso stehen: eine Spalte, mittig, mit derselben Lesebreite. Sonst
+   reserviert das Raster 300px fuer nichts und die Seite haengt links.
+
+   Den Unterschied merkt nur die TopNav: Die Visualisierung hat keine, die
+   gewoehnliche Seite behaelt ihre.
+
+   `--sidebar-empty` setzt das Skript, nachdem es das Inhaltsverzeichnis gebaut
+   und die Fortschrittskarte entschieden hat - vorher ist gar nicht bekannt, ob
+   etwas uebrig bleibt. */
+.avd-academy-guide.avd-academy-guide--viz,
+.avd-academy-guide.avd-academy-guide--sidebar-empty { --avd-academy-guide-max: 1040px; }
+.avd-academy-guide--viz .avd-academy-guide-layout,
+.avd-academy-guide--sidebar-empty .avd-academy-guide-layout {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+/* Der leere Rahmen faellt ganz weg - `display: none` und nicht bloss unsichtbar,
+   damit er im Raster keine Spur hinterlaesst. */
+.avd-academy-guide--sidebar-empty .avd-academy-guide-sidebar { display: none; }
+/* Der Hero-Titel ist regulär auf 900px begrenzt – eine Lesebreite, die zur ~836px
+   schmalen Inhaltsspalte des zweispaltigen Layouts passt und dort nie auffällt.
+   In dieser Ansicht läuft der Inhalt auf 1040px; die Kappung ließe den Titel 140px
+   früher enden und damit sichtbar nicht mehr bündig mit dem Inhalt stehen. Hier
+   also aufheben: Hero-Titel und Inhalt teilen dieselbe Box.
+   Spezifität 0,2,1 gegen die Basisregel 0,1,1 – gewinnt unabhängig von der
+   Quellordnung. */
+.avd-academy-guide--viz .avd-academy-guide-hero h1,
+.avd-academy-guide--sidebar-empty .avd-academy-guide-hero h1 { max-width: none; }
+
+/* --- Tag-Pillen ----------------------------------------------------------- */
+.avd-academy-tag {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: var(--avd-academy-color-bg);
+  border: 1px solid var(--avd-academy-color-border);
+  color: var(--avd-academy-color-headline);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.avd-academy-tag--time { border-color: var(--avd-orange); color: var(--avd-orange); }
+
+/* --- Zweispaltiges Layout ------------------------------------------------- */
+.avd-academy-guide-layout {
+  padding: 4rem var(--avd-academy-guide-gutter);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 4rem;
+  align-items: start;
+}
+/* Fluss statt `flex`+`gap`: Ein `gap` behandelt alle Bloecke gleich und kann eine
+   Ueberschrift nicht an ihren Abschnitt binden - gemessen standen 60px zwischen
+   einer Ueberschrift und ihrem eigenen ersten Absatz. Die Masse kommen aus
+   `--avd-academy-rhythm-*` und sind dieselben wie in der gewoehnlichen Spalte.
+   `display: block` AUSDRUECKLICH und nicht `unset`: `display` erbt nicht, `unset`
+   waere `initial` und damit `inline`. */
+.avd-academy-guide-main { min-width: 0; display: block; }
+.avd-academy-guide-main > * + * { margin-top: var(--avd-academy-rhythm-block); }
+/* Listen trugen `margin: 0`, weil frueher der `gap` den Abstand machte. Ohne ihn
+   muessen sie ihn selbst mitbringen - sonst kleben sie am Absatz davor. */
+.avd-academy-guide-main > ul, .avd-academy-guide-main > ol { margin-bottom: 0; }
+
+/* --- Rhythmus AUCH INNERHALB der Fluss-Container --------------------------
+   `* { margin: 0 }` aus base.css raeumt alle Abstaende ab; zurueck holt sie die
+   Eulenregel darueber - aber nur fuer DIREKTE Kinder. Alles, was in einem
+   Container steckt, blieb damit ohne Abstand: Zwei Absaetze in einem Callout, in
+   einem Zitat oder in einer Tabellenzelle klebten aneinander.
+
+   GEMESSEN an einer echten Seite (Trainerleitfaden eines Schulungsrepos): 2 von 3
+   `blockquote` und der einzige Callout hatten je zwei Absaetze ohne einen Pixel
+   dazwischen. Auf dem Bildschirm liest sich das wie ein einziger Block - und es
+   traf jede Seite jedes Repos, nicht eine einzelne.
+
+   `:where()` HAELT DIE SPEZIFITAET BEI NULL: Ein Repo, das in seiner custom.css
+   einen dieser Container eigens setzt, gewinnt weiterhin ohne `!important`. Und
+   die Regel zaehlt nur Geschwister - ein einzelnes Kind bekommt nichts.
+   ------------------------------------------------------------------------- */
+.avd-academy-guide-main :where(blockquote, li, td, th, figure,
+  .avd-academy-callout, .avd-academy-reveal__body, .avd-academy-fold__body) > * + * {
+  margin-top: var(--avd-academy-rhythm-block);
+}
+
+
+/* Breite Tabellen: NICHT die Spalte verengen, sondern der Tabelle das Schrumpfen
+   erlauben. Die Grid-Spalte ist schon korrekt (`minmax(0, 1fr)` + `min-width: 0`) –
+   ueberlaufen kann trotzdem eine Tabelle mit `width: 100%`, weil sie nicht unter ihre
+   MIN-CONTENT-Breite geht: Ein langer Bezeichner in einer Zelle
+   (`simulation.step.interval`) setzt eine Untergrenze, und die Tabelle legt sich
+   sichtbar ueber die Sidebar.
+   Der Hebel ist `overflow-wrap: anywhere` – und zwar genau dort: Nur dieser Wert
+   senkt laut Spezifikation die min-content-Breite, `break-word` tut es NICHT. Deshalb
+   bekommt Code den harten Wert (dort stehen die langen Bezeichner) und Prosa den
+   sanften, der nur bricht, wenn ein Wort allein nicht passt. */
+.avd-academy-guide-main table th,
+.avd-academy-guide-main table td { overflow-wrap: break-word; }
+.avd-academy-guide-main table code,
+.avd-academy-guide-main table a { overflow-wrap: anywhere; }
+/* Dasselbe ausserhalb von Tabellen: Ein langer Bezeichner in Fließtext - ein
+   Pfad, ein Schemaschluessel - schiebt bei 320 Pixeln sonst die ganze Seite nach
+   rechts (WCAG 1.4.10). `anywhere` bricht ihn nur, wenn er allein nicht passt. */
+.avd-academy-guide-main :not(pre) > code { overflow-wrap: anywhere; }
+/* VERWEISE IM FLIESSTEXT SIND UNTERSTRICHEN. Nicht Geschmack, sondern Kriterium
+   1.4.1: Wer Farben schlecht unterscheidet, erkennt einen Verweis sonst gar
+   nicht – gegen den umgebenden Text hat er weniger als 3:1, und damit ist die
+   Farbe allein kein Träger. Absichtlich NUR im Fließtext: In Karten,
+   Navigation, Materialübersicht und Fußbereich ist der Verweis schon durch
+   Fläche, Liste oder Position erkennbar, und eine Unterstreichung dort machte
+   aus einer Übersicht einen Teppich. */
+.avd-academy-guide-main p > a,
+.avd-academy-guide-main li > a,
+.avd-academy-guide-main td > a,
+.avd-academy-guide-main th > a {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  text-decoration-thickness: from-font;
+}
+/* Ein Verweis, der ein Bild oder einen ganzen Baustein umschließt, bekommt
+   keinen Strich – da wäre nichts zu unterstreichen ausser Luft. */
+.avd-academy-guide-main a:has(> img),
+.avd-academy-guide-main a:has(> svg) { text-decoration: none; }
+
+/* Schritt-Zähler nur auf nummerierten Seiten (Übungen/Guides, s. u.). */
+.avd-academy-guide-main--numbered { counter-reset: avd-academy-step; }
+
+/* „Markdown kopieren“-Leiste (Academy-Funktion), dezent oben rechts */
+
+/* Einleitung / User Story: erster Absatz (Titel steht im Hero). */
+.avd-academy-guide-lead,
+.avd-academy-guide-main > p:first-child {
+  margin: 0;
+  font-size: var(--text-size-hero, 1.35rem);
+  line-height: 1.5;
+  color: var(--avd-academy-color-headline);
+  border-left: 3px solid var(--avd-orange);
+  padding-left: 22px;
+  text-wrap: pretty;
+}
+
+/* Sektions-Überschriften ohne Emoji */
+.avd-academy-guide-main h2 {
+  /* Oben der Abschnittsabstand, unten fast nichts - so bindet die Ueberschrift
+     an ihren Text statt frei zwischen zwei Abschnitten zu schweben. */
+  margin: var(--avd-academy-rhythm-section) 0 var(--avd-academy-rhythm-heading);
+  font-size: var(--h3-base, 28px);
+  font-weight: 600;
+  color: var(--avd-academy-color-headline);
+  line-height: 1.2;
+}
+
+/* H3-Überschriften (Basis, ohne Nummer) – für allgemeine Seiten. */
+.avd-academy-guide-main h3 {
+  margin: 1.75rem 0 var(--avd-academy-rhythm-heading);
+  font-size: var(--h5-base, 22px);
+  font-weight: 600;
+  color: var(--avd-academy-color-headline);
+  line-height: 1.25;
+}
+/* Arbeitsschritte NUR auf nummerierten Seiten (Übungen/Guides, erkennbar am
+   Front-Matter `duration`): H3 mit Nummern-Kästchen (Counter). Ein H3 = ein Schritt. */
+.avd-academy-guide-main--numbered h3 {
+  counter-increment: avd-academy-step;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.avd-academy-guide-main--numbered h3::before {
+  content: counter(avd-academy-step);
+  flex: none;
+  width: 40px; height: 40px;
+  border-radius: var(--avd-academy-radius, 5px);
+  background: var(--avd-slate);
+  color: #fff;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 1.125rem; font-weight: 600;
+}
+
+.avd-academy-guide-main ul, .avd-academy-guide-main ol { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; }
+.avd-academy-guide-main li > ul, .avd-academy-guide-main li > ol { margin-top: 8px; }
+
+/* Definition of Done: GFM-Task-Liste als Karte
+   ZWEI FORMEN JE PUNKT, und beide muessen getroffen werden: Enthaelt ein Punkt nur
+   eine Zeile, steht die Checkbox direkt im `<li>`. Enthaelt er einen zweiten Block –
+   einen Codeblock, einen weiteren Absatz –, wickelt Kramdown den Inhalt in `<p>`, und
+   die Checkbox sitzt in `li > p`. Ohne die zweite Form verlor genau dieser Punkt die
+   absolute Positionierung: Die Checkbox lief im Text mit, das `padding-left` blieb, und
+   der Punkt stand um 30px eingerueckt neben seinen Geschwistern. Aufgefallen an der
+   Voraussetzungs-Liste der Didaktikon-Doku – dort traegt ein Punkt einen Codeblock. */
+.avd-academy-guide-main ul:has(> li > input[type="checkbox"]),
+.avd-academy-guide-main ul:has(> li > p > input[type="checkbox"]) {
+  list-style: none;
+  padding: 24px 28px;
+  background: var(--avd-academy-color-bg-subtle);
+  border-radius: var(--radius-dark, 8px);
+  gap: 14px;
+}
+/* Checkbox absolut positionieren (NICHT das <li> als Flex-Container) – sonst
+   würde jedes Inline-Kind (Text, <code>, <a>) zu einem eigenen Flex-Item mit
+   Abständen. So fließt der Inhalt als normaler Text; mehrzeilige Items hängen
+   sauber unter der ersten Zeile ein. */
+.avd-academy-guide-main ul:has(> li > input[type="checkbox"]) > li,
+.avd-academy-guide-main ul:has(> li > p > input[type="checkbox"]) > li {
+  position: relative; padding-left: 30px; line-height: 1.5;
+}
+.avd-academy-guide-main ul:has(> li > input[type="checkbox"]) > li > input[type="checkbox"],
+.avd-academy-guide-main ul:has(> li > p > input[type="checkbox"]) > li > p:first-child > input[type="checkbox"] {
+  position: absolute; left: 0; top: 0.25em; margin: 0;
+  width: 18px; height: 18px;
+  accent-color: var(--avd-orange); cursor: pointer;
+}
+/* Der Wickel-Absatz traegt sonst die Standard-Abstaende des Themes und reißt den
+   Punkt auf. Zwischen ZWEI Absaetzen desselben Punktes bleibt Luft. */
+.avd-academy-guide-main ul:has(> li > p > input[type="checkbox"]) > li > p { margin: 0; }
+.avd-academy-guide-main ul:has(> li > p > input[type="checkbox"]) > li > p + p { margin-top: 8px; }
+
+/* Code */
+.avd-academy-guide-main pre {
+  background: var(--avd-ink);
+  color: #eef1f2;
+  border-radius: var(--radius-dark, 8px);
+  padding: 18px 20px;
+  overflow-x: auto;
+  font-family: var(--avd-academy-font-mono, monospace);
+  font-size: 0.92em;
+  line-height: 1.5;
+}
+.avd-academy-guide-main :not(pre) > code {
+  background: var(--avd-academy-code-bg);
+  border-radius: 4px;
+  padding: 0.1em 0.3em;                 /* eng am Text (vorher zu breit) */
+  font-family: var(--avd-academy-font-mono, monospace);
+  font-size: 0.9em;
+}
+.avd-academy-guide-main blockquote {
+  margin: 0;
+  padding: 12px 18px;
+  border-left: 3px solid var(--avd-slate);
+  background: var(--avd-academy-color-bg-subtle);
+  border-radius: 0 var(--radius, 5px) var(--radius, 5px) 0;
+}
+.avd-academy-guide-main blockquote > :last-child { margin-bottom: 0; }
+
+/* --- Rechte Sidebar (sticky, mit eigenem Scrollbereich) ------------------- */
+.avd-academy-guide-sidebar {
+  position: sticky;
+  top: calc(var(--topnav-height, 80px) + 1.75rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  /* Eigener Scrollbereich, wenn die Karten hoeher sind als der sichtbare Rest der
+     Seite. Vorher blieb ein langes Inhaltsverzeichnis am unteren Rand haengen: Wer die
+     Karten darunter sehen wollte, musste die GANZE Seite scrollen, bis die Sidebar
+     mitwanderte – und auf einer langen Uebung reichte das nicht.
+     `overscroll-behavior: contain` haelt das Scrollen in der Sidebar, statt am Ende in
+     die Seite durchzuschlagen. Das Padding rechts laesst dem Scrollbalken Platz, damit
+     er nicht auf dem Karteninhalt liegt. */
+  max-height: calc(100vh - var(--topnav-height, 80px) - 3.5rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 4px;
+  scrollbar-width: thin;
+}
+.avd-academy-guide-side {
+  border-radius: var(--radius-dark, 8px);
+  padding: 24px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.avd-academy-guide-side[hidden] { display: none; }   /* JS blendet die TOC-Karte bei < 2 Überschriften aus */
+.avd-academy-guide-side--toc { background: var(--avd-academy-color-bg-subtle); }
+.avd-academy-guide-side--bordered { border: 1px solid var(--avd-academy-border-soft); }
+.avd-academy-guide-side.avd-academy-fold[open] > .avd-academy-fold__body {
+  /* Die Karte ist selbst ein Flex-Container mit `gap` – der Abstand des Bausteins
+     kaeme oben drauf und riss sie die Karte auf. */
+  margin-top: 0;
+}
+.avd-academy-guide-side__label {
+  font-size: 0.875rem; font-weight: 500; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--avd-academy-color-ink-muted);
+}
+.avd-academy-toc { display: flex; flex-direction: column; gap: 10px; }
+/* SCHRIFTGROESSEN IN `rem`, NICHT IN PIXELN. Gemessen an dieser Seitenspalte:
+   Mit einer Browser-Standardschrift von 24px wuchs der Fliesstext von 21,6 auf
+   32,4px, das Inhaltsverzeichnis daneben blieb bei 16 - die Seite wuchs zur
+   Haelfte mit. Wer die Schriftgroesse hochstellt, tut das aus einem Grund.
+   (Zoom skalierte auch Pixel; es geht um den anderen Weg.)
+   Umgerechnet mit 16px Wurzel: 14px = 0.875rem, 15px = 0.9375rem, 17px =
+   1.0625rem - dieselben Groessen wie vorher, nur nicht mehr eingefroren.
+   FUER RADIEN, SCHATTEN UND HAARLINIEN BLEIBT PIXEL RICHTIG: Ein Rahmen, der
+   mit der Schrift waechst, wird unscharf und gewinnt nichts. */
+.avd-academy-toc a { color: var(--avd-academy-color-ink); text-decoration: none; font-size: 1rem; }
+.avd-academy-toc a:hover { color: var(--avd-orange); }
+.avd-academy-toc a[aria-current="true"] { color: var(--avd-orange); font-weight: 500; }
+.avd-academy-toc .avd-academy-toc--h3 { padding-left: 14px; font-size: 0.9375rem; }
+
+/* Fortschritt */
+.avd-academy-progress__bar { height: 6px; border-radius: 3px; background: var(--avd-academy-border-soft); overflow: hidden; }
+.avd-academy-progress__fill { height: 100%; background: var(--avd-orange); transition: width .2s; width: 0; }
+.avd-academy-progress__text { font-size: 1.0625rem; color: var(--avd-academy-color-headline); }
+
+/* Weiterführende Informationen */
+.avd-academy-guide-side__links { display: flex; flex-direction: column; gap: 10px; }
+.avd-academy-guide-side__links a { color: var(--avd-orange); text-decoration: none; font-size: 1rem; }
+.avd-academy-guide-side__links a:hover { text-decoration: underline; }
+
+/* --- Fuß (dunkel, atvantage-Slate) ---------------------------------------- */
+.avd-academy-guide-foot {
+  background: var(--avd-slate);
+  color: #fff;
+  padding: 3rem var(--avd-academy-guide-gutter);
+  display: flex; gap: 24px; flex-wrap: wrap; align-items: center;
+}
+.avd-academy-guide-foot a { color: #fff; text-decoration: none; }
+.avd-academy-guide-foot a:hover { color: var(--avd-orange); }
+.avd-academy-guide-foot__right { margin-left: auto; display: flex; gap: 18px; flex-wrap: wrap; }
+
+/* --- Responsive ----------------------------------------------------------- */
+@media (max-width: 960px) {
+  .avd-academy-guide-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+  /* SCHMAL GELTEN ANDERE REGELN ALS AM SCHREIBTISCH - und zwar unabhaengig von der
+     `_config.yml`. Die Schalter dort beschreiben eine Seitenspalte; auf einem
+     Telefon gibt es keine Spalte, sondern eine Reihenfolge.
+
+     `display: contents` loest den Rahmen auf: Die drei Karten werden selbst zu
+     Rastereintraegen und lassen sich einzeln einsortieren. Als Block liesse sich
+     nur der ganze Block verschieben - und dann stuenden die weiterfuehrenden
+     Links zwangslaeufig vor dem Text. */
+  .avd-academy-guide-sidebar {
+    display: contents;
+    position: static; max-height: none; overflow: visible; padding-right: 0;
+  }
+  /* Das Inhaltsverzeichnis steht VOR dem Text - es ist der Wegweiser durch ihn.
+     Zugeklappt startet es immer; das erledigt das Skript, weil ein `<details>`
+     sich per CSS nicht schließen laesst. */
+  .avd-academy-guide-side--toc { order: -1; }
+  /* Alles Uebrige - heute die weiterfuehrenden Links - steht DAHINTER: Es ist der
+     naechste Schritt, nicht die Einleitung. Ueber den Ausschluss und nicht ueber
+     `--bordered`, weil diese Klasse auch die Fortschrittskarte traegt und eine
+     kuenftige vierte Karte von selbst richtig einsortiert wird. */
+  .avd-academy-guide-sidebar > *:not(.avd-academy-guide-side--toc) { order: 1; }
+  /* Der Fortschritt entfaellt ganz. Auf einem Telefon liest man einen Abschnitt,
+     man arbeitet keine Checkliste ab - und als Karte ueber dem Text waere er die
+     erste Information, die niemand gesucht hat. */
+  .avd-academy-guide-sidebar > [data-avd-academy-progress] { display: none; }
+}
+@media (max-width: 700px) {
+  .avd-academy-metanav { display: none; }
+  .avd-academy-topbar { gap: 16px; }
+  .avd-academy-topbar__nav { gap: 16px; font-size: 0.9375rem; }
+  .avd-academy-guide-main--numbered h3::before { width: 32px; height: 32px; font-size: 1rem; }
+}

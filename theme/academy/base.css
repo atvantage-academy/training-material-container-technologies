@@ -1,0 +1,99 @@
+/* =============================================================================
+   ATVANTAGE Academy – Base
+   -----------------------------------------------------------------------------
+   Typografie (Größen, Gewichte, Schriftfamilie, Body/Headline-Grundstil) kommt
+   AUS ATVANTAGE (`../atvantage/tokens/base.css`, vor dieser Datei geladen). Diese
+   Datei überschreibt davon NUR das, was atvantage nicht abdeckt:
+     - theme-fähige Farben/Flächen (Dark-Theme, das atvantage nicht kennt),
+     - Ergänzungen für Doku-Inhalte (Code, Tabellen) und Barrierefreiheit.
+   Keine eigenen Schriftgrößen/-familien mehr (bewusst an atvantage angeglichen).
+
+   Schrift „Outfit“ wird von atvantage (`tokens/fonts.css`) bzw. dem Head-Snippet
+   geladen. Eine self-hosted Variante läge im Repo unter academy/fonts/ – sie ist
+   NICHT Teil des npm-Pakets (siehe theme/package.json, `files`).
+   ============================================================================= */
+
+/* --- Reset ---------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+/* Sprungmarken: Die Kopfzeile ist `position: sticky; top: 0` und 80px hoch (siehe
+   components.css). Ohne Versatz scrollt ein Anker-Klick (#id) das Ziel exakt an den
+   Viewport-Rand — also UNTER die Kopfzeile, die Überschrift ist verdeckt.
+   `scroll-padding-top` am Scroll-Container löst das an EINER Stelle für alle Anker:
+   Front-Matter-Anker (`## Titel {#id}`), die automatisch erzeugte
+   Sidebar-Navigation, `:target` und `scrollIntoView()`. Anker gehören deshalb
+   weiterhin AN die Überschrift und nicht davor — ein Element davor läge nur wenige
+   Pixel höher und damit ebenfalls unter der Kopfzeile. */
+html { scroll-padding-top: calc(var(--topnav-height, 80px) + var(--avd-academy-space-4, 16px)); }
+
+/* Visualisierungen rendern ohne Meta-Leiste und ohne Kopfzeile (siehe
+   default.html), brauchen den Versatz also nicht. Rein kosmetisch: Fehlt einem
+   Browser `:has()`, bleibt der größere Versatz stehen — nichts bricht. */
+html:has(> body.avd-academy-guide--viz) { scroll-padding-top: var(--avd-academy-space-4, 16px); }
+
+/* Body/Headlines: Größe/Gewicht/Familie aus atvantage. Academy überschreibt nur
+   die theme-fähigen Farben, damit das Dark-Theme funktioniert. */
+body {
+  color: var(--avd-academy-color-ink);
+  background: var(--avd-academy-color-bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+h1, h2, h3, h4, h5, h6 { color: var(--avd-academy-color-headline); text-wrap: balance; }
+
+/* --- Medien --------------------------------------------------------------- */
+img, svg, video, canvas { max-width: 100%; height: auto; display: block; }
+
+/* --- Code (atvantage kennt kein Code-Styling → Academy-Ergänzung) --------- */
+code, kbd, pre { font-family: var(--avd-academy-font-mono); font-size: 0.92em; }
+pre {
+  background: var(--avd-academy-code-bg);
+  border: 1px solid var(--avd-academy-color-border);
+  border-radius: var(--avd-academy-radius);
+  padding: var(--avd-academy-space-4);
+  overflow-x: auto;
+}
+:not(pre) > code {
+  background: var(--avd-academy-code-bg);
+  padding: 0.1em 0.3em;
+  border-radius: var(--avd-academy-radius-sm);
+}
+
+/* --- Tabellen (Academy-Ergänzung für Doku) -------------------------------- */
+table { border-collapse: collapse; width: 100%; }
+th, td {
+  text-align: left;
+  padding: var(--avd-academy-space-2) var(--avd-academy-space-3);
+  border-bottom: 1px solid var(--avd-academy-color-border);
+}
+th { font-weight: 600; }
+
+/* --- Barrierefreiheit ----------------------------------------------------- */
+:focus-visible { outline: 3px solid var(--avd-orange); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}
+/* --- Zurückgenommener Text ------------------------------------------------
+   FÜR DAS, WOFÜR SONST `opacity` GENOMMEN WIRD. Der Unterschied ist nicht
+   kosmetisch: `opacity` legt eine Ebene über die GANZE Gruppe und senkt damit
+   auch den Kontrast von allem, was darin hervorgehoben ist – ein Wort im Akzent,
+   ein Verweis. Gemessen in einem Schulungs-Repo: Die Schulungsfarbe erreicht
+   5,38:1, unter `opacity: .85` blieben 4,21 – und ein `opacity: 1` am Kind hebt
+   das NICHT auf, weil die Elterndeckkraft eine eigene Ebene erzeugt.
+
+   Diese Klasse dämpft die SCHRIFTFARBE. Was darin eine eigene Farbe trägt,
+   behält sie unverändert.
+
+   `opacity` bleibt richtig, wo eine ganze Fläche mitsamt Hintergrund
+   zurücktreten soll – etwa eine Pausenzeile in einer getönten Tabelle. Falsch
+   ist es über Text, dessen Farbe schon knapp ist. */
+.avd-academy-muted { color: var(--avd-academy-color-ink-muted); }
+
+.avd-academy-visually-hidden {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}

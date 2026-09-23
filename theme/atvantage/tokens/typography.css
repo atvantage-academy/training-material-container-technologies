@@ -1,0 +1,25 @@
+:root{
+--font-family:'Outfit',sans-serif;
+/* Fließtext */
+--text-size:1.125rem; /* 18px */
+--text-size-hero:1.35rem; /* große Hero-Sektionen */
+--text-weight:400;
+--text-line-height:1.62;
+--paragraph-spacing:20px;
+/* Headlines: Farbe --color-headline, Gewicht 500 in Content-Sektionen, Basis 600.
+   Mobile-Basiswerte; Desktop skaliert per calc() an Breakpoints hoch. */
+--h1-base:38px;
+--h2-base:34px;
+--h3-base:28px;
+--h5-base:22px;
+--headline-weight:600;
+--headline-weight-content:500;
+/* Desktop-Skalierung (Faktor auf Basis) */
+--h1-scale-lg:1.5; /* @kind other */
+--h1-scale-xl:2; /* @kind other */
+--h2-scale-lg:1.28; /* @kind other */
+--h2-scale-xl:1.71; /* @kind other */
+--h3-scale-lg:1.2; /* @kind other */
+--h3-scale-xl:1.8; /* @kind other */
+--h5-scale-lg:1.2; /* @kind other */
+}

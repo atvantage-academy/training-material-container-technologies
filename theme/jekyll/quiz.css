@@ -1,0 +1,159 @@
+/* =============================================================================
+   Layout „quiz“ – Wissens-Check
+   -----------------------------------------------------------------------------
+   Gehoert zu `_layouts/quiz.html` und `quiz.js`. Wird NUR von diesem Layout
+   geladen (ueber `layout.styles`), nicht von jeder Seite.
+
+   Ausschliesslich Design-Tokens, kein fremdes CSS-Framework: Der Wissens-Check
+   traegt damit beide Farbschemata mit und wandert beim naechsten Theme-Update
+   mit. Die Vorlage, aus der diese Form stammt, hing an einem CDN und an festen
+   Hex-Farben - offline tot und im Dark-Mode falsch.
+   ============================================================================= */
+
+.avd-academy-quiz,
+.avd-academy-quiz__intro { max-width: 46rem; }
+
+.avd-academy-quiz { margin-block: var(--avd-academy-space-6, 1.5rem); }
+
+/* --- Fortschritt ---------------------------------------------------------- */
+
+.avd-academy-quiz__bar {
+  display: flex; justify-content: space-between; gap: 1rem;
+  font-size: var(--avd-academy-fs-sm, 0.92rem);
+  color: var(--avd-academy-color-ink-muted);
+  margin-bottom: 0.4rem;
+}
+.avd-academy-quiz__progress {
+  height: 6px; border-radius: 3px; overflow: hidden;
+  background: var(--avd-academy-color-bg-subtle);
+  margin-bottom: var(--avd-academy-space-4, 1rem);
+}
+.avd-academy-quiz__progress-fill {
+  height: 100%; width: 0;
+  background: var(--avd-academy-color-accent);
+  transition: width 0.35s ease;
+}
+
+/* --- Karte und Auswertung ------------------------------------------------- */
+
+.avd-academy-quiz__card,
+.avd-academy-quiz__result {
+  border: 1px solid var(--avd-academy-color-border);
+  border-top: 4px solid var(--avd-academy-color-accent);
+  border-radius: var(--avd-academy-radius, 8px);
+  background: var(--avd-academy-color-bg-subtle);
+  padding: var(--avd-academy-space-4, 1rem);
+}
+.avd-academy-quiz__context {
+  margin: 0 0 0.4rem;
+  color: var(--avd-academy-color-ink-muted);
+  font-size: var(--avd-academy-fs-sm, 0.92rem);
+}
+/* Eine Frage ohne Lagebeschreibung soll keine Luecke hinterlassen. */
+.avd-academy-quiz__context:empty { display: none; }
+
+.avd-academy-quiz h2.avd-academy-quiz__question {
+  margin: 0 0 var(--avd-academy-space-4, 1rem);
+  font-size: var(--avd-academy-fs-md, 1.1rem);
+}
+
+/* --- Optionen ------------------------------------------------------------- */
+
+.avd-academy-quiz__options { display: grid; gap: 0.6rem; }
+
+.avd-academy-quiz__option {
+  font: inherit; text-align: left; cursor: pointer;
+  padding: 0.7rem 0.9rem;
+  border: 2px solid var(--avd-academy-color-border);
+  border-radius: var(--avd-academy-radius-sm, 6px);
+  background: var(--avd-academy-color-bg);
+  color: var(--avd-academy-color-ink);
+  transition: var(--avd-academy-transition, all 0.15s ease);
+}
+.avd-academy-quiz__option:hover:not(:disabled) { border-color: var(--avd-academy-color-accent); }
+.avd-academy-quiz__option:focus-visible {
+  outline: 2px solid var(--avd-academy-color-accent); outline-offset: 2px;
+}
+.avd-academy-quiz__option:disabled { cursor: default; }
+
+/* DIE FLAECHEN SIND NUR SCHWACH GETOENT, damit die Schrift die Fliesstextfarbe
+   behaelt. `--avd-academy-color-danger` traegt als SCHRIFT in keinem der beiden
+   Schemata genug Kontrast - als Flaeche mit wenigen Prozent schon. */
+.avd-academy-quiz__option--correct {
+  border-color: var(--avd-academy-color-success);
+  background: color-mix(in srgb, var(--avd-academy-color-success) 14%, var(--avd-academy-color-bg));
+}
+.avd-academy-quiz__option--wrong {
+  border-color: var(--avd-academy-color-danger);
+  background: color-mix(in srgb, var(--avd-academy-color-danger) 12%, var(--avd-academy-color-bg));
+}
+.avd-academy-quiz__marker {
+  font-weight: var(--avd-academy-fw-bold, 700);
+  margin-right: 0.45rem;
+}
+
+/* --- Begruendung ---------------------------------------------------------- */
+
+.avd-academy-quiz__feedback {
+  margin-top: var(--avd-academy-space-4, 1rem);
+  padding: 0.7rem 0.9rem;
+  border-left: 3px solid var(--avd-academy-color-accent);
+  background: color-mix(in srgb, var(--avd-academy-color-accent) 8%, transparent);
+}
+.avd-academy-quiz__feedback[hidden] { display: none; }
+.avd-academy-quiz__feedback p { margin: 0 0 0.5rem; }
+.avd-academy-quiz__feedback p:last-child { margin-bottom: 0; }
+.avd-academy-quiz__feedback-head { font-weight: var(--avd-academy-fw-bold, 700); }
+
+/* --- Schaltflaechen ------------------------------------------------------- */
+
+.avd-academy-quiz__next {
+  margin-top: var(--avd-academy-space-4, 1rem);
+  font: inherit; cursor: pointer;
+  padding: 0.45em 1.3em;
+  border-radius: var(--avd-academy-radius-sm, 6px);
+  border: 1px solid var(--avd-academy-color-accent);
+  background: var(--avd-academy-color-accent);
+  color: var(--avd-academy-color-accent-contrast);
+  font-weight: var(--avd-academy-fw-medium, 500);
+}
+.avd-academy-quiz__next[hidden] { display: none; }
+.avd-academy-quiz__next:focus-visible {
+  outline: 2px solid var(--avd-academy-color-accent); outline-offset: 3px;
+}
+
+.avd-academy-quiz__result[hidden] { display: none; }
+.avd-academy-quiz__result h2 { margin-top: 0; }
+.avd-academy-quiz__score {
+  font-size: var(--avd-academy-fs-lg, 1.3rem);
+  font-weight: var(--avd-academy-fw-bold, 700);
+  margin: 0 0 0.6rem;
+}
+.avd-academy-quiz__verdict { margin: 0; color: var(--avd-academy-color-ink-muted); }
+
+@media (prefers-reduced-motion: reduce) {
+  .avd-academy-quiz * { transition: none !important; }
+}
+
+/* --- Ohne JavaScript ------------------------------------------------------ */
+/* Das Skript baut die Karte; ohne es bliebe eine leere Flaeche stehen. Dann
+   zeigt die Seite stattdessen die Fragen als Liste - lesbar, nur nicht
+   bedienbar. Das Skript blendet die Liste aus, sobald es uebernimmt. */
+.avd-academy-quiz__fallback ol { margin: 0; padding-left: 1.2rem; }
+.avd-academy-quiz__fallback li + li { margin-top: var(--avd-academy-space-4, 1rem); }
+.avd-academy-quiz--ready > .avd-academy-quiz__fallback { display: none; }
+.avd-academy-quiz:not(.avd-academy-quiz--ready) > .avd-academy-quiz__bar,
+.avd-academy-quiz:not(.avd-academy-quiz--ready) > .avd-academy-quiz__progress,
+.avd-academy-quiz:not(.avd-academy-quiz--ready) > .avd-academy-quiz__card,
+.avd-academy-quiz:not(.avd-academy-quiz--ready) > .avd-academy-quiz__result { display: none; }
+
+/* --- Im Ausdruck ---------------------------------------------------------- */
+/* Ein Quiz auf Papier ist keins - die Fragen als Liste aber schon. Gedruckt wird
+   deshalb der Rueckfall, nicht die Bedienung. */
+@media print {
+  .avd-academy-quiz__bar,
+  .avd-academy-quiz__progress,
+  .avd-academy-quiz__card,
+  .avd-academy-quiz__result { display: none !important; }
+  .avd-academy-quiz--ready > .avd-academy-quiz__fallback { display: block !important; }
+}

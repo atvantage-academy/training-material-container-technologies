@@ -1,0 +1,60 @@
+/*!
+  Syntax-Highlighting fuer Codebloecke (highlight.js, clientseitig).
+  Basis: GitHub-Dark (highlight.js 11.12.0). Die Codebloecke des Themes sind
+  in Light UND Dark dunkel (--avd-ink), daher ein dunkles Schema fuer beide.
+  Flaeche/Padding kommen vom Theme-<pre>; hljs faerbt nur die Tokens.
+  highlight.js (c) git.io/hljs, BSD-3-Clause (siehe hljs/LICENSE).
+*/
+pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5px}/*!
+  Theme: GitHub Dark
+  Description: Dark theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-dark
+  Current colors taken from GitHub's CSS
+*/.hljs{color:#c9d1d9;background:#0d1117}.hljs-doctag,.hljs-keyword,.hljs-meta .hljs-keyword,.hljs-template-tag,.hljs-template-variable,.hljs-type,.hljs-variable.language_{color:#ff7b72}.hljs-title,.hljs-title.class_,.hljs-title.class_.inherited__,.hljs-title.function_{color:#d2a8ff}.hljs-attr,.hljs-attribute,.hljs-literal,.hljs-meta,.hljs-number,.hljs-operator,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-id,.hljs-variable{color:#79c0ff}.hljs-meta .hljs-string,.hljs-regexp,.hljs-string{color:#a5d6ff}.hljs-built_in,.hljs-symbol{color:#ffa657}.hljs-code,.hljs-comment,.hljs-formula{color:#8b949e}.hljs-name,.hljs-quote,.hljs-selector-pseudo,.hljs-selector-tag{color:#7ee787}.hljs-subst{color:#c9d1d9}.hljs-section{color:#1f6feb;font-weight:700}.hljs-bullet{color:#f2cc60}.hljs-emphasis{color:#c9d1d9;font-style:italic}.hljs-strong{color:#c9d1d9;font-weight:700}.hljs-addition{color:#aff5b4;background-color:#033a16}.hljs-deletion{color:#ffdcd7;background-color:#67060c}
+/* Theme-Anbindung: Hintergrund/Abstand vom <pre> uebernehmen. */
+.avd-academy-guide-main pre code.hljs { background: transparent; padding: 0; }
+
+/* -----------------------------------------------------------------------------
+   Statuszeile eines HTTP-Mitschnitts nach KLASSE einfaerben.
+
+   highlight.js gibt jedem dreistelligen Code dieselbe Klasse `hljs-number`. In
+   einem Mitschnitt ist das aber genau die Stelle, auf die man zuerst sieht: 201
+   ist etwas anderes als 404. Das kleine Skript in `head.html` haengt darum eine
+   Klasse je Statusklasse an; hier stehen die Farben.
+
+   Die Werte kommen aus den `-ink`-Fassungen und NICHT als feste Hexwerte: Die
+   Codeblock-Flaeche kippt mit dem Farbschema (#EDEDED hell, #24332F dunkel), ein
+   fester Wert koennte also nicht beides tragen. Gemessen auf der Codeblock-
+   Flaeche: 4,56-9,38:1 in beiden Schemata.
+
+   4xx und 5xx teilen sich die Farbe. Sie sind beide "Fehler"; welcher, sagt die
+   Zahl selbst - eine fuenfte Farbe waere Rauschen. */
+pre code.language-http .avd-academy-http-status--1xx { color: var(--avd-academy-tone-1-ink); }
+pre code.language-http .avd-academy-http-status--2xx { color: var(--avd-academy-color-success-ink); }
+pre code.language-http .avd-academy-http-status--3xx { color: var(--avd-academy-color-warning-ink); }
+pre code.language-http .avd-academy-http-status--4xx,
+pre code.language-http .avd-academy-http-status--5xx { color: var(--avd-academy-color-danger-ink); }
+
+/* IN EINER UNTERLAGE IST DER CODEBLOCK IMMER DUNKEL - guide.css legt `--avd-ink`
+   als Flaeche darunter, auch im hellen Schema. Die `…-ink`-Toene oben sind aber
+   gegen die SEITENfarbe gemischt: Im hellen Schema ergibt das dunkles Gruen auf
+   dunklem Grund (gemessen 2,1:1). Hier deshalb dieselben Toene, zu Weiß hin
+   gemischt - gerechnet gegen #1A2627: 1xx 4,9:1, 2xx 6,2:1, 3xx 7,1:1,
+   4xx/5xx 5,1:1. */
+.avd-academy-guide-main pre code.language-http .avd-academy-http-status--1xx {
+  color: color-mix(in srgb, var(--avd-academy-fill-1) 50%, #fff);
+}
+.avd-academy-guide-main pre code.language-http .avd-academy-http-status--2xx {
+  color: color-mix(in srgb, var(--avd-academy-color-success) 65%, #fff);
+}
+.avd-academy-guide-main pre code.language-http .avd-academy-http-status--3xx {
+  color: color-mix(in srgb, var(--avd-academy-color-warning) 65%, #fff);
+}
+.avd-academy-guide-main pre code.language-http .avd-academy-http-status--4xx,
+.avd-academy-guide-main pre code.language-http .avd-academy-http-status--5xx {
+  color: color-mix(in srgb, var(--avd-academy-color-danger) 65%, #fff);
+}

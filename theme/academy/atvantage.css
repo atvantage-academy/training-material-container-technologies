@@ -1,0 +1,22 @@
+/* =============================================================================
+   ATVANTAGE Academy – Sammel-Einstiegspunkt
+   -----------------------------------------------------------------------------
+   EINZIGE Datei, die eine Unterlage verlinken muss, um das komplette Academy-
+   Fundament zu erhalten: zuerst das ATVANTAGE-Design-System (`../atvantage/`,
+   unveränderlich – Farben, Schriften, Basis), danach die Academy-Ergänzungen
+   (Token-Mapping, academy-spezifische Basis & Komponenten). Reihenfolge ist
+   relevant.
+
+   Einbindung in einer beliebigen HTML-Unterlage:
+     <link rel="stylesheet" href="<BASISPFAD>/theme/academy/atvantage.css">
+     <script src="<BASISPFAD>/theme/academy/atvantage.js" defer></script>
+
+   <BASISPFAD> ist entweder ein relativer Pfad (bei einkopierten Vorlagen) oder
+   die veröffentlichte URL (siehe docs/verwendung/einbindung.md in der
+   Academy-Doku, Repo academy-theme).
+   ============================================================================= */
+
+@import "../atvantage/styles.css";
+@import "tokens.css";
+@import "base.css";
+@import "components.css";

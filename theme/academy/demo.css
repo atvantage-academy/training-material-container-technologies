@@ -1,0 +1,102 @@
+/* =============================================================================
+   Baustein-Demo (`avd-academy-demo`)
+   -----------------------------------------------------------------------------
+   Der Rahmen um eine Vorführung: Schalterleiste, Bühne, Markup darunter. Die
+   Begründung für die Bauart steht in `demo.js` – hier stehen nur die Maße.
+
+   WIRD NICHT GLOBAL GELADEN. Eine Seite, die Bausteine vorführt, bindet
+   `demo.css` und `demo.js` selbst ein; jede andere trägt die Last nicht. Das ist
+   dieselbe Regel wie bei Quiz und Simulation.
+   ============================================================================= */
+
+.avd-academy-demo {
+  margin: var(--avd-academy-space-6, 1.5rem) 0;
+  border: 1px solid var(--avd-academy-color-border);
+  border-radius: var(--avd-academy-radius-lg, 8px);
+  overflow: hidden;
+}
+
+/* Die Leiste sitzt oben und sieht aus wie eine Bedienung, nicht wie Inhalt:
+   getönte Fläche, eine Linie darunter. Sie ROLLT statt umzubrechen – dieselbe
+   Entscheidung wie bei der Reiterleiste, und aus demselben Grund: Umgebrochene
+   Schalter lesen sich als Liste. */
+.avd-academy-demo__controls {
+  display: flex; flex-wrap: nowrap; align-items: center;
+  gap: var(--avd-academy-space-4, 1rem);
+  overflow-x: auto; scrollbar-width: thin;
+  padding: var(--avd-academy-space-2, 0.5rem) var(--avd-academy-space-3, 0.75rem);
+  background: var(--avd-academy-color-bg-subtle);
+  border-bottom: 1px solid var(--avd-academy-color-border);
+}
+.avd-academy-demo__group { display: flex; align-items: center; gap: 0.35rem; flex: none; }
+.avd-academy-demo__label {
+  color: var(--avd-academy-color-ink-muted);
+  font-size: var(--avd-academy-fs-sm, 0.875rem);
+  margin-right: 0.15rem;
+}
+
+/* Ein Schalter, keine Schaltfläche: kleine Fläche, die nur der gewählte Zustand
+   färbt. MINDESTENS 24 PIXEL HOCH (WCAG 2.5.8) – hier über die Zeilenhöhe plus
+   Innenabstand, nicht über eine größere Schrift. */
+.avd-academy-demo__switch {
+  appearance: none; cursor: pointer;
+  min-height: 24px;
+  padding: 0.25rem 0.6rem;
+  background: transparent;
+  border: 1px solid var(--avd-academy-color-border);
+  border-radius: var(--avd-academy-radius-sm, 4px);
+  color: var(--avd-academy-color-ink);
+  font: inherit; font-size: var(--avd-academy-fs-sm, 0.875rem);
+  transition: background var(--avd-academy-transition, 160ms ease),
+              border-color var(--avd-academy-transition, 160ms ease);
+}
+.avd-academy-demo__switch:hover { border-color: var(--avd-academy-color-accent); }
+.avd-academy-demo__switch[aria-pressed="true"] {
+  background: var(--avd-academy-color-accent-soft);
+  border-color: var(--avd-academy-color-accent);
+  color: var(--avd-academy-color-accent-ink);
+}
+.avd-academy-demo__switch:focus-visible {
+  outline: 2px solid var(--avd-academy-color-accent); outline-offset: 2px;
+}
+
+/* Die Bühne trägt einen getönten Grund, damit der verengte Rahmen als
+   Ausschnitt lesbar ist und nicht als abgeschnittene Seite. */
+.avd-academy-demo__stage {
+  padding: var(--avd-academy-space-4, 1rem);
+  background: color-mix(in srgb, var(--avd-academy-color-ink) 4%, var(--avd-academy-color-bg));
+}
+.avd-academy-demo--enhanced > .avd-academy-demo__stage {
+  display: flex; justify-content: center;
+}
+
+/* Der Rahmen ist die Vorführung. `resize: horizontal` gibt den Griff unten
+   rechts: Die Schalter treffen die drei Größen, die geprüft werden – dazwischen
+   zieht man selbst, und die Medienabfragen ziehen mit. */
+.avd-academy-demo__frame {
+  width: 100%; height: 12rem;
+  max-width: 100%; min-width: 240px;
+  resize: horizontal; overflow: hidden;
+  background: var(--avd-academy-color-bg);
+  border: 1px solid var(--avd-academy-color-border);
+  border-radius: var(--avd-academy-radius-sm, 4px);
+  box-shadow: var(--avd-academy-shadow-1);
+}
+
+/* Das Markup darunter: Es gehört zur Vorführung, deshalb steht es IM Kasten und
+   ohne eigenen Rahmen. Der Fold bringt seinen Rand selbst mit. */
+.avd-academy-demo__source.avd-academy-demo__source {
+  margin: 0;
+  padding: var(--avd-academy-space-2, 0.5rem) var(--avd-academy-space-4, 1rem);
+  border-top: 1px solid var(--avd-academy-color-border);
+}
+.avd-academy-demo__source > summary { padding: var(--avd-academy-space-2, 0.5rem) 0; }
+.avd-academy-demo__source pre { margin: 0 0 var(--avd-academy-space-2, 0.5rem); }
+
+/* Auf Papier ist eine Bedienung sinnlos, und ein Rahmen druckt leer. Was bleibt,
+   ist das Markup – das ist der Teil, den man auf einem Ausdruck ohnehin sucht. */
+@media print {
+  .avd-academy-demo__controls,
+  .avd-academy-demo__stage { display: none !important; }
+  .avd-academy-demo__source > *:not(summary) { display: block !important; }
+}

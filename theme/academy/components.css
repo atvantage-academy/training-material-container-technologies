@@ -1,0 +1,1768 @@
+/* =============================================================================
+   ATVANTAGE Academy – Components
+   -----------------------------------------------------------------------------
+   Interaktive Bausteine (Buttons, Callouts, Karten, Badges, Header, Footer).
+   Wo atvantage eine Vorgabe macht, folgen wir ihr: Buttons nutzen die
+   atvantage-Button-Tokens (Anthrazit), Karten die atvantage-Card-Fläche, der
+   Header ist der weiße ATVANTAGE-Website-Header. Academy-Ergänzungen (Callouts,
+   Dark-Theme-Flächen) bauen auf atvantage-Tokens auf. Präfix `avd-academy-`.
+   ============================================================================= */
+
+/* --- Buttons (ATVANTAGE-Vorgabe: Anthrazit, Radius 5px) ------------------- */
+.avd-academy-btn {
+  display: inline-flex; align-items: center; gap: var(--avd-academy-space-2);
+  font: inherit; font-weight: 500;
+  padding: 11px 26px;
+  border-radius: var(--button-radius, 5px);
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.avd-academy-btn--primary { background: var(--button-bg); color: var(--button-text); }
+.avd-academy-btn--primary:hover,
+.avd-academy-btn--primary:focus-visible { background: var(--button-bg-hover); color: var(--button-text); }
+/* Outline-Variante (z. B. Theme-Umschalter) */
+.avd-academy-btn--ghost { background: transparent; color: var(--avd-academy-color-headline); border-color: var(--avd-academy-color-border); }
+.avd-academy-btn--ghost:hover { border-color: var(--avd-academy-color-headline); }
+
+/* Kopier-Buttons als kompakte Icon-Buttons: Icon = Klemmbrett (echtes SVG per
+   CSS-Mask in currentColor – KEIN Emoji). „Kopieren“/„Kopiert!“ nur als Tooltip
+   (title) und aria-label; nach dem Kopieren wechselt das Icon per .is-copied auf
+   einen Haken. */
+.avd-academy-copy, .avd-academy-copy-md { padding: 7px; gap: 0; line-height: 0; }
+.avd-academy-copy::before, .avd-academy-copy-md::before {
+  content: ""; display: block; width: 18px; height: 18px;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.avd-academy-copy.is-copied::before, .avd-academy-copy-md.is-copied::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+          mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+}
+
+/* --- Seitenwerkzeuge: EINE Knopfform, vier Standorte ----------------------
+   QR-Code, Farbschema, Drucken, Vollbild sind überall dieselben Knöpfe – sie
+   stehen nur an verschiedenen Stellen (Kopfzeile bei page/guide, Hero bei der
+   Visualisierung, Kopfleiste bei Präsentation und Simulation). Gerendert von
+   theme/jekyll/_includes/tools.html.
+
+   AUSSEHEN KOMMT VOM CONTAINER, nicht vom Knopf: Kantenlänge, Textfarbe und
+   Zeichengröße stehen in drei Variablen, die die umgebende Gruppe setzt. Deshalb
+   funktioniert derselbe Knopf auf der weißen Kopfzeile wie auf der dunklen
+   Kopfleiste der Präsentation, ohne eine Klasse je Standort. Die Vorgaben sind
+   die der Doku-Seiten; präsentation.css/simulation.css schrauben sie um.
+
+   ALIASSE: `avd-academy-theme-toggle` und `avd-academy-print-btn` sind ÖFFENTLICHE
+   Namen (theme/markup-contract.txt) – fremde Repos selektieren sie in ihrer
+   assets/custom.css, und print.css blendet sie darüber aus. Sie bleiben deshalb
+   auf den Knöpfen UND hier im Selektor, damit auch ein handgeschriebener Knopf mit
+   dem alten Namen richtig aussieht. */
+.avd-academy-tool,
+.avd-academy-theme-toggle,
+.avd-academy-print-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: var(--avd-academy-tool-size, 34px);
+  height: var(--avd-academy-tool-size, 34px);
+  padding: 0;
+  border: 1px solid var(--avd-academy-color-border);
+  border-radius: var(--button-radius, 5px);
+  background: transparent;
+  color: var(--avd-academy-tool-ink, var(--avd-academy-color-headline));
+  font: inherit;
+  font-size: var(--avd-academy-tool-glyph, 18px);
+  line-height: 1;
+  cursor: pointer;
+  transition: color .15s, border-color .15s;
+}
+.avd-academy-tool:hover,
+.avd-academy-tool:focus-visible {
+  color: var(--avd-academy-tool-ink-hover, var(--avd-academy-color-headline));
+  border-color: currentColor;
+}
+
+/* Sprachumschalter – der einzige Werkzeugknopf mit TEXT statt Zeichen: Er trägt den
+   Sprachcode der Zielsprache („EN“). Ein Globus-Symbol sagt „irgendeine Sprache“,
+   zwei Buchstaben sagen WELCHE – und zwar ohne Grafik, ohne Menü und in jeder Sprache
+   verständlich. Gerendert von theme/jekyll/_includes/tools.html, je anderer Sprache
+   ein Knopf.
+
+   ES IST EIN `<a>`, kein `<button>`: Der Wechsel ist eine Navigation und soll ohne
+   JavaScript, im neuen Tab und für Suchmaschinen funktionieren. Deshalb hier die
+   beiden Eigenschaften, die ein Link von sich aus mitbringt und die die Knopfform
+   nicht vorsieht: keine Unterstreichung, Farbe vom Knopf statt vom Linktext.
+
+   ZWEI ZEICHEN BRAUCHEN WENIGER GRÖSSE als ein Glyph: Bei der Zeichengröße der
+   übrigen Werkzeuge (18px) stießen sie an den Rand. Abgeleitet wird sie aus derselben
+   Variablen, damit der Knopf in der Präsentation mitschrumpft. */
+.avd-academy-tool--lang {
+  text-decoration: none;
+  color: var(--avd-academy-tool-ink, var(--avd-academy-color-headline));
+  font-size: calc(var(--avd-academy-tool-glyph, 18px) * 0.66);
+  font-weight: 600;
+  letter-spacing: .02em;
+}
+
+/* Drucken – kompakter Icon-Button wie die Kopier-Buttons: Icon als CSS-Maske in
+   currentColor, KEIN Emoji. Beschriftung nur als Tooltip und aria-label.
+   Verdrahtet von atvantage.js ([data-avd-academy-print]) bzw. presentation.js
+   ([data-avd-academy-present-print]); im Ausdruck ausgeblendet (print.css). */
+.avd-academy-tool--print::before,
+.avd-academy-print-btn::before {
+  content: ""; display: block; width: 18px; height: 18px;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 6 2 18 2 18 9'/%3E%3Cpath d='M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2'/%3E%3Crect x='6' y='14' width='12' height='8'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 6 2 18 2 18 9'/%3E%3Cpath d='M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2'/%3E%3Crect x='6' y='14' width='12' height='8'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* Der Kopier-Button IM Code-Block (`pre > button`, absolut oben rechts – gesetzt in
+   atvantage.js) erscheint erst beim Überfahren des Blocks. Dauerhaft sichtbar
+   verdeckt er das rechte Ende der ersten Code-Zeile.
+
+   Bewusst `opacity` statt `display: none`: Der Button bleibt im Baum und damit für
+   Screenreader und die Tabulator-Reihenfolge erhalten. `:focus-within` blendet ihn
+   ein, sobald er den Fokus bekommt – sonst müssten Tastaturnutzer einen
+   unsichtbaren Button anspringen. `.is-copied` bleibt sichtbar, damit die
+   Haken-Rückmeldung nicht verschwindet, wenn die Maus den Block sofort verlässt.
+
+   Betrifft nur den Code-Button: `.avd-academy-copy-md` im Hero steht nicht in einem
+   `pre` und bleibt unverändert. Die Transition neutralisiert
+   `prefers-reduced-motion` global (base.css). */
+pre > .avd-academy-copy { opacity: 0; transition: opacity 120ms ease-in-out; }
+pre:hover > .avd-academy-copy,
+pre:focus-within > .avd-academy-copy,
+pre > .avd-academy-copy.is-copied { opacity: 1; }
+
+/* Ohne Hover-Fähigkeit (Touch) gibt es kein Überfahren – dort dauerhaft sichtbar,
+   sonst wäre der Button unerreichbar. Muss NACH der Basisregel stehen: gleiche
+   Spezifität (0,1,1), es entscheidet die Quellordnung. */
+@media (hover: none) {
+  pre > .avd-academy-copy { opacity: 1; }
+}
+
+/* --- QR-Code der Seiten-URL (Academy-Ergänzung) ---------------------------
+   Steht neben dem Drucken- bzw. Kopieren-Button und ist genauso groß wie dieser
+   (`--avd-academy-qr-size`, vom Kontext gesetzt: 34 px in der Hero-Meta-Zeile,
+   2 rem in der Präsentations-Kopfleiste).
+
+   In Button-Größe ist ein QR-Code mit rund 33 Modulen NICHT scannbar – ein
+   Modul wäre etwa ein Pixel breit. Deshalb wächst er bei Hover, Tastaturfokus
+   und (per `.is-zoom`, gesetzt von atvantage.js) bei Berührung auf
+   `--avd-academy-qr-zoom`.
+
+   Er wächst aus seiner rechten oberen Ecke nach links unten – absolut
+   positioniert, damit die Werkzeugzeile beim Vergrößern nicht umbricht. Dabei
+   legt er sich über die Nachbarn (links) und den Inhalt (unten); beides ist
+   gewollt, denn wer ihn gerade vergrößert, will genau ihn.
+
+   Die Fläche wächst über `width`/`height` statt per `transform: scale()`:
+   Skaliert würden Rahmen und Schatten mitskalieren (aus der Haarlinie würde ein
+   Balken). Das SVG folgt der Fläche ohne Qualitätsverlust.
+
+   Aufbau (`atvantage.js` hängt die Fläche und das SVG ein):
+     button.avd-academy-qr            Schaltfläche in Button-Größe, [hidden] bis fertig
+       span.avd-academy-qr__box       weiße Fläche, wächst beim Vergrößern
+         svg                          Ruhezone + Module                             */
+.avd-academy-qr {
+  --avd-academy-qr-size: 34px;   /* Kantenlänge im Ruhezustand (= Icon-Button) */
+  --avd-academy-qr-zoom: 168px;  /* vergrößert – ab hier zuverlässig scannbar */
+  /* Der jeweils GELTENDE Zustand. Die drei Auslöser unten schalten nur diese
+     drei Variablen um – so steht jeder Zustand einmal, und die Werte können
+     nicht auseinanderlaufen. Die Übergänge greifen trotzdem: Nicht die Variable
+     wird animiert, sondern die daraus berechnete Breite/Höhe. */
+  --avd-academy-qr-now: var(--avd-academy-qr-size);
+  --avd-academy-qr-pad: 2px;
+  --avd-academy-qr-shadow: none;
+  position: relative;
+  flex: none;
+  width: var(--avd-academy-qr-size);
+  height: var(--avd-academy-qr-size);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  /* Positioniert + z-index: Die vergrößerte Fläche ragt über den Inhalt darunter
+     hinaus und muss darüber liegen, nicht darunter. */
+  z-index: 1;
+}
+/* Das Layout liefert den Platzhalter als [hidden]; ohne diese Regel gewönne die
+   `width`/`height`-Regel oben über dem `display: none` des Browser-Stylesheets. */
+.avd-academy-qr[hidden] { display: none; }
+
+.avd-academy-qr__box {
+  position: absolute;
+  top: 0;
+  right: 0;
+  box-sizing: border-box;
+  width: var(--avd-academy-qr-now);
+  height: var(--avd-academy-qr-now);
+  padding: var(--avd-academy-qr-pad);
+  box-shadow: var(--avd-academy-qr-shadow);
+  background: var(--avd-white, #fff);
+  border: 1px solid var(--avd-academy-color-border);
+  border-radius: var(--avd-academy-radius);
+  transition: width var(--avd-academy-transition),
+              height var(--avd-academy-transition),
+              padding var(--avd-academy-transition),
+              box-shadow var(--avd-academy-transition);
+}
+/* Vergrößert – zwei Auslöser, die überall gelten: Tastaturfokus und `.is-zoom`
+   (setzt atvantage.js beim Antippen). */
+.avd-academy-qr:focus-visible,
+.avd-academy-qr.is-zoom {
+  --avd-academy-qr-now: var(--avd-academy-qr-zoom);
+  --avd-academy-qr-pad: 6px;
+  --avd-academy-qr-shadow: var(--avd-academy-shadow-2);
+}
+/* Überfahren nur dort, wo es ein Überfahren GIBT. Auf Touch-Geräten bleibt
+   `:hover` nach dem Antippen am Element kleben, bis woanders getippt wird – der
+   Code ließe sich dann weder per Escape noch durch nochmaliges Tippen zuklappen.
+   Dort bleibt allein der Umschalter aus atvantage.js zuständig. */
+@media (hover: hover) {
+  .avd-academy-qr:hover {
+    --avd-academy-qr-now: var(--avd-academy-qr-zoom);
+    --avd-academy-qr-pad: 6px;
+    --avd-academy-qr-shadow: var(--avd-academy-shadow-2);
+  }
+}
+.avd-academy-qr__box svg { display: block; width: 100%; height: 100%; }
+/* Immer dunkel auf hell – unabhängig vom Farbschema. Ein invertierter QR-Code
+   (hell auf dunkel) wird von vielen Scannern nicht gelesen. Die Werte sind
+   Fundament-Tokens ohne Dark-Variante, kein Dark-Mode-Sonderfall nötig. */
+.avd-academy-qr__box svg rect { fill: var(--avd-white, #fff); }
+.avd-academy-qr__box svg path { fill: var(--avd-ink, #1a2627); }
+
+/* --- Gruppierte Tabelle (Academy-Ergänzung) --------------------------------
+   Eine Tabelle, deren Zeilen zu GRUPPEN zusammengefasst sind, mit ZWISCHENRÄUMEN
+   zwischen den Gruppen. Jede Gruppe trägt links einen farbigen Streifen, die
+   Zwischenräume sind schraffiert. Damit ist auf einen Blick zu sehen, wie voll
+   eine Gruppe ist, wo Raum frei bleibt und wo etwas über die letzte Gruppe
+   hinausläuft.
+
+   Bewusst NEUTRAL gehalten – die Komponente weiß nichts über den Inhalt. Sie
+   trägt keine Zeiten, keine Summen und keine Reihenfolge; alles, was dasteht,
+   steht im Markup. Wofür die Gruppen stehen, entscheidet die Seite.
+
+   Aufbau (Markdown kann kein `rowspan`, deshalb echtes HTML – siehe
+   docs/theme/academy.md, Abschnitt „Gruppierte Tabelle“):
+
+     table.avd-academy-grouptable
+       tr
+         td.avd-academy-grouptable__group.…--tone-1   [rowspan]  Gruppenkopf
+         td.avd-academy-grouptable__num                          Zahlenspalte
+         td                                                      Inhalt
+       tr.avd-academy-grouptable__free    Zeile mit freiem Raum INNERHALB der Gruppe
+       tr.avd-academy-grouptable__gap     Zwischenraum ZWISCHEN zwei Gruppen (volle Breite)
+       tr.avd-academy-grouptable__alert   Ankündigung, dass das Raster verlassen wird
+
+   Grundgerüst (Rahmen, Polster, Ausrichtung) kommt aus base.css; hier stehen nur
+   die Abweichungen. */
+.avd-academy-grouptable th,
+.avd-academy-grouptable td { vertical-align: top; }
+
+/* Gruppenkopf: farbiger Streifen links, zweite Zeile (z. B. eine Spanne) klein
+   darunter. `white-space: nowrap` hält die Spalte schmal. */
+.avd-academy-grouptable__group {
+  white-space: nowrap;
+  border-left: 6px solid var(--avd-academy-grouptable-tone, var(--avd-academy-color-border));
+}
+.avd-academy-grouptable__group small { display: block; font-weight: 400; opacity: .75; }
+.avd-academy-grouptable__group--tone-1 { --avd-academy-grouptable-tone: var(--avd-academy-tone-1); }
+.avd-academy-grouptable__group--tone-2 { --avd-academy-grouptable-tone: var(--avd-academy-tone-2); }
+.avd-academy-grouptable__group--tone-3 { --avd-academy-grouptable-tone: var(--avd-academy-tone-3); }
+.avd-academy-grouptable__group--tone-4 { --avd-academy-grouptable-tone: var(--avd-academy-tone-4); }
+/* Signalton: für Gruppen, die außerhalb des regulären Rasters liegen. Hier färbt
+   er auch die Schrift – die Zeile soll auffallen, nicht bloß markiert sein.
+   Als SCHRIFT die `-ink`-Fassung: Der rohe Ton ist als Fläche gerechnet und trug
+   im Light-Theme nur 4,39:1 (gefunden von `theme/jekyll/contrast.rb`). Der
+   Streifen behält den vollen Ton – er ist Fläche, nicht Schrift. */
+.avd-academy-grouptable__group--tone-alert {
+  --avd-academy-grouptable-tone: var(--avd-academy-tone-alert);
+  color: var(--avd-academy-tone-alert-ink);
+}
+
+/* Schmale Zahlenspalte: rechtsbündig, nie umbrechend – so stehen die Werte
+   untereinander und die Spalte bleibt so breit wie ihr längster Wert. */
+.avd-academy-grouptable__num { white-space: nowrap; text-align: right; }
+
+/* Rechtsbündige Schlusszeile einer Inhaltszelle – etwa für einen Verweis, der
+   nicht mitten im Text hängen soll. */
+.avd-academy-grouptable__link { display: block; text-align: right; }
+
+/* Aktionsspalte am ZEILENENDE – die Alternative zu `…__link`. Wofür: Wenn jede
+   Zeile ein Ziel hat, das man ansteuern soll (ein Modul, ein Vorgang, ein Detail),
+   geht der Verweis IN der Inhaltszelle unter. Er beginnt dort in jeder Zeile an
+   einer anderen Stelle und sieht aus wie ein Teil des Textes. Als eigene, letzte
+   Spalte steht er in jeder Zeile an DERSELBEN Stelle und ist so hoch wie die
+   Zeile – groß genug, um ihn zu treffen, ohne zu zielen.
+
+   `…__link` bleibt für den anderen Fall: ein Verweis, der zum Satz gehört.
+
+   Getönt wird nur, wo auch ein Ziel dahintersteht (`:has(a)`) – Zeilen ohne Ziel
+   und Fortsetzungszeilen bleiben unbemalt. Ohne `:has()`-Unterstützung entfällt
+   nur die Tönung, der Link bleibt.
+
+   Das Zeichen kommt als CSS-Maske in `currentColor`, NICHT als Emoji: Ein ▶️
+   erscheint je Plattform anders (auf manchen blau), lässt sich nicht einfärben
+   und wächst nicht mit der Schrift. Die Zelle braucht deshalb kein Zeichen im
+   Markup – nur eine für Screenreader lesbare Beschriftung. */
+.avd-academy-grouptable__action {
+  width: 1%;        /* nur so breit wie ihr Inhalt */
+  padding: 0;       /* die Fläche füllt die Zelle, nicht das Polster */
+  text-align: center;
+}
+.avd-academy-grouptable__action:has(a) {
+  background: color-mix(in srgb, var(--avd-academy-color-accent) 16%, transparent);
+}
+.avd-academy-grouptable__action:has(a):hover {
+  background: color-mix(in srgb, var(--avd-academy-color-accent) 34%, transparent);
+}
+/* Der Link füllt die Zelle über die ganze Zeilenhöhe – die Farbfläche IST die
+   Schaltfläche. Fällt `height: 100%` in einer Tabellenzelle aus, trägt die Zelle
+   die Tönung weiterhin selbst. */
+.avd-academy-grouptable__action a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 2.25rem;
+  padding: 0 var(--avd-academy-space-3);
+  color: var(--avd-academy-color-accent);
+  text-decoration: none;
+}
+.avd-academy-grouptable__action a::before {
+  content: "";
+  flex: none;
+  width: 1.1em; height: 1.1em;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5.5v13l11-6.5z'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5.5v13l11-6.5z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* Zwischenraum und freier Raum tragen DIESELBE Schraffur: beides ist Zeit bzw.
+   Platz, der nicht mit Inhalt belegt ist – einmal zwischen den Gruppen, einmal
+   innerhalb einer. Die Schraffur kommt aus dem Textton und funktioniert damit in
+   Light wie Dark, ohne eigenen Farbwert. */
+.avd-academy-grouptable__gap td,
+.avd-academy-grouptable__free td {
+  opacity: .8;
+  background-image: repeating-linear-gradient(135deg,
+    transparent 0 6px,
+    color-mix(in srgb, var(--avd-academy-color-ink) 14%, transparent) 6px 12px);
+}
+/* Der Zwischenraum läuft über die volle Breite (ein `td` mit `colspan`) und ist
+   zurückhaltender gesetzt als eine Inhaltszeile. */
+.avd-academy-grouptable__gap td {
+  padding: var(--avd-academy-space-1) var(--avd-academy-space-3);
+  font-size: var(--avd-academy-fs-sm);
+  text-align: center;
+}
+/* Freier Raum steht INNERHALB einer Gruppe: Der Gruppenkopf daneben gehört noch
+   zur Gruppe und bleibt deshalb unschraffiert. */
+.avd-academy-grouptable__free .avd-academy-grouptable__group {
+  background-image: none;
+  opacity: 1;
+}
+
+/* Ankündigung, dass das Raster verlassen wird: volle Breite, Signalfarbe, oben
+   abgesetzt – die Grenze soll sichtbar überschritten werden. */
+.avd-academy-grouptable__alert td {
+  padding: var(--avd-academy-space-1) var(--avd-academy-space-3);
+  font-size: var(--avd-academy-fs-sm);
+  font-weight: 600;
+  /* Schrift in der `-ink`-Fassung, Linie im vollen Ton – siehe oben. */
+  color: var(--avd-academy-tone-alert-ink);
+  border-top: 2px solid var(--avd-academy-tone-alert);
+}
+
+/* Legende zur Tabelle – erklärt die Töne und die Schraffur. Eigenständig
+   verwendbar, auch mehrfach über mehreren Tabellen. */
+/* DER KLASSENNAME STEHT ZWEIMAL, mit Absicht. Der Flussrhythmus
+   `.avd-academy-guide-main > * + *` in guide.css hat DIESELBE Spezifitaet wie
+   ein einfacher Klassenselektor (0-1-0) - und guide.css laedt spaeter als diese
+   Datei. Bei Gleichstand gewinnt das Spaetere, der eigene Abstand kaeme also nie
+   an. Die Dopplung hebt auf 0-2-0 und entscheidet die Sache unabhaengig von der
+   Ladereihenfolge. Nicht wegraeumen. */
+.avd-academy-grouptable-legend.avd-academy-grouptable-legend {
+  display: flex; flex-wrap: wrap;
+  gap: var(--avd-academy-space-1) var(--avd-academy-space-4);
+  margin: var(--avd-academy-space-2) 0 var(--avd-academy-space-4);
+  font-size: var(--avd-academy-fs-sm);
+}
+.avd-academy-grouptable-legend__key { display: inline-flex; align-items: center; gap: var(--avd-academy-space-1); }
+.avd-academy-grouptable-legend__key::before {
+  content: ""; width: .55rem; height: 1rem;
+  border-radius: var(--avd-academy-radius-sm);
+  background: var(--avd-academy-grouptable-tone, var(--avd-academy-color-border));
+}
+.avd-academy-grouptable-legend__key--tone-1 { --avd-academy-grouptable-tone: var(--avd-academy-tone-1); }
+.avd-academy-grouptable-legend__key--tone-2 { --avd-academy-grouptable-tone: var(--avd-academy-tone-2); }
+.avd-academy-grouptable-legend__key--tone-3 { --avd-academy-grouptable-tone: var(--avd-academy-tone-3); }
+.avd-academy-grouptable-legend__key--tone-4 { --avd-academy-grouptable-tone: var(--avd-academy-tone-4); }
+.avd-academy-grouptable-legend__key--tone-alert { --avd-academy-grouptable-tone: var(--avd-academy-tone-alert); }
+/* Schlüssel für Zwischenraum/freien Raum: dieselbe Schraffur wie in der Tabelle,
+   nur feiner, damit sie im kleinen Feld erkennbar bleibt. */
+.avd-academy-grouptable-legend__key--gap::before {
+  background: transparent;
+  background-image: repeating-linear-gradient(135deg,
+    transparent 0 3px,
+    color-mix(in srgb, var(--avd-academy-color-ink) 45%, transparent) 3px 6px);
+  border: 1px solid var(--avd-academy-color-border);
+}
+
+/* --- Typisierte Dokumentlinks (Academy-Ergänzung) --------------------------
+   Ein Link, dem sein ZIELFORMAT vorangestellt ist: Übung, Präsentation,
+   Visualisierung, Simulation, Übersicht. Das Icon kommt aus dem Theme
+   (theme/academy/icons/, mit dem Paket ausgeliefert) – Projekte pflegen KEINE
+   eigenen Icon-Dateien und schreiben kein <img> in den Fließtext. Vorher trug
+   jede Aufstellung ihre eigene Kopie der SVGs; damit sahen dieselben Formate
+   von Repo zu Repo unterschiedlich aus.
+
+   Die Icons sind Farbkacheln (Orange bzw. Slate/Anthrazit) und tragen ihre
+   Fläche selbst – sie funktionieren in Light UND Dark unverändert. Im Dark Mode
+   liefe die Kachel mit dem Seitenhintergrund zusammen, deshalb der feine Ring;
+   im Light Mode fällt er nicht auf. Gedruckt erscheinen sie, weil print.css
+   `print-color-adjust: exact` global setzt.
+
+   Pfade sind RELATIV zu dieser Datei – so gilt derselbe Verweis für die
+   Doku-Site (theme/ in-repo) wie für Consumer, die das Paket nach site/theme/
+   laden. Keine absolute URL, die ein `baseurl` bräuchte.               */
+.avd-academy-doclink {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--avd-academy-space-2);
+}
+.avd-academy-doclink::before {
+  content: "";
+  flex: none;
+  width: 1.05rem;
+  height: 1.05rem;
+  border-radius: 3px;
+  transform: translateY(.15rem);
+  background: center / contain no-repeat;
+  box-shadow: 0 0 0 1px var(--avd-academy-color-border);
+}
+.avd-academy-doclink--guide::before         { background-image: url("icons/icon-guide.svg"); }
+.avd-academy-doclink--slides::before        { background-image: url("icons/icon-slides.svg"); }
+.avd-academy-doclink--visualization::before { background-image: url("icons/icon-visualization.svg"); }
+.avd-academy-doclink--simulation::before    { background-image: url("icons/icon-simulation.svg"); }
+.avd-academy-doclink--overview::before      { background-image: url("icons/icon-overview.svg"); }
+
+/* --- Materialübersicht: Themenblock + zwei Spalten (Academy-Ergänzung) -----
+   Die Aufstellung der Unterlagen für Lernende. Je Themenblock zwei Spalten:
+   links, was man SELBST TUT (Übungen), rechts, was man NACHSCHLÄGT (Folien,
+   Visualisierungen, Simulationen). Diese Trennung ist der Zweck der
+   Darstellung – und sie steht je Themenblock, nicht global, damit
+   Zusammengehörendes zusammen bleibt.                                  */
+/* DER KLASSENNAME STEHT ZWEIMAL, mit Absicht. Der Flussrhythmus
+   `.avd-academy-guide-main > * + *` in guide.css hat DIESELBE Spezifitaet wie
+   ein einfacher Klassenselektor (0-1-0) - und guide.css laedt spaeter als diese
+   Datei. Bei Gleichstand gewinnt das Spaetere, der eigene Abstand kaeme also nie
+   an. Die Dopplung hebt auf 0-2-0 und entscheidet die Sache unabhaengig von der
+   Ladereihenfolge. Nicht wegraeumen. */
+.avd-academy-topic.avd-academy-topic { margin: var(--avd-academy-space-8) 0 0; }
+.avd-academy-topic > h3 {
+  margin: 0 0 var(--avd-academy-space-3);
+  padding-bottom: .35rem;
+  font-size: 1.1rem;
+  border-bottom: 2px solid var(--avd-academy-color-accent);
+}
+
+.avd-academy-materials {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1.2rem, .8rem + 2vw, 2.5rem);
+}
+/* Themenblöcke ohne Nachschlage-Spalte behalten die Spaltenbreite – die
+   Übungsspalte soll von Block zu Block nicht springen. Erst auf schmalen
+   Anzeigen fallen die Spalten untereinander. */
+@media (max-width: 800px) {
+  .avd-academy-materials { grid-template-columns: 1fr; gap: var(--avd-academy-space-6); }
+}
+
+.avd-academy-materials__head {
+  margin: 0 0 var(--avd-academy-space-2);
+  font-size: .68rem;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  font-weight: 700;
+  opacity: .7;
+}
+
+/* Das Icon des Links trägt die Typunterscheidung – Aufzählungspunkte wären
+   daneben ein zweiter, stummer Marker. */
+.avd-academy-materials__col ul { list-style: none; margin: 0; padding: 0; }
+.avd-academy-materials__col li { margin: 0 0 .45rem; }
+
+@media print {
+  .avd-academy-topic { break-inside: avoid; margin-top: 10pt; }
+  .avd-academy-topic > h3 { font-size: 11pt; margin-bottom: 5pt; }
+  .avd-academy-materials { grid-template-columns: 1fr 1fr; gap: 12pt; }
+  .avd-academy-materials__col li { margin-bottom: 2pt; font-size: 9pt; }
+}
+
+/* --- Callouts / Hinweisboxen (Academy-Ergänzung; atvantage kennt keine) ---- */
+.avd-academy-callout {
+  border-left: 4px solid var(--avd-academy-color-info);
+  background: var(--avd-academy-color-bg-subtle);
+  border-radius: 0 var(--avd-academy-radius) var(--avd-academy-radius) 0;
+  padding: var(--avd-academy-space-3) var(--avd-academy-space-4);
+  margin-block: var(--avd-academy-space-4);
+}
+.avd-academy-callout--info    { border-color: var(--avd-academy-color-info); }
+.avd-academy-callout--success { border-color: var(--avd-academy-color-success); }
+.avd-academy-callout--warning { border-color: var(--avd-academy-color-warning); }
+.avd-academy-callout--danger  { border-color: var(--avd-academy-color-danger); }
+.avd-academy-callout__title { font-weight: 600; margin-bottom: var(--avd-academy-space-1); }
+
+/* --- Karten / Kacheln (ATVANTAGE-Card: graue Fläche, orange Headline, Link) - */
+.avd-academy-card {
+  display: flex; flex-direction: column;
+  background: var(--avd-academy-color-bg-subtle);   /* atvantage: --color-surface-card, theme-fähig */
+  border-radius: var(--radius-dark, 8px);
+  padding: 28px 28px 24px;
+}
+.avd-academy-card h2, .avd-academy-card h3, .avd-academy-card h4, .avd-academy-card h5 {
+  color: var(--avd-orange);           /* ATVANTAGE-Card-Headline ist orange */
+  margin-top: 0;
+  margin-bottom: var(--avd-academy-space-3);
+}
+/* Letztes Element bündig, ohne Zusatzabstand. Empfohlenes Muster: die
+   Karten-Überschrift IST der Link (siehe theme/README.md → „avd-academy-card“);
+   ein separater „Mehr dazu →“/„Loslegen →“-CTA-Absatz ist nicht mehr nötig. */
+.avd-academy-card > :last-child { margin-bottom: 0; }
+.avd-academy-card a {
+  color: var(--avd-orange);
+  font-weight: 500;
+  text-decoration: none;
+}
+.avd-academy-card a:hover { text-decoration: underline; }
+/* Verlinkte Card-Headline: sieht aus wie die Headline, nur klickbar. */
+.avd-academy-card h2 a, .avd-academy-card h3 a,
+.avd-academy-card h4 a, .avd-academy-card h5 a { color: inherit; font-weight: inherit; }
+
+/* --- Aufdeckbarer Inhalt (Academy-Ergänzung) -------------------------------
+   Ein Titel, der wie ein Link aussieht; der Inhalt erscheint erst auf Klick,
+   mittig über der Seite. Wofür: Material, das den Lesefluss unterbrechen würde,
+   aber greifbar bleiben soll – Musterlösungen, Legenden, Abgrenzungstabellen,
+   Hintergrund zu einer Entscheidung.
+
+   AUFGEBAUT AUF `<details>`, nicht auf einem Klick-Handler. Das ist Absicht:
+   Ohne JavaScript bleibt es ein normaler Aufklapper, und der Inhalt ist
+   erreichbar. Ein Popup, das nur mit JS existiert, verliert im Fehlerfall
+   Schulungsinhalt – und genau das darf nicht passieren.
+
+   Die mittige Darstellung macht CSS allein (`[open]`), nicht das Skript: Der
+   native Umschalter von `<details>` schaltet `[open]`, daran hängen Overlay und
+   Panel. atvantage.js ergänzt nur die Bequemlichkeiten, die `<details>` nicht
+   mitbringt: Klick daneben und ESC schließen, und ein Rahmen um den Inhalt
+   (`__body`), damit Panel und Overlay getrennt liegen.
+
+   IM AUSDRUCK steht der Inhalt EINGEBETTET an seiner Stelle in der Seite, auch
+   wenn er zu ist – auf Papier gibt es kein Aufdecken, und ein Ausdruck mit
+   Lücken ist wertlos. Wer das für einzelne Stellen nicht will (Musterlösungen
+   neben der Übung!), setzt zusätzlich `--screen-only`.               */
+.avd-academy-reveal { margin: var(--avd-academy-space-4) 0; }
+.avd-academy-reveal > summary {
+  display: inline-flex; align-items: center; gap: var(--avd-academy-space-2);
+  width: fit-content;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--avd-academy-color-accent);
+  border-bottom: 1px dashed currentColor;
+  list-style: none;             /* Standard-Dreieck weg (Firefox) */
+}
+.avd-academy-reveal > summary::-webkit-details-marker { display: none; }
+.avd-academy-reveal > summary::before {
+  content: ""; flex: none; width: 1rem; height: 1rem;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-4.5-4.5'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-4.5-4.5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.avd-academy-reveal > summary:hover,
+.avd-academy-reveal > summary:focus-visible { border-bottom-style: solid; }
+
+/* --- Variante `--info`: kompakte Schaltfläche statt Titelzeile ---------------
+   Für Stellen ohne Platz für einen Titel – eine Tabellenzelle, das Ende einer
+   Zeile. Die Auslösung ist ein runder Knopf mit Info-Zeichen; der Titel steckt
+   als visuell verborgener Text im `summary` und ist damit NICHT weg: Screenreader
+   lesen ihn, und atvantage.js übernimmt ihn als Überschrift des Panels.
+
+       <details class="avd-academy-reveal avd-academy-reveal--info" markdown="1">
+       <summary><span class="avd-academy-visually-hidden">«Titel»</span></summary>
+       …
+       </details>
+
+   Das Zeichen ist eine CSS-Maske in `currentColor`, kein Emoji – ein Emoji sieht
+   je Plattform anders aus, lässt sich nicht einfärben und folgt der Schriftgröße
+   nicht. Ohne `margin`, damit der Knopf in einer Tabellenzeile nicht ausbricht. */
+.avd-academy-reveal--info { display: inline-block; margin: 0; vertical-align: middle; }
+.avd-academy-reveal--info > summary {
+  width: 1.4rem; height: 1.4rem; padding: 0; gap: 0;
+  justify-content: center;
+  border-bottom: 0; border-radius: 999px;
+  background: color-mix(in srgb, var(--avd-academy-color-accent) 16%, transparent);
+}
+.avd-academy-reveal--info > summary:hover,
+.avd-academy-reveal--info > summary:focus-visible {
+  border-bottom: 0;
+  background: color-mix(in srgb, var(--avd-academy-color-accent) 34%, transparent);
+}
+.avd-academy-reveal--info > summary::before {
+  width: .95rem; height: .95rem;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 2a10 10 0 100 20 10 10 0 000-20zm0 2a8 8 0 110 16 8 8 0 010-16zm-1.1 6.4h2.2v7h-2.2zm0-4h2.2v2.2h-2.2z'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 2a10 10 0 100 20 10 10 0 000-20zm0 2a8 8 0 110 16 8 8 0 010-16zm-1.1 6.4h2.2v7h-2.2zm0-4h2.2v2.2h-2.2z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* Abdunkelung hinter dem Panel. Sie sitzt am `details` selbst, damit kein
+   zusätzliches Element nötig ist – der Klick darauf schließt (atvantage.js). */
+.avd-academy-reveal[open]::before {
+  content: ""; position: fixed; inset: 0; z-index: 60;
+  background: rgba(2, 6, 23, .6);
+}
+
+/* Das Panel: mittig, begrenzt in Breite und Höhe, innen scrollbar. Ohne das
+   Skript (kein `__body`) greift dieselbe Regel für die direkten Kinder – dann
+   liegt der Inhalt ebenfalls mittig, nur ohne eigene Fläche pro Block. */
+.avd-academy-reveal[open] > .avd-academy-reveal__body {
+  position: fixed; inset: 0; margin: auto; z-index: 61;
+  /* `height: fit-content` ist nötig, nicht Kosmetik: Mit `inset: 0` sind oben UND
+     unten gesetzt, dadurch streckt sich das Panel bei `height: auto` über die
+     ganze Höhe – ein kurzer Inhalt stünde in einem fast leeren Kasten. */
+  width: min(92vw, 780px); height: fit-content; max-height: 85vh; overflow: auto;
+  padding: var(--avd-academy-space-6);
+  background: var(--avd-academy-color-bg);
+  color: var(--avd-academy-color-ink);
+  border: 1px solid var(--avd-academy-color-border);
+  border-radius: var(--radius-dark, 8px);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .35);
+}
+.avd-academy-reveal__body > :first-child { margin-top: 0; }
+.avd-academy-reveal__body > :last-child { margin-bottom: 0; }
+/* Der Titel wird im Panel wiederholt, damit sichtbar bleibt, was man geöffnet
+   hat – gesetzt von atvantage.js aus dem `summary`. */
+.avd-academy-reveal__title {
+  margin: 0 0 var(--avd-academy-space-4);
+  font-size: 1.05rem;
+  padding-bottom: var(--avd-academy-space-2);
+  border-bottom: 1px solid var(--avd-academy-color-border);
+}
+/* Schließen-Kreuz oben rechts im Panel (atvantage.js). */
+.avd-academy-reveal__close {
+  position: absolute; top: var(--avd-academy-space-3); right: var(--avd-academy-space-3);
+  border: 0; background: transparent; color: inherit;
+  font-size: 1.5rem; line-height: 1; cursor: pointer; padding: 0 .2rem;
+  /* Mindestens 24x24 - darunter verlangt WCAG 2.5.8 freien Abstand ringsum, den
+     ein Kreuz in der Ecke eines Panels nicht hat. Das Zeichen bleibt gleich groß;
+     nur die anklickbare Flaeche waechst. */
+  min-width: 24px; min-height: 24px;
+}
+
+/* --- Badge / Chip (Academy) ----------------------------------------------- */
+.avd-academy-badge {
+  display: inline-block; font-size: var(--avd-academy-fs-sm); font-weight: 500;
+  padding: 0.1em 0.7em; border-radius: 999px;
+  background: var(--avd-academy-color-bg); border: 1px solid var(--avd-academy-color-border);
+  color: var(--avd-academy-color-headline);
+}
+
+/* --- Fortschritt: Vollständig-Zustand (grüner Haken) ----------------------
+   Die Basis-Styles (.avd-academy-progress__*) liegen in guide.css/site.css; hier
+   nur der „fertig“-Zustand. JS setzt .is-complete auf die Fortschrittskarte, sobald
+   alle Checkboxen erledigt sind. Balken und Text bleiben sichtbar – es kommt nur
+   ein grüner Haken hinzu. */
+[data-avd-academy-progress].is-complete .avd-academy-progress__text {
+  display: flex; align-items: center; gap: 8px;
+}
+[data-avd-academy-progress].is-complete .avd-academy-progress__text::after {
+  content: ""; flex: none; width: 20px; height: 20px;
+  background-color: var(--avd-academy-color-success, #2e7d32);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* =============================================================================
+   Header + Footer (in JEDER Unterlage identisch, im ATVANTAGE-Website-Stil)
+   ============================================================================= */
+
+/* --- Meta-Navigation (schmale Leiste über dem Header) --------------------- */
+.avd-academy-metanav {
+  background: var(--avd-academy-metanav-bg);
+  color: var(--avd-academy-metanav-text);
+  font-size: 0.875rem;
+  display: flex;
+  gap: 24px;
+  padding: 6px max(24px, calc((100% - var(--avd-academy-page-width, 1200px)) / 2));
+}
+.avd-academy-metanav a { color: inherit; text-decoration: none; }
+.avd-academy-metanav a:hover { color: var(--avd-orange); }
+
+/* --- Header: weißer, sticky ATVANTAGE-Header ------------------------------ */
+.avd-academy-header {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; gap: 32px;
+  height: var(--topnav-height, 80px);
+  padding: 0 max(24px, calc((100% - var(--avd-academy-page-width, 1200px)) / 2));
+  background: var(--avd-academy-topbar-bg);
+  border-bottom: 1px solid var(--avd-academy-border-soft);
+}
+.avd-academy-header__brand { display: inline-flex; align-items: center; text-decoration: none; }
+.avd-academy-header__logo { height: 22px; width: auto; display: block; }
+
+/* Wortmarke in der Akzentfarbe – nur wenn `brand.logo_ratio` gesetzt ist.
+   Ein <img> laedt das SVG als EIGENES Dokument: Dort sind weder die Tokens der
+   Seite noch `currentColor` noch `data-avd-academy-theme` sichtbar. Eine Farbe im
+   SVG selbst waere ein zweiter Handwert neben `--avd-academy-accent-base` – genau
+   das, was 2.13.0 abgeschafft hat.
+
+   Deshalb liegt die eingefaerbte Fassung als MASKE auf einem <span> NEBEN dem
+   Bild. Nicht auf dem Bild: Gemessen traegt die Maske dort nicht – weder
+   `content: ""` noch `content: none` noch `-webkit-mask` entfernen den
+   Bildinhalt, das Original malt darueber. Auf einem nicht ersetzten Element
+   traegt sie.
+
+   Weil der span keine Eigengroesse hat, muss das Verhaeltnis von aussen kommen.
+   Es steht als `brand.logo_ratio` in der `_config.yml` – dort ist es ein Datum
+   neben dem Logo-Pfad und kein Zahlenpaar, das in einer fremden Style-Datei
+   verwaist.
+
+   Der span ist DEFAULT UNSICHTBAR und das <img> sichtbar: Kann eine Engine keine
+   Masken, bleibt es beim unveraenderten Bild. Der Rueckfall ist damit der
+   Normalfall – ein fehlendes Logo sieht man nicht im Build, sondern beim Kunden. */
+.avd-academy-header__logo-mask { display: none; }
+
+@supports (mask: url("#x") no-repeat) {
+  .avd-academy-header__logo-mask ~ .avd-academy-header__logo,
+  .avd-academy-header__logo:has(~ .avd-academy-header__logo-mask) { display: none; }
+  .avd-academy-header__logo-mask {
+    display: block;
+    height: 22px;
+    aspect-ratio: var(--avd-academy-logo-ratio);
+    background-color: var(--avd-academy-color-accent);
+    mask: var(--avd-academy-logo-src) no-repeat left center / contain;
+  }
+}
+.avd-academy-header__nav { margin-left: auto; display: flex; align-items: center; gap: 26px; flex-wrap: wrap; }
+.avd-academy-header__nav a {
+  text-decoration: none; font-weight: 500; font-size: 1.0625rem;
+  color: var(--avd-academy-color-headline);
+}
+.avd-academy-header__nav a:hover,
+.avd-academy-header__nav a[aria-current="page"] { color: var(--avd-orange); }
+
+.avd-academy-header__burger { display: none; }
+
+/* --- Werkzeuge in der Kopfzeile ------------------------------------------
+   Kleine Gruppe am rechten Rand: QR-Code der Seitenadresse + Farbschema-
+   Umschalter, beide gleich groß.
+
+   Sie sitzt BEWUSST außerhalb von `__nav`: Das Nav klappt auf schmalen
+   Viewports in den Burger und ist im Ausdruck ausgeblendet. Beides soll für die
+   Werkzeuge nicht gelten – der Umschalter ist auf dem Handy so erreichbar wie
+   am Schreibtisch, und der QR-Code bleibt im Ausdruck stehen (print.css). */
+.avd-academy-header__tools {
+  display: flex; align-items: center; gap: var(--avd-academy-space-2);
+  flex: none;
+}
+
+/* Die Knöpfe darin sind die Seitenwerkzeuge (`.avd-academy-tool`, oben im
+   Button-Abschnitt). Sie brauchen hier KEINE Variablen: Die Vorgaben der
+   Komponente – 34 px, Überschriftenfarbe – sind genau der Kopfzeilen-Look, und der
+   QR-Code daneben ist ebenso groß. */
+
+@media (max-width: 900px) {
+  /* NEBEN DER WORTMARKE, nicht am rechten Rand. Im Markup steht der Knopf direkt
+     hinter ihr; ohne `margin-left: auto` bleibt er dort. Den Rechtsschub
+     uebernehmen die Werkzeuge. */
+  .avd-academy-header__burger { display: inline-flex; flex: none; margin-left: var(--avd-academy-space-3); }
+  .avd-academy-header__nav {
+    display: none;
+    position: absolute; top: 100%; left: 0; right: 0;
+    flex-direction: column; align-items: flex-start;
+    gap: var(--avd-academy-space-3);
+    margin-left: 0;
+    padding: var(--avd-academy-space-4) max(24px, calc((100% - var(--avd-academy-page-width, 1200px)) / 2));
+    background: var(--avd-academy-topbar-bg);
+    border-bottom: 1px solid var(--avd-academy-border-soft);
+    box-shadow: var(--avd-academy-shadow-2);
+    z-index: 50;
+  }
+  .avd-academy-header__nav[data-open] { display: flex; }
+
+  /* Reihenfolge am rechten Rand: erst die Werkzeuge, dann der Burger. Im Markup
+     steht die Gruppe nach dem Nav; ohne `order` landete sie rechts vom Burger und
+     der Burger mitten in der Zeile. Der Rechtsschub wandert deshalb von ihm zu
+     den Werkzeugen – die Regel muss NACH der Burger-Regel oben stehen. */
+  .avd-academy-header__tools { margin-left: auto; }
+}
+
+/* --- Header-Untermenü: Dropdown (breit) / aufklappbar (schmal) ------------ */
+.avd-academy-header__group { position: relative; display: inline-flex; }
+.avd-academy-header__grouptoggle {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: none; border: 0; padding: 0; cursor: pointer;
+  font: inherit; font-weight: 500; font-size: 1.0625rem;
+  color: var(--avd-academy-color-headline);
+}
+.avd-academy-header__grouptoggle:hover,
+/* Auch hier der Kind-Selektor: Mit dem Nachfahren faerbte sich beim Fokus in der
+   ersten Ebene der Schalter der dritten gleich mit ein - zwei hervorgehobene
+   Eintraege, obwohl nur einer den Fokus hat. */
+.avd-academy-header__group:focus-within > .avd-academy-header__grouptoggle { color: var(--avd-orange); }
+.avd-academy-header__caret { font-size: 0.6875rem; line-height: 1; }
+/* Inline-Icon in Link-Labels (TopNav, Footer, Ressourcen). Quadratische Quellbilder
+   werden – wie GitHub-Profilbilder – KREISRUND dargestellt (quadratisch + border-radius
+   50% + object-fit: cover). */
+.avd-academy-linkicon {
+  width: 1.15em; height: 1.15em; vertical-align: -0.2em;
+  display: inline-block; object-fit: cover; border-radius: 50%; flex: none;
+  margin-right: 0.5em;   /* Abstand zwischen Icon und Text (Titel folgt als Textknoten) */
+}
+/* Ressourcen-Sidebar: Icon rechts, etwas größer (avatarartig). */
+.avd-academy-guide-side__links a { display: flex; align-items: center; gap: 0.5rem; }
+.avd-academy-linkicon--right { margin-left: auto; margin-right: 0; width: 1.6em; height: 1.6em; }
+/* Aufklappmenü mit gemischten Einträgen (mit/ohne Icon): feste Icon-Spalte, damit
+   ALLE Titel linksbündig untereinander stehen. Icon liegt im linken Gutter.
+   Kompound-Selektor (beide Klassen) + volle `padding`-Kurzform, damit die
+   Basisregel `.avd-academy-header__submenu a { padding: 8px 20px }` den linken
+   Innenabstand NICHT zurücksetzt (sonst rutscht der Text unter das Icon). */
+/* EINE SPALTE, EINE BREITE. Die Einrueckung stand als `1.65em` da und rechnete
+   damit an der Schrift der jeweiligen Zeile - bei der Gruppenueberschrift (12 px
+   statt 16 px) kamen 39,8 px heraus statt 46,4, und der Titel stand 6 px zu weit
+   links. Die Spalte ist jetzt eine feste Groesse, abgeleitet von der Schriftgroesse
+   der EINTRAEGE; wer sie aendert, aendert sie hier einmal. */
+.avd-academy-header__submenu--hasicons {
+  --avd-academy-menu-icon: calc(1.15 * 16px);
+  --avd-academy-menu-indent: calc(20px + 1.65 * 16px);
+}
+.avd-academy-header__submenu--hasicons.avd-academy-header__submenu a {
+  position: relative; padding: 8px 20px 8px var(--avd-academy-menu-indent);
+}
+.avd-academy-header__submenu--hasicons .avd-academy-linkicon {
+  position: absolute; left: 20px; top: 50%; transform: translateY(-50%); margin-right: 0;
+  width: var(--avd-academy-menu-icon); height: var(--avd-academy-menu-icon);
+}
+.avd-academy-header__submenu {
+  display: none; position: absolute; top: 100%; left: 0;
+  min-width: 210px; margin-top: 8px; padding: 8px 0;
+  flex-direction: column;
+  background: var(--avd-academy-topbar-bg);
+  border: 1px solid var(--avd-academy-border-soft);
+  border-radius: var(--avd-academy-radius);
+  box-shadow: var(--avd-academy-shadow-2);
+  z-index: 60;
+}
+/* Unsichtbare Hover-Brücke über die Lücke (margin-top) zwischen Toggle und
+   Untermenü. GROSSZÜGIG überlappend (nicht exakt 8px), damit der :hover beim
+   Runterfahren der Maus garantiert NICHT abreißt – auch kein Sub-Pixel-Spalt durch
+   Rahmen/Padding. Das Untermenü bleibt so im :hover der Gruppe. */
+.avd-academy-header__submenu::before {
+  content: ""; position: absolute; left: 0; right: 0;
+  top: -14px; height: 18px; pointer-events: auto;
+}
+/* NUR DAS EIGENE UNTERMENUE, nicht alles darunter. Der Nachfahren-Selektor
+   traf beim Ueberfahren der ersten Ebene AUCH die Menues der dritten - sie
+   standen damit offen, bevor jemand den Eintrag der zweiten beruehrt hatte.
+   Mit `>` oeffnet jede Gruppe genau ihr eigenes Menue; die dritte Ebene
+   erscheint erst, wenn ihre eigene Gruppe Hover oder Fokus hat. */
+.avd-academy-header__group:hover > .avd-academy-header__submenu,
+.avd-academy-header__group:focus-within > .avd-academy-header__submenu,
+.avd-academy-header__submenu[data-open] { display: flex; }
+.avd-academy-header__submenu a {
+  padding: 8px 20px; font-size: 1rem; font-weight: 500; white-space: nowrap;
+  text-decoration: none; color: var(--avd-academy-color-headline);
+}
+.avd-academy-header__submenu a:hover,
+.avd-academy-header__submenu a[aria-current="page"] { color: var(--avd-orange); background: var(--avd-academy-color-bg-subtle); }
+
+@media (max-width: 900px) {
+  /* Im Burger-Menü: Gruppe als volle Breite, Untermenü statisch eingerückt,
+     NUR per Klick (data-open) aufklappbar – kein Hover. */
+  .avd-academy-header__group { width: 100%; }
+  .avd-academy-header__grouptoggle { width: 100%; justify-content: space-between; }
+  .avd-academy-header__submenu {
+    position: static; min-width: 0; margin: 6px 0 0; padding: 0 0 0 14px;
+    border: 0; border-radius: 0; box-shadow: none; background: transparent;
+  }
+  /* Hover/Fokus dürfen hier NICHT aufklappen — aber sie dürfen ein per Klick
+     geöffnetes Untermenü auch nicht zuhalten. Ohne das `:not([data-open])` gewinnt
+     `…__group:focus-within …__submenu` (Spezifität 0,3,0) gegen
+     `…__submenu[data-open]` (0,2,0): Der Klick auf den Toggle setzt zwar
+     `data-open`, gibt dem Button aber gleichzeitig den Fokus — die Gruppe matcht
+     `:focus-within`, `display: none` bleibt, und das Menü klappt nie auf. */
+
+  /* --- Im Burger: die Hoehe traegt die Bewegung ---------------------------- *
+     Hier klappt nichts auf, hier WAECHST etwas - und man muss sehen, dass das eine
+     Menue zugeht, waehrend das andere aufgeht.
+
+     GEMACHT MIT DER GITTERZEILE, nicht mit `max-height`. Der erste Versuch stand
+     auf `max-height: 150vh` fuer offen und 0 fuer zu: Beim Zuklappen faellt der
+     Wert dann erst durch 150 Bildschirmhoehen, bevor er die echte Hoehe
+     unterschreitet - sichtbar wird nur das letzte Zehntel, und das sieht aus wie
+     ein Sprung (gemessen: nach 80 ms bereits geschlossen). `0fr` -> `1fr` rechnet
+     mit der WIRKLICHEN Hoehe und braucht dafuer kein zusaetzliches Element.
+
+     Das Klappfeld bekommt eine Hoehengrenze und scrollt - sonst raegte ein tiefes
+     Menue auf dem Handy unter den Bildschirmrand.
+
+     `visibility` schaltet verzoegert: erst nach der Bewegung unsichtbar, beim
+     Oeffnen sofort. So ist nichts mit der Tastatur erreichbar, was zu ist.       */
+  .avd-academy-header__nav {
+      max-height: calc(100dvh - 4.5rem); overflow-y: auto; overscroll-behavior: contain;
+}
+  .avd-academy-header__nav .avd-academy-header__group {
+      display: grid; /* `minmax(0, …)` ist noetig: `0fr` allein ist die Kurzform fuer
+     `minmax(auto, 0fr)`, und das `auto` haelt die Zeile auf der Mindesthoehe des
+     Inhalts - gemessen blieben 12px Innenabstand stehen statt null. */
+  grid-template-rows: auto minmax(0, 0fr);
+      transition: grid-template-rows 220ms ease;
+}
+  .avd-academy-header__nav .avd-academy-header__group:has(> .avd-academy-header__submenu[data-open]) {
+      grid-template-rows: auto minmax(0, 1fr);
+}
+  .avd-academy-header__submenu {
+      display: flex; min-height: 0; overflow: hidden;
+      opacity: 0; visibility: hidden; transform: none;
+      margin-top: 0; max-height: none;
+      padding-top: 0; padding-bottom: 0;
+      transition: opacity 140ms ease, padding-top 220ms ease,
+                  padding-bottom 220ms ease, visibility 0s linear 220ms;
+}
+  .avd-academy-header__submenu[data-open] {
+      opacity: 1; visibility: visible;
+      padding-top: 6px; padding-bottom: 6px;
+      transition: opacity 180ms ease, padding-top 220ms ease,
+                  padding-bottom 220ms ease, visibility 0s;
+}
+  /* Der seitliche Pfeil zeigt hier nach unten und dreht wie der große. */
+  .avd-academy-header__grouptoggle--sub[aria-expanded="true"] > .avd-academy-header__caret--side {
+      transform: rotate(180deg);
+}
+
+}
+
+/* --- TopNav: drei Ebenen, eingebettete Gruppen, Burger ------------------- *
+   Die Regeln oben tragen Ebene 1 und 2. Hier kommt dazu:
+     - Ebene 3 als seitlich ausfahrendes Menue (rechts, sonst links)
+     - eingebettete Gruppen mit Querstrich (`__set`)
+     - die Burger-Fassung fuer BEIDE Faelle: schmaler Viewport (Media Query oben)
+       und zu volle Leiste (`--compact`, gesetzt aus der Anzahl oder gemessen)   */
+
+/* --- Eingebettete Gruppe -------------------------------------------------- */
+/* Ein Eintrag mit `menu: embedded` bleibt IM Menue und wird durch einen Strich
+   abgetrennt. Der Strich sitzt oben an der Gruppe, nicht zwischen je zwei
+   Eintraegen: So trennt er die Gruppe vom Vorherigen, ohne die Eintraege
+   untereinander zu zerschneiden. Die erste Gruppe im Menue bekommt keinen -
+   dort ist nichts zu trennen. */
+.avd-academy-header__set { display: flex; flex-direction: column; }
+.avd-academy-header__set + .avd-academy-header__set,
+.avd-academy-header__submenu > a + .avd-academy-header__set,
+.avd-academy-header__submenu > .avd-academy-header__group + .avd-academy-header__set {
+  margin-top: 6px; padding-top: 6px;
+  border-top: 1px solid var(--avd-academy-border-soft);
+}
+/* Und andersherum: Was NACH einer Gruppe kommt, ist wieder etwas anderes. */
+.avd-academy-header__set + a,
+.avd-academy-header__set + .avd-academy-header__group {
+  margin-top: 6px; padding-top: 6px;
+  border-top: 1px solid var(--avd-academy-border-soft);
+}
+.avd-academy-header__setlabel {
+  position: relative;
+  margin: 0; padding: 4px 20px 6px;
+  font-size: 0.75rem; font-weight: var(--avd-academy-fw-bold, 700);
+  letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--avd-academy-color-ink-muted);
+}
+/* EINE ZWEITE, LEISERE LINIE - zwischen der Ueberschrift und ihren Kindern.
+   Ohne sie unterschied nur die Schriftart Gruppe von Eintrag, und das traegt
+   nicht. Sie ist ausdruecklich NICHT der Trenner von oben und unten: Der laeuft
+   durch die volle Breite und schneidet die Gruppe aus dem Menue heraus; diese
+   hier haelt links und rechts Abstand und gliedert nur INNERHALB der Gruppe.
+   Deshalb auch duenner getoent statt derselben Farbe. */
+.avd-academy-header__setlabel::after {
+  content: ""; position: absolute; bottom: 0; left: 14px; right: 14px;
+  border-bottom: 1px solid color-mix(in srgb, var(--avd-academy-border-soft) 55%, transparent);
+}
+/* Die Ueberschrift IST der buendelnde Eintrag. Hat er ein Ziel, ist sie ein Link -
+   dann muss sie sich auch wie einer anfuehlen. Die Basisregel fuer Menue-Links
+   (`__submenu a`) wuerde sie sonst zur gewoehnlichen Zeile machen; der
+   Kompound-Selektor haelt die Ueberschriftenform. */
+.avd-academy-header__submenu a.avd-academy-header__setlabel--link {
+  padding: 4px 20px 2px; font-size: 0.75rem; text-decoration: none;
+  color: var(--avd-academy-color-ink-muted);
+}
+.avd-academy-header__submenu a.avd-academy-header__setlabel--link:hover,
+.avd-academy-header__submenu a.avd-academy-header__setlabel--link[aria-current="page"] {
+  color: var(--avd-orange); background: none; text-decoration: underline;
+}
+/* DIE GRUPPENUEBERSCHRIFT GEHOERT IN DIESELBE SPALTE. Ohne diese Regel fehlte ihr
+   der linke Gutter: Ihr Text stand 26 px weiter links als der der Eintraege
+   darunter, und ihr Icon - absolut gesetzt, aber ohne positionierten Vorfahren -
+   landete am oberen Rand des ganzen Menues, quer ueber der Schrift. Gemessen:
+   Text der Ueberschrift bei 921 px, Text der Eintraege bei 947 px.
+
+   STEHT HIER UND NICHT OBEN BEI DEN UEBRIGEN ICON-REGELN: Die Regel fuer den
+   verlinkten Titel hat dieselbe Spezifitaet (0-2-1). Weiter oben verlor sie
+   gegen sie, und der Gutter blieb aus - gemessen unveraendert 20 px. */
+.avd-academy-header__submenu--hasicons .avd-academy-header__setlabel,
+.avd-academy-header__submenu--hasicons a.avd-academy-header__setlabel--link {
+  position: relative; padding-left: var(--avd-academy-menu-indent);
+}
+
+/* --- Ebene 3: seitlich ---------------------------------------------------- */
+.avd-academy-header__group--sub { display: flex; width: 100%; }
+.avd-academy-header__grouptoggle--sub {
+  width: 100%; justify-content: space-between;
+  padding: 8px 20px; font-size: 1rem; text-align: left;
+}
+.avd-academy-header__grouptoggle--sub:hover { color: var(--avd-orange); background: var(--avd-academy-color-bg-subtle); }
+.avd-academy-header__caret--side { margin-left: 8px; }
+
+.avd-academy-header__submenu--side {
+  top: 0; left: 100%; margin-top: -8px; margin-left: 2px;
+}
+/* Kein Platz nach rechts? Dann nach links. Die Klasse setzt das Skript beim
+   Oeffnen - CSS allein kann den Rand des Fensters nicht messen. */
+.avd-academy-header__submenu--side.avd-academy-header__submenu--flip {
+  left: auto; right: 100%; margin-left: 0; margin-right: 2px;
+}
+/* Die Hover-Bruecke der ersten Ebene liegt OBEN; fuer das seitliche Menue muss sie
+   zur Seite - sonst reißt der Hover auf dem Weg nach rechts ab. */
+.avd-academy-header__submenu--side::before {
+  top: 0; bottom: 0; height: auto; left: -6px; right: auto; width: 8px;
+}
+.avd-academy-header__submenu--side.avd-academy-header__submenu--flip::before {
+  left: auto; right: -6px;
+}
+
+/* --- Burger-Fassung ------------------------------------------------------- *
+   Gilt fuer schmale Viewports UND fuer `--compact`. Beide Zustaende erzeugen
+   dieselbe Oberflaeche: eine Spalte, jede Ebene ein Akkordeon, jede Ebene etwas
+   staerker abgesetzt. Die Media Query oben deckt den ersten Fall bereits ab; hier
+   steht, was zusaetzlich fuer `--compact` gilt und was BEIDE brauchen.          */
+/* `flex: none` - ohne das schrumpft der Knopf im engen Kopf auf 25 px Breite bei
+   34 px Hoehe (gemessen bei 390 px Fensterbreite) und ist kein Quadrat mehr. */
+.avd-academy-header--compact .avd-academy-header__burger { display: inline-flex; flex: none; margin-left: var(--avd-academy-space-3); }
+.avd-academy-header--compact .avd-academy-header__nav {
+  display: none;
+  position: absolute; top: 100%; left: 0; right: 0;
+  flex-direction: column; align-items: stretch;
+  gap: var(--avd-academy-space-3);
+  margin-left: 0;
+  padding: var(--avd-academy-space-4) max(24px, calc((100% - var(--avd-academy-page-width, 1200px)) / 2));
+  background: var(--avd-academy-topbar-bg);
+  border-bottom: 1px solid var(--avd-academy-border-soft);
+  box-shadow: var(--avd-academy-shadow-2);
+  z-index: 50;
+}
+.avd-academy-header--compact .avd-academy-header__nav[data-open] { display: flex; }
+.avd-academy-header--compact .avd-academy-header__tools { margin-left: auto; }
+
+/* Am SCHREIBTISCH muss das aufgeklappte Menue nicht die volle Breite nehmen -
+   eine Spalte, die ueber 1200 px laeuft, liest sich schlecht. Auf dem Handy nimmt
+   es sie, weil es dort nichts Schmaleres gibt. */
+@media (min-width: 901px) {
+  /* UNTER DEM BURGER, nicht am rechten Rand. Solange der Knopf rechts sass, war
+     `right: 0` richtig; seit er neben der Wortmarke steht, klappte das Feld an
+     der falschen Stelle auf. Der linke Rand ist derselbe wie der des
+     Seiteninhalts - dort steht auch der Knopf. */
+  .avd-academy-header--compact .avd-academy-header__nav {
+    left: var(--avd-academy-nav-left, max(24px, calc((100% - var(--avd-academy-page-width, 1200px)) / 2)));
+    right: auto; width: min(420px, calc(100vw - 48px));
+    border: 1px solid var(--avd-academy-border-soft);
+    border-radius: 0 0 var(--avd-academy-radius) var(--avd-academy-radius);
+    padding: var(--avd-academy-space-4);
+  }
+}
+
+/* Die Akkordeon-Regeln fuer BEIDE Faelle. Der Block der Media Query oben bleibt
+   stehen; dies hier ergaenzt ihn um `--compact` und um die dritte Ebene. */
+.avd-academy-header--compact .avd-academy-header__group { width: 100%; }
+.avd-academy-header--compact .avd-academy-header__grouptoggle { width: 100%; justify-content: space-between; }
+.avd-academy-header--compact .avd-academy-header__submenu {
+  position: static; min-width: 0; margin: 6px 0 0;
+  /* NUR WAAGERECHT. Senkrecht faehrt der Abstand mit der Bewegung; eine
+     Kurzform hier setzte ihn wieder auf 6px, und die geschlossene Zeile
+     behielt 12px Hoehe statt null (gemessen). */
+  padding-left: 12px; padding-right: 0;
+  border: 0; border-radius: 0; box-shadow: none;
+  /* JEDE EBENE ETWAS STAERKER ABGESETZT - so ist ohne Einrueckung allein
+     erkennbar, dass man in einem Untermenue steht. */
+  background: color-mix(in srgb, var(--avd-academy-color-ink) 5%, transparent);
+  border-left: 2px solid var(--avd-academy-border-soft);
+}
+
+/* --- Im Burger: die Hoehe traegt die Bewegung ---------------------------- *
+   Hier klappt nichts auf, hier WAECHST etwas - und man muss sehen, dass das eine
+   Menue zugeht, waehrend das andere aufgeht.
+
+   GEMACHT MIT DER GITTERZEILE, nicht mit `max-height`. Der erste Versuch stand
+   auf `max-height: 150vh` fuer offen und 0 fuer zu: Beim Zuklappen faellt der
+   Wert dann erst durch 150 Bildschirmhoehen, bevor er die echte Hoehe
+   unterschreitet - sichtbar wird nur das letzte Zehntel, und das sieht aus wie
+   ein Sprung (gemessen: nach 80 ms bereits geschlossen). `0fr` -> `1fr` rechnet
+   mit der WIRKLICHEN Hoehe und braucht dafuer kein zusaetzliches Element.
+
+   Das Klappfeld bekommt eine Hoehengrenze und scrollt - sonst raegte ein tiefes
+   Menue auf dem Handy unter den Bildschirmrand.
+
+   `visibility` schaltet verzoegert: erst nach der Bewegung unsichtbar, beim
+   Oeffnen sofort. So ist nichts mit der Tastatur erreichbar, was zu ist.       */
+.avd-academy-header--compact .avd-academy-header__nav {
+  max-height: calc(100dvh - 4.5rem); overflow-y: auto; overscroll-behavior: contain;
+}
+.avd-academy-header--compact .avd-academy-header__nav .avd-academy-header__group {
+  display: grid; /* `minmax(0, …)` ist noetig: `0fr` allein ist die Kurzform fuer
+     `minmax(auto, 0fr)`, und das `auto` haelt die Zeile auf der Mindesthoehe des
+     Inhalts - gemessen blieben 12px Innenabstand stehen statt null. */
+  grid-template-rows: auto minmax(0, 0fr);
+  transition: grid-template-rows 220ms ease;
+}
+.avd-academy-header--compact .avd-academy-header__nav .avd-academy-header__group:has(> .avd-academy-header__submenu[data-open]) {
+  grid-template-rows: auto minmax(0, 1fr);
+}
+.avd-academy-header--compact .avd-academy-header__submenu {
+  display: flex; min-height: 0; overflow: hidden;
+  opacity: 0; visibility: hidden; transform: none;
+  margin-top: 0; max-height: none;
+  padding-top: 0; padding-bottom: 0;
+  transition: opacity 140ms ease, padding-top 220ms ease,
+              padding-bottom 220ms ease, visibility 0s linear 220ms;
+}
+.avd-academy-header--compact .avd-academy-header__submenu[data-open] {
+  opacity: 1; visibility: visible;
+  padding-top: 6px; padding-bottom: 6px;
+  transition: opacity 180ms ease, padding-top 220ms ease,
+              padding-bottom 220ms ease, visibility 0s;
+}
+/* Der seitliche Pfeil zeigt hier nach unten und dreht wie der große. */
+.avd-academy-header--compact .avd-academy-header__grouptoggle--sub[aria-expanded="true"] > .avd-academy-header__caret--side {
+  transform: rotate(180deg);
+}
+
+
+@media (max-width: 900px) {
+  /* Ebene 3 faehrt hier NICHT zur Seite aus - sie klappt auf wie Ebene 2. */
+  .avd-academy-header__submenu--side {
+    top: auto; left: auto; right: auto; margin: 6px 0 0; margin-left: 0;
+  }
+  .avd-academy-header__submenu--side::before { display: none; }
+  /* KEIN `display: block` - die Gruppe ist hier ein Gitter (siehe Bewegung
+     weiter oben). Mit `block` kollabierte die Zeile nicht, und ein geschlossenes
+     Untermenue belegte weiter seinen Platz: gemessen 180px unsichtbarer Raum. */
+  .avd-academy-header__group--sub { width: 100%; }
+  .avd-academy-header__grouptoggle--sub { padding: 8px 0; }
+  .avd-academy-header__caret--side { transform: rotate(90deg); }
+  .avd-academy-header__submenu {
+    background: color-mix(in srgb, var(--avd-academy-color-ink) 5%, transparent);
+    border-left: 2px solid var(--avd-academy-border-soft);
+    padding-left: 12px; padding-right: 0;
+  }
+  .avd-academy-header__setlabel { padding-left: 0; }
+  .avd-academy-header__setlabel::after { left: 0; right: 8px; }
+  .avd-academy-header__submenu a { white-space: normal; padding-left: 0; padding-right: 0; }
+
+  /* DIE ICON-SPALTE GILT AUCH HIER - nur ohne den Seitenrand des Aufklappmenues.
+     Ohne diese drei Zeilen setzte der Innenabstand auf 0, waehrend das Icon
+     weiter absolut bei 20px stand: Es lag quer ueber dem Text (gemeldet aus
+     „Layouts – Formate & Vorlagen"). */
+  .avd-academy-header__submenu--hasicons { --avd-academy-menu-indent: calc(1.65 * 16px); }
+  .avd-academy-header__submenu--hasicons.avd-academy-header__submenu a,
+  .avd-academy-header__submenu--hasicons .avd-academy-header__setlabel,
+  .avd-academy-header__submenu--hasicons a.avd-academy-header__setlabel--link { padding-left: var(--avd-academy-menu-indent); }
+  .avd-academy-header__submenu--hasicons .avd-academy-linkicon { left: 0; }
+
+}
+.avd-academy-header--compact .avd-academy-header__submenu--side {
+  top: auto; left: auto; right: auto; margin: 6px 0 0; margin-left: 0;
+}
+.avd-academy-header--compact .avd-academy-header__submenu--side::before { display: none; }
+.avd-academy-header--compact .avd-academy-header__group--sub { width: 100%; }
+.avd-academy-header--compact .avd-academy-header__grouptoggle--sub { padding: 8px 0; }
+.avd-academy-header--compact .avd-academy-header__caret--side { transform: rotate(90deg); }
+.avd-academy-header--compact .avd-academy-header__setlabel { padding-left: 0; }
+.avd-academy-header--compact .avd-academy-header__setlabel::after { left: 0; right: 8px; }
+.avd-academy-header--compact .avd-academy-header__submenu a { white-space: normal; padding-left: 0; padding-right: 0; }
+
+/* DIE ICON-SPALTE GILT AUCH HIER - nur ohne den Seitenrand des Aufklappmenues.
+   Ohne diese drei Zeilen setzte der Innenabstand auf 0, waehrend das Icon
+   weiter absolut bei 20px stand: Es lag quer ueber dem Text (gemeldet aus
+   „Layouts – Formate & Vorlagen"). */
+.avd-academy-header--compact .avd-academy-header__submenu--hasicons { --avd-academy-menu-indent: calc(1.65 * 16px); }
+.avd-academy-header--compact .avd-academy-header__submenu--hasicons.avd-academy-header__submenu a,
+.avd-academy-header--compact .avd-academy-header__submenu--hasicons .avd-academy-header__setlabel,
+.avd-academy-header--compact .avd-academy-header__submenu--hasicons a.avd-academy-header__setlabel--link { padding-left: var(--avd-academy-menu-indent); }
+.avd-academy-header--compact .avd-academy-header__submenu--hasicons .avd-academy-linkicon { left: 0; }
+
+
+/* Ohne JavaScript bleibt die Messung aus; die Anzahl-Regel greift trotzdem, weil
+   sie aus Liquid kommt. Der Burger selbst braucht JavaScript - deshalb steht die
+   Leiste ohne Skript in ihrer gewoehnlichen Form, auch wenn sie umbricht. Ein
+   Menue, das sich nicht oeffnen laesst, waere schlechter als ein Umbruch. */
+
+/* --- Bewegung beim Auf- und Zuklappen ------------------------------------ *
+   WARUM UEBERHAUPT: Im Burger sprang ein Menue auf und ein anderes zu, im selben
+   Bild. Gemeldet als „ich erkenne nicht, dass das eine zuklappt und das andere
+   aufgeht" - und genau das leistet eine kurze Bewegung: Sie zeigt, WAS sich
+   veraendert hat, nicht nur DASS etwas anders ist.
+
+   Die globale Regel in base.css setzt bei `prefers-reduced-motion` jede Dauer auf
+   0,01ms. Hier steht deshalb keine eigene Ausnahme - sie gilt schon.            */
+
+/* Der Pfeil dreht sich. Das allein traegt schon viel: Er sagt den Zustand an,
+   auch wenn das Menue selbst gerade ausserhalb des Blickfelds aufgeht. */
+.avd-academy-header__caret,
+.avd-academy-header__caret--side {
+  transition: transform var(--avd-academy-transition, 160ms ease);
+}
+.avd-academy-header__grouptoggle[aria-expanded="true"] > .avd-academy-header__caret { transform: rotate(180deg); }
+
+/* --- Am Schreibtisch: kurz einblenden und heranrutschen ------------------- */
+/* `display` ist nicht animierbar - `allow-discrete` schaltet es am ENDE der
+   Rueckblende und am ANFANG der Einblende. `@starting-style` liefert den Wert,
+   von dem aus eingeblendet wird; ohne ihn beginnt der Uebergang beim Zielwert
+   und man sieht nichts. Kann eine Engine beides nicht, erscheint das Menue
+   schlicht sofort - der alte Zustand. */
+.avd-academy-header__submenu {
+  opacity: 0; transform: translateY(-4px);
+  transition: opacity 140ms ease, transform 140ms ease,
+              display 140ms allow-discrete;
+}
+.avd-academy-header__group:hover > .avd-academy-header__submenu,
+.avd-academy-header__group:focus-within > .avd-academy-header__submenu,
+.avd-academy-header__submenu[data-open] { opacity: 1; transform: none; }
+@starting-style {
+  .avd-academy-header__group:hover > .avd-academy-header__submenu,
+  .avd-academy-header__group:focus-within > .avd-academy-header__submenu,
+  .avd-academy-header__submenu[data-open] { opacity: 0; transform: translateY(-4px); }
+}
+/* Das seitliche Menue kommt von der Seite, nicht von oben - aus der Richtung,
+   in die es auch aufgeht. */
+.avd-academy-header__submenu--side { transform: translateX(-4px); }
+.avd-academy-header__submenu--side.avd-academy-header__submenu--flip { transform: translateX(4px); }
+@starting-style {
+  .avd-academy-header__group:hover > .avd-academy-header__submenu--side,
+  .avd-academy-header__group:focus-within > .avd-academy-header__submenu--side,
+  .avd-academy-header__submenu--side[data-open] { opacity: 0; transform: translateX(-4px); }
+}
+
+/* --- Footer (dunkel, ATVANTAGE-Slate) ------------------------------------- */
+.avd-academy-footer {
+  margin-top: var(--avd-academy-space-16);
+  padding: var(--avd-academy-space-8) max(24px, calc((100% - var(--avd-academy-page-width, 1200px)) / 2));
+  background: var(--avd-slate);
+  color: #fff;
+  font-size: var(--avd-academy-fs-sm);
+}
+.avd-academy-footer__grid {
+  max-width: var(--avd-academy-page-width); margin-inline: auto;
+  display: grid; gap: var(--avd-academy-space-6);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+.avd-academy-footer a { color: #fff; }
+/* MINDESTENS 24 PIXEL HOCH (WCAG 2.5.8): Die Verweise im Fußbereich stehen als
+   Liste untereinander, getrennt nur durch `<br>` - bei 16 Pixel Zeilenhoehe ist
+   jeder Treffer ein Streifen, den man auf einem Telefon kaum sicher trifft. Die
+   Schrift bleibt gleich groß; groesser wird nur die anklickbare Flaeche, und
+   die Zeilen ruecken so weit auseinander, dass sich die Flaechen nicht
+   ueberlappen. Die Zeile mit Impressum und Datenschutz ist davon ausgenommen:
+   Dort stehen die Verweise IM Satz, und dafuer kennt das Kriterium eine
+   Ausnahme. */
+.avd-academy-footer__grid p { line-height: 2; }
+.avd-academy-footer__grid p a {
+  display: inline-block; min-height: 24px; padding-block: 4px;
+}
+.avd-academy-footer a:hover { color: var(--avd-orange); }
+.avd-academy-footer__legal { margin-top: var(--avd-academy-space-6); text-align: center; color: rgba(255, 255, 255, 0.7); }
+
+/* --- Layout-Vererbungsdiagramm (docs) ------------------------------------
+   Ein eingebettetes SVG, keine Bibliothek: Das Theme bleibt abhängigkeitsfrei, und
+   die Farben kommen aus den Tokens – damit trägt es Light, Dark und Druck ohne
+   zweite Fassung. `currentColor` für die Pfeile, damit sie der Textfarbe folgen. */
+.avd-academy-layouttree { margin: var(--avd-academy-space-6) 0; color: var(--avd-academy-color-ink); }
+.avd-academy-layouttree svg { max-width: 100%; height: auto; display: block; }
+.avd-academy-layouttree rect {
+  fill: var(--avd-academy-color-bg-subtle);
+  stroke: var(--avd-academy-color-border);
+  stroke-width: 1.4;
+}
+.avd-academy-layouttree .lt-rahmen rect { stroke-dasharray: 5 4; }
+.avd-academy-layouttree .lt-eigen rect { stroke-dasharray: 2 3; }
+.avd-academy-layouttree text { fill: var(--avd-academy-color-headline); }
+.avd-academy-layouttree .lt-rolle { font-weight: 400; fill: var(--avd-academy-color-accent); }
+.avd-academy-layouttree .lt-feature,
+.avd-academy-layouttree .lt-notiz text { font-weight: 400; fill: var(--avd-academy-color-ink-muted); }
+.avd-academy-layouttree figcaption {
+  margin-top: var(--avd-academy-space-3);
+  font-size: var(--avd-academy-fs-sm);
+  color: var(--avd-academy-color-ink-muted);
+}
+
+/* --- Aufklappbarer Abschnitt (`avd-academy-fold`) --------------------------
+   Ein Abschnitt, der sich an seiner Stelle auf- und zuklappen laesst – im Gegensatz
+   zu `avd-academy-reveal`, das seinen Inhalt als Panel ueber die Seite legt. Hier
+   bleibt alles im Fluss, nur die Hoehe aendert sich.
+
+   Baut auf `<details>`/`<summary>`: Auf- und Zuklappen, Tastaturbedienung und die
+   ARIA-Semantik bringt der Browser mit – ohne eine Zeile JavaScript. Das Dreieck
+   ersetzen wir durch ein eigenes Zeichen, das der Textfarbe folgt.
+
+   Im Ausdruck ist ein zugeklappter Abschnitt sinnlos: Papier kennt kein Klicken.
+   print.css klappt deshalb alles auf (siehe dort). */
+.avd-academy-fold > summary {
+  display: flex; align-items: center; gap: 8px;
+  cursor: pointer;
+  list-style: none;
+}
+.avd-academy-fold > summary::-webkit-details-marker { display: none; }
+.avd-academy-fold > summary::after {
+  content: ""; flex: none; margin-left: auto;
+  width: .7rem; height: .7rem;
+  background-color: currentColor;
+  transition: transform .15s ease;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 16 4 8h16z'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 16 4 8h16z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.avd-academy-fold:not([open]) > summary::after { transform: rotate(-90deg); }
+.avd-academy-fold > summary:focus-visible { outline: 2px solid var(--avd-academy-color-accent); outline-offset: 3px; }
+/* Der Inhalt bekommt Abstand zum Titel – im Fluss, nicht als Panel. */
+.avd-academy-fold[open] > .avd-academy-fold__body { margin-top: 1rem; }
+
+/* --- Feldtabelle (`avd-academy-fieldtable`) --------------------------------
+   Eine Tabelle, deren erste Spalte NAMEN traegt – YAML-Schluessel, Optionen,
+   Feldpfade. Solche Namen darf man nicht umbrechen: `sidebar.toc.open_threshold`
+   ueber drei Zeilen verteilt liest sich nicht mehr als ein Name, und wer sie
+   abtippt, uebernimmt den Umbruch mit.
+
+   Die erste Spalte bekommt deshalb `nowrap` und damit so viel Breite, wie ihr
+   laengster Name braucht; der Rest teilt sich, was uebrig bleibt. Damit das
+   aufgeht, muss die Bedeutungsspalte KURZ gehalten werden – mehr Erklaerung
+   gehoert in eine Info-Schaltflaeche (`avd-academy-reveal--info`).
+
+   Die globale Tabellenregel bricht lange Namen notfalls mitten im Wort
+   (`overflow-wrap`); hier wird sie fuer die erste Spalte zurueckgenommen. */
+.avd-academy-fieldtable th:first-child,
+.avd-academy-fieldtable td:first-child {
+  white-space: nowrap;
+  width: 1%;                 /* so schmal wie moeglich – `nowrap` setzt die Untergrenze */
+}
+.avd-academy-fieldtable td:first-child code { overflow-wrap: normal; }
+.avd-academy-fieldtable th,
+.avd-academy-fieldtable td { vertical-align: top; }
+/* Die Info-Schaltflaeche sitzt am Ende des Textes, nicht in einer eigenen Spalte:
+   eine Spalte mehr waere genau die Breite, die hier fehlt. */
+.avd-academy-fieldtable .avd-academy-reveal--info { margin-left: 6px; }
+/* Spalte „Layouts“: die Layouts als ihre Symbole – dieselben wie in der Navigation.
+   Ausgeschriebene Layoutnamen brauchten dort mehr Platz als die Bedeutung; der Name
+   steht im `title` (Tooltip) und im `alt` (Screenreader), geht also nicht verloren. */
+.avd-academy-fieldtable__layouts {
+  white-space: nowrap;
+  width: 1%;                 /* so schmal wie moeglich – `nowrap` setzt die Untergrenze:
+                                die Spalte wird so breit wie ihre breiteste Zelle und
+                                nimmt der Bedeutungsspalte keinen Platz weg. */
+}
+.avd-academy-fieldtable__layouts .avd-academy-linkicon { margin-right: .2em; }
+.avd-academy-fieldtable__layouts .avd-academy-linkicon:last-child { margin-right: 0; }
+
+/* --- Waagerechter Scrollbereich fuer eine Tabelle (`avd-academy-tablescroll`) ---
+   Letzte Rettung, wenn die Mindestbreiten aller Spalten zusammen breiter sind als
+   die Spalte, in der die Tabelle steht: Dann schiebt der Browser Inhalte, die nicht
+   schrumpfen koennen – Bilder etwa –, ueber die Zellgrenze, und die Tabelle sieht
+   kaputt aus. Mit einem eigenen Scrollbereich bleibt sie ganz, und nur SIE scrollt;
+   die Seite selbst bekommt niemals einen waagerechten Balken. */
+.avd-academy-tablescroll { overflow-x: auto; }
+.avd-academy-tablescroll > table { margin: 0; }
+/* Seit `initScrollbereiche()` den Rahmen selbst setzt, liegt JEDE Tabelle darin.
+   Auf Papier gibt es kein Scrollen: Dort muss der Rahmen aufgehen, sonst schneidet
+   der Druck die rechten Spalten ab. Der Tastatur-Haltepunkt entfaellt dort ebenso. */
+@media print {
+  .avd-academy-tablescroll { overflow-x: visible; }
+}
+
+/* ===========================================================================
+   ZEILE FÜR ZEILE ERKLÄREN (`avd-academy-walkthrough`)
+   ---------------------------------------------------------------------------
+   Eine rohe HTTP-Nachricht, ein OpenAPI-Dokument, ein Stück Code: Jede Zeile ist
+   anklickbar und klappt ihre Erklärung auf. Die Konstruktion kam in einem
+   einzigen Schulungs-Repo DREIMAL selbst gebaut vor (A-013, A-016) – jedes Mal
+   mit denselben drei Fehlern.
+
+   GRUNDLAGE IST `<details name="…">`, wie bei Reitern und Reveal. Der Browser
+   schaltet exklusiv (eine Erklärung zur Zeit), bringt Tastaturbedienung und
+   `aria-expanded` von sich aus mit, und ohne JavaScript bleibt alles erreichbar.
+   Ein nachgebauter Klick-Handler hatte in den Eigenbauten weder das eine noch
+   das andere.
+
+   WAS DIE EIGENBAUTEN FALSCH HATTEN, und was hier deshalb festgelegt ist:
+
+   1. `min-height: 24px` an der Zeile. Eine Zeile Monospace mit knappem
+      Innenabstand kommt auf 22-24 Pixel; WCAG 2.5.8 verlangt 24. Und weil die
+      Zeilen unmittelbar aneinanderliegen, greift die Ausnahme „genug Platz
+      ringsum" gerade nicht - gemessen 32 Stellen in einem Repo.
+   2. Die Fläche ist die ZURÜCKGENOMMENE Seitenfläche, nicht der dunkle
+      Codeblock. Auf dunklem Grund kippen die Akzent- und Statusfarben, die in so
+      einer Nachricht vorkommen (gemessen 2,1:1).
+   3. Der Marker links zeigt den Zustand mit FORM, nicht nur mit Farbe: Er dreht
+      sich beim Öffnen. Farbe allein trägt nicht (1.4.1).
+   =========================================================================== */
+
+/* Der Klassenname steht zweimal - siehe die Begründung beim Reiter-Baustein:
+   Der Flussrhythmus in guide.css hat dieselbe Spezifität und lädt später. */
+.avd-academy-walkthrough.avd-academy-walkthrough {
+  margin: var(--avd-academy-space-6) 0;
+  border: 1px solid var(--avd-academy-color-border);
+  border-radius: var(--avd-academy-radius);
+  background: var(--avd-academy-color-bg-subtle);
+  overflow-x: auto;                 /* lange Zeilen scrollen IM Baustein */
+  overscroll-behavior-x: contain;
+}
+
+.avd-academy-walkthrough__line { border-bottom: 1px solid var(--avd-academy-color-border); }
+.avd-academy-walkthrough__line:last-child { border-bottom: 0; }
+
+.avd-academy-walkthrough__line > summary {
+  display: flex;
+  align-items: baseline;
+  gap: var(--avd-academy-space-2);
+  min-height: 24px;                 /* WCAG 2.5.8 - siehe oben */
+  padding: 0.2rem var(--avd-academy-space-3);
+  font-family: var(--avd-academy-font-mono);
+  font-size: var(--avd-academy-fs-sm);
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  list-style: none;                 /* Standard-Dreieck weg (Firefox) */
+}
+.avd-academy-walkthrough__line > summary::-webkit-details-marker { display: none; }
+
+/* Der Marker: eine Form, die sich dreht - nicht nur eine Farbe. */
+.avd-academy-walkthrough__line > summary::before {
+  content: "›";
+  flex: none;
+  width: 1ch;
+  color: var(--avd-academy-color-ink-muted);
+  transition: var(--avd-academy-transition, transform 0.15s ease);
+}
+.avd-academy-walkthrough__line[open] > summary::before { transform: rotate(90deg); }
+
+.avd-academy-walkthrough__line > summary:hover { background: var(--avd-academy-color-accent-soft); }
+.avd-academy-walkthrough__line[open] > summary {
+  background: var(--avd-academy-color-accent-soft);
+  border-left-color: var(--avd-academy-color-accent);
+}
+
+/* Ein hervorgehobenes Stück der Zeile - Methode, Statuscode, Schlüssel. */
+.avd-academy-walkthrough__mark {
+  font-weight: var(--avd-academy-fw-bold, 700);
+  color: var(--avd-academy-color-accent-ink);
+}
+
+.avd-academy-walkthrough__note {
+  margin: 0;
+  padding: var(--avd-academy-space-3) var(--avd-academy-space-4);
+  border-left: 3px solid var(--avd-academy-color-accent);
+  background: var(--avd-academy-color-bg);
+  font-size: var(--avd-academy-fs-sm);
+}
+.avd-academy-walkthrough__note > :first-child { margin-top: 0; }
+.avd-academy-walkthrough__note > :last-child { margin-bottom: 0; }
+
+/* ===========================================================================
+   TABS – ein langer Leitfaden in schaltbaren Abschnitten
+   ---------------------------------------------------------------------------
+   GRUNDLAGE IST `<details name="…">`, nicht ein Klick-Handler. Der Browser
+   schaltet damit von sich aus exklusiv: Oeffnet man eines, schließen die
+   anderen. Ohne JavaScript ist es ein Akkordeon, in dem jeder Inhalt erreichbar
+   bleibt - dieselbe Zusage wie beim Reveal-Baustein.
+
+   `atvantage.js` ERGAENZT den Tab-Streifen: Es baut aus den `<summary>` eine
+   Leiste und blendet die Zusammenfassungen aus. Fehlt das Skript, sieht man das
+   Akkordeon; es fehlt nichts.
+
+   WARUM NICHT REIN MIT CSS: Ein echter Tab-Streifen braucht die Beschriftungen
+   getrennt von den Inhalten - eine Leiste oben, darunter eine gemeinsame
+   Flaeche. In `<details>` steckt jede Beschriftung in ihrem eigenen Element.
+   `display: contents` am `<details>` wuerde sie herausloesen, zerlegt aber in
+   mehreren Browsern die Auf-/Zu-Mechanik selbst.
+   =========================================================================== */
+
+/* OBEN MEHR LUFT ALS UNTEN. Die Reiterleiste ist ein Bedienelement, kein
+   Absatz - sie braucht sichtbaren Abstand zu dem, was ueber ihr steht, sonst
+   liest sie sich als Fortsetzung des vorigen Textes. */
+/* DER KLASSENNAME STEHT ZWEIMAL, mit Absicht. Der Flussrhythmus
+   `.avd-academy-guide-main > * + *` in guide.css hat DIESELBE Spezifitaet wie
+   ein einfacher Klassenselektor (0-1-0) - und guide.css laedt spaeter als diese
+   Datei. Bei Gleichstand gewinnt das Spaetere, der eigene Abstand kaeme also nie
+   an. Die Dopplung hebt auf 0-2-0 und entscheidet die Sache unabhaengig von der
+   Ladereihenfolge. Nicht wegraeumen. */
+.avd-academy-tabs.avd-academy-tabs {
+  margin: var(--avd-academy-space-12, 3rem) 0 var(--avd-academy-space-6, 1.5rem);
+}
+
+/* --- Ohne JavaScript: Akkordeon ------------------------------------------- */
+.avd-academy-tabs__panel { border-top: 1px solid var(--avd-academy-color-border); }
+.avd-academy-tabs__panel:last-of-type { border-bottom: 1px solid var(--avd-academy-color-border); }
+.avd-academy-tabs__panel > summary {
+  cursor: pointer; list-style: none;
+  padding: var(--avd-academy-space-3, 0.75rem) 0;
+  font-weight: var(--avd-academy-fw-bold, 700);
+}
+.avd-academy-tabs__panel > summary::-webkit-details-marker { display: none; }
+.avd-academy-tabs__panel > summary::before {
+  content: "▸"; display: inline-block; width: 1.2em;
+  color: var(--avd-academy-color-accent);
+  transition: transform var(--avd-academy-transition, 160ms ease);
+}
+.avd-academy-tabs__panel[open] > summary::before { transform: rotate(90deg); }
+
+/* --- Mit JavaScript: Tab-Streifen ----------------------------------------- */
+/* Die Klasse setzt das Skript, erst wenn die Leiste steht. Ohne sie greift
+   nichts hiervon - die Seite faellt also nicht in einen halben Zustand. */
+.avd-academy-tabs--enhanced > .avd-academy-tabs__panel { border: 0; }
+.avd-academy-tabs--enhanced > .avd-academy-tabs__panel > summary { display: none; }
+
+/* EIN RAHMEN UM DAS GANZE, KEINE FLAECHEN DARIN. Der Kasten mit seinem Schatten
+   fasst Leiste und Inhalt zu einem Bedienelement zusammen; deshalb braucht
+   drinnen nichts mehr eine eigene Fuellung, um zusammenzugehoeren. Nur die
+   --enhanced-Fassung bekommt ihn: Das Akkordeon ohne JavaScript ist eine Liste
+   und soll auch wie eine aussehen. */
+.avd-academy-tabs--enhanced {
+  border: 1px solid var(--avd-academy-color-border);
+  border-radius: var(--avd-academy-radius-lg, 8px);
+  /* Zwei Lagen: die enge aus dem Token fuer die Kante, eine weiche darunter fuer
+     die Tiefe. Beide in neutralem Grau und NICHT aus einer Textfarbe gemischt -
+     im dunklen Schema kippt die ins Helle, und ein heller Schatten ist ein
+     Leuchten. */
+  box-shadow: var(--avd-academy-shadow-1), 0 6px 18px rgba(26, 38, 39, 0.07);
+}
+
+/* DIE LEISTE BRICHT NIE UM, SIE ROLLT. Mit `flex-wrap: wrap` legten sich fuenf
+   Beschriftungen in einer Inhaltsspalte untereinander - und ein umgebrochener
+   Reiterstreifen ohne Flaeche sieht aus wie eine Liste von Titeln. Genau so wurde
+   er gemeldet. Rollen ist die einzige Form, die bei jeder Breite ein Streifen
+   bleibt. */
+/* Waagerecht oben. Sie ROLLT, statt umzubrechen: Mit `flex-wrap: wrap` legten
+   sich fuenf Beschriftungen in einer Inhaltsspalte untereinander, und das las
+   sich als Liste von Titeln statt als Bedienelement. */
+.avd-academy-tabs__bar {
+  display: flex; flex-wrap: nowrap; gap: 0;
+  overflow-x: auto; overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  margin-bottom: 0;
+  padding: 0 var(--avd-academy-space-2, 0.5rem);
+  /* Die einzige Linie im Inneren: Sie trennt Bedienung von Inhalt. */
+  border-bottom: 1px solid var(--avd-academy-color-border);
+}
+
+/* DIE WAHL ZEIGT EIN UNTERSTRICH, KEINE FLAECHE. Die Akzentfarbe steckt in
+   Linie und Schrift - alles aus Tokens, damit es mit dem Farbschema kippt und
+   bei einer anderen Schulungsfarbe richtig bleibt. Die durchsichtige Linie am
+   nicht gewaehlten Reiter ist kein Rest: Sie haelt den Platz, sonst ruecken
+   beim Umschalten alle Beschriftungen um drei Pixel. */
+.avd-academy-tabs__tab {
+  appearance: none; cursor: pointer; position: relative;
+  background: transparent;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  padding: 0.7rem 1.15rem;
+  color: var(--avd-academy-color-ink);
+  font: inherit; font-weight: var(--avd-academy-fw-bold, 700);
+  white-space: nowrap;
+  transition: color var(--avd-academy-transition, 160ms ease),
+              border-color var(--avd-academy-transition, 160ms ease);
+}
+.avd-academy-tabs__tab:hover {
+  color: var(--avd-academy-color-accent-ink);
+  border-bottom-color: color-mix(in srgb, var(--avd-academy-color-accent) 35%, transparent);
+}
+.avd-academy-tabs__tab[aria-selected="true"] {
+  color: var(--avd-academy-color-accent-ink);
+  border-bottom-color: var(--avd-academy-color-accent);
+}
+.avd-academy-tabs__tab:focus-visible {
+  outline: 2px solid var(--avd-academy-color-accent); outline-offset: 2px;
+}
+/* Wer Bewegung abbestellt hat, bekommt keine. */
+@media (prefers-reduced-motion: reduce) {
+  .avd-academy-tabs__tab { transition: none; }
+}
+
+/* Der Inhalt braucht nur noch Innenabstand - den Zusammenhalt leistet der
+   Rahmen um das Ganze. */
+.avd-academy-tabs--enhanced > .avd-academy-tabs__panel[open] {
+  padding: var(--avd-academy-space-6, 1.5rem);
+}
+
+/* --- Reiter links statt oben (`--side`) ----------------------------------- *
+   WOFUER: Beschriftungen, die ganze Saetze sind. Der waagerechte Streifen
+   rollt und bricht nie um - bei sieben Saetzen waere er unbedienbar. Links
+   untereinander darf jede Beschriftung umbrechen und trotzdem lesbar bleiben.
+
+   Es ist dieselbe Komponente, nur anders angeordnet: dasselbe Markup, dasselbe
+   Skript, dieselben Anker, dieselben Druckregeln. Nur diese Datei weiß davon.  */
+
+/* Leiste in Spalte 1, ALLE Panels in Spalte 2 - ausdruecklich gesetzt und nicht
+   dem Fluss ueberlassen. Ein geschlossenes `<details>` ist im Gitter weiterhin
+   ein Element und bekaeme sonst eine eigene Zelle; die Panels wanderten dann
+   treppenfoermig nach unten, obwohl nur eines sichtbar ist. */
+.avd-academy-tabs--enhanced.avd-academy-tabs--side {
+  display: grid;
+  grid-template-columns: minmax(12rem, 18rem) minmax(0, 1fr);
+}
+.avd-academy-tabs--side > .avd-academy-tabs__bar    { grid-area: 1 / 1; }
+.avd-academy-tabs--side > .avd-academy-tabs__panel  { grid-area: 1 / 2; }
+
+.avd-academy-tabs--side > .avd-academy-tabs__bar {
+  flex-direction: column;
+  overflow-x: visible;
+  padding: var(--avd-academy-space-2, 0.5rem) 0;
+  border-bottom: 0;
+  border-right: 1px solid var(--avd-academy-color-border);
+}
+
+/* Die Wahl wandert von der Unter- an die linke Kante - sonst alles wie oben.
+   `white-space: normal` ist hier der Punkt: Waagerecht darf nichts umbrechen,
+   senkrecht MUSS es. */
+.avd-academy-tabs--side > .avd-academy-tabs__bar > .avd-academy-tabs__tab {
+  text-align: left;
+  white-space: normal;
+  border-bottom: 0;
+  border-left: 3px solid transparent;
+  transition: color var(--avd-academy-transition, 160ms ease),
+              border-color var(--avd-academy-transition, 160ms ease);
+}
+.avd-academy-tabs--side > .avd-academy-tabs__bar > .avd-academy-tabs__tab:hover {
+  border-left-color: color-mix(in srgb, var(--avd-academy-color-accent) 35%, transparent);
+}
+.avd-academy-tabs--side > .avd-academy-tabs__bar > .avd-academy-tabs__tab[aria-selected="true"] {
+  border-left-color: var(--avd-academy-color-accent);
+}
+
+/* Schmal ist eine Seitenspalte keine: Unter dieser Breite bliebe fuer den Text
+   nichts uebrig. Dann steht die Leiste wieder oben - untereinander, nicht als
+   Streifen, denn die langen Beschriftungen sind ja der Grund fuer `--side`. */
+@media (max-width: 46rem) {
+  .avd-academy-tabs--enhanced.avd-academy-tabs--side { display: block; }
+  .avd-academy-tabs--side > .avd-academy-tabs__bar {
+    border-right: 0;
+    border-bottom: 1px solid var(--avd-academy-color-border);
+  }
+}
+
+
+/* ===========================================================================
+   AKKORDEON (`avd-academy-accordion`)
+   ---------------------------------------------------------------------------
+   Ueberschriften werden zu Klappbereichen. Der Autor schreibt gewoehnliches
+   Markdown in einen Kasten; das Skript baut daraus Knoepfe und Bereiche und
+   setzt erst danach `--enhanced`.
+
+   OHNE DIESE KLASSE PASSIERT HIER NICHTS. Das ist die ganze Absicherung: Ohne
+   JavaScript steht ein gewoehnliches Dokument da, vollstaendig und lesbar. Kein
+   `display: none` ausserhalb von `--enhanced`.
+
+   ABGRENZUNG ZU DEN REITERN: Dort schreibt der Autor `<details>` und bekommt
+   einen Streifen; hier bleibt die Gliederung des Dokuments stehen und bekommt
+   eine Bedienung. Beides exklusiv, beides aus demselben Grund - eine lange
+   Seite soll nicht in ganzer Laenge dastehen.
+   =========================================================================== */
+
+/* Der eigene Abstand im Textfluss - der Klassenname steht ZWEIMAL, wie bei den
+   Reitern. Begruendung dort: Der Flussrhythmus `.avd-academy-guide-main > * + *`
+   hat dieselbe Spezifitaet (0-1-0) und laedt spaeter; die Dopplung hebt auf
+   0-2-0 und entscheidet es unabhaengig von der Ladereihenfolge. */
+.avd-academy-accordion.avd-academy-accordion {
+  margin: var(--avd-academy-space-8, 2rem) 0 var(--avd-academy-space-6, 1.5rem);
+}
+
+/* Eine Linie je Bereich - dieselbe Sprache wie das Akkordeon der Reiter ohne
+   JavaScript. Kein Rahmen um das Ganze: Die Bereiche stehen IM Text und sollen
+   nicht wie ein eingesetztes Bedienfeld wirken. */
+.avd-academy-accordion--enhanced > :is(h2, h3, h4, h5, h6) {
+  margin: 0;
+  border-top: 1px solid var(--avd-academy-color-border);
+}
+.avd-academy-accordion--enhanced > :is(h2, h3, h4, h5, h6):last-child,
+.avd-academy-accordion--enhanced > .avd-academy-accordion__region:last-child {
+  border-bottom: 1px solid var(--avd-academy-color-border);
+}
+
+/* DER KNOPF FUELLT DIE UEBERSCHRIFT. Er erbt Schriftgroesse und -gewicht der
+   Ebene, in der er steht - eine `###`-Liste sieht damit aus wie `###` und nicht
+   wie eine Reihe gleicher Knoepfe. `width: 100%` macht die ganze Zeile
+   anklickbar; die Zielgroesse (WCAG 2.5.8) ist ueber den Innenabstand ohnehin
+   weit ueberschritten. */
+.avd-academy-accordion__toggle {
+  appearance: none; cursor: pointer;
+  display: flex; align-items: baseline; gap: 0.6rem;
+  width: 100%; text-align: left;
+  background: transparent; border: 0; border-radius: 0;
+  padding: var(--avd-academy-space-3, 0.75rem) 0;
+  color: inherit; font: inherit;
+  /* MITSCROLLEN BRAUCHT LUFT. Der Header klebt oben; ohne diesen Rand landet
+     der gewaehlte Kopf beim Springen darunter und ist nicht zu sehen. */
+  scroll-margin-top: calc(var(--topnav-height, 80px) + 1rem);
+}
+.avd-academy-accordion__toggle:hover { color: var(--avd-academy-color-accent-ink); }
+.avd-academy-accordion__toggle:focus-visible {
+  outline: 2px solid var(--avd-academy-color-accent); outline-offset: -2px;
+}
+
+/* Das Dreieck zeigt den Zustand an - dasselbe Zeichen und dieselbe Drehung wie
+   bei Reitern und Fold, damit „aufklappbar“ auf jeder Seite gleich aussieht.
+   `flex: none` haelt es bei langen Ueberschriften in der ersten Zeile. */
+.avd-academy-accordion__toggle::before {
+  content: "▸"; flex: none;
+  color: var(--avd-academy-color-accent);
+  transition: transform var(--avd-academy-transition, 160ms ease);
+}
+.avd-academy-accordion__toggle[aria-expanded="true"]::before { transform: rotate(90deg); }
+
+/* DIE BEWEGUNG - dieselbe Bauart wie im Burger-Menue, aus demselben Grund:
+   `0fr` -> `1fr` rechnet mit der WIRKLICHEN Hoehe. Ein `max-height`-Ansatz
+   faellt beim Zuklappen erst durch den zu grossen Wert, bevor etwas passiert;
+   sichtbar wird nur das letzte Zehntel, und das sieht aus wie ein Sprung.
+
+   `minmax(0, 0fr)` und nicht `0fr`: Letzteres ist die Kurzform fuer
+   `minmax(auto, 0fr)`, und das `auto` haelt die Zeile auf der Mindesthoehe des
+   Inhalts - gemessen blieb der Innenabstand stehen statt null.
+
+   `visibility` schaltet verzoegert: erst nach der Bewegung unsichtbar, beim
+   Oeffnen sofort. So laeuft der Fokus nicht in einen Bereich, der zu ist.
+
+   Die globale Regel in base.css setzt bei `prefers-reduced-motion` jede Dauer
+   auf 0,01 ms - hier steht deshalb keine eigene Ausnahme. */
+.avd-academy-accordion__region {
+  display: grid;
+  grid-template-rows: minmax(0, 0fr);
+  transition: grid-template-rows 220ms ease;
+}
+.avd-academy-accordion__region.is-open { grid-template-rows: minmax(0, 1fr); }
+
+.avd-academy-accordion__body {
+  min-height: 0; overflow: hidden;
+  visibility: hidden;
+  padding-bottom: 0;
+  transition: padding-bottom 220ms ease, visibility 0s linear 220ms;
+}
+.avd-academy-accordion__region.is-open > .avd-academy-accordion__body {
+  visibility: visible;
+  padding-bottom: var(--avd-academy-space-4, 1rem);
+  transition: padding-bottom 220ms ease, visibility 0s;
+}
+.avd-academy-accordion__body > :first-child { margin-top: 0; }
+.avd-academy-accordion__body > :last-child { margin-bottom: 0; }
+
+/* Ein Akkordeon IM Akkordeon ruecken wir ein - sonst steht die zweite Ebene auf
+   derselben Kante wie die erste, und die Schachtelung ist nicht zu sehen. Die
+   Linie links sagt dasselbe noch einmal fuer den, der nur den Rand wahrnimmt. */
+.avd-academy-accordion .avd-academy-accordion.avd-academy-accordion {
+  margin: var(--avd-academy-space-2, 0.5rem) 0;
+  padding-left: var(--avd-academy-space-4, 1rem);
+  border-left: 2px solid var(--avd-academy-border-soft);
+}

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Simulation">
+  <!-- Farben aus dem ATVANTAGE-Fundament: Anthrazit #343E3F, Orange #FF5401.
+       SVG-Assets können keine CSS-Variablen aus theme/atvantage/tokens/ beziehen –
+       die Werte stehen daher hier, wie in icon-guide.svg und icon-slides.svg. -->
+  <rect width="32" height="32" fill="#343E3F"/>
+  <g fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Ein Ablauf: zwei Stationen und der Weg dazwischen -->
+    <circle cx="10" cy="12" r="3"/>
+    <circle cx="22" cy="21" r="3"/>
+    <path d="M12.6 14 19.4 19"/>
+  </g>
+  <!-- Abspiel-Dreieck: diese Bühne läuft -->
+  <path d="M20 8.5l5 2.5-5 2.5z" fill="#FF5401"/>
+</svg>

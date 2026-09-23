@@ -1,0 +1,431 @@
+/* =============================================================================
+   Layout „presentation“ – folienbasierter Vortrag aus Markdown
+   -----------------------------------------------------------------------------
+   Gehört zum Jekyll-Layer des Themes und wird NUR vom Layout `presentation`
+   geladen (_layouts/presentation.html, nach head.html – überschreibt daher
+   site.css und print.css).
+
+   Aufbau zur Laufzeit (presentation.js):
+     .avd-academy-present            <body> – Vollbildfläche, drei Zonen
+       .avd-academy-present__bar     schmale Kopfleiste (Logo, Titel, Zähler)
+       .avd-academy-deck             Bühne (beschnitten)
+         .avd-academy-deck__track    Schiene aller Folien, wird verschoben
+           .avd-academy-slide        eine Folie (Breite = Bühne)
+             .avd-academy-slide__inner  Inhaltsspalte der Folie
+       .avd-academy-present__controls  Blättern
+       .avd-academy-present__progress  Fortschrittsbalken
+
+   Alle Farben/Abstände kommen aus den Academy-Tokens – Dark Mode kostet damit
+   keine Extra-Regel. Ohne JavaScript greift der Folienmodus nicht: Die Regeln,
+   die aus dem Inhalt eine Bühne machen, hängen an `[data-ready]`.
+   ============================================================================= */
+
+/* --- Vollbildfläche ---------------------------------------------------------
+   Die Seite scrollt NICHT – gescrollt wird höchstens innerhalb einer Folie.
+   `data-ready` setzt presentation.js auf <body> UND auf die Bühne, sobald die
+   Folien gebaut sind; ohne JS bleibt beides aus und die Seite ist ein normales
+   Dokument. */
+.avd-academy-present {
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--avd-academy-color-bg);
+  color: var(--avd-academy-color-ink);
+  font-family: var(--avd-academy-font-sans);
+}
+.avd-academy-present[data-ready] {
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* --- Kopfleiste ------------------------------------------------------------- */
+.avd-academy-present__bar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--avd-academy-space-4);
+  padding: var(--avd-academy-space-2) var(--avd-academy-space-6);
+  background: var(--avd-academy-topbar-bg);
+  border-bottom: 1px solid var(--avd-academy-border-soft);
+  /* Über der Bühne: Der vergrößerte QR-Code in den Werkzeugen ragt in die Folie
+     hinein. Ohne z-index läge er darunter – die Bühne steht später im Baum. */
+  position: relative;
+  z-index: 1;
+}
+.avd-academy-present__logo { height: 22px; width: auto; flex: 0 0 auto; }
+.avd-academy-present__title {
+  font-size: var(--avd-academy-fs-sm);
+  font-weight: var(--avd-academy-fw-medium);
+  color: var(--avd-academy-color-ink-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Auf der Titelfolie steht der Titel groß in der Fläche – in der Leiste wäre er
+   dann doppelt. Er bleibt im Fluss (kein Springen), nur unsichtbar. */
+.avd-academy-present[data-at-title] .avd-academy-present__title { visibility: hidden; }
+
+.avd-academy-present__counter {
+  margin-left: auto;
+  font-size: var(--avd-academy-fs-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--avd-academy-color-ink-muted);
+}
+/* Werkzeuggruppe: positioniert nur – wie die Knöpfe darin AUSSEHEN, steht in
+   components.css (`.avd-academy-tool`). Die drei Variablen ziehen sie von der
+   Doku-Seiten-Vorgabe (34 px, Überschriftenfarbe) auf das Maß dieser schmalen
+   Kopfleiste. Der QR-Code daneben ist genauso groß. */
+.avd-academy-present__tools {
+  display: flex; align-items: center; gap: var(--avd-academy-space-2);
+  --avd-academy-tool-size: 2rem;
+  --avd-academy-tool-glyph: 1rem;
+  --avd-academy-tool-ink: var(--avd-academy-color-ink-muted);
+  --avd-academy-tool-ink-hover: var(--avd-academy-color-accent);
+}
+.avd-academy-present__tools .avd-academy-qr { --avd-academy-qr-size: 2rem; }
+.avd-academy-present__back {
+  border: 0;
+  padding: 0;
+  background: none;
+  font: inherit;
+  font-size: var(--avd-academy-fs-sm);
+  color: var(--avd-academy-color-ink-muted);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.avd-academy-present__back[hidden] { display: none; }
+.avd-academy-present__back:hover { color: var(--avd-academy-color-accent); }
+
+/* --- Bühne + Schiene --------------------------------------------------------
+   Ohne [data-ready] (kein JS) bleibt der Bereich ein normaler, scrollbarer
+   Textfluss mit lesbarer Breite. */
+.avd-academy-deck {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0 auto;
+  padding: var(--avd-academy-space-8) var(--avd-academy-space-6);
+  max-width: var(--avd-academy-page-width);
+  width: 100%;
+}
+.avd-academy-deck[data-ready] {
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  max-width: none;
+  /* Waagerechte Wischgesten gehören der Präsentation, nicht der
+     Verlaufsnavigation des Browsers („zurück“). */
+  overscroll-behavior-x: contain;
+}
+
+.avd-academy-deck__track {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  transition: transform 420ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .avd-academy-deck__track { transition: none; }
+}
+/* Während der Finger zieht, folgt die Schiene ohne Nachlauf – erst beim
+   Loslassen rastet sie animiert ein. */
+.avd-academy-deck__track--dragging { transition: none; }
+
+/* --- Folie ------------------------------------------------------------------
+   Jede Folie ist genau so breit wie die Bühne; die Schiene verschiebt sich um
+   n × 100 %, wodurch die alte Folie nach links aus dem Bild wandert. */
+.avd-academy-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  /* Senkrechtes Scrollen bleibt beim Browser (flüssig, ohne JS), waagerechte
+     Gesten bekommt die Präsentation. `pinch-zoom` erhält das Zoomen. */
+  touch-action: pan-y pinch-zoom;
+  display: flex;
+  flex-direction: column;
+  /* Inhaltsfolien beginnen OBEN – der Folientitel steht dort, wo das Auge ihn
+     sucht, und zwei aufeinanderfolgende Folien springen nicht. Nur die
+     Titelfolie wird zentriert (siehe unten). */
+  justify-content: flex-start;
+  padding: clamp(1.5rem, 1rem + 3vw, 4rem) clamp(1.5rem, 1rem + 4vw, 5rem);
+  /* Fließtext einer Folie ist größer als auf einer Doku-Seite: Sie wird
+     projiziert und aus einigen Metern gelesen. */
+  font-size: clamp(1rem, 0.85rem + 0.5vw, 1.4rem);
+  line-height: 1.5;
+}
+.avd-academy-slide__inner { width: 100%; max-width: 1100px; margin: 0 auto; }
+
+.avd-academy-slide h2 {
+  font-size: var(--avd-academy-fs-xl);
+  line-height: var(--avd-academy-lh-heading);
+  color: var(--avd-academy-color-headline);
+  margin: 0 0 var(--avd-academy-space-6) 0;
+  padding-bottom: var(--avd-academy-space-3);
+  border-bottom: 2px solid var(--avd-academy-color-accent);
+}
+.avd-academy-slide h3 {
+  font-size: var(--avd-academy-fs-md);
+  color: var(--avd-academy-color-headline);
+  margin: var(--avd-academy-space-6) 0 var(--avd-academy-space-2) 0;
+}
+.avd-academy-slide p,
+.avd-academy-slide ul,
+.avd-academy-slide ol { margin: 0 0 var(--avd-academy-space-4) 0; }
+.avd-academy-slide li { margin-bottom: var(--avd-academy-space-2); }
+.avd-academy-slide li::marker { color: var(--avd-academy-color-accent); }
+.avd-academy-slide img { max-width: 100%; height: auto; }
+.avd-academy-slide pre {
+  background: var(--avd-academy-code-bg);
+  border-radius: var(--avd-academy-radius);
+  padding: var(--avd-academy-space-4);
+  overflow-x: auto;
+  font-size: 0.8em;
+}
+.avd-academy-slide table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+.avd-academy-slide th,
+.avd-academy-slide td {
+  text-align: left;
+  padding: var(--avd-academy-space-2) var(--avd-academy-space-3);
+  border-bottom: 1px solid var(--avd-academy-border-soft);
+}
+.avd-academy-slide blockquote {
+  margin: 0 0 var(--avd-academy-space-4) 0;
+  padding: var(--avd-academy-space-3) var(--avd-academy-space-4);
+  border-left: 4px solid var(--avd-academy-color-info);
+  background: var(--avd-academy-color-bg-subtle);
+}
+
+/* Titelfolie: alles vor dem ersten h2. */
+.avd-academy-slide--title { text-align: center; align-items: center; justify-content: center; }
+.avd-academy-slide--title h1 {
+  font-size: var(--avd-academy-fs-2xl);
+  line-height: var(--avd-academy-lh-heading);
+  color: var(--avd-academy-color-headline);
+  margin: 0 0 var(--avd-academy-space-4) 0;
+}
+.avd-academy-slide--title h1::after {
+  content: "";
+  display: block;
+  width: 96px;
+  height: 3px;
+  margin: var(--avd-academy-space-6) auto 0;
+  background: var(--avd-academy-color-accent);
+}
+.avd-academy-slide--title p { color: var(--avd-academy-color-ink-muted); }
+
+/* --- Blättern + Fortschritt ------------------------------------------------- */
+.avd-academy-present__controls {
+  position: fixed;
+  right: var(--avd-academy-space-6);
+  bottom: var(--avd-academy-space-6);
+  display: flex;
+  gap: var(--avd-academy-space-2);
+  z-index: 5;
+}
+.avd-academy-present__nav {
+  width: 2.75rem; height: 2.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--avd-academy-color-border);
+  background: var(--avd-academy-color-bg);
+  color: var(--avd-academy-color-ink);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: var(--avd-academy-shadow-1);
+  transition: background var(--avd-academy-transition), color var(--avd-academy-transition);
+}
+.avd-academy-present__nav:hover:not(:disabled) {
+  background: var(--avd-academy-color-accent);
+  border-color: var(--avd-academy-color-accent);
+  color: var(--avd-academy-color-accent-contrast);
+}
+.avd-academy-present__nav:disabled { opacity: 0.35; cursor: default; }
+
+.avd-academy-present__progress {
+  flex: 0 0 auto;
+  height: 3px;
+  background: var(--avd-academy-border-soft);
+}
+.avd-academy-present__progress-fill {
+  height: 100%;
+  width: 0;
+  background: var(--avd-academy-color-accent);
+  transition: width 420ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- Drucklayout ------------------------------------------------------------
+   Jede Folie auf einer eigenen Seite; die Bedienelemente entfallen. Die
+   Kopfleiste bleibt als Briefkopf auf der ersten Seite – mit dem QR-Code, der
+   vom Blatt zurück zur Online-Fassung führt. */
+@media print {
+  .avd-academy-present,
+  .avd-academy-present[data-ready] { display: block; height: auto; overflow: visible; }
+  .avd-academy-present__bar { border-bottom: 1px solid #cfd4d6; padding: 0 0 0.4rem 0; }
+  .avd-academy-present__counter,
+  .avd-academy-present__controls,
+  .avd-academy-present__progress { display: none !important; }
+  /* Die Werkzeugleiste bleibt als TRÄGER des QR-Codes stehen; die Knöpfe darin
+     (Zurück, Farbschema, Drucken, Vollbild) entfallen einzeln. `margin-left`
+     übernimmt die Rechtsausrichtung vom ausgeblendeten Folienzähler. */
+  .avd-academy-present__tools { margin-left: auto; }
+  .avd-academy-present__back,
+  .avd-academy-tool { display: none !important; }
+  /* Kleiner als auf Doku-Seiten (25 mm): Die Kopfleiste ist schmal, und 20 mm
+     bleiben bei rund 33 Modulen zuverlässig scannbar. */
+  .avd-academy-present__tools .avd-academy-qr { --avd-academy-qr-print: 20mm; }
+  .avd-academy-present[data-at-title] .avd-academy-present__title { visibility: visible; }
+
+  .avd-academy-deck,
+  .avd-academy-deck[data-ready] { overflow: visible; padding: 0; max-width: none; }
+  .avd-academy-deck__track {
+    display: block !important;
+    height: auto !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .avd-academy-slide {
+    display: block;
+    height: auto;
+    overflow: visible;
+    padding: 1.2rem 0 0 0;
+    font-size: 11pt;
+    break-after: page;
+    break-inside: avoid;
+  }
+  .avd-academy-slide:last-child { break-after: auto; }
+  .avd-academy-slide[aria-hidden="true"] { display: block; }
+  .avd-academy-slide__inner { max-width: none; }
+  .avd-academy-slide h2 { font-size: 18pt; }
+  .avd-academy-slide--title h1 { font-size: 24pt; }
+}
+
+/* ===========================================================================
+   REGIE-DECK – der Spickzettel im Blätterformat
+   ---------------------------------------------------------------------------
+   Ein Foliensatz, der WÄHREND der Durchführung bedient wird, nicht davor
+   gelesen. Eine Folie je Einheit: oben die Uhrzeit, links die Handlung, rechts
+   die Verweise auf das Material, höchstens eine Falle. Bewusst Text und Liste
+   statt Bild – das hier ist kein Lehrmedium.
+
+   WARUM DAS INS THEME GEHÖRT: Die Form entstand in einem Schulungsrepo
+   (`training-concept-api-engineering`, A-006) als 92 Zeilen CSS im Seitenkopf.
+   Das trug, solange es zwei Seiten waren. Sobald jedes Repo ein Regie-Deck
+   führt, wären es dieselben 92 Zeilen in jedem – also dieselbe Kopie-Drift, die
+   die Vorlagenversion überhaupt erst nötig macht. Was in jedem Repo gleich
+   aussieht, ist Design und gehört hierher; WANN man ein Regie-Deck schreibt und
+   was daraufsteht, bleibt didaktisch und steht im Didaktikon.
+   =========================================================================== */
+
+/* Kopfzeile. Die UHRZEIT steht vorn und groß: Beim Blättern ist die erste Frage
+   immer „liege ich noch im Plan?", nicht „welche Einheit ist das". */
+.avd-academy-regie__kopf {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 0.9rem;
+  margin: 0 0 1.5rem 0;
+}
+.avd-academy-regie__zeit {
+  font-size: 1.5rem; line-height: 1.1;
+  font-weight: var(--avd-academy-fw-bold, 700);
+  color: var(--avd-academy-color-accent);
+  font-variant-numeric: tabular-nums;
+}
+.avd-academy-regie__meta {
+  font-size: 0.92rem; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--avd-academy-color-ink-muted);
+}
+
+/* Zweispaltig: links die Handlung, rechts das Material. Unter 62rem
+   untereinander – ein Pult-Bildschirm ist nicht immer breit. */
+.avd-academy-regie__spalten {
+  display: grid; grid-template-columns: 1.9fr 1fr; gap: 2.4rem 3rem;
+  align-items: start;
+}
+@media (max-width: 62rem) {
+  .avd-academy-regie__spalten { grid-template-columns: 1fr; gap: 1.4rem; }
+}
+
+.avd-academy-regie__spalten h3 {
+  font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--avd-academy-color-ink-muted);
+  margin: 0 0 0.7rem 0; padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--avd-academy-color-border);
+}
+/* Die Überschrift der HANDLUNGS-Spalte trägt den Auftrag, nicht das Wort „Tun".
+   Sie soll sich lesen wie eine Regieanweisung, deshalb steht sie als Satz und
+   nicht als Rubrik. SELEKTIERT WIRD NEGATIV: Handlung ist, was NICHT die
+   Material-Spalte ist. Sie braucht damit keine eigene Klasse und kann sie auch
+   nicht vergessen. */
+.avd-academy-regie__spalten > div:not(.avd-academy-regie__material) > h3 {
+  font-size: 1.1rem; letter-spacing: 0; text-transform: none;
+  color: var(--avd-academy-color-accent);
+  border-bottom-color: color-mix(in srgb, var(--avd-academy-color-accent) 45%, transparent);
+}
+/* Erwartbare Antworten als Gedankenstütze – leiser als die Anweisung selbst. */
+.avd-academy-regie__spalten li em {
+  color: var(--avd-academy-color-ink-muted); font-size: 0.92em;
+}
+.avd-academy-regie__spalten ul { margin: 0; padding-left: 1.15rem; }
+.avd-academy-regie__spalten li { margin-bottom: 0.8rem; line-height: 1.45; }
+/* Die Material-Spalte listet Verweise: ohne Aufzählungspunkte und kleiner, damit
+   sie neben der Handlung nicht wie ein zweiter Auftrag wirkt. */
+.avd-academy-regie__material ul { list-style: none; padding-left: 0; }
+.avd-academy-regie__material li { font-size: 0.95rem; margin-bottom: 0.7rem; }
+
+/* Die eine Sache, die schiefgeht, wenn man nicht daran denkt. HÖCHSTENS EINE je
+   Folie – zwei Fallen sind keine Falle mehr, sondern eine Liste. */
+.avd-academy-regie__falle {
+  margin: 1.6rem 0 0 0; padding: 0.6rem 0.9rem;
+  border-left: 3px solid var(--avd-academy-tone-alert);
+  background: color-mix(in srgb, var(--avd-academy-tone-alert) 8%, transparent);
+  font-size: 0.95rem;
+}
+
+/* Was nach dieser Einheit kommt – steht auf der LETZTEN Folie eines Blocks,
+   damit die Pause sichtbar ist, bevor man sie überblättert. */
+.avd-academy-regie__naechst {
+  margin: 1.6rem 0 0 0; padding-top: 0.7rem;
+  border-top: 1px solid var(--avd-academy-color-border);
+  font-size: 0.95rem; color: var(--avd-academy-color-ink-muted);
+}
+.avd-academy-regie__naechst strong { color: var(--avd-academy-color-ink); }
+
+/* Pausenfolie: trägt nur die Uhr. Sie ist im Blätterfluss der Ankerpunkt. */
+.avd-academy-regie__pause { text-align: center; color: var(--avd-academy-color-ink-muted); }
+.avd-academy-regie__uhr {
+  display: block; font-size: clamp(2.5rem, 7vw, 4.5rem);
+  font-weight: var(--avd-academy-fw-bold, 700);
+  color: var(--avd-academy-color-ink); line-height: 1.1;
+}
+
+/* Tagesraster – die Übersichtsfolie am Anfang. */
+.avd-academy-regie__raster { width: 100%; font-size: 0.95rem; }
+.avd-academy-regie__raster td { padding: 0.4rem 0.6rem; vertical-align: top; }
+.avd-academy-regie__raster .avd-academy-regie__rz {
+  white-space: nowrap; color: var(--avd-academy-color-ink-muted); width: 1%;
+}
+.avd-academy-regie__raster .avd-academy-regie__rd {
+  white-space: nowrap; text-align: right; width: 1%;
+  color: var(--avd-academy-color-accent); font-weight: var(--avd-academy-fw-bold, 700);
+}
+.avd-academy-regie__raster tr.avd-academy-regie__trenn td {
+  border-top: 1px solid var(--avd-academy-color-border);
+}
+
+/* Senkrecht mittig, aber leicht ÜBER der optischen Mitte: Mittig zentriert
+   klaffte unter dem Titel eine breite Lücke, weil der Titel oben anschlägt.
+   
+   `:has()` STATT EINER MODIFIER-KLASSE: Die Inhaltsspalte ist sonst kein
+   Flex-Container; das Regie-Deck brauchte sie als solchen. Eine Klasse dafür
+   müsste jede Folie tragen und wäre genau das, was man vergisst – die Folie
+   säße dann oben statt mittig, und niemand wüsste warum. */
+.avd-academy-slide__inner:has(> [class*="avd-academy-regie__"]) {
+  display: flex; flex-direction: column; flex: 1 1 auto;
+}
+.avd-academy-slide__inner > .avd-academy-regie__spalten {
+  flex: 1 1 auto; align-content: center; padding-bottom: 6vh;
+}
+.avd-academy-slide__inner > .avd-academy-regie__raster,
+.avd-academy-slide__inner > .avd-academy-regie__pause { margin-block: auto; }

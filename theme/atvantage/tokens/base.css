@@ -1,0 +1,7 @@
+body{margin:0;font-family:var(--font-family);font-size:var(--text-size);font-weight:var(--text-weight);line-height:var(--text-line-height);color:var(--color-text);background:var(--color-background)}
+h1,h2,h3,h4,h5,h6{font-family:var(--font-family);color:var(--color-headline);font-weight:var(--headline-weight);line-height:1.15;margin:0 0 0.5em}
+h1{font-size:var(--h1-base)}h2{font-size:var(--h2-base)}h3{font-size:var(--h3-base)}h5{font-size:var(--h5-base)}
+p{margin:0 0 var(--paragraph-spacing)}
+a{color:var(--color-link);text-decoration:none}
+a:hover{color:var(--color-orange);text-decoration:underline}
+::selection{background:var(--avd-orange);color:#fff}

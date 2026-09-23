@@ -1,0 +1,542 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Academy-Theme – Front Matter einer Seite",
+  "description": "Alle Front-Matter-Felder, die das Academy-Theme einer Markdown-Seite ausliest. Schema-Version 2. Jedes Feld ist optional; zu jedem gibt es einen Standardwert. Draft-07, weil die IDE-Auflöser (VS Code / JetBrains) diesen Entwurf am verlässlichsten unterstützen.",
+  "type": "object",
+  "additionalProperties": false,
+  "patternProperties": {
+    "^x_": {
+      "description": "Repo-eigenes Feld. Alles mit dem Präfix `x_` ist frei: Das Theme liest es nicht, eigene Includes und Skripte des Repos dürfen es nutzen. So bleibt das Schema geschlossen (Tippfehler wie `ressources` fallen auf), ohne eigene Felder zu verbieten."
+    }
+  },
+  "properties": {
+    "audiences": {
+      "$ref": "#/definitions/zielgruppen",
+      "description": "Die Zielgruppen, für die diese Seite gedacht ist. STANDARD: keine Angabe = die Seite erscheint in JEDEM Build. GILT IN: allen – ausgewertet aber NICHT vom Theme, sondern vom zielgruppengefilterten Build: Seiten fremder Zielgruppe landen nicht in der Ausgabe. Welche Werte es gibt, legt das Theme nicht fest; die Site deklariert sie in `audiences` ihrer `_config.yml`, und jede Angabe wird dagegen geprüft. Wer sie benutzt, ohne zu deklarieren, bekommt einen Fehler – eine Angabe ohne prüfbare Menge ist eine Vermutung."
+    },
+    "breadcrumb": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x_": {
+          "description": "Repo-eigenes Feld – vom Theme nicht gelesen."
+        }
+      },
+      "description": "Brotkrumen-Steuerung. GILT IN: `page`, `guide` – die Visualisierung blendet die Brotkrumen aus, `presentation` und `simulation` haben keine. STANDARD: der Pfad wird automatisch aus der Ordnerstruktur gebaut.",
+      "properties": {
+        "label": {
+          "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+          "description": "Anzeigename DIESES Ordners in den Brotkrumen. Gehört in die `index`-Seite des Ordners und gilt zentral für alle Seiten darunter. STANDARD: der Ordnername. MEHRSPRACHIG: auch als Sprachkarte – der englische Baum beschriftet seine Ordner selbst."
+        },
+        "ancestors": {
+          "type": "array",
+          "description": "Explizite Vorfahren-Kette OHNE die aktuelle Seite. Überschreibt den automatischen Pfad und wird an Unterseiten vererbt (die tiefere Angabe gewinnt). STANDARD: automatisch aus der Ordnerstruktur.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Eine Station der Vorfahren-Kette.",
+            "anyOf": [
+              {
+                "required": [
+                  "title",
+                  "url"
+                ],
+                "description": "Station mit Adresse (`url`)"
+              },
+              {
+                "required": [
+                  "title",
+                  "page"
+                ],
+                "description": "Station als Seite dieser Site (`page`)"
+              }
+            ],
+            "properties": {
+              "title": {
+                "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+                "description": "Anzeigename dieser Station. MEHRSPRACHIG: auch als Sprachkarte."
+              },
+              "url": {
+                "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+                "description": "Ziel dieser Station, site-relativ (führender `/`). MEHRSPRACHIG: auch als Sprachkarte. Für Seiten DIESER Site ist `page` der bessere Weg."
+              },
+              "page": {
+                "$ref": "frontmatter.schema.json#/definitions/seitenverweis"
+              }
+            }
+          }
+        }
+      }
+    },
+    "categories": {
+      "type": [
+        "string",
+        "array"
+      ],
+      "items": {
+        "type": "string"
+      },
+      "description": "Jekyll-Standard: Kategorien eines Dokuments (vor allem in `_posts`). Das Theme liest sie NICHT – sie stehen hier, weil Jekyll sie selbst auswertet (Adresse, `site.categories`) und die Prüfung sie sonst als Tippfehler meldete."
+    },
+    "date": {
+      "type": [
+        "string",
+        "object"
+      ],
+      "description": "Jekyll-Standard: Datum der Seite (ISO-8601). YAML liest ein unquotiertes Datum als Datumsobjekt. In einem Collection-Dokument gehört die UHRZEIT dazu, wenn das Datum eine Reihenfolge tragen soll – zwei Dokumente mit demselben Zeitstempel sind für einen Leser sortierbar, für einen Feed-Abonnenten nicht."
+    },
+    "description": {
+      "type": "string",
+      "description": "Kurzbeschreibung für `<meta name=\"description\">` und Vorschauen. Ein Satz, keine Aufzählung. GILT IN: allen. STANDARD: `description` der Site aus der `_config.yml`."
+    },
+    "duration": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Zeit in MINUTEN; erscheint als Zeit-Tag im Hero. GILT IN: `page`, `guide`, `visualization` – die eigenständigen Layouts (`presentation`, `simulation`) haben keinen Hero. STANDARD: keine Angabe = kein Tag. Was gemessen wird, hängt an der Art der Seite: bei einer Übung die Bearbeitungszeit, bei einer gewöhnlichen Seite die Lesedauer. Ein Richtwert, keine Vorgabe. Nicht zu verwechseln mit `simulation.step.interval`, das in Millisekunden zählt."
+    },
+    "folder_slug": {
+      "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+      "description": "NAME DES ORDNERS in der Adresse – für jede Seite darin. Gehört AUSSCHLIESSLICH in die `index.md` eines Ordners (bzw. `index_«code».md`); in einer gewöhnlichen Seite ist `slug` gemeint. Damit trägt ein Ordner, was im Editor hilft und in der Adresse nichts verloren hat: eine Nummerierung (`03-http/` → `/http-grundlagen/`) oder ein deutscher Name in einer englischen Fassung. EIN TEXT gilt für jede Sprache; eine SPRACHKARTE gibt je Sprache einen eigenen Ordnernamen. Im Nebeneinander-Layout darf ihn stattdessen jede Index-Datei für IHRE Sprache nennen – zwei Angaben zur selben Sprache mit verschiedenem Wert brechen den Build ab. RANGFOLGE: Sprache der Seite, dann eine Angabe für alle Sprachen, dann die Standardsprache, dann der unveränderte Ordnername. NICHT ERLAUBT auf der Wurzel eines Sprachbaums (`en/index.md`).",
+      "examples": [
+        "http-grundlagen",
+        {
+          "de": "http-grundlagen",
+          "en": "http-basics"
+        }
+      ]
+    },
+    "image": {
+      "type": "string",
+      "description": "VORSCHAUBILD DIESER SEITE für geteilte Links – setzt `og:image`. So erscheint eine geteilte Adresse in Slack, Teams oder LinkedIn mit Bild statt als nackter Link. STANDARD: `brand.og_image` der Site; ohne beides entsteht KEIN `og:image` – ein Tag auf ein Bild, das es nicht gibt, ist schlechter als keines. Ist `site.url` gesetzt, wird die Adresse absolut gemacht; ohne bleibt sie relativ und wird nicht von jedem Dienst gefunden. GILT IN: allen. Heisst `image` und nicht `og_image`, weil es das Bild DIESER SEITE beschreibt und kein Protokolldetail.",
+      "examples": [
+        "/assets/kurs-http.png"
+      ]
+    },
+    "lang": {
+      "type": "string",
+      "description": "Sprache dieser Seite (BCP-47). BESTIMMT DIE SEITENSPRACHE VORRANGIG – vor dem Ordner: Steht die Angabe hier, gilt sie unabhängig davon, wo die Datei liegt; eine Übersetzung darf damit NEBEN dem Original im selben Ordner liegen. Regionale Kennungen werden auf den Sprachteil gekürzt (`en-GB` zählt als `en`). GILT IN: allen. STANDARD: ohne Angabe entscheidet der Sprachbaum (`base` der Sprache, z. B. `/en/…`), sonst `lang` der Site. Auf mehrsprachigen Sites meldet die Prüfung fehlende Angaben als Hinweis, nicht als Fehler.",
+      "examples": [
+        "de",
+        "en"
+      ]
+    },
+    "layout": {
+      "type": "string",
+      "default": "page",
+      "description": "Layout der Seite. GILT IN: allen. Mitgeliefert: `page` (gewöhnliche Seite), `guide` (Übung mit Schritten, erbt von `page`), `visualization` (Vollflächen-Ansicht), `presentation` (Folien), `simulation` (Ablauf), `quiz` (Wissens-Check) sowie `default` – der reine Rahmen ohne Kopfzeile, Hero und Sidebar. Eigene Layouts sind erlaubt; sie erben über `layout:` in ihrem eigenen Front Matter.",
+      "examples": [
+        "page",
+        "guide",
+        "visualization",
+        "presentation",
+        "simulation",
+        "quiz",
+        "default"
+      ]
+    },
+    "noindex": {
+      "type": "boolean",
+      "description": "DIESE SEITE NICHT INDIZIEREN LASSEN. Setzt `<meta name=\"robots\" content=\"noindex\">` in den Kopf. WOFÜR: Eine Unterlage darf öffentlich erreichbar und trotzdem UNGELISTET sein – ein Training, das nur seine Teilnehmenden aufrufen, oder eine Fassung im Entwurf. Nur `noindex`, KEIN `nofollow`: Die Verweise der Seite dürfen weiter verfolgt werden, sonst schnitte eine ungelistete Seite alles ab, was unter ihr hängt. GILT IN: allen. STANDARD: `false` – die Seite darf indiziert werden. Braucht KEIN gesetztes `site.url`: Die Angabe spricht über diese Seite, nicht über eine Adresse.",
+      "examples": [
+        true
+      ]
+    },
+    "page_id": {
+      "type": "string",
+      "description": "Stabile ID DIESER Seite – ihre Identität, unabhängig vom Pfad. Zwei Verwendungen: (1) Ein Verweis in `nav.items`, `footer.links.items`, `resources` oder `breadcrumb.ancestors` zeigt mit `page: «id»` hierher, statt eine Adresse zu führen. (2) Dieselbe ID macht zwei Dateien zu Fassungen derselben Seite, sofern sie sich in `lang` unterscheiden; der Sprachumschalter findet das Gegenstück darüber. Gesucht wird ZUERST in der ganzen Site (gleiche `page_id`, gesuchte Sprache – der Pfad ist gleichgültig), erst danach im Sprachbaum. GILT IN: allen. STANDARD: keine – dann ist der DATEINAME ohne Endung die Identität. Eine ausdrückliche ID lohnt für sprechende, dateinamen-unabhängige Namen, für Ordner-Indizes (die alle `index` heißen) und für die Paarung von Übersetzungen.",
+      "examples": [
+        "theme-academy",
+        "modul-tcp-ip"
+      ]
+    },
+    "permalink": {
+      "type": "string",
+      "description": "Jekyll-Standard: abweichende Ziel-URL dieser Seite. STANDARD: der Pfad der Datei."
+    },
+    "published": {
+      "type": "boolean",
+      "default": true,
+      "description": "Jekyll-Standard: `false` schließt die Seite vom Build aus."
+    },
+    "quiz": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "GILT IN: `quiz`. Die Seite trägt nur die Fragen – Gerüst, Mechanik und Form kommen aus dem Layout. Layout-spezifische Felder tragen den Layout-Namen vorn.",
+      "required": [
+        "questions"
+      ],
+      "properties": {
+        "questions": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Die Fragen, in der Reihenfolge, in der sie gestellt werden – sie bauen aufeinander auf und werden NICHT gemischt.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "question",
+              "options"
+            ],
+            "properties": {
+              "context": {
+                "type": "string",
+                "description": "Ein Satz, der die Lage herstellt, bevor die Frage kommt. STANDARD: kein Text – dann bleibt die Zeile weg."
+              },
+              "question": {
+                "type": "string",
+                "description": "Die Frage selbst."
+              },
+              "options": {
+                "type": "array",
+                "minItems": 2,
+                "description": "Die Antwortmöglichkeiten. GENAU EINE trägt `correct: true`. Die Reihenfolge wird beim Anzeigen gemischt – verlasse Dich nicht darauf.",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "text"
+                  ],
+                  "properties": {
+                    "text": {
+                      "type": "string",
+                      "description": "Der Antworttext."
+                    },
+                    "correct": {
+                      "type": "boolean",
+                      "default": false,
+                      "description": "Markiert die richtige Antwort. STANDARD: falsch."
+                    },
+                    "feedback": {
+                      "type": "string",
+                      "description": "Warum DIESE Antwort trägt oder nicht. Hängt an der einzelnen Option, nicht an der Frage: Wer danebengreift, soll erfahren, warum SEINE Antwort nicht trägt."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "verdicts": {
+          "type": "array",
+          "description": "Die Deutung am Ende, nach Anteil richtiger Antworten gestaffelt. STANDARD: keine – dann steht dort nur die Zahl. Der Text gehört hierher und nicht ins Theme, weil er auf die Unterlagen DIESES Kurses verweist.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "min",
+              "title"
+            ],
+            "properties": {
+              "min": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Ab welchem Anteil richtiger Antworten diese Deutung gilt (0 bis 1). Es gewinnt die höchste passende."
+              },
+              "title": {
+                "type": "string",
+                "description": "Überschrift der Auswertung."
+              },
+              "text": {
+                "type": "string",
+                "description": "Was der Lernende jetzt tun soll – gern mit Verweis auf die Unterlagen dieses Kurses. STANDARD: kein Text."
+              }
+            }
+          }
+        }
+      }
+    },
+    "resources": {
+      "type": "array",
+      "description": "Weiterführende Informationen – dieselbe Form wie die Einträge von `nav.items` und `footer.links.items`. Erscheinen als Sidebar-Karte und im Ausdruck als Abschnitt am Textende. GILT IN: `page`, `guide` – die übrigen Layouts haben keine Sidebar. STANDARD: keine Karte.",
+      "items": {
+        "$ref": "#/definitions/verweis"
+      }
+    },
+    "sidebar": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Die Karten der Sidebar. Jede Karte ist ein Abschnitt mit `enabled`; Inhaltsverzeichnis und Verweis-Karte tragen zusätzlich `open` – den Anfangszustand DIESER Seite. GILT IN: `page`, `guide` – nur diese Layouts haben eine Sidebar; in den übrigen bleibt die Gruppe wirkungslos.",
+      "properties": {
+        "toc": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Karte „Auf dieser Seite“ – das Inhaltsverzeichnis aus den Überschriften. Die Schwelle `open_threshold` gehört in die `_config.yml`; hier steht nur, ob die Karte erscheint und wie sie startet.",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "Erscheint die Karte? STANDARD: an."
+            },
+            "title": {
+              "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+              "description": "Überschrift der Karte. STANDARD: „Auf dieser Seite“. Site-weit unter `components.sidebar.toc.title`, je Seite hier – ein Repo, das seine Übungen anders nennt, soll das auch hier tun können, ohne das Theme anzufassen. Eine leere Zeichenkette gilt NICHT als Angabe; wer die Beschriftung loswerden will, schaltet den Baustein über `enabled` ab. MEHRSPRACHIG: auch als Sprachkarte."
+            },
+            "open": {
+              "type": "boolean",
+              "description": "Startet die Karte aufgeklappt? OHNE ANGABE entscheidet die Schwelle `components.sidebar.toc.open_threshold` der `_config.yml` – und zugeklappt startet das Verzeichnis nur, wenn UNTER ihm noch eine Karte steht (Fortschritt, Verweise), die es sonst aus dem Bild schiebt. Ist es das letzte Element der Sidebar, bleibt es offen: Ein Klick, der nichts freilegt, lohnt nicht."
+            }
+          }
+        },
+        "progress": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Karte „Fortschritt“ – zählt die Definition-of-Done-Haken. Nicht zu verwechseln mit den Fortschrittsleisten von Präsentation und Simulation; die gehören zum Ablauf und sind nicht schaltbar.",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Erscheint die Karte? STANDARD: an in `guide`, sonst aus."
+            },
+            "title": {
+              "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+              "description": "Überschrift der Karte. STANDARD: „Fortschritt“. Site-weit unter `components.sidebar.progress.title`, je Seite hier – ein Repo, das seine Übungen anders nennt, soll das auch hier tun können, ohne das Theme anzufassen. Eine leere Zeichenkette gilt NICHT als Angabe; wer die Beschriftung loswerden will, schaltet den Baustein über `enabled` ab. MEHRSPRACHIG: auch als Sprachkarte."
+            }
+          }
+        },
+        "resources": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Karte „Weiterführende Informationen“ – sie erscheint ohnehin nur, wenn die Seite `resources` trägt. Die Schwelle `open_threshold` gehört in die `_config.yml`.",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "Erscheint die Karte? STANDARD: an."
+            },
+            "title": {
+              "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+              "description": "Überschrift der Karte. STANDARD: „Weiterführende Informationen“. Site-weit unter `components.sidebar.resources.title`, je Seite hier – ein Repo, das seine Übungen anders nennt, soll das auch hier tun können, ohne das Theme anzufassen. Eine leere Zeichenkette gilt NICHT als Angabe; wer die Beschriftung loswerden will, schaltet den Baustein über `enabled` ab. MEHRSPRACHIG: auch als Sprachkarte."
+            },
+            "open": {
+              "type": "boolean",
+              "description": "Startet die Karte aufgeklappt? Eine Angabe hier macht die Karte überhaupt erst klappbar – ohne sie und ohne die Schwelle `components.sidebar.resources.open_threshold` ist sie ein gewöhnlicher Kasten."
+            }
+          }
+        }
+      }
+    },
+    "simulation": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "GILT IN: `simulation`. Layout-spezifische Felder tragen den Layout-Namen vorn – so ist ohne Nachschlagen klar, wo sie wirken.",
+      "properties": {
+        "intro": {
+          "type": "string",
+          "description": "Text, der vor dem Start des Ablaufs steht. STANDARD: kein Text."
+        },
+        "aside": {
+          "type": "boolean",
+          "default": true,
+          "description": "Erklärspalte neben der Bühne. `false` macht den Ablauf über die volle Breite. STANDARD: an."
+        },
+        "speed": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "default": 1,
+          "description": "Starttempo als Faktor auf `simulation.step.interval`. STANDARD: 1."
+        },
+        "step": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Der einzelne Schritt des Ablaufs.",
+          "properties": {
+            "interval": {
+              "type": "integer",
+              "minimum": 100,
+              "default": 2500,
+              "description": "Dauer eines Schritts in MILLISEKUNDEN. STANDARD: 2500. Bewusst nicht `duration`: Das Feld auf Seitenebene zählt Minuten, und zwei Felder gleichen Namens mit verschiedenen Einheiten wären eine Falle."
+            }
+          }
+        }
+      }
+    },
+    "slug": {
+      "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+      "description": "ADRESSSTÜCK DIESER SEITE – entkoppelt die URL vom DATEINAMEN. Benennt NUR diese eine Seite; den Ordner benennt `folder_slug` in dessen `index.md`. AUF EINER INDEX-SEITE NICHT ERLAUBT: Deren Adresse IST der Ordner, ein `slug` schöbe die Datei aus ihm heraus (`/kapitel/einstieg.html` statt `/kapitel/`) – der Ordner hätte dann keine Index-Datei mehr und `/kapitel/` liefe ins Leere. Damit dürfen Ordner tragen, was im Editor hilft und in der Adresse nichts verloren hat – eine Nummerierung (`03-http/` → `/http-grundlagen/`) oder ein deutscher Name in einer englischen Fassung. EIN TEXT GENÜGT und gilt für JEDE Sprache – in einer einsprachigen Unterlage also schlicht für die Standardsprache aus `lang` der Site; eine `i18n`-Konfiguration ist dafür NICHT nötig. Als SPRACHKARTE gibt es je Sprache eine eigene Adresse; das Theme wählt dann nach der Sprache DER SEITE (siehe `lang`), sonst nach der Standardsprache. GILT IN: allen. STANDARD: keiner – dann ist der Datei- bzw. Ordnername die Adresse. NICHT ERLAUBT auf der Wurzel eines Sprachbaums (`en/index.md`): Aus diesem Pfadstück liest das Theme die Sprache jeder Seite ohne `lang`. Ein ausdrückliches `permalink` gewinnt gegen `slug`. Zwei Seiten auf derselben Adresse brechen den Build ab.",
+      "examples": [
+        "http-grundlagen",
+        {
+          "de": "http-grundlagen",
+          "en": "http-basics"
+        }
+      ]
+    },
+    "tags": {
+      "type": [
+        "string",
+        "array"
+      ],
+      "items": {
+        "type": "string"
+      },
+      "description": "Jekyll-Standard: Schlagworte eines Dokuments (vor allem in `_posts`); ausgewertet von Jekyll (`site.tags`), nicht vom Theme. Die Tags im Hero einer Seite sind `topics` – nicht zu verwechseln."
+    },
+    "title": {
+      "type": "string",
+      "description": "Seitentitel – erscheint im Hero, in `<title>` und in den Brotkrumen. GILT IN: allen. STANDARD: die erste `#`-Überschrift der Seite. In Markdown besser weglassen und diese Überschrift schreiben – dann steht der Titel nur an einer Stelle. In HTML-Dateien umgekehrt: Dort wird ein `<h1>` im Rumpf NICHT ausgewertet, also `title` setzen. Fehlt beides, bleibt der Hero titellos."
+    },
+    "toolbar": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Die Knöpfe der Werkzeugleiste – in der Kopfzeile (`page`, `guide`), im Hero der Visualisierung bzw. in der Kopfleiste von Präsentation und Simulation.",
+      "properties": {
+        "copy": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Knopf „Markdown kopieren“ samt der versteckten Seitenquelle. GILT IN: `page`, `guide`, `visualization`.",
+          "properties": {
+            "enabled": {
+              "oneOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "const": "force"
+                }
+              ],
+              "default": false,
+              "description": "Erscheint der Knopf? STANDARD: an in `guide`, sonst aus. Enthält die Seite Liquid-Anweisungen, entfällt er automatisch (der Rohtext wäre irreführend) – `force` erzwingt ihn trotzdem."
+            },
+            "title": {
+              "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+              "description": "Tooltip und Beschriftung für Screenreader. STANDARD: „Markdown kopieren“. Site-weit unter `components.toolbar.copy.title`, je Seite hier – ein Repo, das seine Übungen anders nennt, soll das auch hier tun können, ohne das Theme anzufassen. Eine leere Zeichenkette gilt NICHT als Angabe; wer die Beschriftung loswerden will, schaltet den Baustein über `enabled` ab. MEHRSPRACHIG: auch als Sprachkarte."
+            }
+          }
+        },
+        "print": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Drucken-Knopf DIESER Ansicht. GILT IN: `visualization` (Hero) und `presentation` (Werkzeugleiste) – auf gewöhnlichen Seiten wäre er eine Dopplung von Strg/Cmd+P.",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "Erscheint der Knopf? STANDARD: an."
+            },
+            "title": {
+              "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+              "description": "Tooltip und Beschriftung für Screenreader. In der Präsentation lautet die Vorgabe „Drucken (alle Folien)“ – dort druckt der Knopf alle. STANDARD: „Diese Seite drucken“. Site-weit unter `components.toolbar.print.title`, je Seite hier – ein Repo, das seine Übungen anders nennt, soll das auch hier tun können, ohne das Theme anzufassen. Eine leere Zeichenkette gilt NICHT als Angabe; wer die Beschriftung loswerden will, schaltet den Baustein über `enabled` ab. MEHRSPRACHIG: auch als Sprachkarte."
+            }
+          }
+        },
+        "qr": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "QR-Code auf die Seitenadresse – der Rückweg vom Papier bzw. vom Beamer aufs eigene Gerät. GILT IN: `page`, `guide`, `visualization`, `presentation`, `simulation`.",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "Erscheint der Knopf? STANDARD: an."
+            },
+            "title": {
+              "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+              "description": "Tooltip und Beschriftung für Screenreader. STANDARD: „Diese Seite auf Deinem Smartphone öffnen“. Site-weit unter `components.toolbar.qr.title`, je Seite hier – ein Repo, das seine Übungen anders nennt, soll das auch hier tun können, ohne das Theme anzufassen. Eine leere Zeichenkette gilt NICHT als Angabe; wer die Beschriftung loswerden will, schaltet den Baustein über `enabled` ab. MEHRSPRACHIG: auch als Sprachkarte."
+            }
+          }
+        },
+        "lang": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Der Sprachumschalter – je anderer Sprache, in der es DIESE Seite gibt, ein Knopf mit deren Code. GILT IN: allen Standard-Layouts. STANDARD: an – er erscheint aber nur dort, wo es ein Gegenstück gibt, in einer einsprachigen Site also nie. Er trägt KEINE eigene Beschriftung: Sein Tooltip nennt die Zielsprache und kommt aus dem Wörterbuch des Themes.",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "Umschalter anbieten. Auf `false` für eine Site, die beide Sprachen führt, den Wechsel aber nicht anbieten will."
+            }
+          }
+        }
+      }
+    },
+    "topics": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+        "description": "Ein Thema – Text oder Sprachkarte `{ de: …, en: … }`."
+      },
+      "description": "Schlagworte, die im Hero als Tags erscheinen. Kurze Substantive, keine Sätze. GILT IN: `page`, `guide`, `visualization` – die eigenständigen Layouts haben keinen Hero. STANDARD: keine Tags."
+    }
+  },
+  "definitions": {
+    "zielgruppen": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      },
+      "description": "Liste von Zielgruppen. Erlaubt sind die Werte, die die Site in `audiences` ihrer `_config.yml` deklariert."
+    },
+    "verweis": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^x_": {
+          "description": "Repo-eigenes Feld – vom Theme nicht gelesen."
+        }
+      },
+      "description": "Ein Verweis. Dieselbe Form gilt für `resources`, `nav.items` und `footer.links.items` – wer eine kennt, kennt alle. Das Ziel steht entweder als Adresse in `url` oder als `page_id` einer Seite dieser Site in `page`; für interne Ziele ist `page` der bessere Weg.",
+      "properties": {
+        "title": {
+          "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+          "description": "Anzeigetext. Bei einem Eintrag mit `icon` optional (dann dient er als Alternativtext), sonst nötig. MEHRSPRACHIG: auch als Sprachkarte `{ de: …, en: … }`."
+        },
+        "url": {
+          "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+          "description": "Ziel, site-relativ (führender `/`). Absolute URLs (`://`) öffnen in einem neuen Tab. MEHRSPRACHIG: auch als Sprachkarte `{ de: …, en: … }`."
+        },
+        "page": {
+          "$ref": "frontmatter.schema.json#/definitions/seitenverweis"
+        },
+        "icon": {
+          "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+          "description": "Icon-Pfad, site-relativ. Mit `title` erscheint es davor, ohne `title` allein. Das Theme liefert u. a. `/theme/academy/icons/icon-guide.svg`. MEHRSPRACHIG: auch als Sprachkarte `{ de: …, en: … }`."
+        },
+        "audiences": {
+          "$ref": "#/definitions/zielgruppen",
+          "description": "Beschränkt DIESEN Eintrag auf die genannten Zielgruppen; in den übrigen Builds fehlt er. STANDARD: keine Angabe = immer sichtbar. Bleibt in einer Liste kein Eintrag übrig, entfällt der ganze Bereich."
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "url"
+          ],
+          "description": "Verweis auf eine Adresse (`url`)"
+        },
+        {
+          "required": [
+            "page"
+          ],
+          "description": "Verweis auf eine Seite dieser Site (`page`)"
+        }
+      ]
+    },
+    "sprachtext": {
+      "description": "Text oder Adresse – entweder EINE Zeichenkette (gilt für alle Sprachen) oder eine SPRACHKARTE mit einem Eintrag je Sprachcode.",
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "eine Zeichenkette für alle Sprachen"
+        },
+        {
+          "type": "object",
+          "description": "Sprachkarte: je Sprachcode ein Wert, z. B. `{ de: \"Vorlagen\", en: \"Templates\" }`. Erlaubt sind die Codes, die die Site in `i18n.languages` deklariert; eine fehlende Sprache fällt auf die Standardsprache zurück.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "seitenverweis": {
+      "type": "string",
+      "description": "Ziel als SEITE DIESER SITE, statt als Adresse. Angegeben wird die Identität der Zielseite: ihre ausdrückliche `page_id` – oder, wenn sie keine hat, ihr DATEINAME ohne Endung (`schnellstart.md` → `schnellstart`). Die ID wird zuerst gesucht. Vorzuziehen gegenüber `url`, wo das Ziel zur Site gehört: Der Verweis löst sich vom Pfad, ein Umbenennen oder Verschieben bricht ihn nicht, und bei mehreren Sprachen bildet das Theme je Sprachbaum die passende Adresse. Schließt `url` aus – genau eines von beiden. Zeigt die Angabe auf keine oder auf mehrere gleichnamige Seiten, ist das ein Fehler.",
+      "examples": [
+        "theme-overview",
+        "quickstart"
+      ]
+    }
+  }
+}

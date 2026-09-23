@@ -1,0 +1,30 @@
+:root{
+/* Kernpalette */
+--avd-anthracite:#343E3F; /* Fließtext, primäre Buttons */
+--avd-ink:#1A2627; /* Headlines H1–H6 */
+--avd-slate:#303E4F; /* Akzent, dunkle Sektionen */
+--avd-orange:#FF5401; /* Links, aktive Zustände, Icons, Card-Headlines, Logo */
+--avd-white:#FFFFFF;
+/* Sekundär / Flächen */
+--avd-blue-light:#DDE4EE; /* hervorgehobene Sektions-Hintergründe */
+--avd-gray-card:#EDEDED; /* Card-Hintergründe */
+--avd-gray-metanav:#F4F4F4; /* Meta-Navigation */
+--avd-gray-mid:#909090; /* Akzent grau */
+--avd-gray-footer:#5F5F5F; /* Footer, Schatten, sekundärer Text */
+--avd-gray-footer-accent:#373737; /* Footer-Akzentfläche */
+--avd-gray-metatext:#707173; /* Meta-Navigation, Affiliation-Leiste */
+--avd-gray-hover:#4D5657; /* Button-Hover */
+--avd-red:#EE1919; /* Fehler/Warnung */
+/* Semantische Aliase (konsolidierter Token-Block) */
+--color-text:var(--avd-anthracite);
+--color-headline:var(--avd-ink);
+--color-accent:var(--avd-slate);
+--color-orange:var(--avd-orange);
+--color-link:var(--color-orange);
+--color-icon:var(--color-orange);
+--color-background:var(--avd-white);
+--color-surface-blue:var(--avd-blue-light);
+--color-surface-card:var(--avd-gray-card);
+--color-footer:var(--avd-gray-footer);
+--color-danger:var(--avd-red);
+}

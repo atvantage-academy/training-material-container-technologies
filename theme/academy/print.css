@@ -1,0 +1,249 @@
+/* =============================================================================
+   Drucklayout (@media print) – ATVANTAGE Academy
+   -----------------------------------------------------------------------------
+   Sauberer Ausdruck von Doku-/Guide-Seiten:
+   - IMMER Light (dunkle Schrift auf hellem Grund) – unabhängig vom Screen-Farbschema
+     (Dark-Mode/System-Präferenz werden per !important-Token-Reset überstimmt).
+   - Screen-Chrome wird ausgeblendet: Meta-Nav, Kopf-Navigation (Burger/Links),
+     Farbschema-Umschalter, Brotkrumen, Hero-Tags, rechte Sidebar
+     (Inhaltsverzeichnis/Fortschritt/Ressourcen), Prev/Next, Footer, BEIDE
+     Kopier-Buttons („Markdown kopieren“ im Hero und der Button an Code-Blöcken)
+     sowie der Drucken-Knopf der Visualisierungs-Ansicht (auf Papier sinnlos).
+   - ERHALTEN bleiben: ATVANTAGE-Logo (Briefkopf), Seitentitel, Inhalt, der
+     QR-Code der Seitenadresse und eine Druck-Kontaktzeile (E-Mail +
+     ATVANTAGE-Homepage), die den Footer ersetzt.
+
+   Der QR-Code ist der EINZIGE Bedienbaustein, der im Ausdruck bleibt – auf Papier
+   ist er kein Chrome, sondern der Rückweg zur Online-Fassung. Er steht dort fest
+   auf `--avd-academy-qr-print` und nicht mehr auf der Bildschirmgröße (34 px wären
+   gedruckt rund 9 mm und damit unlesbar): 25 mm im Hero der Visualisierung, 20 mm
+   in der Kopfzeile und in der Kopfleiste der Präsentation. Wo er steht, hängt vom
+   Layout ab – bei `default`/`guide` in der Kopfzeile, bei `visualization` im Hero
+   (dort gibt es keine Kopfzeile).
+
+   Die Druck-Kontaktzeile lebt im Layout als `.avd-academy-print-contact`
+   (default.html) und ist auf dem Bildschirm ausgeblendet.
+   ============================================================================= */
+
+/* Bildschirm: Druck-Kontaktzeile ausblenden (nur im Ausdruck sichtbar). */
+.avd-academy-print-contact { display: none; }
+
+@media print {
+  /* Light erzwingen – überstimmt Dark-Mode-Tokens (Attribut + prefers-color-scheme). */
+  :root {
+    color-scheme: light !important;
+    --avd-academy-color-ink:       #343E3F !important;
+    --avd-academy-color-ink-muted: #5F5F5F !important;
+    --avd-academy-color-headline:  #1A2627 !important;
+    --avd-academy-color-bg:        #FFFFFF !important;
+    --avd-academy-color-bg-subtle: #F4F4F4 !important;
+    --avd-academy-color-border:    #CFD4D6 !important;
+    --avd-academy-border-soft:     #E6E8EA !important;
+    --avd-academy-hero-bg:         #FFFFFF !important;
+    --avd-academy-topbar-bg:       #FFFFFF !important;
+    --avd-academy-code-bg:         #F4F4F4 !important;
+    /* Gruppen-Töne zurück auf die Light-Werte: Im Dark-Theme sind sie aufgehellt
+       (tokens.css) – auf weißem Papier wären sie zu blass. Die Füllpalette ist
+       ohnehin auf helle Flächen gerechnet und braucht keinen Reset. */
+    --avd-academy-tone-1:     var(--avd-academy-fill-1) !important;
+    --avd-academy-tone-2:     var(--avd-academy-fill-2) !important;
+    --avd-academy-tone-3:     var(--avd-academy-fill-3) !important;
+    --avd-academy-tone-4:     var(--avd-academy-fill-4) !important;
+    --avd-academy-tone-alert: var(--avd-academy-color-danger) !important;
+  }
+  html, body { background: #FFFFFF !important; color: #343E3F !important; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  /* Nicht benötigtes Screen-Chrome ausblenden (u. a. Breadcrumb & Footer). */
+  .avd-academy-metanav,
+  .avd-academy-header__nav,
+  .avd-academy-header__burger,
+  .avd-academy-guide-hero__crumbs,
+  .avd-academy-guide-hero__tags,
+  .avd-academy-guide-sidebar,
+  .avd-academy-footer,
+  .avd-academy-skip-link,
+  .avd-academy-copy-md,
+  .avd-academy-copy,
+  .avd-academy-print-btn,
+  .avd-academy-theme-toggle,
+  .avd-academy-tool,
+  [data-avd-academy-toc-box],
+  [data-avd-academy-progress] { display: none !important; }
+
+  /* Kopf entschlacken: nur das Marken-Logo als Briefkopf, nicht sticky. */
+  .avd-academy-header {
+    position: static !important; box-shadow: none !important; border: 0 !important;
+    background: #FFFFFF !important; padding: 0 0 0.5rem 0 !important;
+  }
+
+  /* Titelband flach & hell. */
+  .avd-academy-guide-hero {
+    background: #FFFFFF !important; padding: 0.5rem 0 !important; margin: 0 !important;
+  }
+  /* Die Meta-Zeile trägt auf Doku-Seiten und Guides nur noch Chrome (Tags,
+     „Markdown kopieren“) – der QR-Code sitzt dort in der Kopfzeile. Sie entfällt
+     also wieder komplett. NUR in der Visualisierungs-Ansicht bleibt sie stehen:
+     Dort gibt es keine Kopfzeile, und der QR-Code steckt in ihr. */
+  .avd-academy-guide-hero__meta { display: none !important; }
+  .avd-academy-guide--viz .avd-academy-guide-hero__meta {
+    display: flex !important; justify-content: flex-end !important;
+  }
+
+  /* QR-Code: aus dem Bildschirm-Zustand (kleine Schaltfläche, absolut liegende,
+     bei Hover wachsende Fläche) wird ein fester Block im Textfluss. `static`
+     ist nötig, damit er Platz beansprucht statt den Titel zu überlagern.
+     `:not([hidden])` bewahrt den leeren Platzhalter: Ohne JavaScript entsteht
+     kein Code, und dann darf auch im Ausdruck kein weißes Kästchen stehen. */
+  .avd-academy-qr:not([hidden]),
+  .avd-academy-qr__box {
+    display: block !important;
+    position: static !important;
+    width: var(--avd-academy-qr-print, 25mm) !important;
+    height: var(--avd-academy-qr-print, 25mm) !important;
+    padding: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    background: #FFFFFF !important;
+  }
+  .avd-academy-qr__box svg rect { fill: #FFFFFF !important; }
+  .avd-academy-qr__box svg path { fill: #1A2627 !important; }
+  /* In der Kopfzeile kleiner als im Hero: Sie ist der Briefkopf und soll die erste
+     Seite nicht aufblähen. 20 mm bleiben bei rund 33 Modulen zuverlässig scannbar.
+     Dieselbe Größe wie in der Kopfleiste der Präsentation. */
+  .avd-academy-header__tools .avd-academy-qr { --avd-academy-qr-print: 20mm; }
+
+  /* Einspaltig, volle Breite. */
+  .avd-academy-guide-layout { display: block !important; }
+  .avd-academy-guide-main {
+    max-width: none !important; width: 100% !important; padding: 0 !important;
+  }
+
+  /* Links dunkel & lesbar. */
+  a { color: #1A2627 !important; text-decoration: underline; }
+
+  /* Druck-Kontaktzeile sichtbar machen (ersetzt den ausgeblendeten Footer). */
+  .avd-academy-print-contact {
+    display: flex !important; gap: 1.5rem; flex-wrap: wrap;
+    margin-top: 1.5rem; padding-top: 0.6rem;
+    border-top: 1px solid #CFD4D6;
+    font-size: 0.85rem; color: #5F5F5F;
+  }
+  .avd-academy-print-contact a { color: #1A2627 !important; }
+
+  /* Die Aktionsspalte der gruppierten Tabelle entfällt auf Papier: Eine Fläche zum
+     Anklicken ist dort sinnlos, und leer getönt wäre sie nur ein Farbklecks. Zeilen
+     über die volle Breite tragen ein `colspan`, das die verbleibenden Spalten
+     überschreitet – das ist unkritisch, Browser kappen es. */
+  .avd-academy-grouptable__action { display: none !important; }
+
+  /* Aufdeckbarer Inhalt (`avd-academy-reveal`): auf Papier gibt es kein
+     Aufdecken. Der Inhalt steht EINGEBETTET an seiner Stelle – auch wenn das
+     `<details>` zu ist (Browser blenden dessen Kinder sonst aus). Overlay,
+     Panel-Fläche und Schließen-Kreuz entfallen; der Titel bleibt als Zeile
+     stehen, damit erkennbar ist, was der Abschnitt ist.
+     Ein Ausdruck mit Lücken wäre wertlos: Wer eine Unterlage auf Papier
+     durcharbeitet, kann nichts anklicken. */
+  .avd-academy-reveal > *:not(summary),
+  .avd-academy-reveal[open] > .avd-academy-reveal__body {
+    display: block !important;
+    position: static !important;
+    inset: auto !important;
+    width: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+  .avd-academy-reveal::before { display: none !important; }
+  .avd-academy-reveal__close { display: none !important; }
+  .avd-academy-reveal > summary {
+    border-bottom: 0 !important;
+    color: inherit !important;
+    font-weight: 600;
+  }
+  .avd-academy-reveal > summary::before { display: none !important; }
+  /* Aufklappbare Abschnitte (`avd-academy-fold`): Auf Papier gibt es kein Klicken,
+     also steht alles offen. Das Zeichen entfällt – es wäre ein Bedienelement ohne
+     Bedienung. */
+  .avd-academy-fold > *:not(summary) { display: block !important; }
+  .avd-academy-fold > summary::after { display: none !important; }
+
+  /* Der Titel im Panel wäre auf Papier eine Dopplung des `summary`. */
+  .avd-academy-reveal__title { display: none !important; }
+  /* Umgekehrt bei der Variante `--info`: Dort trägt das `summary` nur einen
+     visuell verborgenen Titel – auf Papier bliebe ein leerer Knopf stehen und der
+     Abschnitt ohne Überschrift. Also Knopf weg, Panel-Titel her. */
+  .avd-academy-reveal--info > summary { display: none !important; }
+  .avd-academy-reveal--info .avd-academy-reveal__title { display: block !important; }
+  /* Ausnahme: Was auf Papier NICHT erscheinen soll – Musterlösungen neben der
+     Übung. Ein Ausdruck, der die Lösung mitbringt, nimmt der Übung den Sinn. */
+  .avd-academy-reveal--screen-only { display: none !important; }
+
+  /* Umbruch-Hygiene. */
+  h1, h2, h3, h4 { break-after: avoid-page; }
+  pre, blockquote, table, figure, img { break-inside: avoid; }
+  img { max-width: 100% !important; }
+
+  /* --- Tabs: auf Papier gibt es keine Reiter ------------------------------
+     Die Leiste ist eine Bedienung und auf dem Papier sinnlos; sie entfaellt. Die
+     Zusammenfassungen kommen dafuer zurueck - sie sind im Ausdruck die
+     Zwischenueberschriften, an denen man sich orientiert. Das Aufklappen selbst
+     macht atvantage.js (siehe dort: ein geschlossenes <details> verbirgt seinen
+     Inhalt im Shadow DOM, da kommt CSS nicht heran).
+
+     DIESER BLOCK GEHOERT IN `@media print` UND NUR DORTHIN. Er stand einmal am
+     Dateiende und damit DANEBEN: print.css wird ohne `media="print"` eingebunden
+     und kapselt selbst. Die Folge war, dass die Leiste auf dem BILDSCHIRM
+     ausgeblendet und die Zusammenfassungen eingeblendet waren - also genau ein
+     Akkordeon, und wegen `!important` durch nichts zu ueberschreiben.
+     ---------------------------------------------------------------------- */
+  /* Auch das Gitter der seitlichen Fassung: Ohne die Leiste stuende sonst eine
+     leere Spalte neben dem Text, und der Text haette nur den Rest der Seite. */
+  .avd-academy-tabs--side { display: block !important; }
+  .avd-academy-tabs__bar { display: none !important; }
+  .avd-academy-tabs--enhanced > .avd-academy-tabs__panel > summary {
+    display: block !important;
+    font-weight: var(--avd-academy-fw-bold, 700);
+    break-after: avoid;
+  }
+  .avd-academy-tabs--enhanced > .avd-academy-tabs__panel > summary::before { content: none; }
+
+  /* Akkordeon: Auf Papier steht alles offen. Ein zugeklappter Bereich waere
+     hier schlicht verlorener Inhalt - dieselbe Ueberlegung wie beim Fold. Der
+     Knopf wird wieder zu dem, was er im Quelltext ist: eine Ueberschrift. Sie
+     bleibt bei ihrem Text (`break-after: avoid`), sonst steht sie allein unten
+     auf der Seite.
+
+     `visibility` MUSS mit zurueckgesetzt werden: Die Bewegung am Bildschirm
+     haengt daran, und eine unsichtbare Zeile druckt als leerer Platz - ein
+     Fehler, den man erst auf dem Papier sieht. */
+  .avd-academy-accordion__region {
+    display: block !important;
+    grid-template-rows: none !important;
+  }
+  .avd-academy-accordion__body {
+    visibility: visible !important;
+    overflow: visible !important;
+    padding-bottom: 0 !important;
+  }
+  .avd-academy-accordion__toggle {
+    display: block !important;
+    padding: 0 !important;
+    cursor: auto;
+    break-after: avoid;
+  }
+  .avd-academy-accordion__toggle::before { content: none !important; }
+  .avd-academy-accordion--enhanced > :is(h2, h3, h4, h5, h6) { border-top: 0 !important; }
+
+  /* Zeilenerklärung: Auf Papier gibt es nichts aufzuklappen. Der Marker entfällt,
+     die Zeile bleibt eine Zeile, und Zeile und Erklärung gehören zusammen auf
+     dieselbe Seite. */
+  .avd-academy-walkthrough { overflow: visible !important; }
+  .avd-academy-walkthrough__line > summary::before { content: none !important; }
+  .avd-academy-walkthrough__line > summary { cursor: auto; break-after: avoid; }
+  .avd-academy-walkthrough__line { break-inside: avoid; }
+}

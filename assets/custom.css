@@ -1,0 +1,60 @@
+/* =============================================================================
+   Schulungs-Customization – VERPFLICHTEND für jedes Schulungs-Repo.
+   -----------------------------------------------------------------------------
+   Sorgt für eine klar erkennbare Abweichung vom ATLAS-Look: eine eigene
+   Akzentfarbe plus Schulungs-Logo (siehe `brand.logo` in `_config.yml`).
+
+   GEGEN ATLAS, NICHT GEGENEINANDER. Zwei Kurse dürfen dieselbe Farbe tragen –
+   niemand hat beide gleichzeitig offen. Unterscheidbar sein muss eine Unterlage
+   vom öffentlichen Auftritt, damit im Kurs niemand die falsche Seite für die
+   Schulung hält. Deshalb ist unten eine Vorgabe eingetragen und keine Auswahl. Diese
+   Datei wird über `styles` in `_config.yml` NACH dem Theme geladen und
+   überschreibt daher dessen Tokens.
+
+   Trainer:innen dürfen die Werte anpassen. Die Datei MUSS aber bestehen bleiben,
+   damit Schulungsunterlagen erkennbar anders aussehen als die öffentliche
+   Academy-Website.
+
+   EINE FARBE. KEIN ZWEITER SATZ WERTE FÜR DARK.
+   Angegeben wird nur der Farbton. Die HELLIGKEIT kommt aus den Theme-Tokens
+   `--avd-academy-color-ink` und `--avd-academy-color-bg` – und die schaltet das
+   Theme beim Moduswechsel selbst um. Light und Dark fallen deshalb aus DERSELBEN
+   Formel, und der Kontrast hängt an der Konstruktion statt am Zufall.
+
+   Vorher standen hier VIER Werte: Akzent und Hero-Band, je für Light und Dark,
+   den Dark-Wert doppelt. Das ist schiefgegangen – in einem Repo wurde ein Wert
+   geändert und drei nicht, und die Unterlage trug Blau im Light- und Grün im
+   Dark-Modus. Beim Bauen fällt so etwas nicht auf, weil immer nur ein Modus
+   angesehen wird. Schlimmer: Von drei frei gewählten Schulungsfarben lag JEDE in
+   einem der beiden Modi unter WCAG AA, ohne dass es jemand wusste.
+
+   WER HIER EINEN `[data-avd-academy-theme="dark"]`- ODER EINEN
+   `prefers-color-scheme`-BLOCK FÜR DIESE FARBEN ERGÄNZT, HEBELT DIE ABLEITUNG
+   AUS: Ein solcher Block gewinnt gegen die Formel und friert genau einen Modus
+   auf einen Handwert ein. Farbe ändern heißt: `--avd-academy-accent-base`
+   ändern, sonst nichts.
+
+   Braucht Theme >= 2.13.0. Siehe academy-theme-Doku, „Schulungsfarbe aus einem
+   Wert“.
+   Vorlagenversion: 29 · Quelle: didaktikon/plugin/reference/scaffolding/assets/custom.css · Aktualisieren: didaktikon:konzept-pflegen
+   ============================================================================= */
+
+:root {
+  /* DIE SCHULUNGSFARBE – der einzige Wert, der hier von Hand gepflegt wird.
+     Vorgabe ist das Academy-Blau. Ein Kurs darf einen eigenen Farbton setzen;
+     geändert wird dann NUR diese Zeile. Abgeleitet trägt der Ton in beiden
+     Farbschemata – roh gesetzt fast keiner, siehe oben. */
+  --avd-academy-accent-base: #0198FF;
+
+  /* Fließtext-LINKS hängen nicht am Academy-Akzent, sondern am Fundament
+     (`a { color: var(--color-link) }` → `--color-orange` → `--avd-orange`).
+     Diese Zeile hängt sie an den abgeleiteten Akzent. Sie trägt KEINE eigene
+     Farbe – von Hand gepflegt wird weiterhin nur die Zeile darüber.
+     Ohne sie bleiben alle Links im ATVANTAGE-Orange, während alles andere die
+     Schulungsfarbe trägt. Beide Farben sehen für sich stimmig aus, deshalb
+     fällt das beim Durchblättern nicht auf. */
+  --avd-orange: var(--avd-academy-color-accent);
+}
+
+/* Akzentstreifen unter der Kopfzeile – deutliches Erkennungsmerkmal. */
+.avd-academy-header { border-bottom: 3px solid var(--avd-academy-color-accent); }

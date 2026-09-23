@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Seite">
+  <!-- Farben aus dem ATVANTAGE-Fundament: Anthrazit #343E3F, Orange #FF5401. -->
+  <rect width="32" height="32" fill="#343E3F"/>
+  <!-- Ein Blatt mit umgeknickter Ecke: die gewoehnliche Seite. Der Guide (Liste aus
+       drei Zeilen) ist die Uebung, dies das Dokument. -->
+  <g fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linejoin="round">
+    <path d="M10 7h8l5 5v13H10z"/>
+  </g>
+  <path d="M18 7l5 5h-5z" fill="#FF5401"/>
+</svg>

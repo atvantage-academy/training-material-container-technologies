@@ -1,0 +1,26 @@
+# axe-core 4.13.0 (mitgeliefert)
+
+**Woher:** [`axe-core`](https://github.com/dequelabs/axe-core) von Deque Systems,
+Lizenz **MPL-2.0** (siehe [`LICENSE`](LICENSE)). Unveränderte Kopie der
+veröffentlichten Datei `axe.min.js` aus dem npm-Paket `axe-core@4.13.0`.
+
+**Warum hier und nicht per npm:** Dieselbe Linie wie beim QR-Code
+(`theme/academy/qrcode/`) – kein CDN, keine Installation zur Laufzeit, kein Netz
+im Prüflauf. Die Pipeline misst damit dasselbe wie der Rechner daneben, auch
+Jahre später.
+
+**Im npm-Paket:** Die Datei wird mit ausgeliefert (`theme/package-contents.txt`
+führt sie), weil dieselbe Prüfung in den Schulungs-Repos über die zentrale
+didaktikon-Action läuft – die kennt nur `theme/`.
+
+**Warum `.txt` und nicht `.md`:** Als Markdown hat Jekyll sie zu einer SEITE
+gerendert – in jeder Unterlage, die das Theme lädt. Die `exclude`-Liste des
+Themes half dagegen nicht: Jekyll ERSETZT den Schlüssel, und ein Repo mit
+eigener Liste verliert die des Themes. Was nicht wie eine Seite aussieht, kann
+auch keine werden.
+
+**Erneuern:** `npm pack axe-core@«version»`, daraus `axe.min.js` und `LICENSE`
+hierher kopieren, die Version oben nachziehen, `theme/jekyll/a11y.sh` einmal laufen
+lassen. Eine neue Fassung kann zusätzliche Regeln mitbringen – dann wird der
+Lauf rot, ohne dass sich am Theme etwas geändert hat. Das ist gewollt: Die Regel
+war vorher schon verletzt, nur ungemessen.

@@ -1,0 +1,905 @@
+/* =============================================================================
+   Layout „simulation“ – bewegte Abläufe auf einer Bühne
+   -----------------------------------------------------------------------------
+   Gehört zum Jekyll-Layer des Themes und wird NUR vom Layout `simulation`
+   geladen (_layouts/simulation.html, nach head.html – überschreibt daher
+   site.css und print.css).
+
+   Aufbau:
+     .avd-academy-sim              <body> – Vollbildfläche, vier Zonen
+       .avd-academy-sim__bar       schmale Kopfleiste (wie in der Präsentation)
+       .avd-academy-sim__main      Bühne + Erklärspalte
+         .avd-academy-sim__stage   das Bühnenbild der Seite
+         .avd-academy-sim__aside   Erklärtext zum laufenden Schritt
+       .avd-academy-sim__progress  Fortschrittsbalken
+       .avd-academy-sim__controls  Steuerleiste (⟲ ‹ ▶ Abspielen 1×▴ ›)
+
+   Darunter die BÜHNEN-BAUSTEINE (`avd-academy-sim-*`): Tafeln, Zellen,
+   Code-Listing und die Zustandsklassen `is-new`, `is-gone`, `is-active`,
+   `is-pulse`, `is-error`. Sie sind ein Angebot, keine Pflicht – eine Simulation
+   darf ihre Kulisse auch vollständig selbst gestalten.
+
+   Alle Farben/Abstände kommen aus den Academy-Tokens; Dark Mode kostet damit
+   keine Extra-Regel.
+   ============================================================================= */
+
+/* --- Vollbildfläche ---------------------------------------------------------
+   Die Seite scrollt NICHT – gescrollt wird höchstens innerhalb der Bühne oder
+   der Erklärspalte. Eine Simulation ist eine Apparatur, kein Dokument: Die
+   Steuerleiste muss immer erreichbar sein, ohne dass jemand danach sucht. */
+.avd-academy-sim {
+  min-height: 100vh;
+  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--avd-academy-color-bg);
+  color: var(--avd-academy-color-ink);
+  font-family: var(--avd-academy-font-sans);
+}
+
+/* --- Kopfleiste (Zwilling der Präsentation) --------------------------------- */
+.avd-academy-sim__bar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--avd-academy-space-4);
+  padding: var(--avd-academy-space-2) var(--avd-academy-space-6);
+  background: var(--avd-academy-topbar-bg);
+  border-bottom: 1px solid var(--avd-academy-border-soft);
+  /* Über der Bühne: Der vergrößerte QR-Code ragt in sie hinein. */
+  position: relative;
+  z-index: 2;
+}
+.avd-academy-sim__logo { height: 22px; width: auto; flex: 0 0 auto; }
+.avd-academy-sim__title {
+  font-size: var(--avd-academy-fs-sm);
+  font-weight: var(--avd-academy-fw-medium);
+  color: var(--avd-academy-color-ink-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.avd-academy-sim__counter {
+  margin-left: auto;
+  font-size: var(--avd-academy-fs-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--avd-academy-color-ink-muted);
+  white-space: nowrap;
+}
+/* Werkzeuggruppe: positioniert nur – wie die Knöpfe darin AUSSEHEN, steht in
+   components.css (`.avd-academy-tool`). Dieselben Variablen wie in der
+   Präsentation, damit beide Kopfleisten gleich aussehen. */
+.avd-academy-sim__tools {
+  display: flex; align-items: center; gap: var(--avd-academy-space-2);
+  --avd-academy-tool-size: 2rem;
+  --avd-academy-tool-glyph: 1rem;
+  --avd-academy-tool-ink: var(--avd-academy-color-ink-muted);
+  --avd-academy-tool-ink-hover: var(--avd-academy-color-accent);
+}
+.avd-academy-sim__tools .avd-academy-qr { --avd-academy-qr-size: 2rem; }
+.avd-academy-sim__back {
+  border: 0;
+  padding: 0;
+  background: none;
+  font: inherit;
+  font-size: var(--avd-academy-fs-sm);
+  color: var(--avd-academy-color-ink-muted);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.avd-academy-sim__back[hidden] { display: none; }
+.avd-academy-sim__back:hover { color: var(--avd-academy-color-accent); }
+
+/* --- Bühne + Erklärspalte ---------------------------------------------------
+   Die Erklärspalte ist bewusst SCHMAL und fest: Sie trägt einen Gedanken, nicht
+   einen Absatz. Wächst sie mit dem Fenster, wandert der Blick vom Geschehen weg. */
+.avd-academy-sim__main {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(17rem, 24vw, 24rem);
+}
+.avd-academy-sim__main--wide { grid-template-columns: minmax(0, 1fr); }
+/* Bühne und Übersicht liegen übereinander in derselben Zelle; sichtbar ist per
+   `hidden` immer nur eine. So springt beim Wechsel nichts. */
+.avd-academy-sim__stage,
+.avd-academy-sim__intro { grid-column: 1; grid-row: 1; }
+.avd-academy-sim__stage[hidden] { display: none; }
+
+/* Ein verstecktes Bühnenbild muss WEG sein – auch wenn die Seite ihm ein eigenes
+   `display` gegeben hat. Das `hidden`-Attribut allein genügt dafür nicht: Die
+   UA-Regel `[hidden] { display: none }` verliert gegen jeden Klassenselektor,
+   und ein Bühnenbild trägt fast immer eines (`display: grid`, `flex` …). Ohne
+   diese Zeile stünden bei vier Szenarien alle vier Kulissen untereinander. */
+[data-avd-academy-sim-scene][hidden] { display: none !important; }
+
+.avd-academy-sim__stage {
+  position: relative;          /* Bezugsrahmen für SVG-Overlays der Simulation */
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  padding: clamp(1rem, 0.6rem + 1.6vw, 2.5rem);
+  /* Größer als eine Doku-Seite: Eine Simulation wird projiziert und aus einigen
+     Metern gelesen. */
+  font-size: clamp(0.95rem, 0.85rem + 0.35vw, 1.2rem);
+  line-height: 1.5;
+}
+
+.avd-academy-sim__aside {
+  min-width: 0;
+  overflow: auto;
+  padding: clamp(1rem, 0.6rem + 1.2vw, 2rem);
+  border-left: 1px solid var(--avd-academy-border-soft);
+  background: var(--avd-academy-color-bg-subtle);
+  font-size: clamp(0.95rem, 0.88rem + 0.25vw, 1.1rem);
+  line-height: var(--avd-academy-lh-body);
+}
+.avd-academy-sim__note-title {
+  font-size: var(--avd-academy-fs-md);
+  line-height: var(--avd-academy-lh-heading);
+  color: var(--avd-academy-color-headline);
+  margin: 0 0 var(--avd-academy-space-3) 0;
+  padding-bottom: var(--avd-academy-space-2);
+  border-bottom: 2px solid var(--avd-academy-color-accent);
+}
+.avd-academy-sim__note > :first-child { margin-top: 0; }
+.avd-academy-sim__note > :last-child { margin-bottom: 0; }
+.avd-academy-sim__note p { margin: 0 0 var(--avd-academy-space-3) 0; }
+.avd-academy-sim__note li { margin-bottom: var(--avd-academy-space-1); }
+.avd-academy-sim__note li::marker { color: var(--avd-academy-color-accent); }
+.avd-academy-sim__note code {
+  font-family: var(--avd-academy-font-mono);
+  background: var(--avd-academy-code-bg);
+  border-radius: var(--avd-academy-radius-sm);
+  padding: 0.1em 0.35em;
+  font-size: 0.9em;
+}
+/* Der Text wechselt mit jedem Schritt – ein kurzes Aufblenden zeigt, dass er neu
+   ist, ohne dass jemand die Spalte im Auge behalten muss. */
+@media (prefers-reduced-motion: no-preference) {
+  .avd-academy-sim__note { animation: avd-academy-sim-einblenden 260ms ease-out; }
+}
+
+/* Schmale Fenster: Erklärspalte unter die Bühne. Eine Simulation ist für einen
+   großen Querformat-Screen gedacht; nebeneinander bliebe hier von beidem nichts. */
+@media (max-width: 900px) {
+  .avd-academy-sim__main { grid-template-columns: minmax(0, 1fr); grid-template-rows: 1fr auto; }
+  .avd-academy-sim__aside {
+    border-left: 0;
+    border-top: 1px solid var(--avd-academy-border-soft);
+    max-height: 40vh;
+  }
+}
+
+/* =============================================================================
+   Szenarien – Reiterleiste und Übersicht
+   -----------------------------------------------------------------------------
+   Erscheinen nur, wenn eine Seite mehr als EIN Szenario anmeldet. simulation.js
+   baut beide; hier steht nur, wie sie aussehen.
+   ============================================================================= */
+.avd-academy-sim__tabs {
+  flex: 0 0 auto;
+  display: flex;
+  gap: var(--avd-academy-space-1);
+  align-items: stretch;
+  padding: 0 var(--avd-academy-space-6);
+  background: var(--avd-academy-topbar-bg);
+  border-bottom: 1px solid var(--avd-academy-border-soft);
+  overflow-x: auto;
+  /* Auf schmalen Bühnen scrollt die LEISTE, nicht die Seite. */
+  scrollbar-width: thin;
+}
+.avd-academy-sim__tabs[hidden] { display: none; }
+
+.avd-academy-sim__tab {
+  display: flex;
+  align-items: center;
+  gap: var(--avd-academy-space-2);
+  padding: var(--avd-academy-space-3) var(--avd-academy-space-4);
+  border: 0;
+  /* Der aktive Reiter trägt einen Balken UNTEN – oben säße er auf der Kante der
+     Kopfleiste und liefe mit ihr zusammen. */
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--avd-academy-color-ink-muted);
+  font: inherit;
+  font-size: var(--avd-academy-fs-sm);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--avd-academy-transition), border-color var(--avd-academy-transition);
+}
+.avd-academy-sim__tab:hover { color: var(--avd-academy-color-ink); }
+.avd-academy-sim__tab.is-active {
+  color: var(--avd-academy-color-headline);
+  border-bottom-color: var(--avd-academy-color-accent);
+  font-weight: var(--avd-academy-fw-medium);
+}
+.avd-academy-sim__tab-nr {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem; height: 1.5rem;
+  border-radius: 999px;
+  background: var(--avd-academy-color-bg-subtle);
+  font-size: 0.75em;
+  font-variant-numeric: tabular-nums;
+}
+.avd-academy-sim__tab.is-active .avd-academy-sim__tab-nr {
+  background: var(--avd-academy-color-accent);
+  color: var(--avd-academy-color-accent-contrast);
+}
+.avd-academy-sim__tab--uebersicht { margin-right: var(--avd-academy-space-2); }
+
+/* Die Übersicht liegt in derselben Rasterzelle wie die Bühne – nie beide
+   gleichzeitig sichtbar, und kein Sprung beim Wechsel. */
+.avd-academy-sim__intro {
+  min-width: 0;
+  overflow: auto;
+  padding: clamp(1.5rem, 1rem + 2.5vw, 3.5rem);
+}
+.avd-academy-sim__intro[hidden] { display: none; }
+/* Auf der Übersicht gibt es keinen Schritt – die Erklärspalte hätte nichts zu
+   sagen und stünde als leerer Streifen mit Trennlinie daneben. */
+.avd-academy-sim[data-uebersicht] .avd-academy-sim__main { grid-template-columns: minmax(0, 1fr); }
+.avd-academy-sim[data-uebersicht] .avd-academy-sim__aside { display: none; }
+.avd-academy-sim__intro-kopf { max-width: 46rem; margin-bottom: var(--avd-academy-space-8); }
+.avd-academy-sim__intro-title {
+  margin: 0 0 var(--avd-academy-space-3) 0;
+  font-size: var(--avd-academy-fs-xl);
+  line-height: var(--avd-academy-lh-heading);
+  color: var(--avd-academy-color-headline);
+}
+.avd-academy-sim__intro-lead {
+  margin: 0;
+  font-size: var(--avd-academy-fs-md);
+  line-height: var(--avd-academy-lh-body);
+  color: var(--avd-academy-color-ink-muted);
+}
+/* Zwei Kacheln nebeneinander, gleich groß. Eine einspaltige Liste ließe auf einer
+   Bühne im Querformat die halbe Breite leer – und vier Szenarien untereinander
+   liest man nicht als Auswahl, sondern als Reihenfolge. */
+.avd-academy-sim__intro-liste {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--avd-academy-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-width: 72rem;
+}
+@media (max-width: 900px) {
+  .avd-academy-sim__intro-liste { grid-template-columns: minmax(0, 1fr); }
+}
+.avd-academy-sim__intro-karte {
+  display: flex;
+  align-items: flex-start;
+  /* Gleich hoch, egal wie lang die Beschreibung ist – sonst wirkt das Raster
+     ausgefranst. Das Raster macht die Zeilen gleich hoch, die Kachel füllt sie. */
+  height: 100%;
+  gap: var(--avd-academy-space-4);
+  width: 100%;
+  padding: var(--avd-academy-space-4);
+  border: 1px solid var(--avd-academy-color-border);
+  border-radius: var(--avd-academy-radius-lg);
+  background: var(--avd-academy-color-bg-subtle);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--avd-academy-transition), transform var(--avd-academy-transition);
+}
+.avd-academy-sim__intro-karte:hover,
+.avd-academy-sim__intro-karte:focus-visible {
+  border-color: var(--avd-academy-color-accent);
+  outline: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .avd-academy-sim__intro-karte:hover { transform: translateX(3px); }
+}
+.avd-academy-sim__intro-nr {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem; height: 2rem;
+  border-radius: 999px;
+  background: var(--avd-academy-color-accent);
+  color: var(--avd-academy-color-accent-contrast);
+  font-weight: var(--avd-academy-fw-bold);
+  font-variant-numeric: tabular-nums;
+}
+.avd-academy-sim__intro-text { flex: 1 1 auto; min-width: 0; }
+.avd-academy-sim__intro-name {
+  display: block;
+  font-size: var(--avd-academy-fs-md);
+  font-weight: var(--avd-academy-fw-medium);
+  color: var(--avd-academy-color-headline);
+}
+.avd-academy-sim__intro-mehr {
+  display: block;
+  margin-top: var(--avd-academy-space-1);
+  color: var(--avd-academy-color-ink-muted);
+  font-size: var(--avd-academy-fs-sm);
+  line-height: var(--avd-academy-lh-body);
+}
+.avd-academy-sim__intro-meta {
+  flex: 0 0 auto;
+  align-self: center;
+  color: var(--avd-academy-color-ink-muted);
+  font-size: var(--avd-academy-fs-sm);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* --- Fortschritt + Steuerleiste --------------------------------------------- */
+.avd-academy-sim__progress {
+  flex: 0 0 auto;
+  height: 3px;
+  background: var(--avd-academy-border-soft);
+}
+.avd-academy-sim__progress-fill {
+  height: 100%;
+  width: 0;
+  background: var(--avd-academy-color-accent);
+  transition: width 320ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .avd-academy-sim__progress-fill { transition: none; }
+}
+
+.avd-academy-sim__controls {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--avd-academy-space-2);
+  padding: var(--avd-academy-space-3) var(--avd-academy-space-6);
+  background: var(--avd-academy-topbar-bg);
+  border-top: 1px solid var(--avd-academy-border-soft);
+}
+.avd-academy-sim__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--avd-academy-space-2);
+  min-width: 2.75rem;
+  height: 2.75rem;
+  padding: 0 var(--avd-academy-space-3);
+  border-radius: 999px;
+  border: 1px solid var(--avd-academy-color-border);
+  background: var(--avd-academy-color-bg);
+  color: var(--avd-academy-color-ink);
+  font-family: inherit;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: var(--avd-academy-shadow-1);
+  transition: background var(--avd-academy-transition), color var(--avd-academy-transition),
+              border-color var(--avd-academy-transition);
+}
+.avd-academy-sim__btn:hover:not(:disabled) {
+  background: var(--avd-academy-color-accent);
+  border-color: var(--avd-academy-color-accent);
+  color: var(--avd-academy-color-accent-contrast);
+}
+.avd-academy-sim__btn:disabled { opacity: 0.35; cursor: default; }
+
+/* --- Abspielen + Tempo: EIN geteilter Knopf ---------------------------------
+   Abspielen ist der Hauptknopf – er trägt als einziger Text und die Akzentfarbe,
+   damit die Hand ihn ohne Hinsehen findet. Das Tempo hängt unmittelbar daran,
+   weil es nichts anderes ist als „wie schnell abspielen“; ein gleich großer
+   Knopf daneben hätte eine Wichtigkeit vorgetäuscht, die es nicht hat. */
+/* Abspielen + Tempo sind EIN Knopf – gemeinsamer Hintergrund, gemeinsamer
+   Rahmen, gemeinsames Hover. Die beiden <button> darin sind nur die zwei
+   Trefferflächen (abspielen / Tempo wählen) und bringen selbst keine Optik mit;
+   ohne diese Trennung ginge entweder die Tastaturbedienung oder die Semantik
+   verloren. */
+.avd-academy-sim__play-group {
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+  height: 2.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--avd-academy-color-accent);
+  background: var(--avd-academy-color-accent);
+  color: var(--avd-academy-color-accent-contrast);
+  box-shadow: var(--avd-academy-shadow-1);
+  transition: background var(--avd-academy-transition), border-color var(--avd-academy-transition),
+              color var(--avd-academy-transition);
+}
+.avd-academy-sim__play-group:hover,
+.avd-academy-sim__play-group:focus-within {
+  background: var(--avd-academy-color-primary);
+  border-color: var(--avd-academy-color-primary);
+  color: var(--avd-academy-color-primary-contrast);
+}
+
+/* Die Flächen im Knopf tragen keine eigene Optik – sonst wären wieder zwei
+   Knöpfe zu sehen. */
+.avd-academy-sim__play-group .avd-academy-sim__btn,
+.avd-academy-sim__play-group .avd-academy-sim__btn:hover:not(:disabled) {
+  height: 100%;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
+}
+
+.avd-academy-sim__btn--play {
+  min-width: 0;
+  padding: 0 var(--avd-academy-space-2) 0 var(--avd-academy-space-6);
+  border-radius: 999px 0 0 999px;
+}
+.avd-academy-sim__btn-icon { font-size: 1rem; }
+.avd-academy-sim__btn-text {
+  font-size: var(--avd-academy-fs-sm);
+  font-weight: var(--avd-academy-fw-medium);
+  /* Fester Platz für „Abspielen“ und „Pause“ – sonst hüpft die ganze Leiste,
+     sobald der Knopf umschaltet. */
+  min-width: 5.5em;
+  text-align: left;
+}
+
+.avd-academy-sim__btn--speed {
+  min-width: 0;
+  gap: 0.3em;
+  padding: 0 var(--avd-academy-space-4) 0 var(--avd-academy-space-1);
+  border-radius: 0 999px 999px 0;
+  font-size: var(--avd-academy-fs-sm);
+  font-weight: var(--avd-academy-fw-medium);
+  font-variant-numeric: tabular-nums;
+}
+.avd-academy-sim__caret {
+  font-size: 0.65em;
+  line-height: 1;
+  transition: transform var(--avd-academy-transition);
+}
+.avd-academy-sim__btn--speed[aria-expanded="true"] .avd-academy-sim__caret {
+  transform: rotate(180deg);
+}
+
+/* Das Menü klappt nach OBEN auf – die Steuerleiste sitzt am unteren Rand – und
+   sitzt bündig am Knopf: gleiche Kante rechts, gleiche Mindestbreite. */
+.avd-academy-sim__speed-menu {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 0.4rem);
+  z-index: 20;
+  margin: 0;
+  padding: 0.3rem;
+  list-style: none;
+  min-width: max(100%, 12rem);
+  background: var(--avd-academy-color-bg);
+  border: 1px solid var(--avd-academy-color-border);
+  border-radius: var(--avd-academy-radius);
+  box-shadow: var(--avd-academy-shadow-2);
+}
+.avd-academy-sim__speed-menu[hidden] { display: none; }
+.avd-academy-sim__speed-menu button {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45em;
+  width: 100%;
+  padding: 0.45rem 0.6rem;
+  border: 0;
+  border-radius: var(--avd-academy-radius-sm);
+  background: transparent;
+  color: var(--avd-academy-color-ink);
+  font: inherit;
+  font-size: var(--avd-academy-fs-sm);
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+  cursor: pointer;
+}
+.avd-academy-sim__speed-menu button:hover,
+.avd-academy-sim__speed-menu button:focus-visible {
+  background: var(--avd-academy-color-bg-subtle);
+  outline: none;
+}
+/* Das Häkchen ist IMMER da, nur unsichtbar: Sonst rückten alle Zeilen um seine
+   Breite, sobald die Auswahl wechselt. */
+.avd-academy-sim__speed-menu button::before {
+  content: "✓";
+  visibility: hidden;
+  color: var(--avd-academy-color-accent);
+}
+.avd-academy-sim__speed-menu button.is-active::before { visibility: visible; }
+.avd-academy-sim__speed-menu button.is-active { font-weight: var(--avd-academy-fw-bold); }
+.avd-academy-sim__speed-menu button span {
+  margin-left: auto;
+  color: var(--avd-academy-color-ink-muted);
+  font-weight: var(--avd-academy-fw-normal);
+  font-size: 0.9em;
+}
+
+@media (max-width: 620px) {
+  .avd-academy-sim__btn-text { display: none; }
+  .avd-academy-sim__btn--play { padding: 0 var(--avd-academy-space-1) 0 var(--avd-academy-space-4); }
+  .avd-academy-sim__title { display: none; }
+  /* Der Beisatz („langsam“, „im Zeitraffer“) ist Komfort, die Zahl ist die
+     Information – auf schmalen Geräten bleibt nur sie. */
+  .avd-academy-sim__speed-menu { min-width: 7rem; }
+  .avd-academy-sim__speed-menu button span { display: none; }
+}
+
+/* =============================================================================
+   Bühnen-Bausteine – ein Angebot für das Bühnenbild
+   ============================================================================= */
+
+/* Tafeln nebeneinander (z. B. „Stack“ und „Heap“, „Client“ und „Server“). */
+.avd-academy-sim-panels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: clamp(1rem, 0.6rem + 1.5vw, 2rem);
+  align-items: start;
+}
+.avd-academy-sim-panel {
+  border: 2px solid var(--avd-academy-color-border);
+  border-radius: var(--avd-academy-radius-lg);
+  background: var(--avd-academy-color-bg-subtle);
+  padding: var(--avd-academy-space-4);
+  min-height: 6rem;
+}
+.avd-academy-sim-panel__title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--avd-academy-space-2);
+  margin: 0 0 var(--avd-academy-space-4) 0;
+  font-size: var(--avd-academy-fs-sm);
+  font-weight: var(--avd-academy-fw-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--avd-academy-color-ink-muted);
+}
+.avd-academy-sim-panel__hint {
+  font-weight: var(--avd-academy-fw-normal);
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 0.85em;
+}
+.avd-academy-sim-panel__body { display: flex; flex-direction: column; gap: var(--avd-academy-space-3); }
+
+/* --- Tafeln mit Wiedererkennungswert -----------------------------------------
+   Vier unterscheidbare Töne. Bezeichnet eine Tafel über mehrere Szenarien hinweg
+   dieselbe Sache – „Thread Stack“, „Heap“, „Metaspace“ –, dann trägt sie überall
+   denselben Ton, und man findet sich beim Szenariowechsel sofort wieder zurecht.
+
+   Die Töne kommen aus der kategorialen Füllpalette der Academy
+   (`--avd-academy-tone-*`), die im Dark-Theme aufgehellt wird. Ton 2 ist das
+   ATVANTAGE-Orange und damit die Akzentfarbe – für Tafeln bewusst nicht
+   vorgesehen, sonst konkurriert der Rahmen mit allem, was gerade aktiv ist. */
+.avd-academy-sim-panel--ton-1 { --avd-academy-sim-ton: var(--avd-academy-tone-1); }
+.avd-academy-sim-panel--ton-3 { --avd-academy-sim-ton: var(--avd-academy-tone-3); }
+.avd-academy-sim-panel--ton-4 { --avd-academy-sim-ton: var(--avd-academy-tone-4); }
+.avd-academy-sim-panel--ton-alert { --avd-academy-sim-ton: var(--avd-academy-tone-alert); }
+
+.avd-academy-sim-panel--ton-1,
+.avd-academy-sim-panel--ton-3,
+.avd-academy-sim-panel--ton-4,
+.avd-academy-sim-panel--ton-alert {
+  border-color: color-mix(in srgb, var(--avd-academy-sim-ton) 55%, transparent);
+  background: color-mix(in srgb, var(--avd-academy-sim-ton) 8%, var(--avd-academy-color-bg-subtle));
+}
+/* Der Ton als SCHRIFT ist etwas anderes als der Ton als Streifen.
+   Die Überschrift stand im vollen Ton auf einer Fläche aus 8 % desselben Tons.
+   Im Dark-Theme geht das auf, weil die Töne dort aufgehellt werden – im
+   Light-Theme stand der rohe Ton auf seiner eigenen blassen Tönung: Ton 3 (Gold)
+   ergab 1,96:1. Dieselbe Regel bestand dabei mit Ton 1 (Slate) bei 8,16:1 – man
+   sieht den Fehler also nur, wenn die Tafel zufällig den falschen Ton trägt.
+
+   Die Schriftfassung wird deshalb zum Fließtext hin gemischt. Weil
+   `--avd-academy-color-ink` mit dem Farbschema kippt, trägt derselbe Ausdruck in
+   beiden Schemata: im Light-Theme dunkelt er den Ton ab, im Dark-Theme hellt er
+   ihn weiter auf. 35 % gemessen über alle vier Töne: 5,06–8,21:1 hell,
+   8,27–9,15:1 dunkel. Der Rahmen behält den vollen Ton – die Wiedererkennung
+   über Szenarien hinweg hängt an ihm, nicht an der Überschrift. */
+.avd-academy-sim-panel--ton-1 .avd-academy-sim-panel__title,
+.avd-academy-sim-panel--ton-3 .avd-academy-sim-panel__title,
+.avd-academy-sim-panel--ton-4 .avd-academy-sim-panel__title,
+.avd-academy-sim-panel--ton-alert .avd-academy-sim-panel__title {
+  color: color-mix(in srgb, var(--avd-academy-sim-ton) 35%, var(--avd-academy-color-ink));
+}
+/* Der Ton weicht, wenn die Tafel etwas meldet – `is-active`/`is-error` sind
+   Zustände und müssen lauter sein als die Zuordnung. */
+.avd-academy-sim-panel.is-active { border-color: var(--avd-academy-color-accent); }
+.avd-academy-sim-panel.is-error { border-color: var(--avd-academy-color-danger); }
+
+/* Eine Zelle: der kleinste sichtbare Zustandsträger (Variable, Objekt, Paket). */
+.avd-academy-sim-cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--avd-academy-space-4);
+  padding: var(--avd-academy-space-3);
+  border: 1px solid var(--avd-academy-color-border);
+  border-radius: var(--avd-academy-radius);
+  background: var(--avd-academy-color-bg);
+  box-shadow: var(--avd-academy-shadow-1);
+  transition: border-color var(--avd-academy-transition), background var(--avd-academy-transition),
+              transform var(--avd-academy-transition);
+}
+.avd-academy-sim-cell__label {
+  display: block;
+  font-size: 0.7em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--avd-academy-color-ink-muted);
+}
+.avd-academy-sim-cell__name { font-weight: var(--avd-academy-fw-bold); }
+.avd-academy-sim-cell__value {
+  font-family: var(--avd-academy-font-mono);
+  font-weight: var(--avd-academy-fw-medium);
+}
+
+/* --- Code auf der Bühne -----------------------------------------------------
+   Quelltext soll wie Quelltext aussehen: ein Codeblock mit der gewohnten
+   Syntax-Hervorhebung (highlight.js, vom Theme geladen). Deshalb ist die
+   empfohlene Form ein echtes `<pre><code class="language-java">` – nichts
+   Eigenes, was man zusätzlich lernen müsste.
+
+       <pre class="avd-academy-sim-code"><code class="language-java">int a;
+       a = 10;</code></pre>
+
+   Die laufende Zeile wird NICHT durch Umbauen des Markups hervorgehoben, sondern
+   durch einen Balken DAHINTER (`AvdSimulation.codeLine(block, n)`). Das ist der
+   einzige Weg, der die Ausgabe von highlight.js unangetastet lässt: Sie besteht
+   aus verschachtelten Spans, die sich nicht ohne Weiteres zeilenweise zerlegen
+   lassen – und ein zerlegtes Markup würde die Farben zerreißen. */
+.avd-academy-sim-code {
+  position: relative;
+  margin: 0;
+  font-family: var(--avd-academy-font-mono);
+  font-size: 0.82em;
+  /* Feste Zeilenhöhe: Der Balken rechnet mit ihr. `normal` wäre nicht messbar. */
+  line-height: 1.6;
+  font-variant-ligatures: none;
+  /* Kein eigenes Polster: Das trägt das <code> (siehe unten), damit die dunkle
+     Fläche von highlight.js den Block VOLLSTÄNDIG füllt. Läge das Polster hier,
+     bliebe außen ein heller Rahmen um den dunklen Kern. */
+  padding: 0;
+  background: var(--avd-academy-code-bg);
+  border-radius: var(--avd-academy-radius);
+  overflow: hidden;
+}
+/* Den Hintergrund von highlight.js NICHT anfassen. Seine Tokenfarben sind für
+   eine dunkle Fläche gerechnet; auf hellem Grund wäre der Code im Light-Theme
+   kaum zu lesen. Überschrieben wird nur das Polster: hljs setzt `1em`, wir
+   wollen dieselben Abstände wie anderswo. Die doppelte Klasse ist nötig, weil
+   `pre code.hljs` aus dem hljs-Stylesheet sonst gewinnt. */
+.avd-academy-sim-code code,
+.avd-academy-sim-code code.hljs {
+  display: block;
+  padding: var(--avd-academy-space-3) var(--avd-academy-space-4);
+  font: inherit;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+/* Der Balken der laufenden Zeile liegt ÜBER dem Code – er muss, seit die dunkle
+   Fläche von highlight.js auf dem <code> sitzt und alles darunter verdecken
+   würde. Deshalb ist er durchscheinend: Der Text bleibt lesbar, die Zeile hebt
+   sich trotzdem ab. */
+.avd-academy-sim-code__zeiger {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 2;
+  background: color-mix(in srgb, var(--avd-academy-color-accent) 18%, transparent);
+  border-left: 3px solid var(--avd-academy-color-accent);
+  pointer-events: none;
+  transition: transform var(--avd-academy-transition), opacity var(--avd-academy-transition);
+}
+.avd-academy-sim-code__zeiger[hidden] { display: block; opacity: 0; }
+.avd-academy-sim-code code { position: relative; z-index: 1; }
+.avd-academy-sim-code__zeiger { background: color-mix(in srgb, var(--avd-academy-color-accent) 26%, transparent); }
+@media (prefers-reduced-motion: reduce) {
+  .avd-academy-sim-code__zeiger { transition: none; }
+}
+
+/* Eine Beschriftung über einer Gruppe von Zeilen („Primitive Typen“). */
+.avd-academy-sim-code__label {
+  padding: var(--avd-academy-space-2) 0 0.2em;
+  font-family: var(--avd-academy-font-sans);
+  font-size: 0.82em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--avd-academy-color-ink-muted);
+}
+
+/* ÄLTERE FORM (seit 1.8.0): einzelne `__line`-Elemente statt eines Codeblocks.
+   Sie bleibt gültig – wer sie nutzt, bekommt weiterhin Zeilen-Flächen mit
+   `is-active`/`is-erledigt`. Neue Simulationen nehmen den Codeblock oben: Er
+   bringt die Syntaxfarben mit, die hier fehlen. */
+.avd-academy-sim-code__line {
+  display: block;
+  padding: 0.3em 0.7em;
+  border-left: 3px solid transparent;
+  border-radius: var(--avd-academy-radius-sm);
+  white-space: pre;
+  opacity: 0.45;
+  transition: background var(--avd-academy-transition), border-color var(--avd-academy-transition),
+              opacity var(--avd-academy-transition), color var(--avd-academy-transition);
+}
+.avd-academy-sim-code__line.is-active {
+  opacity: 1;
+  background: color-mix(in srgb, var(--avd-academy-color-accent) 18%, transparent);
+  border-left-color: var(--avd-academy-color-accent);
+  color: var(--avd-academy-color-headline);
+  font-weight: var(--avd-academy-fw-medium);
+}
+.avd-academy-sim-code__line.is-erledigt { opacity: 0.75; }
+
+/* --- Zustandsklassen --------------------------------------------------------
+   `is-new` und `is-gone` setzt AvdSimulation.list() beim Abgleich; `is-active`,
+   `is-pulse` und `is-error` vergibt die Simulation selbst. */
+.avd-academy-sim-cell.is-active,
+.avd-academy-sim-panel.is-active { border-color: var(--avd-academy-color-accent); }
+/* Der Fehlerrand einer Zelle ist nur 1 px stark – auf dem Beamer verschwindet er.
+   Ein zweiter Ring per `box-shadow` macht ihn ohne Layoutsprung sichtbar. */
+.avd-academy-sim-cell.is-error {
+  border-color: var(--avd-academy-color-danger);
+  box-shadow: 0 0 0 1px var(--avd-academy-color-danger);
+}
+.avd-academy-sim-panel.is-error { border-color: var(--avd-academy-color-danger); }
+
+@keyframes avd-academy-sim-einblenden {
+  from { opacity: 0; transform: translateY(0.5rem); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes avd-academy-sim-ausblenden {
+  from { opacity: 1; transform: none; }
+  to   { opacity: 0; transform: translateY(-0.4rem) scale(0.96); }
+}
+/* Der Puls arbeitet mit einem RING, nicht mit der Füllfarbe: Ein aufblitzender
+   Hintergrund müsste die Grundfarbe des Elements kennen (und die unterscheidet
+   sich in Light und Dark). Der Ring liegt außen und trifft immer. */
+@keyframes avd-academy-sim-puls {
+  0%, 100% { box-shadow: var(--avd-academy-shadow-1); }
+  35%      { box-shadow: 0 0 0 3px var(--avd-academy-color-accent); }
+}
+@keyframes avd-academy-sim-beben {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-4px); }
+  40%, 60% { transform: translateX(4px); }
+}
+
+.is-new  { animation: avd-academy-sim-einblenden 280ms ease-out; }
+.is-gone  { animation: avd-academy-sim-ausblenden 260ms ease-in forwards; pointer-events: none; }
+.is-pulse { animation: avd-academy-sim-puls 900ms ease-in-out; }
+.is-error.is-pulse { animation: avd-academy-sim-beben 500ms cubic-bezier(0.36, 0.07, 0.19, 0.97); }
+
+@media (prefers-reduced-motion: reduce) {
+  .avd-academy-sim__note,
+  .is-new, .is-gone, .is-pulse, .is-error.is-pulse { animation: none; }
+}
+
+/* =============================================================================
+   Capture-Modus – für Beamer und Aufzeichnung
+   -----------------------------------------------------------------------------
+   Taste C oder `?capture` in der Adresse. Alles, was nicht zur Sache gehört, geht
+   weg: Kopfleiste, Erklärspalte, Fortschritt, Steuerleiste, Mauszeiger. Die Bühne
+   füllt das Fenster.
+
+   Der Erklärtext ist damit weg – deshalb die Einblendung (OST, Taste T): Sie holt
+   ihn an den unteren Rand zurück, ohne der Bühne Platz wegzunehmen.
+   ============================================================================= */
+.avd-academy-sim[data-capture] { cursor: none; }
+.avd-academy-sim[data-capture] .avd-academy-sim__bar,
+.avd-academy-sim[data-capture] .avd-academy-sim__tabs,
+.avd-academy-sim[data-capture] .avd-academy-sim__aside,
+.avd-academy-sim[data-capture] .avd-academy-sim__progress,
+.avd-academy-sim[data-capture] .avd-academy-sim__controls { display: none; }
+.avd-academy-sim[data-capture] .avd-academy-sim__main { grid-template-columns: minmax(0, 1fr); }
+.avd-academy-sim[data-capture] .avd-academy-sim__stage {
+  padding: clamp(1.5rem, 1rem + 2.5vw, 3.5rem);
+}
+/* Ist die Einblendung an, hält die Bühne unten Platz für sie frei – sonst
+   verdeckte sie genau das, worüber sie spricht. Die Höhe misst simulation.js,
+   weil sie am Text hängt. */
+.avd-academy-sim[data-capture][data-ost] .avd-academy-sim__stage {
+  padding-bottom: calc(var(--avd-academy-sim-ost-h, 0px) + clamp(2.5rem, 2rem + 2.5vw, 4.5rem));
+}
+
+/* Die Einblendung liegt ÜBER der Bühne statt neben ihr: Ein eigener Streifen
+   nähme dem Bild Höhe, und beim Ein-/Ausblenden sprängen alle Maße darin. */
+.avd-academy-sim__main { position: relative; }
+.avd-academy-sim__ost {
+  position: absolute;
+  left: clamp(1.5rem, 1rem + 2.5vw, 3.5rem);
+  right: clamp(1.5rem, 1rem + 2.5vw, 3.5rem);
+  bottom: clamp(1.5rem, 1rem + 2.5vw, 3.5rem);
+  z-index: 30;
+  padding: var(--avd-academy-space-4) var(--avd-academy-space-6);
+  border-left: 4px solid var(--avd-academy-color-accent);
+  border-radius: var(--avd-academy-radius);
+  /* Halbdurchsichtig, damit man sieht, worüber sie liegt – aber kräftig genug,
+     dass der Text auf jedem Bühnenbild steht. */
+  background: color-mix(in srgb, var(--avd-academy-color-bg) 88%, transparent);
+  backdrop-filter: blur(6px);
+  box-shadow: var(--avd-academy-shadow-2);
+  font-size: clamp(1rem, 0.85rem + 0.5vw, 1.35rem);
+  line-height: var(--avd-academy-lh-body);
+}
+.avd-academy-sim__ost[hidden] { display: none; }
+.avd-academy-sim__ost-title {
+  margin: 0 0 var(--avd-academy-space-2) 0;
+  font-weight: var(--avd-academy-fw-bold);
+  color: var(--avd-academy-color-headline);
+}
+.avd-academy-sim__ost-title:empty { display: none; }
+.avd-academy-sim__ost-text > :first-child { margin-top: 0; }
+.avd-academy-sim__ost-text > :last-child { margin-bottom: 0; }
+.avd-academy-sim__ost-text p { margin: 0 0 var(--avd-academy-space-2) 0; }
+.avd-academy-sim__ost-text code {
+  font-family: var(--avd-academy-font-mono);
+  background: var(--avd-academy-code-bg);
+  border-radius: var(--avd-academy-radius-sm);
+  padding: 0.1em 0.35em;
+  font-size: 0.9em;
+}
+
+/* Der Hinweis beim Betreten per Taste – blendet sich selbst aus. */
+.avd-academy-sim__capture-hint {
+  position: fixed;
+  top: var(--avd-academy-space-4);
+  left: 50%;
+  z-index: 40;
+  margin: 0;
+  padding: var(--avd-academy-space-2) var(--avd-academy-space-4);
+  border-radius: 999px;
+  background: var(--avd-academy-color-ink);
+  color: var(--avd-academy-color-bg);
+  font-size: var(--avd-academy-fs-sm);
+  white-space: nowrap;
+  pointer-events: none;
+  animation: avd-academy-sim-hinweis 2.5s ease-in-out forwards;
+}
+.avd-academy-sim__capture-hint[hidden] { display: none; }
+@keyframes avd-academy-sim-hinweis {
+  0%        { opacity: 0; transform: translate(-50%, -0.5rem); }
+  12%, 70%  { opacity: 1; transform: translate(-50%, 0); }
+  100%      { opacity: 0; transform: translate(-50%, -0.5rem); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .avd-academy-sim__capture-hint { animation: avd-academy-sim-hinweis 2.5s steps(1) forwards; }
+}
+
+/* --- Kein Drucklayout -------------------------------------------------------
+   Eine Simulation ist Bewegung; ein Ausdruck wäre ein willkürliches Standbild.
+   Es gibt deshalb keinen Druck-Knopf und keine Aufbereitung in Seiten – nur den
+   sichtbaren Schritt, einen Hinweis und den QR-Code als Rückweg. */
+.avd-academy-sim__print-hint { display: none; }
+
+@media print {
+  .avd-academy-sim,
+  .avd-academy-sim__main { display: block; height: auto; overflow: visible; }
+  .avd-academy-sim__stage,
+  .avd-academy-sim__aside { overflow: visible; max-height: none; }
+  .avd-academy-sim__aside { border: 0; border-top: 1px solid #cfd4d6; background: none; }
+  .avd-academy-sim__bar { border-bottom: 1px solid #cfd4d6; padding: 0 0 0.4rem 0; }
+  .avd-academy-sim__counter { display: none !important; }
+  .avd-academy-sim__tools { margin-left: auto; }
+  .avd-academy-sim__tools .avd-academy-qr { --avd-academy-qr-print: 20mm; }
+  .avd-academy-sim__back,
+  .avd-academy-tool,
+  .avd-academy-sim__progress,
+  .avd-academy-sim__controls,
+  .avd-academy-sim__speed-menu,
+  .avd-academy-sim__ost,
+  .avd-academy-sim__tabs,
+  .avd-academy-sim__capture-hint { display: none !important; }
+  .avd-academy-sim__print-hint {
+    display: block;
+    margin-top: 1rem;
+    font-size: 9pt;
+    font-style: italic;
+    color: #56605f;
+  }
+}
