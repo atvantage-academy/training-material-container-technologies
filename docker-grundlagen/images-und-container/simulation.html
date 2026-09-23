@@ -64,13 +64,13 @@
 <meta property="og:description" content="Vom Image in der Registry bis zum gelöschten Container – und was passiert, wenn in der Registry ein neuer Stand liegt.">
 <meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790166379"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790166379">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790166379">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790166379">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790166379"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790166379">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790166379" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790166379" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790166379">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790167043"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790167043">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790167043">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790167043">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790167043"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790167043">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790167043" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790167043" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790167043">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -112,8 +112,8 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/training-material-container-technologies/theme/atvantage/assets/icon-180.png">
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/simulation.css?v=1790166379"><script src="/training-material-container-technologies/theme/jekyll/simulation.js?v=1790166379"></script>
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790166379"></head>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/simulation.css?v=1790167043"><script src="/training-material-container-technologies/theme/jekyll/simulation.js?v=1790167043"></script>
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790167043"></head>
 <body class="avd-academy-sim" data-avd-academy-sim data-avd-academy-sim-title="Der Lebenszyklus eines Containers"
       data-avd-academy-sim-speed="1"
       data-avd-academy-sim-step-interval="3000">
@@ -159,7 +159,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--avd-academy-space-3);
-    padding: clamp(0.6rem, 0.4rem + 0.8vw, 1.1rem);
+    padding: clamp(0.45rem, 0.3rem + 0.6vw, 0.85rem);
     border: 1px solid var(--avd-academy-color-border);
     border-radius: var(--avd-academy-radius-lg);
     background:
@@ -228,7 +228,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--avd-academy-space-3);
-    padding: clamp(0.5rem, 0.35rem + 0.6vw, 0.85rem);
+    padding: clamp(0.4rem, 0.28rem + 0.5vw, 0.7rem);
     border: 1px solid color-mix(in srgb, var(--avd-academy-tone-1) 45%, transparent);
     border-radius: var(--avd-academy-radius-lg);
     background: color-mix(in srgb, var(--avd-academy-tone-1) 5%, transparent);
@@ -262,6 +262,28 @@
     color: var(--avd-academy-color-ink-muted);
   }
 
+  /* --- Der Mensch an der Konsole --------------------------------------------
+     Ohne ihn sieht die Buehne aus, als geschaehe alles von selbst. Er steht
+     LINKS der Konsole und ist ueber einen kurzen Draht mit ihr verbunden – die
+     Kette ist damit vollstaendig: Mensch → Konsole → Daemon → Images/Container. */
+  .lz__konsole { display: flex; align-items: center; gap: 0; }
+  .lz__nutzer {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    color: var(--avd-academy-color-ink-muted);
+  }
+  .lz__nutzer svg { width: 1.5rem; height: 2rem; display: block; }
+  /* Der kurze Draht zur Konsole – gestrichelt wie die uebrigen Verbindungen. */
+  .lz__nutzer::after {
+    content: "";
+    width: 0.9rem;
+    height: 2px;
+    background: repeating-linear-gradient(90deg,
+      var(--avd-academy-color-border) 0 4px, transparent 4px 8px);
+  }
+  .lz__konsole > .avd-academy-sim-panel { flex: 1 1 auto; min-width: 0; }
+
   /* Der Draht zwischen Konsole und Dienst. In BEIDE Richtungen: Der Client
      fragt, der Dienst antwortet – deshalb zwei Pfeilspitzen. */
   .lz__draht {
@@ -272,7 +294,7 @@
     margin: 0;
     color: var(--avd-academy-color-ink-muted);
   }
-  .lz__draht svg { width: 0.85rem; height: 1.8rem; display: block; }
+  .lz__draht svg { width: 0.85rem; height: clamp(1.1rem, 3.4vh, 1.7rem); display: block; }
   .lz__draht-text { font-size: 0.68em; letter-spacing: 0.04em; text-transform: uppercase; }
 
   /* Tafel-Ueberschrift mit Sinnbild. */
@@ -347,10 +369,14 @@
      Sonst waechst die Buehne mit jedem Schritt, und weil sie senkrecht zentriert
      steht, rutscht bei jedem Wachsen ALLES nach oben. Das sieht aus wie eine
      zweite Animation und lenkt von der einen ab, auf die es ankommt. */
-  #reg-images   { min-height: 5.6rem; }   /* 1 Image mit 2 Tags */
-  #reg-images-2 { min-height: 11.4rem; }  /* 2 Images */
+  /* An die FENSTERHOEHE gekoppelt, nicht nur an rem: Die Buehne soll bei 100 %
+     Zoom ohne Scrollen hineinpassen, und auf einem knappen Bildschirm ist eine
+     feste rem-Zahl genau das, was sie sprengt. `clamp` haelt eine Untergrenze
+     (darunter wird es unleserlich) und eine Obergrenze (darueber wird es leer). */
+  #reg-images   { min-height: clamp(4.4rem, 13vh, 6rem); }
+  #reg-images-2 { min-height: clamp(8.6rem, 25vh, 11rem); }
   #lok-images, #lok-images-2,
-  #lok-container, #lok-container-2 { min-height: 15.4rem; }  /* 2 Eintraege */
+  #lok-container, #lok-container-2 { min-height: clamp(9.5rem, 27vh, 13rem); }
 
   /* --- Image-Zeile: ein Stapel, kein Wort ------------------------------------
      Ein Image ist eine Schichtung. Das hier ist noch KEIN Layer-Unterricht (der
@@ -419,33 +445,30 @@
      `web-1` aus, nicht von der Zelle als Ganzem. Ueber ihm das Stereotyp, unter
      ihm die Kennung des Images, auf das er zeigt: So steht beides AM PFEIL und
      nicht im Container, und die Zuordnung haengt nicht allein an der Farbe. */
+  /* DER PFEIL REICHT VON KASTEN ZU KASTEN. Er beginnt an der linken Kante der
+     Container-Zelle und endet in der Images-Tafel – dazwischen liegen die Gasse
+     und die Innenpolster beider Tafeln. Deshalb eine Rechnung statt einer Zahl:
+     Aendert sich die Gasse, wandert der Pfeil mit. Das Stueck extra sorgt dafuer,
+     dass die Spitze die Image-Karte BERUEHRT statt davor zu enden. */
   .lz-ctr__pfeil {
     position: absolute;
-    left: -4.1rem;
-    top: 0.5rem;
-    width: 3.9rem;
+    right: calc(100% + var(--avd-academy-space-4));
+    width: calc(4rem + 2 * var(--avd-academy-space-4));
+    top: 0.3rem;
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    gap: 0.02rem;
+    gap: 0.1rem;
     color: var(--lz-bindung, var(--avd-academy-color-border));
   }
-  .lz-ctr__pfeil svg { width: 100%; height: 0.62rem; display: block; }
+  .lz-ctr__pfeil svg { width: 100%; height: 0.9rem; display: block; }
   .lz-ctr__pfeil-text {
     font-family: var(--avd-academy-font-mono);
-    font-size: 0.56em;
+    font-size: 0.6em;
     line-height: 1.2;
     text-align: center;
     font-style: italic;
     color: var(--avd-academy-color-ink-muted);
-  }
-  .lz-ctr__pfeil-hash {
-    font-family: var(--avd-academy-font-mono);
-    font-size: 0.58em;
-    line-height: 1.2;
-    text-align: center;
-    font-weight: var(--avd-academy-fw-bold);
-    color: var(--lz-bindung-ink, var(--avd-academy-color-ink));
   }
   /* Gestapelt zeigt der Pfeil ins Leere – die Aussage traegt dann der
      Screenreader-Text, der ohnehin an der Zelle haengt. */
@@ -532,11 +555,11 @@
     flex-direction: column;
     align-items: center;
     gap: 0.22rem;
-    padding: 0.3rem 0.15rem 0.25rem;
+    padding: 0.22rem 0.12rem 0.2rem;
     border-radius: var(--avd-academy-radius-sm, 3px);
     border: 1px solid transparent;
   }
-  .lz-teil svg { width: 100%; height: 2.05rem; }
+  .lz-teil svg { width: 100%; height: clamp(1.3rem, 4.2vh, 2rem); }
   .lz-teil__text {
     font-size: 0.6em;
     line-height: 1.25;
@@ -631,8 +654,8 @@
     border-radius: var(--avd-academy-radius);
     background: var(--avd-academy-code-bg);
     font-family: var(--avd-academy-font-mono);
-    font-size: clamp(0.68rem, 0.58rem + 0.32vw, 0.86rem);
-    line-height: 1.75;
+    font-size: clamp(0.66rem, 0.56rem + 0.3vw, 0.82rem);
+    line-height: 1.5;
   }
   .lz-cmd { display: flex; gap: 0.55em; color: var(--avd-academy-color-ink-muted); }
   .lz-cmd__prompt { flex: 0 0 auto; }
@@ -648,8 +671,17 @@
      Hauptquelle des Ruckelns. `em` rechnet in ihrer eigenen Schriftgroesse:
      Zeilenzahl x Zeilenhoehe (1.75) plus das Polster. Szenario 1 tippt 8
      Befehle, Szenario 2 deren 5. */
-  #term   { min-height: calc(8 * 1.75em + 2 * var(--avd-academy-space-3)); }
-  #term-2 { min-height: calc(5 * 1.75em + 2 * var(--avd-academy-space-3)); }
+  /* Die Konsole ist die einzige Flaeche, die wirklich waechst – und damit die
+     Hauptquelle des Ruckelns. Sie bekommt von Anfang an die Hoehe fuer ihre
+     ENDGUELTIGE Zeilenzahl (Szenario 1 tippt 8 Befehle, Szenario 2 deren 5),
+     aber nach oben durch die Fensterhoehe begrenzt. Reicht der Platz auf einem
+     sehr flachen Bildschirm nicht, rollt sie in sich statt die Buehne zu
+     sprengen – die aelteren Befehle sind dann einen Wisch entfernt, das Bild
+     bleibt vollstaendig. */
+  #term   { min-height: min(calc(8 * 1.5em + 2 * var(--avd-academy-space-3)), 22vh);
+            max-height: 24vh; overflow-y: auto; }
+  #term-2 { min-height: min(calc(5 * 1.5em + 2 * var(--avd-academy-space-3)), 16vh);
+            max-height: 24vh; overflow-y: auto; }
 
   /* Nebenbemerkung in der Erklaerspalte: leiser als die Aussage des Schritts.
      Die Erklaerspalte liegt im selben Dokument, diese Regel greift also dort. */
@@ -696,9 +728,12 @@
 
     <p class="lz__draht"><span aria-hidden="true"><svg viewBox="0 0 16 34" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6v22" stroke-dasharray="4 4" /><path d="m4.5 9.5 3.5-3.5 3.5 3.5" /><path d="m4.5 24.5 3.5 3.5 3.5-3.5" /></svg></span><span class="lz__draht-text">spricht mit</span></p>
 
-    <div class="avd-academy-sim-panel">
-      <h2 class="avd-academy-sim-panel__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="3.5" width="19" height="17" rx="2" /><path d="m7 9.5 3 2.5-3 2.5" /><path d="M13 15h4" /></svg>Konsole <span class="avd-academy-sim-panel__hint"><code>docker</code> – der Client</span></h2>
-      <div class="avd-academy-sim-panel__body" id="term"></div>
+    <div class="lz__konsole">
+      <span class="lz__nutzer" title="Du – hier wird getippt"><svg viewBox="0 0 26 34" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13" cy="6" r="4.2" /><path d="M13 10.5v11" /><path d="M5.5 15.5 13 13l7.5 2.5" /><path d="m13 21.5-5 11M13 21.5l5 11" /></svg><span class="lz-nur-sr">Du sitzt an der Konsole und tippst.</span></span>
+      <div class="avd-academy-sim-panel">
+        <h2 class="avd-academy-sim-panel__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="3.5" width="19" height="17" rx="2" /><path d="m7 9.5 3 2.5-3 2.5" /><path d="M13 15h4" /></svg>Konsole <span class="avd-academy-sim-panel__hint"><code>docker</code> – der Client</span></h2>
+        <div class="avd-academy-sim-panel__body" id="term"></div>
+      </div>
     </div>
   </div>
 
@@ -738,9 +773,12 @@
 
     <p class="lz__draht"><span aria-hidden="true"><svg viewBox="0 0 16 34" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6v22" stroke-dasharray="4 4" /><path d="m4.5 9.5 3.5-3.5 3.5 3.5" /><path d="m4.5 24.5 3.5 3.5 3.5-3.5" /></svg></span><span class="lz__draht-text">spricht mit</span></p>
 
-    <div class="avd-academy-sim-panel">
-      <h2 class="avd-academy-sim-panel__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="3.5" width="19" height="17" rx="2" /><path d="m7 9.5 3 2.5-3 2.5" /><path d="M13 15h4" /></svg>Konsole <span class="avd-academy-sim-panel__hint"><code>docker</code> – der Client</span></h2>
-      <div class="avd-academy-sim-panel__body" id="term-2"></div>
+    <div class="lz__konsole">
+      <span class="lz__nutzer" title="Du – hier wird getippt"><svg viewBox="0 0 26 34" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13" cy="6" r="4.2" /><path d="M13 10.5v11" /><path d="M5.5 15.5 13 13l7.5 2.5" /><path d="m13 21.5-5 11M13 21.5l5 11" /></svg><span class="lz-nur-sr">Du sitzt an der Konsole und tippst.</span></span>
+      <div class="avd-academy-sim-panel">
+        <h2 class="avd-academy-sim-panel__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="3.5" width="19" height="17" rx="2" /><path d="m7 9.5 3 2.5-3 2.5" /><path d="M13 15h4" /></svg>Konsole <span class="avd-academy-sim-panel__hint"><code>docker</code> – der Client</span></h2>
+        <div class="avd-academy-sim-panel__body" id="term-2"></div>
+      </div>
     </div>
   </div>
 
@@ -831,11 +869,14 @@
   }
 
   /* Der gestrichelte Pfeil mit offener Spitze – UML `«instanceof»`. */
+  /* `preserveAspectRatio="none"` zieht die Linie auf die volle Breite; damit
+     Strichstaerke und Spitze dabei NICHT mitverzerren, haengen beide an
+     `vector-effect="non-scaling-stroke"`. */
   var BILD_PFEIL =
-    '<svg viewBox="0 0 16 14" fill="none" stroke="currentColor" stroke-width="1.6" ' +
-    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-    '<path d="M16 7H6" stroke-dasharray="3 2.5"/>' +
-    '<path d="m6 3-5 4 5 4"/></svg>';
+    '<svg viewBox="0 0 60 14" preserveAspectRatio="none" fill="none" stroke="currentColor" ' +
+    'stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<path d="M60 7H11" stroke-dasharray="5 3.5" vector-effect="non-scaling-stroke"/>' +
+    '<path d="m11 1.5-9 5.5 9 5.5" vector-effect="non-scaling-stroke"/></svg>';
 
   function imageZeile() {
     var el = document.createElement("div");
@@ -885,7 +926,6 @@
       '<span class="lz-ctr__pfeil">' +
         '<span class="lz-ctr__pfeil-text">&laquo;instanceof&raquo;</span>' +
         BILD_PFEIL +
-        '<span class="lz-ctr__pfeil-hash"></span>' +
       '</span>' +
       '<span class="lz-ctr__port"></span>' +
       '<span class="lz-ctr__portnr"></span>' +
@@ -917,22 +957,30 @@
     });
   }
 
-  function zeichne(s, ctx) {
+  /* `zurueck` ist die Liste der Dinge, die in DIESER Phase noch nicht auf der
+     Buehne stehen sollen – siehe die Choreografie weiter unten. Leer heisst:
+     alles zeigen. */
+  function ohne(liste, zurueck) {
+    if (!zurueck || !zurueck.length) return liste;
+    return liste.filter(function (x) { return zurueck.indexOf(x.id) === -1; });
+  }
+
+  function zeichne(s, ctx, zurueck, ohneZustand) {
     var ziel = ZIELE[ctx.scenario] || ZIELE.container;
 
-    zeichneImages(s, ziel.reg, s.remote, ctx);
-    zeichneImages(s, ziel.img, s.images, ctx);
+    zeichneImages(s, ziel.reg, ohne(s.remote, zurueck), ctx);
+    zeichneImages(s, ziel.img, ohne(s.images, zurueck), ctx);
 
-    sim.list(document.getElementById(ziel.ctr), s.container, {
+    sim.list(document.getElementById(ziel.ctr), ohne(s.container, zurueck), {
       animated: ctx.animated,
       key: function (c) { return c.id; },
       create: containerZeile,
       update: function (el, c) {
         el.querySelector(".lz-zeile__name").textContent = c.name;
-        /* Die Kennung steht AM PFEIL, nicht in der Zelle: Sie sagt, worauf der
-           Pfeil zeigt – und ist damit die zweite, farbunabhaengige Angabe dazu,
-           welches Image gemeint ist. */
-        el.querySelector(".lz-ctr__pfeil-hash").textContent = c.kurz;
+        /* Die Kennung steht NICHT am Pfeil – sie stuende dort ein zweites Mal,
+           denn die Image-Karte, auf die er zeigt, traegt sie schon. Wer die
+           Zuordnung nicht sehen kann, bekommt sie aus `title` und dem
+           Screenreader-Text der Zelle. */
         el.querySelector(".lz-ctr__pfeil").setAttribute("title",
           c.name + " ist eine Ausprägung des Images " + c.kurz);
         bindung(el, c.kurz);
@@ -943,7 +991,10 @@
         st.className = "lz-status lz-status--" + (laeuft ? "laeuft" : "angehalten");
         st.setAttribute("title", laeuft ? "läuft" : "angehalten");
         el.querySelector(".lz-nur-sr").textContent = laeuft ? "läuft" : "angehalten";
-        el.querySelector(".lz-zeile__zustand").textContent = c.zustand || "";
+        /* Der geschriebene Zustand kann eine Phase lang zurueckgehalten werden:
+           Erst der Befehl, dann die Datei. */
+        var zustand = ohneZustand ? "" : (c.zustand || "");
+        el.querySelector(".lz-zeile__zustand").textContent = zustand;
 
         /* Dateisystem und Umgebung gehoeren zur Festlegung des Containers und
            sind da, solange es ihn gibt. Prozesse und Ports gibt es nur, solange
@@ -954,7 +1005,7 @@
            ist erst, was nach `rm` weg ist: die ganze Zelle. */
         var an = { dateien: laeuft, umgebung: laeuft, prozesse: laeuft };
         var bild = {
-          dateien:  bildBaum(!!c.zustand),
+          dateien:  bildBaum(!!zustand),
           umgebung: BILD_ETIKETTEN,
           prozesse: BILD_FAEDEN
         };
@@ -1012,35 +1063,117 @@
       if (s.registryMeldet && ctx.animated) { sim.pulse(panel); }
     }
 
-    /* Die Leitung laeuft NUR beim Schritt, der wirklich uebertraegt – und nur,
-       wenn genau einen Schritt weitergegangen wurde (`ctx.animated`). Beim
-       Springen und beim Zurueckgehen soll das Bild stehen, nicht nachtraeglich
-       etwas durch die Gegend schicken. Dasselbe Muster wie `sim.pulse`. */
+    /* Das Paket bekommt die Farbe des Images, das gerade wandert – und die Form
+       des Stapels, damit erkennbar ist, WAS da uebertragen wird. Gestartet wird
+       die Leitung nicht hier, sondern von der Choreografie: Sie laeuft erst,
+       nachdem der Befehl getippt ist. */
     var leitung = document.getElementById(ziel.leitung);
     if (leitung) {
-      leitung.classList.remove("is-transfer");
-      /* Das Paket bekommt die Farbe des Images, das gerade wandert – und die
-         Form des Stapels, damit erkennbar ist, WAS da uebertragen wird. */
       var paket = leitung.querySelector(".lz__paket");
       if (paket) {
         var neuestes = s.images.length ? s.images[s.images.length - 1] : null;
         paket.innerHTML = BILD_STAPEL;
         bindung(paket, neuestes ? neuestes.kurz : null);
       }
-      if (s.uebertraegt && ctx.animated && ctx.direction > 0) {
-        void leitung.offsetWidth;                    // Reflow → Animation startet neu
-        leitung.classList.add("is-transfer");
-        setTimeout(function () { leitung.classList.remove("is-transfer"); }, 900);
-      }
     }
+  }
+
+  /* --- Die Choreografie ------------------------------------------------------
+     EIN SCHRITT IST EINE KETTE, KEIN AUGENBLICK. Vorher erschien alles
+     gleichzeitig: der Befehl stand da, das Paket flog, und das Image war schon
+     angekommen – man konnte nicht sehen, was wovon kommt.
+
+     Jetzt laeuft es in der Reihenfolge, in der es auch wirklich passiert:
+
+       1. Der Befehl wird getippt, Zeichen fuer Zeichen, in der Konsole.
+       2. Erst danach laeuft das Paket ueber die Leitung – wenn es eines gibt.
+       3. Erst danach steht das Neue auf der Buehne.
+
+     NUR BEIM SCHRITT VORWAERTS. Beim Zurueckgehen, beim Springen und beim
+     ersten Zeichnen steht das Bild sofort vollstaendig – dort waere die
+     Choreografie eine Verzoegerung ohne Aussage. */
+  var LAEUFT = [];
+  function abbrechen() {
+    LAEUFT.forEach(function (t) { clearTimeout(t); });
+    LAEUFT = [];
+  }
+  function spaeter(fn, ms) { LAEUFT.push(setTimeout(fn, ms)); }
+
+  var TIPPTEMPO = 16;     /* ms je Zeichen */
+  var TIPPMAX   = 900;    /* laenger als das wird kein Befehl getippt */
+
+  function tippe(el, text, fertig) {
+    if (!el) { fertig(); return; }
+    var tempo = Math.min(TIPPTEMPO, Math.max(6, TIPPMAX / Math.max(text.length, 1)));
+    el.textContent = "";
+    var i = 0;
+    (function weiter() {
+      el.textContent = text.slice(0, ++i);
+      if (i < text.length) spaeter(weiter, tempo);
+      else spaeter(fertig, 180);
+    })();
+  }
+
+  function auffuehren(s, ctx) {
+    abbrechen();
+    var ziel = ZIELE[ctx.scenario] || ZIELE.container;
+
+    /* Sofort fertig: rueckwaerts, gesprungen, erstes Bild, reduzierte Bewegung. */
+    if (!(ctx.animated && ctx.direction > 0)) { zeichne(s, ctx, null); return; }
+
+    var neu   = s.neu || [];
+    var spaet = !!s.zustandSpaet;
+
+    /* Phase 1 – nur der Befehl. Das Neue bleibt weg, ein frisch geschriebener
+       Zustand ebenfalls. */
+    zeichne(s, ctx, neu, spaet);
+
+    var zeilen = document.getElementById(ziel.term);
+    var letzte = zeilen && zeilen.lastElementChild;
+    var text   = s.term.length ? s.term[s.term.length - 1].cmd : "";
+    var frisch = letzte && letzte.classList.contains("is-new");
+
+    /* Phase 4 – zuletzt das, was IM Container entsteht: die Datei in der
+       Kopfzeile und der dritte Ast im Baum. */
+    function zumSchluss() {
+      if (!spaet) return;
+      spaeter(function () { zeichne(s, ctx, null, false); }, 420);
+    }
+
+    /* Phase 3 – das Neue steht auf der Buehne. */
+    function dannDasNeue(verzug) {
+      spaeter(function () {
+        zeichne(s, ctx, null, spaet);
+        zumSchluss();
+      }, verzug);
+    }
+
+    /* Phase 2 – die Leitung, aber nur wenn wirklich etwas uebertragen wird. */
+    function danach() {
+      if (!s.uebertraegt) { dannDasNeue(140); return; }
+      var leitung = document.getElementById(ziel.leitung);
+      if (leitung) {
+        leitung.classList.remove("is-transfer");
+        void leitung.offsetWidth;               /* Reflow → Animation startet neu */
+        leitung.classList.add("is-transfer");
+        spaeter(function () { leitung.classList.remove("is-transfer"); }, 900);
+      }
+      /* Erst wenn das Paket ANGEKOMMEN ist – nicht waehrend es fliegt. */
+      dannDasNeue(880);
+    }
+
+    /* Getippt wird nur eine WIRKLICH neue Zeile. Ein Schritt ohne Befehl – in
+       Szenario 2 baut die Registry ohne Zutun um – geht direkt weiter. */
+    if (frisch && text) tippe(letzte.querySelector(".lz-cmd__text"), text, danach);
+    else danach();
   }
 
   sim.setup({
     state: function () {
-      return { remote: [], images: [], container: [], term: [], hebe: [],
+      return { remote: [], images: [], container: [], term: [], hebe: [], neu: [],
                registryMeldet: false, uebertraegt: false };
     },
-    render: zeichne
+    render: auffuehren
   });
 
   /* Hilfen, damit ein Schritt genau das sagt, was er tut. */
@@ -1051,6 +1184,11 @@
   function tippt(s, nr, befehl) {
     s.term.push({ id: "t" + nr, cmd: befehl });
     s.uebertraegt = befehl.indexOf("image pull") !== -1;
+    /* Die Phasen-Angaben gehoeren zum Schritt, nicht zum Zustand davor: Beim
+       Zuruecksprung laeuft `apply` erneut, und eine stehengebliebene Ansage
+       liesse die Buehne etwas zurueckhalten, das laengst da ist. */
+    s.neu = [];
+    s.zustandSpaet = false;
   }
   function findeContainer(s, id) {
     for (var i = 0; i < s.container.length; i++) { if (s.container[i].id === id) return s.container[i]; }
@@ -1064,7 +1202,7 @@
     state: function () {
       return {
         remote: [{ id: "r-a", kurz: "a1b2c3", tags: ["1.0", "latest"], env: "APP_VERSION=1.0" }],
-        images: [], container: [], term: [], hebe: ["r-a"],
+        images: [], container: [], term: [], hebe: ["r-a"], neu: [],
         registryMeldet: false, uebertraegt: false
       };
     },
@@ -1079,7 +1217,7 @@
               "aus dem Image übernimmt.</p>" +
               "<p>Rechts das <b>Zielsystem</b>: Die Konsole spricht mit dem <b>Docker-Daemon</b>, " +
               "und dem gehören Images und Container. Noch sind sie leer.</p>",
-        apply: function (s) { s.hebe = ["r-a"]; }
+        apply: function (s) { s.hebe = ["r-a"]; s.neu = []; }
       },
       {
         title: "Das Image herunterladen",
@@ -1091,6 +1229,7 @@
         apply: function (s) {
           tippt(s, 1, "docker image pull webserver:latest");
           s.images.push({ id: "i1", kurz: "a1b2c3", tags: ["latest"], env: "APP_VERSION=1.0" });
+          s.neu = ["i1"];              /* erscheint erst, wenn das Paket angekommen ist */
           s.hebe = ["i1"];
         }
       },
@@ -1107,6 +1246,7 @@
           tippt(s, 2, "docker container create --name web-1 -p 8080:80 webserver:latest");
           s.container.push({ id: "c1", name: "web-1", kurz: "a1b2c3", status: "angehalten",
                              zustand: "", port: "8080", env: "APP_VERSION=1.0" });
+          s.neu = ["c1"];
           s.hebe = ["c1"];
         }
       },
@@ -1132,6 +1272,7 @@
         apply: function (s) {
           tippt(s, 4, "docker container exec web-1 touch /tmp/notiz.txt");
           findeContainer(s, "c1").zustand = "notiz.txt";
+          s.zustandSpaet = true;       /* erst der Befehl, dann die Datei, dann der Baum */
           s.hebe = ["c1"];
         }
       },
@@ -1166,6 +1307,7 @@
           tippt(s, 6, "docker container run -d --name web-2 -p 8081:80 webserver:latest");
           s.container.push({ id: "c2", name: "web-2", kurz: "a1b2c3", status: "laeuft",
                              zustand: "", port: "8081", env: "APP_VERSION=1.0" });
+          s.neu = ["c2"];
           s.hebe = ["c2"];
         }
       },
@@ -1209,7 +1351,7 @@
         images:    [{ id: "i1", kurz: "a1b2c3", tags: ["latest"], env: "APP_VERSION=1.0" }],
         container: [{ id: "c1", name: "web-1", kurz: "a1b2c3", status: "laeuft",
                       zustand: "", port: "8080", env: "APP_VERSION=1.0" }],
-        term: [], hebe: [], registryMeldet: false, uebertraegt: false
+        term: [], hebe: [], neu: [], registryMeldet: false, uebertraegt: false
       };
     },
     steps: [
@@ -1218,7 +1360,7 @@
         text: "<p>Alles steht: Das Image liegt in der Registry und lokal, ein Container läuft daraus. " +
               "Überall dieselbe Kennung <code>a1b2c3</code>.</p>" +
               "<p>So sieht der Normalfall aus – bis jemand anderes etwas tut.</p>",
-        apply: function (s) { s.hebe = []; }
+        apply: function (s) { s.hebe = []; s.neu = []; }
       },
       {
         title: "In der Registry wird neu gebaut",
@@ -1239,6 +1381,7 @@
             { id: "r-b", kurz: "a4f901", tags: ["1.1", "latest"], env: "APP_VERSION=1.1" }
           ];
           s.hebe = ["r-b"];
+          s.neu = ["r-b"];             /* der neue Stand taucht in der Registry auf */
           s.registryMeldet = true;
         }
       },
@@ -1261,6 +1404,7 @@
             { id: "i1", kurz: "a1b2c3", tags: [],         env: "APP_VERSION=1.0" },
             { id: "i2", kurz: "a4f901", tags: ["latest"], env: "APP_VERSION=1.1" }
           ];
+          s.neu = ["i2"];              /* erscheint erst, wenn das Paket angekommen ist */
           s.hebe = ["i2", "c1"];
           s.registryMeldet = false;
         }
@@ -1301,6 +1445,7 @@
           tippt(s, 4, "docker container create --name web-1 -p 8080:80 webserver:latest");
           s.container = [{ id: "c2", name: "web-1", kurz: "a4f901", status: "angehalten",
                            zustand: "", port: "8080", env: "APP_VERSION=1.1" }];
+          s.neu = ["c2"];
           s.hebe = ["c2"];
         }
       },
