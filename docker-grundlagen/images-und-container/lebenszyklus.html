@@ -59,9 +59,9 @@
 --><html lang="de">
 <head>
   <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"><title>Containertechnologien · Containertechnologien (Academy)</title><meta name="description" content="Schulungskonzepte der ATVANTAGE Academy rund um Containertechnologien."><meta property="og:site_name" content="Containertechnologien (Academy)">
-<meta property="og:title" content="Containertechnologien">
-<meta property="og:description" content="Schulungskonzepte der ATVANTAGE Academy rund um Containertechnologien.">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Der Lebenszyklus eines Containers · Containertechnologien (Academy)</title><meta name="description" content="Vom Image in der Registry bis zum gelöschten Container – mit dem Befehl an jedem Übergang und der Antwort auf die Frage, wo dabei Daten verloren gehen."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta property="og:title" content="Der Lebenszyklus eines Containers">
+<meta property="og:description" content="Vom Image in der Registry bis zum gelöschten Container – mit dem Befehl an jedem Übergang und der Antwort auf die Frage, wo dabei Daten verloren gehen.">
 <meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790157026"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790157026">
@@ -114,69 +114,207 @@
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
 
   <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790157026">
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790157026"></head><body class="avd-academy-guide">
-  <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><div class="avd-academy-metanav"><span>ATVANTAGE Academy</span>
-  </div>
-
-  <header class="avd-academy-header" data-avd-academy-header><a class="avd-academy-header__brand" href="/training-material-container-technologies/" aria-label="Startseite"><img class="avd-academy-header__logo" src="/training-material-container-technologies/assets/logo-schulung.svg" alt="ATVANTAGE Academy"></a><button class="avd-academy-tool avd-academy-header__burger" data-avd-academy-nav-toggle="#avd-academy-main-nav"
-          aria-label="Navigation umschalten" aria-expanded="false">☰</button><nav class="avd-academy-header__nav" id="avd-academy-main-nav">
-      <a href="/training-material-container-technologies/" aria-current="page">Start</a><div class="avd-academy-header__group" data-avd-academy-menu>
-        <button type="button" class="avd-academy-header__grouptoggle"
-                aria-expanded="false" aria-haspopup="true">Allgemeines<span class="avd-academy-header__caret" aria-hidden="true">▾</span></button>
-        <div class="avd-academy-header__submenu" role="menu">
-          <a role="menuitem" href="/training-material-container-technologies/shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a>
-        </div>
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790157026"></head><body class="avd-academy-guide avd-academy-guide--viz">
+  <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><section class="avd-academy-guide-hero avd-academy-guide-hero--slim"
+           aria-labelledby="avd-academy-page-title"><div class="avd-academy-guide-hero__meta">
+      <div class="avd-academy-guide-hero__tags">
       </div>
-      <a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a>
-  </nav><div class="avd-academy-header__tools"><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
+      <div class="avd-academy-guide-hero__actions"><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
                 title="Diese Seite auf Deinem Smartphone öffnen"
                 aria-label="Diese Seite auf Deinem Smartphone öffnen"></button><button type="button" class="avd-academy-tool avd-academy-tool--theme avd-academy-theme-toggle" data-avd-academy-theme-toggle
               title="Farbschema umschalten (hell/dunkel)"
-              aria-label="Farbschema umschalten">◐</button></div>
-</header>
-<section class="avd-academy-guide-hero"
-           aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/">Home</a></nav><div class="avd-academy-guide-hero__meta">
-      <div class="avd-academy-guide-hero__tags">
+              aria-label="Farbschema umschalten">◐</button><button type="button" class="avd-academy-tool avd-academy-tool--print avd-academy-print-btn"
+                data-avd-academy-print
+                title="Diese Seite drucken" aria-label="Diese Seite drucken"></button>
       </div>
-      <div class="avd-academy-guide-hero__actions">
-      </div>
-    </div><h1 id="avd-academy-page-title">Containertechnologien</h1>
+    </div><h1 id="avd-academy-page-title">Der Lebenszyklus eines Containers</h1>
   </section><div class="avd-academy-guide-layout">
     <main class="avd-academy-guide-main" id="avd-academy-content">
 
-<p>Hier findest Du die Unterlagen zu Deinem Kurs. Wähle Dein Training aus – die
-Übungen und das Material zum Nachschlagen stehen dort in der Reihenfolge, in der
-wir sie gemeinsam durchgehen.</p>
+<p>Ein Container ist kein Ding, sondern ein <strong>Zustand</strong>. Links steht, in welchem
+Zustand er gerade ist, dazwischen der Befehl, der ihn in den nächsten bringt –
+und rechts, was das für Deine Daten bedeutet.</p>
 
-<div class="avd-academy-grid">
+<p>Die beiden Übergänge, auf die es ankommt, sind <strong><code>stop</code></strong> und <strong><code>rm</code></strong>. Sie sehen
+ähnlich aus und tun etwas völlig Verschiedenes.</p>
 
-  <div class="avd-academy-card">
+<style>
+  .lz {
+    display: grid;
+    grid-template-columns: minmax(14rem, 22rem) minmax(12rem, 1fr);
+    gap: 0 var(--avd-academy-space-6);
+    align-items: center;
+    margin: var(--avd-academy-space-8) 0;
+  }
 
-    <h3 id="docker-grundlagen-fr-entwickler"><a href="docker-grundlagen/">Docker-Grundlagen (für Entwickler)</a></h3>
+  .lz__zustand {
+    grid-column: 1;
+    padding: var(--avd-academy-space-4);
+    border: 2px solid var(--avd-academy-color-border);
+    border-radius: var(--avd-academy-radius-lg);
+    background: var(--avd-academy-color-bg-subtle);
+  }
+  .lz__zustand--aktiv {
+    border-color: var(--avd-academy-color-accent);
+  }
+  /* Kein `opacity` hier: Es zieht die Schrift unter die Kontrastschwelle.
+     Der gestrichelte Rand trägt die Aussage, und der Text sagt sie ohnehin. */
+  .lz__zustand--weg {
+    border-style: dashed;
+  }
+  .lz__name {
+    display: block;
+    font-weight: var(--avd-academy-fw-bold);
+    font-size: var(--avd-academy-fs-lg);
+    line-height: var(--avd-academy-lh-heading);
+  }
+  .lz__technisch {
+    display: block;
+    font-family: var(--avd-academy-font-mono);
+    font-size: var(--avd-academy-fs-sm);
+    color: var(--avd-academy-color-ink-muted);
+  }
 
-    <p>Zwei Tage vom ersten <code>docker run</code> bis zum eigenen, veröffentlichten Image – mit
-dem Schwerpunkt auf den Konzepten dahinter: Image und Container, Lebenszyklus,
-Zustandslosigkeit und Konfiguration über Umgebungsvariablen.</p>
+  .lz__uebergang {
+    grid-column: 1;
+    display: flex;
+    align-items: center;
+    gap: var(--avd-academy-space-3);
+    padding: var(--avd-academy-space-2) 0;
+  }
+  .lz__pfeil {
+    flex: 0 0 auto;
+    color: var(--avd-academy-color-accent-ink);
+  }
+  .lz__befehl {
+    font-family: var(--avd-academy-font-mono);
+    font-size: var(--avd-academy-fs-sm);
+    padding: var(--avd-academy-space-1) var(--avd-academy-space-2);
+    border-radius: var(--avd-academy-radius-sm);
+    background: var(--avd-academy-code-bg);
+  }
 
+  .lz__anmerkung {
+    grid-column: 2;
+    font-size: var(--avd-academy-fs-sm);
+    color: var(--avd-academy-color-ink-muted);
+    border-left: 3px solid var(--avd-academy-color-border);
+    padding-left: var(--avd-academy-space-3);
+  }
+  .lz__anmerkung strong { color: var(--avd-academy-color-ink); }
+
+  /* Schmale Geräte: Anmerkung unter den Zustand, nicht daneben. */
+  @media (max-width: 42rem) {
+    .lz { grid-template-columns: 1fr; }
+    .lz__zustand, .lz__uebergang, .lz__anmerkung { grid-column: 1; }
+    .lz__anmerkung { margin-bottom: var(--avd-academy-space-4); }
+  }
+
+  .lz-run {
+    margin: var(--avd-academy-space-8) 0;
+    padding: var(--avd-academy-space-4) var(--avd-academy-space-6);
+    border: 1px solid var(--avd-academy-color-border);
+    border-radius: var(--avd-academy-radius-lg);
+    background: var(--avd-academy-color-bg-subtle);
+  }
+</style>
+
+<div class="lz">
+
+  <div class="lz__zustand">
+    <span class="lz__name">In der Registry</span>
+    <span class="lz__technisch">nginx:1.27.5</span>
   </div>
+  <p class="lz__anmerkung">Das Image liegt irgendwo im Netz. Auf Deinem Rechner ist noch nichts.</p>
+
+  <div class="lz__uebergang">
+    <svg class="lz__pfeil" viewBox="0 0 24 40" width="18" height="30" role="img" aria-label="Übergang nach unten">
+      <path d="M12 2 V30 M4 24 L12 34 L20 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    <span class="lz__befehl">docker pull</span>
+  </div>
+
+  <div class="lz__zustand">
+    <span class="lz__name">Lokal vorhanden</span>
+    <span class="lz__technisch">docker images</span>
+  </div>
+  <p class="lz__anmerkung">Das <strong>Image</strong> liegt auf der Platte – unveränderlich. Aus ihm können beliebig viele Container entstehen.</p>
+
+  <div class="lz__uebergang">
+    <svg class="lz__pfeil" viewBox="0 0 24 40" width="18" height="30" role="img" aria-label="Übergang nach unten">
+      <path d="M12 2 V30 M4 24 L12 34 L20 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    <span class="lz__befehl">docker container create</span>
+  </div>
+
+  <div class="lz__zustand">
+    <span class="lz__name">Erzeugt</span>
+    <span class="lz__technisch">created</span>
+  </div>
+  <p class="lz__anmerkung">Der Container <strong>existiert</strong>, aber es läuft nichts. <code>docker container ls</code> zeigt ihn nicht – <code>ls -a</code> schon.</p>
+
+  <div class="lz__uebergang">
+    <svg class="lz__pfeil" viewBox="0 0 24 40" width="18" height="30" role="img" aria-label="Übergang nach unten">
+      <path d="M12 2 V30 M4 24 L12 34 L20 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    <span class="lz__befehl">docker container start</span>
+  </div>
+
+  <div class="lz__zustand lz__zustand--aktiv">
+    <span class="lz__name">Läuft</span>
+    <span class="lz__technisch">running</span>
+  </div>
+  <p class="lz__anmerkung">Hier passiert alles: Der Prozess im Container arbeitet, schreibt Dateien, nimmt Anfragen an.</p>
+
+  <div class="lz__uebergang">
+    <svg class="lz__pfeil" viewBox="0 0 24 40" width="18" height="30" role="img" aria-label="Übergang nach unten">
+      <path d="M12 2 V30 M4 24 L12 34 L20 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    <span class="lz__befehl">docker container stop</span>
+  </div>
+
+  <div class="lz__zustand">
+    <span class="lz__name">Angehalten</span>
+    <span class="lz__technisch">exited</span>
+  </div>
+  <p class="lz__anmerkung"><strong>Alles bleibt erhalten.</strong> Ein <code>start</code> bringt den Container samt seiner Änderungen zurück – der Weg nach oben ist offen.</p>
+
+  <div class="lz__uebergang">
+    <svg class="lz__pfeil" viewBox="0 0 24 40" width="18" height="30" role="img" aria-label="Übergang nach unten">
+      <path d="M12 2 V30 M4 24 L12 34 L20 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    <span class="lz__befehl">docker container rm</span>
+  </div>
+
+  <div class="lz__zustand lz__zustand--weg">
+    <span class="lz__name">Gelöscht</span>
+    <span class="lz__technisch">—</span>
+  </div>
+  <p class="lz__anmerkung"><strong>Alles ist weg.</strong> Das Image liegt noch da; ein neuer Container daraus startet wieder im Auslieferungszustand.</p>
 
 </div>
 
-<p>Bevor es losgeht, brauchst Du eine Container-Laufzeitumgebung:</p>
+<div class="lz-run">
 
-<ul>
-  <li><a href="shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a> – die beiden Wege
-dorthin und die Befehle, mit denen Du auskommst.</li>
-</ul>
+  <p><strong>Und <code>docker run</code>?</strong> Das ist kein eigener Zustand, sondern eine Abkürzung:</p>
+
+  <ul>
+    <li><code>docker run</code> = <code>create</code> + <code>start</code> in einem Befehl.</li>
+    <li><code>docker run --rm</code> = <code>create</code> + <code>start</code> + <code>rm</code>, sobald der Prozess endet.</li>
+  </ul>
+
+  <p>Bequem – aber wer damit anfängt, sieht die beiden Schritte nie getrennt. Genau
+deshalb kommt die Abkürzung hier zuletzt.</p>
+
+</div>
+
+<blockquote>
+  <p><strong>Merksatz:</strong> <code>stop</code> hält an, <code>rm</code> wirft weg. Was ein Container behalten soll,
+darf deshalb nicht <em>in</em> ihm liegen.</p>
+</blockquote>
 
 
-
-    </main><aside class="avd-academy-guide-sidebar"><details class="avd-academy-guide-side avd-academy-guide-side--toc avd-academy-fold" data-avd-academy-toc-box
-               data-avd-academy-toc-grenze="12" open hidden>
-        <summary class="avd-academy-guide-side__label">Auf dieser Seite</summary>
-        <nav class="avd-academy-toc avd-academy-fold__body" data-avd-academy-toc aria-label="Inhaltsverzeichnis"></nav>
-      </details>
-    </aside>
+    </main>
   </div><div class="avd-academy-print-contact" aria-hidden="true">
     <span>Kontakt: https://www.atvantage.com</span>
     <span>academy@atvantage.com</span>

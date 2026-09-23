@@ -59,9 +59,9 @@
 --><html lang="de">
 <head>
   <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"><title>Containertechnologien · Containertechnologien (Academy)</title><meta name="description" content="Schulungskonzepte der ATVANTAGE Academy rund um Containertechnologien."><meta property="og:site_name" content="Containertechnologien (Academy)">
-<meta property="og:title" content="Containertechnologien">
-<meta property="og:description" content="Schulungskonzepte der ATVANTAGE Academy rund um Containertechnologien.">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Docker-Grundlagen (für Entwickler) · Containertechnologien (Academy)</title><meta name="description" content="Zwei Tage vom ersten Container bis zum eigenen, veröffentlichten Image – mit dem Schwerpunkt auf den Konzepten dahinter."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta property="og:title" content="Docker-Grundlagen (für Entwickler)">
+<meta property="og:description" content="Zwei Tage vom ersten Container bis zum eigenen, veröffentlichten Image – mit dem Schwerpunkt auf den Konzepten dahinter.">
 <meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790157026"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790157026">
@@ -120,14 +120,14 @@
 
   <header class="avd-academy-header" data-avd-academy-header><a class="avd-academy-header__brand" href="/training-material-container-technologies/" aria-label="Startseite"><img class="avd-academy-header__logo" src="/training-material-container-technologies/assets/logo-schulung.svg" alt="ATVANTAGE Academy"></a><button class="avd-academy-tool avd-academy-header__burger" data-avd-academy-nav-toggle="#avd-academy-main-nav"
           aria-label="Navigation umschalten" aria-expanded="false">☰</button><nav class="avd-academy-header__nav" id="avd-academy-main-nav">
-      <a href="/training-material-container-technologies/" aria-current="page">Start</a><div class="avd-academy-header__group" data-avd-academy-menu>
+      <a href="/training-material-container-technologies/">Start</a><div class="avd-academy-header__group" data-avd-academy-menu>
         <button type="button" class="avd-academy-header__grouptoggle"
                 aria-expanded="false" aria-haspopup="true">Allgemeines<span class="avd-academy-header__caret" aria-hidden="true">▾</span></button>
         <div class="avd-academy-header__submenu" role="menu">
           <a role="menuitem" href="/training-material-container-technologies/shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a>
         </div>
       </div>
-      <a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a>
+      <a href="/training-material-container-technologies/docker-grundlagen/" aria-current="page">Docker-Grundlagen</a>
   </nav><div class="avd-academy-header__tools"><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
                 title="Diese Seite auf Deinem Smartphone öffnen"
                 aria-label="Diese Seite auf Deinem Smartphone öffnen"></button><button type="button" class="avd-academy-tool avd-academy-tool--theme avd-academy-theme-toggle" data-avd-academy-theme-toggle
@@ -135,39 +135,218 @@
               aria-label="Farbschema umschalten">◐</button></div>
 </header>
 <section class="avd-academy-guide-hero"
-           aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/">Home</a></nav><div class="avd-academy-guide-hero__meta">
+           aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/">Home</a><span>/</span><span aria-current="page">Docker-Grundlagen</span></nav><div class="avd-academy-guide-hero__meta">
       <div class="avd-academy-guide-hero__tags">
       </div>
       <div class="avd-academy-guide-hero__actions">
       </div>
-    </div><h1 id="avd-academy-page-title">Containertechnologien</h1>
+    </div><h1 id="avd-academy-page-title">Docker-Grundlagen (für Entwickler)</h1>
   </section><div class="avd-academy-guide-layout">
     <main class="avd-academy-guide-main" id="avd-academy-content">
 
-<p>Hier findest Du die Unterlagen zu Deinem Kurs. Wähle Dein Training aus – die
-Übungen und das Material zum Nachschlagen stehen dort in der Reihenfolge, in der
-wir sie gemeinsam durchgehen.</p>
+<p>„Bei mir läuft es“ ist der teuerste Satz in der Softwareentwicklung. Zwei Tage
+lang geht es darum, ihn überflüssig zu machen – nicht mit einer Befehlssammlung,
+sondern entlang der Konzepte, an denen sich entscheidet, ob ein Image trägt.</p>
 
-<div class="avd-academy-grid">
+<p>Willkommen. Du brauchst für diesen Kurs keine Kommandozeilenroutine – nur die
+Bereitschaft, zu tippen statt zu klicken. Wir gehen zu Beginn gemeinsam durch die
+Handvoll Befehle, mit der Du durchkommst, und danach arbeitest Du Dich Übung für
+Übung an einer kleinen Anwendungslandschaft entlang, die über die zwei Tage wächst.</p>
 
-  <div class="avd-academy-card">
+<ul>
+  <li><a href="/training-material-container-technologies/docker-grundlagen/kursbeschreibung.html">Kursbeschreibung</a></li>
+  <li><a href="../shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a> – die beiden Wege
+zur Container-Laufzeitumgebung und die Befehle, die Du brauchst.</li>
+</ul>
 
-    <h3 id="docker-grundlagen-fr-entwickler"><a href="docker-grundlagen/">Docker-Grundlagen (für Entwickler)</a></h3>
+<h2 id="kursmaterial">Kursmaterial</h2>
 
-    <p>Zwei Tage vom ersten <code>docker run</code> bis zum eigenen, veröffentlichten Image – mit
-dem Schwerpunkt auf den Konzepten dahinter: Image und Container, Lebenszyklus,
-Zustandslosigkeit und Konfiguration über Umgebungsvariablen.</p>
+<p>Die Unterlagen sind nach <strong>Themen</strong> gruppiert, nicht nach dem Ablauf, und bauen
+aufeinander auf. Links stehen die <strong>Übungen</strong>, an denen Du selbst arbeitest –
+rechts das <strong>Material zum Nachschlagen</strong>, das Du auch nach dem Kurs noch brauchen
+kannst. Ab der ersten Übung begleitet Dich dieselbe Anwendungslandschaft:
+ein Webserver, eine Datenbank und eine kleine Anwendung dazwischen.</p>
+
+<div class="avd-academy-topic">
+
+  <h3 id="container-und-images-verstehen">Container und Images verstehen</h3>
+
+  <div class="avd-academy-materials">
+
+    <div class="avd-academy-materials__col">
+
+      <p class="avd-academy-materials__head">Übungen</p>
+
+      <ul>
+        <li><a href="/training-material-container-technologies/docker-grundlagen/images-und-container/issue.html" class="avd-academy-doclink avd-academy-doclink--guide">Einen Container aus einem fremden Image betreiben</a></li>
+      </ul>
+
+    </div>
+
+    <div class="avd-academy-materials__col">
+
+      <p class="avd-academy-materials__head">Zum Nachschlagen</p>
+
+      <ul>
+        <li><a href="/training-material-container-technologies/docker-grundlagen/images-und-container/lebenszyklus.html" class="avd-academy-doclink avd-academy-doclink--visualization">Der Lebenszyklus eines Containers</a></li>
+      </ul>
+
+    </div>
 
   </div>
 
 </div>
 
-<p>Bevor es losgeht, brauchst Du eine Container-Laufzeitumgebung:</p>
+<div class="avd-academy-topic">
 
-<ul>
-  <li><a href="shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a> – die beiden Wege
-dorthin und die Befehle, mit denen Du auskommst.</li>
-</ul>
+  <h3 id="konfiguration-statt-neubau">Konfiguration statt Neubau</h3>
+
+  <div class="avd-academy-materials">
+
+    <div class="avd-academy-materials__col">
+
+      <p class="avd-academy-materials__head">Übungen</p>
+
+      <ul>
+        <li><a href="/training-material-container-technologies/docker-grundlagen/konfiguration-und-zustand/issue.html" class="avd-academy-doclink avd-academy-doclink--guide">Eine Datenbank über Umgebungsvariablen konfigurieren</a></li>
+      </ul>
+
+    </div>
+
+    <div class="avd-academy-materials__col">
+
+      <p class="avd-academy-materials__head">Zum Nachschlagen</p>
+
+      <ul>
+        <li><a href="/training-material-container-technologies/docker-grundlagen/konfiguration-und-zustand/zwoelf-faktoren.html" class="avd-academy-doclink avd-academy-doclink--visualization">Die zwölf Faktoren – und welche im Container zählen</a></li>
+      </ul>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="avd-academy-topic">
+
+  <h3 id="eigene-images-bauen">Eigene Images bauen</h3>
+
+  <div class="avd-academy-materials">
+
+    <div class="avd-academy-materials__col">
+
+      <p class="avd-academy-materials__head">Übungen</p>
+
+      <ul>
+        <li><a href="/training-material-container-technologies/docker-grundlagen/eigene-images-bauen/issue.html" class="avd-academy-doclink avd-academy-doclink--guide">Ein eigenes Image aus einem Dockerfile bauen</a></li>
+      </ul>
+
+    </div>
+
+    <div class="avd-academy-materials__col">
+
+      <p class="avd-academy-materials__head">Zum Nachschlagen</p>
+
+      <ul>
+        <li><a href="/training-material-container-technologies/docker-grundlagen/eigene-images-bauen/layer-und-cache.html" class="avd-academy-doclink avd-academy-doclink--visualization">Layer und Build-Cache</a></li>
+      </ul>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="avd-academy-topic">
+
+  <h3 id="images-verffentlichen">Images veröffentlichen</h3>
+
+  <div class="avd-academy-materials">
+
+    <div class="avd-academy-materials__col">
+
+      <p class="avd-academy-materials__head">Übungen</p>
+
+      <ul>
+        <li><a href="/training-material-container-technologies/docker-grundlagen/images-veroeffentlichen/issue.html" class="avd-academy-doclink avd-academy-doclink--guide">Ein Image versioniert in eine Registry pushen</a></li>
+      </ul>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="avd-academy-topic">
+
+  <h3 id="daten-und-verbindungen">Daten und Verbindungen</h3>
+
+  <div class="avd-academy-materials">
+
+    <div class="avd-academy-materials__col">
+
+      <p class="avd-academy-materials__head">Übungen</p>
+
+      <ul>
+        <li><a href="/training-material-container-technologies/docker-grundlagen/daten-und-verbindungen/issue.html" class="avd-academy-doclink avd-academy-doclink--guide">Daten überleben lassen und Container verbinden</a></li>
+      </ul>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="avd-academy-topic">
+
+  <h3 id="mehrere-container-gemeinsam-betreiben">Mehrere Container gemeinsam betreiben</h3>
+
+  <div class="avd-academy-materials">
+
+    <div class="avd-academy-materials__col">
+
+      <p class="avd-academy-materials__head">Übungen</p>
+
+      <ul>
+        <li><a href="/training-material-container-technologies/docker-grundlagen/mehrere-container/issue.html" class="avd-academy-doclink avd-academy-doclink--guide">Die ganze Landschaft mit einem Befehl starten</a></li>
+      </ul>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="avd-academy-topic">
+
+  <h3 id="images-die-im-betrieb-tragen">Images, die im Betrieb tragen</h3>
+
+  <div class="avd-academy-materials">
+
+    <div class="avd-academy-materials__col">
+
+      <p class="avd-academy-materials__head">Übungen</p>
+
+      <ul>
+        <li><a href="/training-material-container-technologies/docker-grundlagen/images-die-tragen/issue.html" class="avd-academy-doclink avd-academy-doclink--guide">Ein Dockerfile gegen die Praxis prüfen</a></li>
+      </ul>
+
+    </div>
+
+    <div class="avd-academy-materials__col">
+
+      <p class="avd-academy-materials__head">Zum Nachschlagen</p>
+
+      <ul>
+        <li><a href="/training-material-container-technologies/docker-grundlagen/images-die-tragen/best-practices.html" class="avd-academy-doclink avd-academy-doclink--visualization">Best Practices für Container Images</a></li>
+        <li><a href="/training-material-container-technologies/docker-grundlagen/wissens-check-docker-grundlagen.html" class="avd-academy-doclink avd-academy-doclink--visualization">Wissens-Check: Docker-Grundlagen</a></li>
+      </ul>
+
+    </div>
+
+  </div>
+
+</div>
 
 
 
@@ -176,6 +355,10 @@ dorthin und die Befehle, mit denen Du auskommst.</li>
         <summary class="avd-academy-guide-side__label">Auf dieser Seite</summary>
         <nav class="avd-academy-toc avd-academy-fold__body" data-avd-academy-toc aria-label="Inhaltsverzeichnis"></nav>
       </details>
+      <div class="avd-academy-guide-side avd-academy-guide-side--bordered">
+        <div class="avd-academy-guide-side__label">Weiterführende Informationen</div>
+        <div class="avd-academy-guide-side__links"><a href="/shared/schulungsumgebung/"><span>Die Schulungsumgebung nutzen</span></a>
+        </div></div>
     </aside>
   </div><div class="avd-academy-print-contact" aria-hidden="true">
     <span>Kontakt: https://www.atvantage.com</span>

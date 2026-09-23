@@ -59,9 +59,9 @@
 --><html lang="de">
 <head>
   <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"><title>Containertechnologien · Containertechnologien (Academy)</title><meta name="description" content="Schulungskonzepte der ATVANTAGE Academy rund um Containertechnologien."><meta property="og:site_name" content="Containertechnologien (Academy)">
-<meta property="og:title" content="Containertechnologien">
-<meta property="og:description" content="Schulungskonzepte der ATVANTAGE Academy rund um Containertechnologien.">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Die Schulungsumgebung nutzen · Containertechnologien (Academy)</title><meta name="description" content="Wie Du in der bereitgestellten Umgebung arbeitest – Zugang über die Shell im Browser, Container ausschließlich auf der Kommandozeile."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta property="og:title" content="Die Schulungsumgebung nutzen">
+<meta property="og:description" content="Wie Du in der bereitgestellten Umgebung arbeitest – Zugang über die Shell im Browser, Container ausschließlich auf der Kommandozeile.">
 <meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790157026"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790157026">
@@ -120,11 +120,11 @@
 
   <header class="avd-academy-header" data-avd-academy-header><a class="avd-academy-header__brand" href="/training-material-container-technologies/" aria-label="Startseite"><img class="avd-academy-header__logo" src="/training-material-container-technologies/assets/logo-schulung.svg" alt="ATVANTAGE Academy"></a><button class="avd-academy-tool avd-academy-header__burger" data-avd-academy-nav-toggle="#avd-academy-main-nav"
           aria-label="Navigation umschalten" aria-expanded="false">☰</button><nav class="avd-academy-header__nav" id="avd-academy-main-nav">
-      <a href="/training-material-container-technologies/" aria-current="page">Start</a><div class="avd-academy-header__group" data-avd-academy-menu>
+      <a href="/training-material-container-technologies/">Start</a><div class="avd-academy-header__group" data-avd-academy-menu>
         <button type="button" class="avd-academy-header__grouptoggle"
                 aria-expanded="false" aria-haspopup="true">Allgemeines<span class="avd-academy-header__caret" aria-hidden="true">▾</span></button>
         <div class="avd-academy-header__submenu" role="menu">
-          <a role="menuitem" href="/training-material-container-technologies/shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a>
+          <a role="menuitem" href="/training-material-container-technologies/shared/schulungsumgebung/" aria-current="page">Die Schulungsumgebung nutzen</a>
         </div>
       </div>
       <a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a>
@@ -135,40 +135,179 @@
               aria-label="Farbschema umschalten">◐</button></div>
 </header>
 <section class="avd-academy-guide-hero"
-           aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/">Home</a></nav><div class="avd-academy-guide-hero__meta">
+           aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/">Start</a><span>/</span><span aria-current="page">Schulungsumgebung</span></nav><div class="avd-academy-guide-hero__meta">
       <div class="avd-academy-guide-hero__tags">
       </div>
       <div class="avd-academy-guide-hero__actions">
       </div>
-    </div><h1 id="avd-academy-page-title">Containertechnologien</h1>
+    </div><h1 id="avd-academy-page-title">Die Schulungsumgebung nutzen</h1>
   </section><div class="avd-academy-guide-layout">
     <main class="avd-academy-guide-main" id="avd-academy-content">
 
-<p>Hier findest Du die Unterlagen zu Deinem Kurs. Wähle Dein Training aus – die
-Übungen und das Material zum Nachschlagen stehen dort in der Reihenfolge, in der
-wir sie gemeinsam durchgehen.</p>
+<p>Für die Übungen brauchst Du eine Container-Laufzeitumgebung. Es gibt zwei Wege
+dorthin, und welcher für Deinen Kurs gilt, sagt Dir Dein Trainer am ersten Tag.</p>
 
-<div class="avd-academy-grid">
-
-  <div class="avd-academy-card">
-
-    <h3 id="docker-grundlagen-fr-entwickler"><a href="docker-grundlagen/">Docker-Grundlagen (für Entwickler)</a></h3>
-
-    <p>Zwei Tage vom ersten <code>docker run</code> bis zum eigenen, veröffentlichten Image – mit
-dem Schwerpunkt auf den Konzepten dahinter: Image und Container, Lebenszyklus,
-Zustandslosigkeit und Konfiguration über Umgebungsvariablen.</p>
-
-  </div>
-
+<div class="avd-academy-callout avd-academy-callout--info">
+  <p><strong>Die Anleitungen im Kurs sind Kommandozeile.</strong> Das ist keine Sparmaßnahme, sondern
+der kleinste gemeinsame Nenner: Die bereitgestellte Umgebung hat <strong>keine grafische
+Oberfläche</strong>, und die Befehle, die Du hier lernst, laufen anschließend auf jedem
+Rechner gleich – lokal, auf dem Server, in einer Build-Pipeline. Eine Oberfläche
+kann Dir das nicht abnehmen.</p>
 </div>
 
-<p>Bevor es losgeht, brauchst Du eine Container-Laufzeitumgebung:</p>
+<h2 id="wege">Zwei Wege zur Laufzeitumgebung</h2>
+
+<h3 id="weg-a-lokal-auf-deinem-rechner">Weg A: lokal auf Deinem Rechner</h3>
+
+<p>Du installierst Docker selbst und arbeitest auf Deinem eigenen Gerät.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Windows</strong></td>
+      <td>Docker Desktop, bedient aus der <strong>Git Bash</strong> (nicht aus PowerShell oder <code>cmd</code> – die Anleitungen im Kurs setzen eine Bash-Zeile voraus)</td>
+    </tr>
+    <tr>
+      <td><strong>macOS / Linux</strong></td>
+      <td>Docker Desktop bzw. Docker Engine, bedient aus dem Terminal</td>
+    </tr>
+    <tr>
+      <td><strong>Prüfen</strong></td>
+      <td><code>docker version</code> gibt Client <strong>und</strong> Server aus. Fehlt der Server-Teil, läuft der Docker-Dienst nicht.</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Docker Desktop bringt eine grafische Oberfläche mit. Du darfst sie
+gern benutzen, um Dir Dinge anzusehen – die Übungen führst Du trotzdem auf der
+Kommandozeile durch, sonst fehlt Dir am zweiten Tag das Handwerkszeug.</p>
+</blockquote>
+
+<h3 id="weg-b-die-bereitgestellte-umgebung-im-browser">Weg B: die bereitgestellte Umgebung im Browser</h3>
+
+<p>Du bekommst einen Zugang zu einer zentralen Umgebung und arbeitest dort in einer
+<strong>Shell im Browser</strong>. Du installierst nichts, Du brauchst keine lokalen Rechte, und
+alle Teilnehmenden arbeiten auf demselben Stand.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Betriebssystem</strong></td>
+      <td>Linux</td>
+    </tr>
+    <tr>
+      <td><strong>Zugang</strong></td>
+      <td>Web-Adresse plus persönliche Zugangsdaten – beides bekommst Du vom Trainer</td>
+    </tr>
+    <tr>
+      <td><strong>Oberfläche</strong></td>
+      <td><strong>keine.</strong> Es gibt eine Shell, sonst nichts.</td>
+    </tr>
+    <tr>
+      <td><strong>Kommando</strong></td>
+      <td><code>docker</code> – dieselben Befehle wie lokal</td>
+    </tr>
+    <tr>
+      <td><strong>Zwischenablage</strong></td>
+      <td>Kopieren und Einfügen in der Browser-Shell verhält sich je nach Browser anders. Probiere es zu Beginn einmal aus, bevor Du einen langen Befehl tippst.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="avd-academy-callout avd-academy-callout--warning">
+  <p><strong>Was Du hier nicht findest, sind die konkreten Adressen und Zugangsdaten.</strong> Sie
+sind kursspezifisch und werden nicht in der Unterlage veröffentlicht. Frag Deinen
+Trainer.</p>
+</div>
+
+<h2 id="gemeinsam">Was in beiden Fällen gilt</h2>
 
 <ul>
-  <li><a href="shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a> – die beiden Wege
-dorthin und die Befehle, mit denen Du auskommst.</li>
+  <li><strong><code>localhost</code> ist nicht überall dasselbe.</strong> Startest Du lokal einen Container mit
+<code>-p 8080:80</code>, erreichst Du ihn unter <code>http://localhost:8080</code>. In der
+bereitgestellten Umgebung läuft der Container auf einem anderen Rechner als Dein
+Browser – wie Du dort an den Port kommst, sagt Dir der Trainer.</li>
+  <li><strong>Dein Arbeitsverzeichnis ist nicht dauerhaft.</strong> Lege Dateien, die Du behalten
+willst, in einem Git-Repository ab und pushe sie.</li>
+  <li><strong>Du brauchst ein Konto bei einer Container-Registry</strong>, um eigene Images zu
+veröffentlichen. Welche das ist, sagt der Kurs.</li>
 </ul>
 
+<h2 id="befehle">Die Befehle, mit denen Du auskommst</h2>
+
+<p>Du musst kein Linux-Profi sein. Über den ganzen Kurs hinweg brauchst Du neben
+<code>docker</code> nur diese Handvoll Befehle:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Befehl</th>
+      <th>Wofür</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>pwd</code></td>
+      <td>Wo bin ich gerade?</td>
+    </tr>
+    <tr>
+      <td><code>ls</code></td>
+      <td>Was liegt hier?</td>
+    </tr>
+    <tr>
+      <td><code>cd &lt;ordner&gt;</code></td>
+      <td>In einen Ordner wechseln (<code>cd ..</code> geht eine Ebene zurück)</td>
+    </tr>
+    <tr>
+      <td><code>mkdir &lt;ordner&gt;</code></td>
+      <td>Ordner anlegen</td>
+    </tr>
+    <tr>
+      <td><code>cat &lt;datei&gt;</code></td>
+      <td>Datei anzeigen</td>
+    </tr>
+    <tr>
+      <td><code>echo "Text" &gt; datei.txt</code></td>
+      <td>Datei mit Inhalt anlegen (<code>&gt;&gt;</code> hängt an, statt zu überschreiben)</td>
+    </tr>
+    <tr>
+      <td><code>nano &lt;datei&gt;</code></td>
+      <td>Datei bearbeiten (Speichern: <code>Strg</code>+<code>O</code>, Beenden: <code>Strg</code>+<code>X</code>)</td>
+    </tr>
+    <tr>
+      <td><code>curl http://localhost:8080</code></td>
+      <td>Eine Web-Adresse von der Kommandozeile abrufen</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Mit der <strong>Tabulatortaste</strong> vervollständigt die Shell Datei- und
+Ordnernamen, mit der <strong>Pfeiltaste nach oben</strong> holst Du den letzten Befehl zurück.
+Beides spart im Kurs mehr Zeit als jede Abkürzung.</p>
+</blockquote>
+
+<h2 id="offen">Noch offen</h2>
+
+<div class="avd-academy-callout avd-academy-callout--warning">
+  <p><strong>Diese Seite ist noch nicht vollständig.</strong> Es fehlen die konkreten Angaben zur
+bereitgestellten Umgebung: Einstiegsadresse, Anmeldeverfahren, Namensschema der
+Arbeitsbereiche, der Weg zu einem veröffentlichten Port und die verwendete
+Registry. Sie werden ergänzt, sobald sie vorliegen.</p>
+</div>
 
 
     </main><aside class="avd-academy-guide-sidebar"><details class="avd-academy-guide-side avd-academy-guide-side--toc avd-academy-fold" data-avd-academy-toc-box

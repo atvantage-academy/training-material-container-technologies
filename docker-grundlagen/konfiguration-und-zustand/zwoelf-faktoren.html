@@ -59,9 +59,9 @@
 --><html lang="de">
 <head>
   <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"><title>Containertechnologien · Containertechnologien (Academy)</title><meta name="description" content="Schulungskonzepte der ATVANTAGE Academy rund um Containertechnologien."><meta property="og:site_name" content="Containertechnologien (Academy)">
-<meta property="og:title" content="Containertechnologien">
-<meta property="og:description" content="Schulungskonzepte der ATVANTAGE Academy rund um Containertechnologien.">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Die zwölf Faktoren – und welche im Container zählen · Containertechnologien (Academy)</title><meta name="description" content="Die 12-Factor-App auf einen Blick, mit den vier Faktoren hervorgehoben, ohne die eine Container-Plattform ihre Arbeit nicht tun kann."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta property="og:title" content="Die zwölf Faktoren – und welche im Container zählen">
+<meta property="og:description" content="Die 12-Factor-App auf einen Blick, mit den vier Faktoren hervorgehoben, ohne die eine Container-Plattform ihre Arbeit nicht tun kann.">
 <meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790157026"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790157026">
@@ -114,69 +114,171 @@
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
 
   <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790157026">
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790157026"></head><body class="avd-academy-guide">
-  <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><div class="avd-academy-metanav"><span>ATVANTAGE Academy</span>
-  </div>
-
-  <header class="avd-academy-header" data-avd-academy-header><a class="avd-academy-header__brand" href="/training-material-container-technologies/" aria-label="Startseite"><img class="avd-academy-header__logo" src="/training-material-container-technologies/assets/logo-schulung.svg" alt="ATVANTAGE Academy"></a><button class="avd-academy-tool avd-academy-header__burger" data-avd-academy-nav-toggle="#avd-academy-main-nav"
-          aria-label="Navigation umschalten" aria-expanded="false">☰</button><nav class="avd-academy-header__nav" id="avd-academy-main-nav">
-      <a href="/training-material-container-technologies/" aria-current="page">Start</a><div class="avd-academy-header__group" data-avd-academy-menu>
-        <button type="button" class="avd-academy-header__grouptoggle"
-                aria-expanded="false" aria-haspopup="true">Allgemeines<span class="avd-academy-header__caret" aria-hidden="true">▾</span></button>
-        <div class="avd-academy-header__submenu" role="menu">
-          <a role="menuitem" href="/training-material-container-technologies/shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a>
-        </div>
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790157026"></head><body class="avd-academy-guide avd-academy-guide--viz">
+  <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><section class="avd-academy-guide-hero avd-academy-guide-hero--slim"
+           aria-labelledby="avd-academy-page-title"><div class="avd-academy-guide-hero__meta">
+      <div class="avd-academy-guide-hero__tags">
       </div>
-      <a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a>
-  </nav><div class="avd-academy-header__tools"><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
+      <div class="avd-academy-guide-hero__actions"><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
                 title="Diese Seite auf Deinem Smartphone öffnen"
                 aria-label="Diese Seite auf Deinem Smartphone öffnen"></button><button type="button" class="avd-academy-tool avd-academy-tool--theme avd-academy-theme-toggle" data-avd-academy-theme-toggle
               title="Farbschema umschalten (hell/dunkel)"
-              aria-label="Farbschema umschalten">◐</button></div>
-</header>
-<section class="avd-academy-guide-hero"
-           aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/">Home</a></nav><div class="avd-academy-guide-hero__meta">
-      <div class="avd-academy-guide-hero__tags">
+              aria-label="Farbschema umschalten">◐</button><button type="button" class="avd-academy-tool avd-academy-tool--print avd-academy-print-btn"
+                data-avd-academy-print
+                title="Diese Seite drucken" aria-label="Diese Seite drucken"></button>
       </div>
-      <div class="avd-academy-guide-hero__actions">
-      </div>
-    </div><h1 id="avd-academy-page-title">Containertechnologien</h1>
+    </div><h1 id="avd-academy-page-title">Die zwölf Faktoren – und welche im Container zählen</h1>
   </section><div class="avd-academy-guide-layout">
     <main class="avd-academy-guide-main" id="avd-academy-content">
 
-<p>Hier findest Du die Unterlagen zu Deinem Kurs. Wähle Dein Training aus – die
-Übungen und das Material zum Nachschlagen stehen dort in der Reihenfolge, in der
-wir sie gemeinsam durchgehen.</p>
+<p>Die <strong>12-Factor-App</strong> ist keine Norm und kein Zertifikat. Sie ist eine Sammlung
+von Beobachtungen aus dem Jahr 2011 darüber, welche Anwendungen sich auf einer
+Plattform betreiben ließen – und welche nicht.</p>
 
-<div class="avd-academy-grid">
+<p>Alle zwölf sind gute Ratschläge. <strong>Vier davon sind im Container keine Ratschläge,
+sondern Voraussetzungen</strong>: Ohne sie kann die Plattform einen Container nicht neu
+starten, verschieben oder vervielfältigen. Sie sind hervorgehoben.</p>
 
-  <div class="avd-academy-card">
+<style>
+  .zf {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: var(--avd-academy-space-4);
+    margin: var(--avd-academy-space-8) 0;
+    list-style: none;
+    padding: 0;
+  }
+  .zf__karte {
+    position: relative;
+    padding: var(--avd-academy-space-4);
+    border: 1px solid var(--avd-academy-color-border);
+    border-radius: var(--avd-academy-radius-lg);
+    background: var(--avd-academy-color-bg-subtle);
+  }
+  .zf__karte--kern {
+    border-width: 2px;
+    border-color: var(--avd-academy-color-accent);
+    box-shadow: var(--avd-academy-shadow-1);
+  }
+  .zf__nr {
+    display: block;
+    font-family: var(--avd-academy-font-mono);
+    font-size: var(--avd-academy-fs-sm);
+    color: var(--avd-academy-color-ink-muted);
+  }
+  .zf__karte--kern .zf__nr { color: var(--avd-academy-color-accent-ink); }
+  .zf__name {
+    display: block;
+    font-weight: var(--avd-academy-fw-bold);
+    font-size: var(--avd-academy-fs-md);
+    line-height: var(--avd-academy-lh-heading);
+    margin-bottom: var(--avd-academy-space-2);
+  }
+  .zf__text {
+    font-size: var(--avd-academy-fs-sm);
+    color: var(--avd-academy-color-ink-muted);
+    margin: 0;
+  }
+  .zf__marke {
+    display: inline-block;
+    margin-top: var(--avd-academy-space-3);
+    padding: 0 var(--avd-academy-space-2);
+    border-radius: var(--avd-academy-radius-sm);
+    font-size: var(--avd-academy-fs-sm);
+    font-weight: var(--avd-academy-fw-medium);
+    background: var(--avd-academy-color-accent-soft);
+    color: var(--avd-academy-color-accent-ink);
+  }
+</style>
 
-    <h3 id="docker-grundlagen-fr-entwickler"><a href="docker-grundlagen/">Docker-Grundlagen (für Entwickler)</a></h3>
+<ul class="zf">
 
-    <p>Zwei Tage vom ersten <code>docker run</code> bis zum eigenen, veröffentlichten Image – mit
-dem Schwerpunkt auf den Konzepten dahinter: Image und Container, Lebenszyklus,
-Zustandslosigkeit und Konfiguration über Umgebungsvariablen.</p>
+  <li class="zf__karte">
+    <span class="zf__nr">I</span>
+    <span class="zf__name">Codebase</span>
+    <p class="zf__text">Eine Codebasis unter Versionskontrolle, viele Deployments daraus.</p>
+  </li>
 
-  </div>
+  <li class="zf__karte">
+    <span class="zf__nr">II</span>
+    <span class="zf__name">Dependencies</span>
+    <p class="zf__text">Abhängigkeiten ausdrücklich erklären, nichts aus der Umgebung voraussetzen.</p>
+  </li>
 
-</div>
+  <li class="zf__karte zf__karte--kern">
+    <span class="zf__nr">III</span>
+    <span class="zf__name">Config</span>
+    <p class="zf__text">Konfiguration kommt aus der Umgebung, nicht aus dem Artefakt. Sonst braucht jede Umgebung ihr eigenes Image – und keines davon ist das getestete.</p>
+    <span class="zf__marke">im Container: Voraussetzung</span>
+  </li>
 
-<p>Bevor es losgeht, brauchst Du eine Container-Laufzeitumgebung:</p>
+  <li class="zf__karte">
+    <span class="zf__nr">IV</span>
+    <span class="zf__name">Backing Services</span>
+    <p class="zf__text">Datenbanken, Warteschlangen, Speicher sind austauschbare angebundene Dienste.</p>
+  </li>
 
-<ul>
-  <li><a href="shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a> – die beiden Wege
-dorthin und die Befehle, mit denen Du auskommst.</li>
+  <li class="zf__karte">
+    <span class="zf__nr">V</span>
+    <span class="zf__name">Build, release, run</span>
+    <p class="zf__text">Bauen, konfigurieren und ausführen sind drei getrennte Schritte.</p>
+  </li>
+
+  <li class="zf__karte zf__karte--kern">
+    <span class="zf__nr">VI</span>
+    <span class="zf__name">Processes</span>
+    <p class="zf__text">Prozesse sind zustandslos: nichts bleibt zwischen zwei Anfragen im Speicher. Sonst lässt sich der Container nicht ersetzen – und ohne Ersetzbarkeit gibt es weder Skalierung noch Selbstheilung.</p>
+    <span class="zf__marke">im Container: Voraussetzung</span>
+  </li>
+
+  <li class="zf__karte">
+    <span class="zf__nr">VII</span>
+    <span class="zf__name">Port binding</span>
+    <p class="zf__text">Die Anwendung bringt ihren eigenen Server mit und lauscht auf einem Port.</p>
+  </li>
+
+  <li class="zf__karte">
+    <span class="zf__nr">VIII</span>
+    <span class="zf__name">Concurrency</span>
+    <p class="zf__text">Mehr Last wird mit mehr Prozessen bedient, nicht mit einem größeren.</p>
+  </li>
+
+  <li class="zf__karte zf__karte--kern">
+    <span class="zf__nr">IX</span>
+    <span class="zf__name">Disposability</span>
+    <p class="zf__text">Schnell starten, auf ein Stopp-Signal sauber aufräumen. Eine Plattform beendet Container ständig – geplant und ungeplant.</p>
+    <span class="zf__marke">im Container: Voraussetzung</span>
+  </li>
+
+  <li class="zf__karte">
+    <span class="zf__nr">X</span>
+    <span class="zf__name">Dev/prod parity</span>
+    <p class="zf__text">Entwicklung, Test und Produktion halten möglichst wenig Abstand voneinander.</p>
+  </li>
+
+  <li class="zf__karte zf__karte--kern">
+    <span class="zf__nr">XI</span>
+    <span class="zf__name">Logs</span>
+    <p class="zf__text">Logs sind ein Ereignisstrom nach <code>stdout</code>, keine Datei. Wer in eine Datei schreibt, schreibt in einen Container, den es morgen nicht mehr gibt.</p>
+    <span class="zf__marke">im Container: Voraussetzung</span>
+  </li>
+
+  <li class="zf__karte">
+    <span class="zf__nr">XII</span>
+    <span class="zf__name">Admin processes</span>
+    <p class="zf__text">Einmalige Aufgaben – Migration, Reparatur – laufen in derselben Umgebung wie die Anwendung.</p>
+  </li>
+
 </ul>
 
+<blockquote>
+  <p><strong>Merksatz:</strong> Die vier hervorgehobenen Faktoren sind kein Qualitätsanspruch,
+sondern der Preis der Ersetzbarkeit. Wer sie nicht erfüllt, bekommt einen
+Container, den die Plattform nicht anfassen darf.</p>
+</blockquote>
 
 
-    </main><aside class="avd-academy-guide-sidebar"><details class="avd-academy-guide-side avd-academy-guide-side--toc avd-academy-fold" data-avd-academy-toc-box
-               data-avd-academy-toc-grenze="12" open hidden>
-        <summary class="avd-academy-guide-side__label">Auf dieser Seite</summary>
-        <nav class="avd-academy-toc avd-academy-fold__body" data-avd-academy-toc aria-label="Inhaltsverzeichnis"></nav>
-      </details>
-    </aside>
+    </main>
   </div><div class="avd-academy-print-contact" aria-hidden="true">
     <span>Kontakt: https://www.atvantage.com</span>
     <span>academy@atvantage.com</span>

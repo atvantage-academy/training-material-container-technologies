@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<!--
+  ATVANTAGE-Academy – EINZIGES Seitenlayout (Jekyll)
+  --------------------------------------------------
+  Ein Layout für alles: allgemeine Doku-Seiten UND Guides (Übungen/Anleitungen).
+  Optik nach der ATVANTAGE-Website: Meta-Nav, weiße sticky Kopfzeile, Hero-Band,
+  zweispaltig mit rechter Sidebar (automatisches Inhaltsverzeichnis, Fortschritt
+  aus Task-Listen, weiterführende Ressourcen). Überschriften ohne Emoji-Icons.
+
+  Verwendung im Front Matter:  layout: default   (oder `layout: guide` – Alias,
+  siehe guide.html; beides rendert dieselbe Guide-Ansicht)
+
+  `layout: visualization` (siehe visualization.html) rendert dieselbe Seite OHNE
+  obere Navigation (Meta-Leiste + Kopfzeile/TopNav), OHNE Brotkrumen und OHNE den
+  rechten Bereich (Inhaltsverzeichnis, Fortschritt, Ressourcen – auch bei gesetztem
+  `resources`), mit schmalerem Hero-Balken und breiterem, zentriertem Inhalt – für
+  eigenständige Visualisierungen/Simulationen.
+
+  Alle Front-Matter-Felder sind OPTIONAL (Convention over Configuration). Nur der
+  Titel ist faktisch erforderlich – als `title:` ODER als erste `#`-Überschrift:
+
+    title:       "…"                → sonst erste #-Überschrift (eins von beiden nötig)
+    description: "…"                → Meta-Description
+    duration:    8                  → Zahl in Minuten → Hero-Tag „ca. 8 Minuten“
+                                       (ungefähre LESEDAUER; bei Guides/Übungen die
+                                       Dauer der Übung, bei Visualisierungen die
+                                       Bearbeitungszeit – dort unüblich, aber erlaubt).
+    topics:      ["Cloud & DevOps"] → weitere Hero-Tags
+    resources:   [{title, url, icon}, …] → Sidebar-Karte „Weiterführende Informationen“.
+                                       title und/oder icon (Bildpfad); icon erscheint
+                                       rechts und wird kreisrund dargestellt.
+    breadcrumb:                     → Brotkrumen anpassen (beides optional):
+      label: "…"                    → überschreibt den Ordnernamen dieser Ebene;
+                                       in der Ordner-`index.md` gesetzt gilt es für
+                                       ALLE Seiten im Ordner und in Unterordnern.
+      ancestors: [{title, url}, …]  → explizite Vorfahren-Kette OHNE die aktuelle
+                                       Seite (diese wird automatisch angehängt); in
+                                       der `index.md` gesetzt wird sie vererbt.
+
+  „Markdown kopieren“ (Button im Hero) erscheint NUR auf Guides – dort ist das
+  Übernehmen des Quelltexts der Zweck. Bedingungen: Markdown-Seite (`.md`, nicht
+  reines HTML) UND der Schalter `toolbar.copy` (Vorgabe: nur `layout: guide`, siehe
+  `_includes/avd-switch.html`). Doku-Seiten und Visualisierungen haben ihn nicht –
+  bei letzteren, weil ihr Inhalt nicht sinnvoll als Markdown kopierbar ist.
+
+  DIE SEITENWERKZEUGE – QR-Code, Farbschema-Umschalter, Drucken – sind EINE
+  Komponente (`_includes/tools.html`) an zwei Standorten in diesem Rahmen:
+
+    Kopfzeile   `chrome: true`  (page, guide)      QR + Farbschema
+    Hero rechts `hero_tools`    (visualization)    QR + Farbschema + Drucken
+
+  Die Regel dahinter ist die Kopfzeile: Wo es sie gibt, tragen die Werkzeuge sie;
+  wo nicht, tritt der Hero an ihre Stelle. Drucken gibt es nur dort, weil auf einer
+  gewöhnlichen Seite der Browser-Befehl (Strg/Cmd+P) genügt, die rahmenlose
+  Ansicht aber keinen anderen Weg aufs Papier hat.
+
+  Der QR-Code wird erst im Browser erzeugt (theme/academy/atvantage.js), weil die
+  Adresse zur Build-Zeit nicht feststeht; ohne JavaScript erscheint er nicht.
+--><html lang="de">
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Ein Dockerfile gegen die Praxis prüfen · Containertechnologien (Academy)</title><meta name="description" content="Ein absichtlich schlechtes Dockerfile prüfen, die Befunde mit einem zweiten Augenpaar vergleichen, überarbeiten – und die Verbesserung in Megabyte messen."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta property="og:title" content="Ein Dockerfile gegen die Praxis prüfen">
+<meta property="og:description" content="Ein absichtlich schlechtes Dockerfile prüfen, die Befunde mit einem zweiten Augenpaar vergleichen, überarbeiten – und die Verbesserung in Megabyte messen.">
+<meta property="og:type" content="article"><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790157026"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790157026">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790157026">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790157026">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790157026"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790157026">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790157026" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790157026" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790157026">
+<script type="module">
+  const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
+  const _hlsprachen = ["java", "http", "json", "xml"];
+  Promise.all([import(_hlbase + "core.min.js"), ..._hlsprachen.map((s) => import(_hlbase + s + ".min.js"))])
+    .then(([core, ...grammatiken]) => {
+      const hljs = core.default;
+      _hlsprachen.forEach((s, i) => hljs.registerLanguage(s, grammatiken[i].default));
+      const _auswahl = _hlsprachen.map((s) => "pre code.language-" + s).join(",");
+      const _faerben = (wurzel) => (wurzel || document)
+        .querySelectorAll(_auswahl)
+        .forEach((el) => { if (!el.dataset.highlighted) { hljs.highlightElement(el); } });
+      _faerben(document);
+
+      /* NACHTRAEGLICH EINGEFUEGTER CODE. Die Hervorhebung laeuft einmal beim Laden.
+         Eine Seite, die ihre Codebloecke per Skript einsetzt - eine Visualisierung,
+         die rohe Nachrichten durchschaltet -, bekam deshalb gar keine Farben und
+         baute sich einen eigenen Hervorheber. Genau die Kopie, die das Theme
+         verhindern soll.
+
+         `AvdHighlight.apply(knoten)` faerbt, was seither dazugekommen ist; `hljs`
+         liegt daneben fuer Faelle, die mehr brauchen. Das Ereignis sagt Seiten, die
+         frueh zeichnen, wann der Haken da ist - die Module laden asynchron. */
+      window.AvdHighlight = { hljs, apply: _faerben, languages: _hlsprachen.slice() };
+      document.dispatchEvent(new CustomEvent("avd-academy-highlight-ready"));
+
+      /* Statuszeile nach Klasse einfaerben. highlight.js gibt jedem dreistelligen
+         Code dieselbe Klasse `hljs-number` - in einem Mitschnitt ist aber genau das
+         die Stelle, auf die man zuerst sieht: 2xx ist etwas anderes als 4xx.
+         Deshalb hier die einzige eigene Zutat, und bewusst nur diese: Die
+         Statusklassen von HTTP aendern sich nicht, das bleibt stabil. */
+      document.querySelectorAll("pre code.language-http .hljs-number").forEach((el) => {
+        const code = parseInt(el.textContent, 10);
+        if (code >= 100 && code <= 599) {
+          el.classList.add("avd-academy-http-status--" + Math.floor(code / 100) + "xx");
+        }
+      });
+    });
+</script>
+<link rel="apple-touch-icon" sizes="180x180" href="/training-material-container-technologies/theme/atvantage/assets/icon-180.png">
+<link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
+<link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
+
+  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790157026">
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790157026"></head><body class="avd-academy-guide">
+  <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><div class="avd-academy-metanav"><span>ATVANTAGE Academy</span>
+  </div>
+
+  <header class="avd-academy-header" data-avd-academy-header><a class="avd-academy-header__brand" href="/training-material-container-technologies/" aria-label="Startseite"><img class="avd-academy-header__logo" src="/training-material-container-technologies/assets/logo-schulung.svg" alt="ATVANTAGE Academy"></a><button class="avd-academy-tool avd-academy-header__burger" data-avd-academy-nav-toggle="#avd-academy-main-nav"
+          aria-label="Navigation umschalten" aria-expanded="false">☰</button><nav class="avd-academy-header__nav" id="avd-academy-main-nav">
+      <a href="/training-material-container-technologies/">Start</a><div class="avd-academy-header__group" data-avd-academy-menu>
+        <button type="button" class="avd-academy-header__grouptoggle"
+                aria-expanded="false" aria-haspopup="true">Allgemeines<span class="avd-academy-header__caret" aria-hidden="true">▾</span></button>
+        <div class="avd-academy-header__submenu" role="menu">
+          <a role="menuitem" href="/training-material-container-technologies/shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a>
+        </div>
+      </div>
+      <a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a>
+  </nav><div class="avd-academy-header__tools"><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
+                title="Diese Seite auf Deinem Smartphone öffnen"
+                aria-label="Diese Seite auf Deinem Smartphone öffnen"></button><button type="button" class="avd-academy-tool avd-academy-tool--theme avd-academy-theme-toggle" data-avd-academy-theme-toggle
+              title="Farbschema umschalten (hell/dunkel)"
+              aria-label="Farbschema umschalten">◐</button></div>
+</header>
+<section class="avd-academy-guide-hero"
+           aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a><span>/</span><span aria-current="page">Ein Dockerfile gegen die Praxis prüfen</span></nav><div class="avd-academy-guide-hero__meta">
+      <div class="avd-academy-guide-hero__tags"><span class="avd-academy-tag avd-academy-tag--time">ca. 30 Minuten</span><span class="avd-academy-tag">Best Practices</span><span class="avd-academy-tag">Multi-Stage</span><span class="avd-academy-tag">Image-Größe</span>
+      </div>
+      <div class="avd-academy-guide-hero__actions">
+        <button type="button" class="avd-academy-btn avd-academy-btn--ghost avd-academy-copy-md"
+                data-avd-academy-copy-md="#avd-academy-md-source"
+                title="Markdown kopieren" aria-label="Markdown kopieren"></button>
+      </div>
+    </div><h1 id="avd-academy-page-title">Ein Dockerfile gegen die Praxis prüfen</h1>
+  </section><div class="avd-academy-guide-layout">
+    <main class="avd-academy-guide-main avd-academy-guide-main--numbered" id="avd-academy-content">
+
+<p><strong>Als</strong> Mitglied des Teams <strong>möchte ich</strong> ein Dockerfile lesen und benennen
+können, was daran im Betrieb Ärger machen wird, <strong>damit</strong> wir das im Review
+finden und nicht in der Störung.</p>
+
+<h2 id="lernziele">Lernziele</h2>
+
+<p>Du…</p>
+
+<ul>
+  <li>benennst an einem gegebenen Dockerfile mindestens vier Stellen, die im Betrieb
+Probleme machen, und begründest jede.</li>
+  <li>baust ein Dockerfile auf einen Multi-Stage-Build um und erklärst, was dadurch
+aus dem Ergebnis verschwindet.</li>
+  <li>lässt den Prozess im Container unter einem eigenen Benutzer laufen.</li>
+  <li>misst den Unterschied zwischen zwei Images und ordnest ein, woher er kommt.</li>
+</ul>
+
+<h2 id="definition-of-done">Definition of Done</h2>
+
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast <strong>allein</strong> eine Liste mit Befunden zum vorgegebenen Dockerfile
+erstellt und sie anschließend mit Deiner Partnerin verglichen.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Das Ausgangs-Image ist gebaut, und Du kennst seine Größe.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Eine überarbeitete Fassung ist gebaut, nutzt einen Multi-Stage-Build,
+gepinnte Versionen und einen eigenen Benutzer.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du kennst beide Größen und kannst sagen, woher der größte Anteil der
+Ersparnis kommt.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Der Container aus der überarbeiteten Fassung läuft und antwortet.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast die Reflexionsfragen schriftlich beantwortet.</li>
+</ul>
+
+<h2 id="arbeitsschritte">Arbeitsschritte</h2>
+
+<h3 id="das-ausgangsmaterial-anlegen">Das Ausgangsmaterial anlegen</h3>
+
+<pre><code class="language-bash">mkdir ~/review
+</code></pre>
+
+<pre><code class="language-bash">cd ~/review
+</code></pre>
+
+<pre><code class="language-bash">echo "&lt;h1&gt;Review&lt;/h1&gt;" &gt; index.html
+</code></pre>
+
+<pre><code class="language-bash">nano Dockerfile
+</code></pre>
+
+<p>Schreib <strong>genau dieses</strong> Dockerfile hinein – es ist absichtlich schlecht:</p>
+
+<pre><code class="language-dockerfile">FROM debian:latest
+RUN apt-get update
+RUN apt-get install -y nginx curl git build-essential
+RUN rm -rf /var/lib/apt/lists/*
+COPY . /usr/share/nginx/html/
+EXPOSE 80
+CMD nginx -g "daemon off;"
+</code></pre>
+
+<h3 id="allein-prüfen--noch-nicht-reden">Allein prüfen – noch nicht reden</h3>
+
+<p>Nimm Dir <strong>fünf Minuten für Dich</strong> und notiere alles, was Dir auffällt. Eine Zeile
+je Befund: <em>welche Zeile, was ist das Problem, was wäre die Folge im Betrieb.</em></p>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Sprich jetzt noch nicht mit Deiner Partnerin. Die Übung lebt davon,
+dass zwei Listen entstehen. Als Nachschlagewerk hilft Dir
+<a href="/training-material-container-technologies/docker-grundlagen/images-die-tragen/best-practices.html">Best Practices für Container Images</a>.</p>
+</blockquote>
+
+<h3 id="die-listen-vergleichen">Die Listen vergleichen</h3>
+
+<p>Geht beide Listen durch. Markiert die Punkte, die <strong>nur eine</strong> von Euch gefunden
+hat – über die lohnt es sich zu reden.</p>
+
+<h3 id="das-schlechte-image-bauen-und-messen">Das schlechte Image bauen und messen</h3>
+
+<pre><code class="language-bash">docker image build -t review:schlecht .
+</code></pre>
+
+<pre><code class="language-bash">docker images review
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Schreib die Größe auf. Sie ist Dein Vergleichswert.</p>
+</blockquote>
+
+<h3 id="die-überarbeitete-fassung-schreiben">Die überarbeitete Fassung schreiben</h3>
+
+<pre><code class="language-bash">nano Dockerfile.gut
+</code></pre>
+
+<p>Bau die Datei selbst um. Dieses Gerüst zeigt Dir die Multi-Stage-Schreibweise –
+den Rest entscheidest Du anhand Deiner Befundliste:</p>
+
+<pre><code class="language-dockerfile">FROM debian:12-slim AS aufbereitung
+WORKDIR /arbeit
+COPY index.html .
+RUN echo "&lt;p&gt;gebaut in der Aufbereitungsstufe&lt;/p&gt;" &gt;&gt; index.html
+
+FROM nginx:1.27.5-alpine
+COPY --from=aufbereitung /arbeit/index.html /usr/share/nginx/html/index.html
+USER nginx
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Achte auf drei Unterschiede zur Ausgangsfassung, die leicht zu
+übersehen sind: die <strong>Form</strong> von <code>CMD</code> (eckige Klammern statt einer Zeichenkette),
+die <strong>Herkunft</strong> der kopierten Datei (<code>--from=</code>) und den <strong>Benutzer</strong>.</p>
+</blockquote>
+
+<h3 id="die-überarbeitete-fassung-bauen-und-vergleichen">Die überarbeitete Fassung bauen und vergleichen</h3>
+
+<pre><code class="language-bash">docker image build -f Dockerfile.gut -t review:gut .
+</code></pre>
+
+<pre><code class="language-bash">docker images review
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Wie groß ist der Unterschied? Überleg Dir, welcher einzelne
+Eingriff den größten Anteil daran hat.</p>
+</blockquote>
+
+<h3 id="prüfen-dass-sie-auch-läuft">Prüfen, dass sie auch läuft</h3>
+
+<pre><code class="language-bash">docker run -d --name review-gut -p 8090:80 review:gut
+</code></pre>
+
+<pre><code class="language-bash">curl http://localhost:8090
+</code></pre>
+
+<pre><code class="language-bash">docker container exec review-gut whoami
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Führ denselben <code>whoami</code>-Befehl gedanklich für das schlechte Image
+aus. Welchen Benutzer bekämst Du dort?</p>
+</blockquote>
+
+<h3 id="einen-scan-laufen-lassen">Einen Scan laufen lassen</h3>
+
+<p>Nur, wenn ein Scanner zur Verfügung steht – frag Deinen Trainer.</p>
+
+<pre><code class="language-bash">docker scout cves review:schlecht
+</code></pre>
+
+<pre><code class="language-bash">docker scout cves review:gut
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Vergleiche die Anzahl der Befunde. Und dann die wichtigere Frage:
+Was von dem, was ein Scanner findet, betrifft Deine Anwendung überhaupt?</p>
+</blockquote>
+
+<h3 id="aufräumen">Aufräumen</h3>
+
+<pre><code class="language-bash">docker container stop review-gut
+</code></pre>
+
+<pre><code class="language-bash">docker container rm review-gut
+</code></pre>
+
+<h2 id="reflexionsfragen">Reflexionsfragen</h2>
+
+<ul>
+  <li>Welchen Befund hat nur eine von Euch beiden gefunden? Woran lag das?</li>
+  <li>Wie viel kleiner ist das überarbeitete Image, und woher kommt der größte Anteil
+der Ersparnis?</li>
+  <li>Im schlechten Dockerfile werden die Paketlisten in einer <strong>eigenen</strong> Zeile
+gelöscht. Warum wird das Image dadurch nicht kleiner?</li>
+  <li>Was ändert <code>USER</code> praktisch, und warum verlangen manche Plattformen es?</li>
+  <li>Warum sollte ein Image regelmäßig neu gebaut werden, auch wenn sich an Deinem
+Code nichts geändert hat?</li>
+  <li>Was findet ein Sicherheits-Scan <strong>nicht</strong>? Was folgt daraus für den Umgang mit
+seinem Ergebnis?</li>
+</ul>
+
+
+<textarea id="avd-academy-md-source" hidden aria-hidden="true"># Ein Dockerfile gegen die Praxis prüfen
+
+**Als** Mitglied des Teams **möchte ich** ein Dockerfile lesen und benennen
+können, was daran im Betrieb Ärger machen wird, **damit** wir das im Review
+finden und nicht in der Störung.
+
+## Lernziele
+
+Du…
+
+- benennst an einem gegebenen Dockerfile mindestens vier Stellen, die im Betrieb
+  Probleme machen, und begründest jede.
+- baust ein Dockerfile auf einen Multi-Stage-Build um und erklärst, was dadurch
+  aus dem Ergebnis verschwindet.
+- lässt den Prozess im Container unter einem eigenen Benutzer laufen.
+- misst den Unterschied zwischen zwei Images und ordnest ein, woher er kommt.
+
+## Definition of Done
+
+* [ ] Du hast **allein** eine Liste mit Befunden zum vorgegebenen Dockerfile
+  erstellt und sie anschließend mit Deiner Partnerin verglichen.
+* [ ] Das Ausgangs-Image ist gebaut, und Du kennst seine Größe.
+* [ ] Eine überarbeitete Fassung ist gebaut, nutzt einen Multi-Stage-Build,
+  gepinnte Versionen und einen eigenen Benutzer.
+* [ ] Du kennst beide Größen und kannst sagen, woher der größte Anteil der
+  Ersparnis kommt.
+* [ ] Der Container aus der überarbeiteten Fassung läuft und antwortet.
+* [ ] Du hast die Reflexionsfragen schriftlich beantwortet.
+
+## Arbeitsschritte
+
+### Das Ausgangsmaterial anlegen
+
+```bash
+mkdir ~/review
+```
+
+```bash
+cd ~/review
+```
+
+```bash
+echo &quot;&lt;h1&gt;Review&lt;/h1&gt;&quot; &gt; index.html
+```
+
+```bash
+nano Dockerfile
+```
+
+Schreib **genau dieses** Dockerfile hinein – es ist absichtlich schlecht:
+
+```dockerfile
+FROM debian:latest
+RUN apt-get update
+RUN apt-get install -y nginx curl git build-essential
+RUN rm -rf /var/lib/apt/lists/*
+COPY . /usr/share/nginx/html/
+EXPOSE 80
+CMD nginx -g &quot;daemon off;&quot;
+```
+
+### Allein prüfen – noch nicht reden
+
+Nimm Dir **fünf Minuten für Dich** und notiere alles, was Dir auffällt. Eine Zeile
+je Befund: *welche Zeile, was ist das Problem, was wäre die Folge im Betrieb.*
+
+&gt; **Hinweis:** Sprich jetzt noch nicht mit Deiner Partnerin. Die Übung lebt davon,
+&gt; dass zwei Listen entstehen. Als Nachschlagewerk hilft Dir
+&gt; [Best Practices für Container Images](/training-material-container-technologies/docker-grundlagen/images-die-tragen/best-practices.html).
+
+### Die Listen vergleichen
+
+Geht beide Listen durch. Markiert die Punkte, die **nur eine** von Euch gefunden
+hat – über die lohnt es sich zu reden.
+
+### Das schlechte Image bauen und messen
+
+```bash
+docker image build -t review:schlecht .
+```
+
+```bash
+docker images review
+```
+
+&gt; **Hinweis:** Schreib die Größe auf. Sie ist Dein Vergleichswert.
+
+### Die überarbeitete Fassung schreiben
+
+```bash
+nano Dockerfile.gut
+```
+
+Bau die Datei selbst um. Dieses Gerüst zeigt Dir die Multi-Stage-Schreibweise –
+den Rest entscheidest Du anhand Deiner Befundliste:
+
+```dockerfile
+FROM debian:12-slim AS aufbereitung
+WORKDIR /arbeit
+COPY index.html .
+RUN echo &quot;&lt;p&gt;gebaut in der Aufbereitungsstufe&lt;/p&gt;&quot; &gt;&gt; index.html
+
+FROM nginx:1.27.5-alpine
+COPY --from=aufbereitung /arbeit/index.html /usr/share/nginx/html/index.html
+USER nginx
+EXPOSE 80
+CMD [&quot;nginx&quot;, &quot;-g&quot;, &quot;daemon off;&quot;]
+```
+
+&gt; **Hinweis:** Achte auf drei Unterschiede zur Ausgangsfassung, die leicht zu
+&gt; übersehen sind: die **Form** von `CMD` (eckige Klammern statt einer Zeichenkette),
+&gt; die **Herkunft** der kopierten Datei (`--from=`) und den **Benutzer**.
+
+### Die überarbeitete Fassung bauen und vergleichen
+
+```bash
+docker image build -f Dockerfile.gut -t review:gut .
+```
+
+```bash
+docker images review
+```
+
+&gt; **Hinweis:** Wie groß ist der Unterschied? Überleg Dir, welcher einzelne
+&gt; Eingriff den größten Anteil daran hat.
+
+### Prüfen, dass sie auch läuft
+
+```bash
+docker run -d --name review-gut -p 8090:80 review:gut
+```
+
+```bash
+curl http://localhost:8090
+```
+
+```bash
+docker container exec review-gut whoami
+```
+
+&gt; **Hinweis:** Führ denselben `whoami`-Befehl gedanklich für das schlechte Image
+&gt; aus. Welchen Benutzer bekämst Du dort?
+
+### Einen Scan laufen lassen
+
+Nur, wenn ein Scanner zur Verfügung steht – frag Deinen Trainer.
+
+```bash
+docker scout cves review:schlecht
+```
+
+```bash
+docker scout cves review:gut
+```
+
+&gt; **Hinweis:** Vergleiche die Anzahl der Befunde. Und dann die wichtigere Frage:
+&gt; Was von dem, was ein Scanner findet, betrifft Deine Anwendung überhaupt?
+
+### Aufräumen
+
+```bash
+docker container stop review-gut
+```
+
+```bash
+docker container rm review-gut
+```
+
+## Reflexionsfragen
+
+- Welchen Befund hat nur eine von Euch beiden gefunden? Woran lag das?
+- Wie viel kleiner ist das überarbeitete Image, und woher kommt der größte Anteil
+  der Ersparnis?
+- Im schlechten Dockerfile werden die Paketlisten in einer **eigenen** Zeile
+  gelöscht. Warum wird das Image dadurch nicht kleiner?
+- Was ändert `USER` praktisch, und warum verlangen manche Plattformen es?
+- Warum sollte ein Image regelmäßig neu gebaut werden, auch wenn sich an Deinem
+  Code nichts geändert hat?
+- Was findet ein Sicherheits-Scan **nicht**? Was folgt daraus für den Umgang mit
+  seinem Ergebnis?
+
+## Weiterführende Informationen
+
+- [Best Practices für Container Images](/docker-grundlagen/images-die-tragen/best-practices.html)
+- [Building best practices – Docker Docs](https://docs.docker.com/build/building/best-practices/)
+</textarea>
+    </main><aside class="avd-academy-guide-sidebar"><details class="avd-academy-guide-side avd-academy-guide-side--toc avd-academy-fold" data-avd-academy-toc-box
+               data-avd-academy-toc-grenze="12" open hidden>
+        <summary class="avd-academy-guide-side__label">Auf dieser Seite</summary>
+        <nav class="avd-academy-toc avd-academy-fold__body" data-avd-academy-toc aria-label="Inhaltsverzeichnis"></nav>
+      </details>
+      <div class="avd-academy-guide-side avd-academy-guide-side--bordered" data-avd-academy-progress hidden><div class="avd-academy-guide-side__label" id="avd-academy-progress-label">Fortschritt</div><div class="avd-academy-progress__bar" aria-labelledby="avd-academy-progress-label"><div class="avd-academy-progress__fill"></div></div>
+        <div class="avd-academy-progress__text"></div>
+      </div>
+      <div class="avd-academy-guide-side avd-academy-guide-side--bordered">
+        <div class="avd-academy-guide-side__label">Weiterführende Informationen</div>
+        <div class="avd-academy-guide-side__links"><a href="/docker-grundlagen/images-die-tragen/best-practices.html"><span>Best Practices für Container Images</span></a><a href="https://docs.docker.com/build/building/best-practices/" target="_blank" rel="noopener"><span>Building best practices – Docker Docs</span></a>
+        </div></div>
+    </aside>
+  </div><div class="avd-academy-print-contact" aria-hidden="true">
+    <span>Kontakt: https://www.atvantage.com</span>
+    <span>academy@atvantage.com</span>
+  </div>
+
+  <footer class="avd-academy-footer">
+  <div class="avd-academy-footer__grid">
+    <div><strong>Containertechnologien (Academy)</strong>
+      <p>Schulungsunterlagen der ATVANTAGE Academy.</p>
+    </div><div>
+      <strong>Kontakt</strong>
+      <p><a href="https://www.atvantage.com" target="_blank" rel="noopener">Website</a><br><a href="mailto:academy@atvantage.com">academy@atvantage.com</a><br>
+      </p>
+    </div></div>
+  <div class="avd-academy-footer__legal">
+    © <span data-avd-academy-year>2026</span> ATVANTAGE
+  </div>
+</footer>
+
+</body>
+</html>

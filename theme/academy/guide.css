@@ -168,6 +168,14 @@
    waere `initial` und damit `inline`. */
 .avd-academy-guide-main { min-width: 0; display: block; }
 .avd-academy-guide-main > * + * { margin-top: var(--avd-academy-rhythm-block); }
+/* WAS AUF EINE UEBERSCHRIFT FOLGT, bekommt ihren Abstand und nicht den der Bloecke.
+   Ohne diese Zeile kollabiert das kleine `margin-bottom` der Ueberschrift mit dem
+   `margin-top` der Flussregel, und der groessere Wert gewinnt: Die Ueberschrift stand
+   genauso weit von ihrem Text wie zwei Absaetze voneinander - die gemeinte Bindung
+   gab es nur im Kommentar. */
+.avd-academy-guide-main > :is(h1, h2, h3, h4, h5, h6) + * {
+  margin-top: var(--avd-academy-rhythm-heading);
+}
 /* Listen trugen `margin: 0`, weil frueher der `gap` den Abstand machte. Ohne ihn
    muessen sie ihn selbst mitbringen - sonst kleben sie am Absatz davor. */
 .avd-academy-guide-main > ul, .avd-academy-guide-main > ol { margin-bottom: 0; }
@@ -261,7 +269,7 @@
 
 /* H3-Überschriften (Basis, ohne Nummer) – für allgemeine Seiten. */
 .avd-academy-guide-main h3 {
-  margin: 1.75rem 0 var(--avd-academy-rhythm-heading);
+  margin: var(--avd-academy-rhythm-subsection) 0 var(--avd-academy-rhythm-heading);
   font-size: var(--h5-base, 22px);
   font-weight: 600;
   color: var(--avd-academy-color-headline);

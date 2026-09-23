@@ -59,9 +59,9 @@
 --><html lang="de">
 <head>
   <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"><title>Containertechnologien · Containertechnologien (Academy)</title><meta name="description" content="Schulungskonzepte der ATVANTAGE Academy rund um Containertechnologien."><meta property="og:site_name" content="Containertechnologien (Academy)">
-<meta property="og:title" content="Containertechnologien">
-<meta property="og:description" content="Schulungskonzepte der ATVANTAGE Academy rund um Containertechnologien.">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Layer und Build-Cache · Containertechnologien (Academy)</title><meta name="description" content="Warum die Reihenfolge der Zeilen im Dockerfile über die Bauzeit entscheidet – dieselben Anweisungen, zweimal angeordnet, nach einer Codeänderung."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta property="og:title" content="Layer und Build-Cache">
+<meta property="og:description" content="Warum die Reihenfolge der Zeilen im Dockerfile über die Bauzeit entscheidet – dieselben Anweisungen, zweimal angeordnet, nach einer Codeänderung.">
 <meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790157026"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790157026">
@@ -114,69 +114,178 @@
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
 
   <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790157026">
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790157026"></head><body class="avd-academy-guide">
-  <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><div class="avd-academy-metanav"><span>ATVANTAGE Academy</span>
-  </div>
-
-  <header class="avd-academy-header" data-avd-academy-header><a class="avd-academy-header__brand" href="/training-material-container-technologies/" aria-label="Startseite"><img class="avd-academy-header__logo" src="/training-material-container-technologies/assets/logo-schulung.svg" alt="ATVANTAGE Academy"></a><button class="avd-academy-tool avd-academy-header__burger" data-avd-academy-nav-toggle="#avd-academy-main-nav"
-          aria-label="Navigation umschalten" aria-expanded="false">☰</button><nav class="avd-academy-header__nav" id="avd-academy-main-nav">
-      <a href="/training-material-container-technologies/" aria-current="page">Start</a><div class="avd-academy-header__group" data-avd-academy-menu>
-        <button type="button" class="avd-academy-header__grouptoggle"
-                aria-expanded="false" aria-haspopup="true">Allgemeines<span class="avd-academy-header__caret" aria-hidden="true">▾</span></button>
-        <div class="avd-academy-header__submenu" role="menu">
-          <a role="menuitem" href="/training-material-container-technologies/shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a>
-        </div>
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790157026"></head><body class="avd-academy-guide avd-academy-guide--viz">
+  <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><section class="avd-academy-guide-hero avd-academy-guide-hero--slim"
+           aria-labelledby="avd-academy-page-title"><div class="avd-academy-guide-hero__meta">
+      <div class="avd-academy-guide-hero__tags">
       </div>
-      <a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a>
-  </nav><div class="avd-academy-header__tools"><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
+      <div class="avd-academy-guide-hero__actions"><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
                 title="Diese Seite auf Deinem Smartphone öffnen"
                 aria-label="Diese Seite auf Deinem Smartphone öffnen"></button><button type="button" class="avd-academy-tool avd-academy-tool--theme avd-academy-theme-toggle" data-avd-academy-theme-toggle
               title="Farbschema umschalten (hell/dunkel)"
-              aria-label="Farbschema umschalten">◐</button></div>
-</header>
-<section class="avd-academy-guide-hero"
-           aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/">Home</a></nav><div class="avd-academy-guide-hero__meta">
-      <div class="avd-academy-guide-hero__tags">
+              aria-label="Farbschema umschalten">◐</button><button type="button" class="avd-academy-tool avd-academy-tool--print avd-academy-print-btn"
+                data-avd-academy-print
+                title="Diese Seite drucken" aria-label="Diese Seite drucken"></button>
       </div>
-      <div class="avd-academy-guide-hero__actions">
-      </div>
-    </div><h1 id="avd-academy-page-title">Containertechnologien</h1>
+    </div><h1 id="avd-academy-page-title">Layer und Build-Cache</h1>
   </section><div class="avd-academy-guide-layout">
     <main class="avd-academy-guide-main" id="avd-academy-content">
 
-<p>Hier findest Du die Unterlagen zu Deinem Kurs. Wähle Dein Training aus – die
-Übungen und das Material zum Nachschlagen stehen dort in der Reihenfolge, in der
-wir sie gemeinsam durchgehen.</p>
+<p>Jede Anweisung im Dockerfile erzeugt einen <strong>Layer</strong>. Die Layer werden gestapelt,
+und beim nächsten Bauen darf Docker jeden wiederverwenden, bei dem sich nichts
+geändert hat.</p>
 
-<div class="avd-academy-grid">
+<p>Die Regel dazu ist unscheinbar und hat große Folgen:</p>
 
-  <div class="avd-academy-card">
+<blockquote>
+  <p>Ändert sich ein Layer, sind <strong>alle darüberliegenden</strong> ungültig – auch wenn ihre
+Anweisung Wort für Wort dieselbe geblieben ist.</p>
+</blockquote>
 
-    <h3 id="docker-grundlagen-fr-entwickler"><a href="docker-grundlagen/">Docker-Grundlagen (für Entwickler)</a></h3>
+<p>Unten stehen zweimal dieselben vier Anweisungen. Links in der naheliegenden
+Reihenfolge, rechts in der, die den Cache trägt. Gezeigt ist der <strong>zweite</strong> Build,
+nachdem sich eine Quelldatei geändert hat.</p>
 
-    <p>Zwei Tage vom ersten <code>docker run</code> bis zum eigenen, veröffentlichten Image – mit
-dem Schwerpunkt auf den Konzepten dahinter: Image und Container, Lebenszyklus,
-Zustandslosigkeit und Konfiguration über Umgebungsvariablen.</p>
+<style>
+  .lc {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+    gap: var(--avd-academy-space-8);
+    margin: var(--avd-academy-space-8) 0;
+  }
+  .lc__spalte { min-width: 0; }
+  .lc__titel {
+    font-weight: var(--avd-academy-fw-bold);
+    font-size: var(--avd-academy-fs-lg);
+    margin-bottom: var(--avd-academy-space-2);
+  }
+  .lc__unter {
+    font-size: var(--avd-academy-fs-sm);
+    color: var(--avd-academy-color-ink-muted);
+    margin: 0 0 var(--avd-academy-space-4);
+  }
 
+  /* Der Stapel wird von unten nach oben gelesen: FROM liegt zuunterst. */
+  .lc__stapel {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 2px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .lc__layer {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--avd-academy-space-3);
+    padding: var(--avd-academy-space-3) var(--avd-academy-space-4);
+    border: 1px solid var(--avd-academy-color-border);
+    font-family: var(--avd-academy-font-mono);
+    font-size: var(--avd-academy-fs-sm);
+    background: var(--avd-academy-color-bg-subtle);
+  }
+  .lc__stapel > .lc__layer:first-child { border-radius: 0 0 var(--avd-academy-radius) var(--avd-academy-radius); }
+  .lc__stapel > .lc__layer:last-child  { border-radius: var(--avd-academy-radius) var(--avd-academy-radius) 0 0; }
+
+  .lc__layer--neu {
+    border-color: var(--avd-academy-color-warning);
+    background: var(--avd-academy-color-bg);
+  }
+  .lc__marke {
+    flex: 0 0 auto;
+    font-family: var(--avd-academy-font-sans);
+    font-size: var(--avd-academy-fs-sm);
+    font-weight: var(--avd-academy-fw-medium);
+    color: var(--avd-academy-color-ink-muted);
+  }
+  .lc__layer--neu .lc__marke { color: var(--avd-academy-color-warning-ink); }
+
+  .lc__bilanz {
+    margin-top: var(--avd-academy-space-4);
+    padding: var(--avd-academy-space-3) var(--avd-academy-space-4);
+    border-radius: var(--avd-academy-radius);
+    background: var(--avd-academy-color-bg-subtle);
+    font-size: var(--avd-academy-fs-sm);
+  }
+  .lc__leserichtung {
+    font-size: var(--avd-academy-fs-sm);
+    color: var(--avd-academy-color-ink-muted);
+    margin-top: var(--avd-academy-space-2);
+  }
+</style>
+
+<div class="lc">
+
+  <div class="lc__spalte">
+    <p class="lc__titel">Naheliegend – und teuer</p>
+    <p class="lc__unter">Erst alles kopieren, dann installieren.</p>
+
+    <ul class="lc__stapel">
+      <li class="lc__layer"><span>FROM node:20-alpine</span><span class="lc__marke">aus dem Cache</span></li>
+      <li class="lc__layer lc__layer--neu"><span>COPY . .</span><span class="lc__marke">neu gebaut</span></li>
+      <li class="lc__layer lc__layer--neu"><span>RUN npm install</span><span class="lc__marke">neu gebaut</span></li>
+      <li class="lc__layer lc__layer--neu"><span>CMD ["node", "server.js"]</span><span class="lc__marke">neu gebaut</span></li>
+    </ul>
+    <p class="lc__leserichtung">Von unten nach oben gelesen.</p>
+
+    <p class="lc__bilanz"><strong>Eine Zeile Code geändert</strong> – und die Abhängigkeiten werden erneut heruntergeladen und installiert. Bei jedem Build. Jeden Tag.</p>
+  </div>
+
+  <div class="lc__spalte">
+    <p class="lc__titel">Stabiles zuerst</p>
+    <p class="lc__unter">Erst die Abhängigkeitsliste, dann installieren, dann der Rest.</p>
+
+    <ul class="lc__stapel">
+      <li class="lc__layer"><span>FROM node:20-alpine</span><span class="lc__marke">aus dem Cache</span></li>
+      <li class="lc__layer"><span>COPY package*.json ./</span><span class="lc__marke">aus dem Cache</span></li>
+      <li class="lc__layer"><span>RUN npm install</span><span class="lc__marke">aus dem Cache</span></li>
+      <li class="lc__layer lc__layer--neu"><span>COPY . .</span><span class="lc__marke">neu gebaut</span></li>
+      <li class="lc__layer lc__layer--neu"><span>CMD ["node", "server.js"]</span><span class="lc__marke">neu gebaut</span></li>
+    </ul>
+    <p class="lc__leserichtung">Von unten nach oben gelesen.</p>
+
+    <p class="lc__bilanz"><strong>Dieselbe Änderung</strong> – der teure Schritt bleibt liegen, weil sich die Abhängigkeitsliste nicht geändert hat. Erst wenn <em>sie</em> sich ändert, wird wieder installiert.</p>
   </div>
 
 </div>
 
-<p>Bevor es losgeht, brauchst Du eine Container-Laufzeitumgebung:</p>
+<h2 id="loeschen">Der Nebenbefund, der überrascht</h2>
 
-<ul>
-  <li><a href="shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a> – die beiden Wege
-dorthin und die Befehle, mit denen Du auskommst.</li>
-</ul>
+<p>Ein Layer, in dem eine Datei <strong>gelöscht</strong> wird, macht das Image nicht kleiner. Die
+Datei steckt weiterhin im Layer darunter – der obere merkt sich nur, dass sie
+nicht mehr zu sehen ist.</p>
+
+<div class="lc">
+
+  <div class="lc__spalte">
+    <p class="lc__titel">Zwei Anweisungen – Ballast bleibt</p>
+    <ul class="lc__stapel">
+      <li class="lc__layer"><span>FROM debian:12-slim</span><span class="lc__marke">Basis</span></li>
+      <li class="lc__layer lc__layer--neu"><span>RUN apt-get update &amp;&amp; apt-get install -y curl</span><span class="lc__marke">+ Paketlisten</span></li>
+      <li class="lc__layer"><span>RUN rm -rf /var/lib/apt/lists/*</span><span class="lc__marke">nur unsichtbar</span></li>
+    </ul>
+    <p class="lc__leserichtung">Von unten nach oben gelesen.</p>
+  </div>
+
+  <div class="lc__spalte">
+    <p class="lc__titel">Eine Anweisung – Ballast weg</p>
+    <ul class="lc__stapel">
+      <li class="lc__layer"><span>FROM debian:12-slim</span><span class="lc__marke">Basis</span></li>
+      <li class="lc__layer"><span>RUN apt-get update &amp;&amp; apt-get install -y curl \<br />&nbsp;&nbsp;&amp;&amp; rm -rf /var/lib/apt/lists/*</span><span class="lc__marke">sauber</span></li>
+    </ul>
+    <p class="lc__leserichtung">Von unten nach oben gelesen.</p>
+  </div>
+
+</div>
+
+<blockquote>
+  <p><strong>Merksatz:</strong> Was sich selten ändert, gehört nach unten. Was aufgeräumt werden
+soll, muss im selben Layer aufgeräumt werden, in dem es entstanden ist.</p>
+</blockquote>
 
 
-
-    </main><aside class="avd-academy-guide-sidebar"><details class="avd-academy-guide-side avd-academy-guide-side--toc avd-academy-fold" data-avd-academy-toc-box
-               data-avd-academy-toc-grenze="12" open hidden>
-        <summary class="avd-academy-guide-side__label">Auf dieser Seite</summary>
-        <nav class="avd-academy-toc avd-academy-fold__body" data-avd-academy-toc aria-label="Inhaltsverzeichnis"></nav>
-      </details>
-    </aside>
+    </main>
   </div><div class="avd-academy-print-contact" aria-hidden="true">
     <span>Kontakt: https://www.atvantage.com</span>
     <span>academy@atvantage.com</span>

@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<!--
+  ATVANTAGE-Academy – EINZIGES Seitenlayout (Jekyll)
+  --------------------------------------------------
+  Ein Layout für alles: allgemeine Doku-Seiten UND Guides (Übungen/Anleitungen).
+  Optik nach der ATVANTAGE-Website: Meta-Nav, weiße sticky Kopfzeile, Hero-Band,
+  zweispaltig mit rechter Sidebar (automatisches Inhaltsverzeichnis, Fortschritt
+  aus Task-Listen, weiterführende Ressourcen). Überschriften ohne Emoji-Icons.
+
+  Verwendung im Front Matter:  layout: default   (oder `layout: guide` – Alias,
+  siehe guide.html; beides rendert dieselbe Guide-Ansicht)
+
+  `layout: visualization` (siehe visualization.html) rendert dieselbe Seite OHNE
+  obere Navigation (Meta-Leiste + Kopfzeile/TopNav), OHNE Brotkrumen und OHNE den
+  rechten Bereich (Inhaltsverzeichnis, Fortschritt, Ressourcen – auch bei gesetztem
+  `resources`), mit schmalerem Hero-Balken und breiterem, zentriertem Inhalt – für
+  eigenständige Visualisierungen/Simulationen.
+
+  Alle Front-Matter-Felder sind OPTIONAL (Convention over Configuration). Nur der
+  Titel ist faktisch erforderlich – als `title:` ODER als erste `#`-Überschrift:
+
+    title:       "…"                → sonst erste #-Überschrift (eins von beiden nötig)
+    description: "…"                → Meta-Description
+    duration:    8                  → Zahl in Minuten → Hero-Tag „ca. 8 Minuten“
+                                       (ungefähre LESEDAUER; bei Guides/Übungen die
+                                       Dauer der Übung, bei Visualisierungen die
+                                       Bearbeitungszeit – dort unüblich, aber erlaubt).
+    topics:      ["Cloud & DevOps"] → weitere Hero-Tags
+    resources:   [{title, url, icon}, …] → Sidebar-Karte „Weiterführende Informationen“.
+                                       title und/oder icon (Bildpfad); icon erscheint
+                                       rechts und wird kreisrund dargestellt.
+    breadcrumb:                     → Brotkrumen anpassen (beides optional):
+      label: "…"                    → überschreibt den Ordnernamen dieser Ebene;
+                                       in der Ordner-`index.md` gesetzt gilt es für
+                                       ALLE Seiten im Ordner und in Unterordnern.
+      ancestors: [{title, url}, …]  → explizite Vorfahren-Kette OHNE die aktuelle
+                                       Seite (diese wird automatisch angehängt); in
+                                       der `index.md` gesetzt wird sie vererbt.
+
+  „Markdown kopieren“ (Button im Hero) erscheint NUR auf Guides – dort ist das
+  Übernehmen des Quelltexts der Zweck. Bedingungen: Markdown-Seite (`.md`, nicht
+  reines HTML) UND der Schalter `toolbar.copy` (Vorgabe: nur `layout: guide`, siehe
+  `_includes/avd-switch.html`). Doku-Seiten und Visualisierungen haben ihn nicht –
+  bei letzteren, weil ihr Inhalt nicht sinnvoll als Markdown kopierbar ist.
+
+  DIE SEITENWERKZEUGE – QR-Code, Farbschema-Umschalter, Drucken – sind EINE
+  Komponente (`_includes/tools.html`) an zwei Standorten in diesem Rahmen:
+
+    Kopfzeile   `chrome: true`  (page, guide)      QR + Farbschema
+    Hero rechts `hero_tools`    (visualization)    QR + Farbschema + Drucken
+
+  Die Regel dahinter ist die Kopfzeile: Wo es sie gibt, tragen die Werkzeuge sie;
+  wo nicht, tritt der Hero an ihre Stelle. Drucken gibt es nur dort, weil auf einer
+  gewöhnlichen Seite der Browser-Befehl (Strg/Cmd+P) genügt, die rahmenlose
+  Ansicht aber keinen anderen Weg aufs Papier hat.
+
+  Der QR-Code wird erst im Browser erzeugt (theme/academy/atvantage.js), weil die
+  Adresse zur Build-Zeit nicht feststeht; ohne JavaScript erscheint er nicht.
+--><html lang="de">
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Wissens-Check: Docker-Grundlagen · Containertechnologien (Academy)</title><meta name="description" content="Fünfzehn Fragen als Rückblick auf zwei Tage – zum Abschluss im Kurs und danach beliebig oft allein."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta property="og:title" content="Wissens-Check: Docker-Grundlagen">
+<meta property="og:description" content="Fünfzehn Fragen als Rückblick auf zwei Tage – zum Abschluss im Kurs und danach beliebig oft allein.">
+<meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790157026"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790157026">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790157026">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790157026">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790157026"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790157026">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790157026" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790157026" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790157026">
+<script type="module">
+  const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
+  const _hlsprachen = ["java", "http", "json", "xml"];
+  Promise.all([import(_hlbase + "core.min.js"), ..._hlsprachen.map((s) => import(_hlbase + s + ".min.js"))])
+    .then(([core, ...grammatiken]) => {
+      const hljs = core.default;
+      _hlsprachen.forEach((s, i) => hljs.registerLanguage(s, grammatiken[i].default));
+      const _auswahl = _hlsprachen.map((s) => "pre code.language-" + s).join(",");
+      const _faerben = (wurzel) => (wurzel || document)
+        .querySelectorAll(_auswahl)
+        .forEach((el) => { if (!el.dataset.highlighted) { hljs.highlightElement(el); } });
+      _faerben(document);
+
+      /* NACHTRAEGLICH EINGEFUEGTER CODE. Die Hervorhebung laeuft einmal beim Laden.
+         Eine Seite, die ihre Codebloecke per Skript einsetzt - eine Visualisierung,
+         die rohe Nachrichten durchschaltet -, bekam deshalb gar keine Farben und
+         baute sich einen eigenen Hervorheber. Genau die Kopie, die das Theme
+         verhindern soll.
+
+         `AvdHighlight.apply(knoten)` faerbt, was seither dazugekommen ist; `hljs`
+         liegt daneben fuer Faelle, die mehr brauchen. Das Ereignis sagt Seiten, die
+         frueh zeichnen, wann der Haken da ist - die Module laden asynchron. */
+      window.AvdHighlight = { hljs, apply: _faerben, languages: _hlsprachen.slice() };
+      document.dispatchEvent(new CustomEvent("avd-academy-highlight-ready"));
+
+      /* Statuszeile nach Klasse einfaerben. highlight.js gibt jedem dreistelligen
+         Code dieselbe Klasse `hljs-number` - in einem Mitschnitt ist aber genau das
+         die Stelle, auf die man zuerst sieht: 2xx ist etwas anderes als 4xx.
+         Deshalb hier die einzige eigene Zutat, und bewusst nur diese: Die
+         Statusklassen von HTTP aendern sich nicht, das bleibt stabil. */
+      document.querySelectorAll("pre code.language-http .hljs-number").forEach((el) => {
+        const code = parseInt(el.textContent, 10);
+        if (code >= 100 && code <= 599) {
+          el.classList.add("avd-academy-http-status--" + Math.floor(code / 100) + "xx");
+        }
+      });
+    });
+</script>
+<link rel="apple-touch-icon" sizes="180x180" href="/training-material-container-technologies/theme/atvantage/assets/icon-180.png">
+<link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
+<link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
+
+  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790157026">
+  <link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/quiz.css?v=1790157026">
+  <script src="/training-material-container-technologies/theme/jekyll/quiz.js?v=1790157026" defer></script>
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790157026"></head><body class="avd-academy-guide avd-academy-guide--viz">
+  <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><section class="avd-academy-guide-hero avd-academy-guide-hero--slim"
+           aria-labelledby="avd-academy-page-title"><div class="avd-academy-guide-hero__meta">
+      <div class="avd-academy-guide-hero__tags">
+      </div>
+      <div class="avd-academy-guide-hero__actions"><button type="button" class="avd-academy-tool avd-academy-tool--theme avd-academy-theme-toggle" data-avd-academy-theme-toggle
+              title="Farbschema umschalten (hell/dunkel)"
+              aria-label="Farbschema umschalten">◐</button>
+      </div>
+    </div><h1 id="avd-academy-page-title">Wissens-Check: Docker-Grundlagen</h1>
+  </section><div class="avd-academy-guide-layout">
+    <main class="avd-academy-guide-main" id="avd-academy-content">
+
+<p>Fünfzehn Fragen als Rückblick auf zwei Tage. Sie prüfen, was Du <strong>wiedererkennst</strong> –
+das ist weniger, als Du kannst, und mehr, als Du glaubst. Es gibt keine Note und
+keine Auswertung im Kurs; die Antworten siehst nur Du.</p>
+
+<p>Lies bei jeder Antwort auch die Begründung, wenn Du danebengegriffen hast. Sie ist
+der eigentliche Inhalt dieser Seite.</p>
+
+
+<div class="avd-academy-quiz" data-avd-academy-quiz><script type="application/json" data-avd-academy-quiz-data>
+{"questions":[{"context":"Zwei Begriffe, die im Alltag oft durcheinandergehen.","question":"Was unterscheidet ein Docker-Image von einem Docker-Container?","options":[{"text":"Das Image ist der Bauplan, der Container eine laufende Ausprägung davon.","correct":true,"feedback":"Genau – wie Klasse und Objekt. Aus einem Image entstehen beliebig viele Container."},{"text":"Das Image läuft im Vordergrund, der Container läuft im Hintergrund weiter.","feedback":"Vorder- und Hintergrund steuerst Du beim Start mit `-d`. Mit dem Unterschied hat das nichts zu tun."},{"text":"Das Image liegt in der Registry, der Container liegt lokal auf der Platte.","feedback":"Ein Image liegt nach dem `pull` ebenfalls lokal. Der Ort ist nicht das Unterscheidende."},{"text":"Das Image enthält nur die Anwendung, der Container zusätzlich das Betriebssystem.","feedback":"Umgekehrt: Das Image bringt die Umgebung mit. Den Kern teilen sich alle Container mit dem Wirt."}]},{"context":"Dieselbe Anwendung soll in Entwicklung, Test und Produktion unterschiedlich arbeiten.","question":"Wie sollte eine 12-Factor-App laut Faktor III („Config“) ihre Konfiguration bekommen?","options":[{"text":"Aus Umgebungsvariablen, die beim Start von außen gesetzt werden.","correct":true,"feedback":"Richtig. So bleibt dasselbe Image überall gleich – nur die Umgebung ändert sich."},{"text":"Aus einer Konfigurationsdatei, die beim Bauen fest ins Image kopiert wird.","feedback":"Dann brauchst Du je Umgebung ein eigenes Image – und keines davon ist das getestete."},{"text":"Aus Kommandozeilenparametern, die beim Start des Containers übergeben werden.","feedback":"Möglich, aber nicht der 12-Factor-Weg: Umgebungsvariablen sind sprach- und systemneutral."},{"text":"Aus einer zentralen Datenbank, die jeder Dienst bei jeder Anfrage abfragt.","feedback":"Das wäre eine zusätzliche Abhängigkeit und ein gemeinsamer Ausfallpunkt für alle Dienste."}]},{"context":"Du willst einen Container im Hintergrund starten und ihm einen festen Namen geben.","question":"Welcher Aufruf ist dafür der richtige?","options":[{"text":"docker run -d --name meine-app nginx","correct":true,"feedback":"Richtig: `-d` löst vom Terminal, `--name` vergibt den Namen, mit dem Du ihn später ansprichst."},{"text":"docker run --name -d meine-app nginx","feedback":"`--name` erwartet den Namen direkt dahinter. Hier würde `-d` als Name gelesen."},{"text":"docker start -d --name meine-app nginx","feedback":"`start` startet einen vorhandenen Container und legt keinen neuen aus einem Image an."},{"text":"docker create -d --name meine-app nginx","feedback":"`create` legt den Container nur an. Ohne `start` läuft er nicht – `-d` bewirkt hier nichts."}]},{"context":"Im Dockerfile stehen Anweisungen, die zu unterschiedlichen Zeitpunkten wirken.","question":"Welche Anweisung bestimmt, was beim **Starten** eines Containers ausgeführt wird?","options":[{"text":"CMD beziehungsweise ENTRYPOINT – beide wirken zur Startzeit.","correct":true,"feedback":"Richtig. `ENTRYPOINT` ist das Programm, `CMD` liefert dessen Standardargumente."},{"text":"RUN – die Anweisung führt den angegebenen Befehl im Container aus.","feedback":"`RUN` läuft beim **Bauen** und verändert das Image. Beim Start passiert damit nichts mehr."},{"text":"ENV – die Anweisung setzt die Umgebung, in der der Start abläuft.","feedback":"`ENV` setzt nur Standardwerte für Variablen. Was ausgeführt wird, legt sie nicht fest."},{"text":"EXPOSE – die Anweisung startet den Dienst auf dem genannten Port.","feedback":"`EXPOSE` ist reine Dokumentation im Image. Es startet nichts und öffnet nichts."}]},{"context":"Du baust ein Image mit `docker image build .` und vergisst den Parameter `-t`.","question":"Welchen Namen trägt das Image danach – und warum ist das unpraktisch?","options":[{"text":"Gar keinen – es erscheint als `<none>` und ist nur per ID ansprechbar.","correct":true,"feedback":"Richtig. Nach dem dritten Build ohne `-t` hast Du drei namenlose Images („dangling“)."},{"text":"Den Namen des Verzeichnisses, in dem das Dockerfile gerade liegt.","feedback":"Docker liest aus dem Verzeichnis den Bau-Kontext, aber niemals einen Imagenamen."},{"text":"Den Namen des Basis-Images aus der `FROM`-Zeile mit dem Tag `latest`.","feedback":"Dann würdest Du das Basis-Image überschreiben. Das passiert ausdrücklich nicht."},{"text":"Einen zufällig erzeugten Namen, so wie Container ihn beim Start bekommen.","feedback":"Zufallsnamen bekommen nur Container. Images bleiben ohne `-t` schlicht namenlos."}]},{"context":"Ein vollständiger Imagename lautet `registry.example.com/team/app:1.4.2`.","question":"Was bezeichnet dabei der Teil `team/app`?","options":[{"text":"Das Repository – den benannten Platz für ein Image in vielen Ständen.","correct":true,"feedback":"Richtig. Die verschiedenen Stände darin unterscheidest Du über die Tags."},{"text":"Die Registry – den Dienst, der die Images speichert und ausliefert.","feedback":"Die Registry steht davor: `registry.example.com`. Sie ist der Server, nicht der Platz."},{"text":"Den Tag – die Kennzeichnung eines bestimmten Standes des Images.","feedback":"Der Tag steht hinter dem Doppelpunkt: `1.4.2`. Er bezeichnet einen Stand."},{"text":"Den Layer – die Schicht, aus der das Image beim Bauen entstanden ist.","feedback":"Layer haben keine Namen und tauchen im Imagenamen an keiner Stelle auf."}]},{"context":"In einem Container läuft eine Datenbank. Der Container wird gelöscht und neu angelegt.","question":"Was passiert mit den Daten – und wie verhinderst Du den Verlust?","options":[{"text":"Sie sind weg. Ein Volume an der Datenablage hätte sie überleben lassen.","correct":true,"feedback":"Richtig. Der Schreibbereich gehört dem Container und stirbt mit ihm."},{"text":"Sie bleiben im Image erhalten, sofern Du es vorher neu gebaut hast.","feedback":"Ein Image ist unveränderlich. Was ein Container schreibt, kommt dort nie an."},{"text":"Sie bleiben erhalten, weil Docker den Schreibbereich automatisch sichert.","feedback":"Es gibt keine automatische Sicherung. Ohne Volume ist mit `rm` alles weg."},{"text":"Sie sind weg. Nur ein erneutes `docker commit` hätte sie retten können.","feedback":"`commit` friert einen Stand ins Image ein – als Betriebsweg ist das nicht vorgesehen."}]},{"context":"Zwei Container stehen zusammen in einem selbst angelegten Netzwerk.","question":"Wie erreicht der eine Container den anderen?","options":[{"text":"Über seinen Container-Namen, den Docker im Netzwerk auflöst.","correct":true,"feedback":"Richtig. Genau deshalb ist `--name` keine Kosmetik, sondern die Adresse."},{"text":"Über `localhost` und den Port, den der andere Container belegt hat.","feedback":"`localhost` ist im Container er selbst. Der andere ist darüber nicht erreichbar."},{"text":"Über die IP-Adresse des Wirtsystems und den veröffentlichten Port.","feedback":"Das ginge, ist aber der Umweg nach draußen – und die Adresse ändert sich ständig."},{"text":"Über gar nichts: Container sind grundsätzlich voneinander abgeschottet.","feedback":"Im gemeinsamen Netzwerk sind sie es nicht. Genau dafür legst Du eines an."}]},{"context":"Eine Umgebung besteht aus Datenbank, Webserver und Anwendung mit Volumes und Netzwerk.","question":"Womit startest Du alle drei mit einem einzigen Befehl?","options":[{"text":"Mit Docker Compose und einer Datei, die alle Services beschreibt.","correct":true,"feedback":"Richtig. Compose legt Netzwerk und Volumes gleich mit an."},{"text":"Mit `docker run`, dem Du alle drei Images hintereinander übergibst.","feedback":"`docker run` startet genau einen Container aus genau einem Image."},{"text":"Mit einem Dockerfile, das die drei Images als Stufen zusammenfasst.","feedback":"Ein Dockerfile beschreibt, wie ein Image entsteht – nicht, was zusammen läuft."},{"text":"Mit `docker network create`, das alle Container darin gemeinsam startet.","feedback":"Der Befehl legt nur das Netzwerk an. Starten musst Du weiterhin selbst."}]},{"context":"In einer Compose-Datei steht bei der Anwendung `depends_on: [datenbank]`.","question":"Was garantiert diese Angabe – und was nicht?","options":[{"text":"Die Startreihenfolge, aber nicht, dass die Datenbank schon bereit ist.","correct":true,"feedback":"Richtig. Der Container läuft – ob der Dienst antwortet, weiß Compose nicht."},{"text":"Dass die Datenbank läuft und Verbindungen annimmt, bevor die App startet.","feedback":"Das leistet erst `condition: service_healthy` zusammen mit einem `healthcheck`."},{"text":"Dass die Anwendung neu startet, sobald die Datenbank neu gestartet wurde.","feedback":"Einen solchen Neustart löst `depends_on` nicht aus. Es wirkt nur beim Hochfahren."},{"text":"Dass beide Container im selben Netzwerk stehen und einander erreichen.","feedback":"Das tut Compose ohnehin für alle Services – dafür braucht es die Angabe nicht."}]},{"context":"Ein Prozess im Container läuft, antwortet aber auf keine Anfrage mehr.","question":"Wozu dient in dieser Lage ein `HEALTHCHECK` im Dockerfile?","options":[{"text":"Das Image sagt selbst, wie man prüft, ob es tatsächlich arbeitet.","correct":true,"feedback":"Richtig. „Läuft“ und „funktioniert“ sind zwei verschiedene Aussagen."},{"text":"Er startet den Container automatisch neu, sobald der Prozess endet.","feedback":"Das Neustarten regelt die Neustart-Richtlinie oder die Plattform, nicht der Healthcheck."},{"text":"Er prüft beim Bauen, ob alle Abhängigkeiten im Image vorhanden sind.","feedback":"Er läuft zur Laufzeit im fertigen Container, nicht während des Bauens."},{"text":"Er meldet an die Registry zurück, ob das Image fehlerfrei gezogen wurde.","feedback":"Mit der Registry hat er nichts zu tun. Sie sieht nie einen laufenden Container."}]},{"context":"Du führst `docker container stop meine-app` aus und suchst den Container anschließend.","question":"Warum erscheint er in `docker container ls` nicht mehr?","options":[{"text":"Weil der Befehl nur laufende Container zeigt – mit `-a` siehst Du ihn wieder.","correct":true,"feedback":"Richtig. Er ist angehalten, nicht gelöscht: Alle Änderungen sind noch da."},{"text":"Weil `stop` den Container samt seines Schreibbereichs endgültig entfernt.","feedback":"Entfernen tut `rm`. Nach `stop` existiert er weiter, nur eben angehalten."},{"text":"Weil angehaltene Container automatisch in die Registry zurückgeschrieben werden.","feedback":"In die Registry gelangen nur Images, und auch die nur durch einen `push`."},{"text":"Weil der Name nach dem Anhalten freigegeben und der Eintrag gelöscht wird.","feedback":"Der Name bleibt belegt – deshalb scheitert ein zweiter Container mit gleichem Namen."}]},{"context":"Ein Team überlegt, Anwendung und Datenbank gemeinsam in einem Container zu betreiben.","question":"Was spricht am deutlichsten dagegen?","options":[{"text":"Beide hätten denselben Lebenszyklus und ließen sich nicht getrennt ersetzen.","correct":true,"feedback":"Richtig. Kein getrenntes Aktualisieren, kein getrenntes Skalieren, ein Log-Strom."},{"text":"Ein Container kann technisch immer nur einen einzigen Prozess ausführen.","feedback":"Technisch geht mehr als einer. Es ist eine Entwurfsregel, keine Begrenzung."},{"text":"Datenbanken lassen sich in Containern grundsätzlich nicht sinnvoll betreiben.","feedback":"Lassen sie sich sehr wohl – mit einem Volume für die dauerhaften Daten."},{"text":"Das gemeinsame Image würde die zulässige Maximalgröße einer Registry sprengen.","feedback":"Eine solche Grenze gibt es in der Praxis nicht. Die Größe ist nicht das Argument."}]},{"context":"Auf einer Plattform werden Container laufend beendet, verschoben und neu gestartet.","question":"Welche Eigenschaft muss eine Anwendung dafür mitbringen?","options":[{"text":"Zustandslosigkeit – zwischen zwei Anfragen darf nichts im Speicher bleiben.","correct":true,"feedback":"Richtig. Nur was ersetzbar ist, kann die Plattform verschieben und vervielfachen."},{"text":"Ein möglichst kleines Image, damit das Verschieben schnell genug abläuft.","feedback":"Die Größe hilft beim Tempo, ändert aber nichts an der Ersetzbarkeit."},{"text":"Einen Healthcheck, damit die Plattform den Zustand jederzeit abfragen kann.","feedback":"Sehr nützlich – aber er meldet nur. Ersetzbar macht er die Anwendung nicht."},{"text":"Eine eigene Sitzungsverwaltung, die jeden Container gezielt wiederfindet.","feedback":"Genau das wäre der Fehler: Sie bindet Nutzer an einen bestimmten Container."}]},{"context":"In Produktion läuft `anwendung:latest`. Heute Nacht ist etwas kaputtgegangen.","question":"Welches Vorgehen hätte die Fehlersuche überhaupt erst möglich gemacht?","options":[{"text":"Feste Versions-Tags veröffentlichen und im Betrieb darauf verweisen.","correct":true,"feedback":"Richtig. Nur ein unveränderlicher Tag sagt, welcher Stand gestern lief."},{"text":"Das Tag `latest` nach jedem Push zusätzlich mit einem Datum versehen.","feedback":"Das Datum am beweglichen Tag hilft nicht: Er zeigt trotzdem immer aufs Neueste."},{"text":"Die Registry so einstellen, dass sie jeden Push automatisch aufbewahrt.","feedback":"Aufbewahrt wird der Stand ohnehin. Ohne Tag kannst Du ihn nur nicht benennen."},{"text":"Auf das Pinnen verzichten, damit immer die neuesten Korrekturen ankommen.","feedback":"Aktuelle Korrekturen holst Du durch regelmäßiges Neubauen – nicht durch Unschärfe."}]}],"verdicts":[{"min":0.85,"title":"Sitzt.","text":"Die Grundlagen tragen. Nimm Dir für den nächsten Schritt die Best Practices vor – und bau Dein erstes eigenes Projekt-Image um."},{"min":0.6,"title":"Gutes Fundament.","text":"Das Meiste sitzt. Geh die Stellen, bei denen Du geschwankt hast, noch einmal an: Der Lebenszyklus und die zwölf Faktoren klären die meisten Rückfragen."},{"min":0,"title":"Noch Luft.","text":"Fang bei zwei Seiten an: dem Lebenszyklus eines Containers und den zwölf Faktoren. Fast alles Weitere hängt an diesen beiden."}]}
+</script>
+
+  <div class="avd-academy-quiz__bar">
+    <span data-avd-academy-quiz-counter></span>
+    <span data-avd-academy-quiz-score></span>
+  </div><div class="avd-academy-quiz__progress" data-avd-academy-quiz-bar
+       role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
+       aria-label="Fortschritt">
+    <div class="avd-academy-quiz__progress-fill" data-avd-academy-quiz-progress></div>
+  </div>
+
+  <div class="avd-academy-quiz__card" data-avd-academy-quiz-card>
+    <p class="avd-academy-quiz__context" data-avd-academy-quiz-context></p>
+    <h2 class="avd-academy-quiz__question" id="avd-academy-quiz-frage" tabindex="-1"
+        data-avd-academy-quiz-question></h2>
+    <div class="avd-academy-quiz__options" role="group"
+         aria-labelledby="avd-academy-quiz-frage" data-avd-academy-quiz-options></div>
+    <div class="avd-academy-quiz__feedback" role="status" data-avd-academy-quiz-feedback hidden></div>
+    <button type="button" class="avd-academy-quiz__next" data-avd-academy-quiz-next hidden></button>
+  </div>
+
+  <div class="avd-academy-quiz__result" data-avd-academy-quiz-result hidden>
+    <h2 data-avd-academy-quiz-result-title></h2>
+    <p class="avd-academy-quiz__score" data-avd-academy-quiz-result-score></p>
+    <p class="avd-academy-quiz__verdict" data-avd-academy-quiz-result-verdict></p>
+    <button type="button" class="avd-academy-quiz__next" data-avd-academy-quiz-restart></button>
+  </div><div class="avd-academy-quiz__fallback">
+    <ol>
+      <li><em>Zwei Begriffe, die im Alltag oft durcheinandergehen.</em><br>
+        <strong>Was unterscheidet ein Docker-Image von einem Docker-Container?</strong>
+        <ul>
+          <li>Das Image ist der Bauplan, der Container eine laufende Ausprägung davon.</li>
+          <li>Das Image läuft im Vordergrund, der Container läuft im Hintergrund weiter.</li>
+          <li>Das Image liegt in der Registry, der Container liegt lokal auf der Platte.</li>
+          <li>Das Image enthält nur die Anwendung, der Container zusätzlich das Betriebssystem.</li>
+        </ul>
+      </li>
+      <li><em>Dieselbe Anwendung soll in Entwicklung, Test und Produktion unterschiedlich arbeiten.</em><br>
+        <strong>Wie sollte eine 12-Factor-App laut Faktor III („Config“) ihre Konfiguration bekommen?</strong>
+        <ul>
+          <li>Aus Umgebungsvariablen, die beim Start von außen gesetzt werden.</li>
+          <li>Aus einer Konfigurationsdatei, die beim Bauen fest ins Image kopiert wird.</li>
+          <li>Aus Kommandozeilenparametern, die beim Start des Containers übergeben werden.</li>
+          <li>Aus einer zentralen Datenbank, die jeder Dienst bei jeder Anfrage abfragt.</li>
+        </ul>
+      </li>
+      <li><em>Du willst einen Container im Hintergrund starten und ihm einen festen Namen geben.</em><br>
+        <strong>Welcher Aufruf ist dafür der richtige?</strong>
+        <ul>
+          <li>docker run -d --name meine-app nginx</li>
+          <li>docker run --name -d meine-app nginx</li>
+          <li>docker start -d --name meine-app nginx</li>
+          <li>docker create -d --name meine-app nginx</li>
+        </ul>
+      </li>
+      <li><em>Im Dockerfile stehen Anweisungen, die zu unterschiedlichen Zeitpunkten wirken.</em><br>
+        <strong>Welche Anweisung bestimmt, was beim **Starten** eines Containers ausgeführt wird?</strong>
+        <ul>
+          <li>CMD beziehungsweise ENTRYPOINT – beide wirken zur Startzeit.</li>
+          <li>RUN – die Anweisung führt den angegebenen Befehl im Container aus.</li>
+          <li>ENV – die Anweisung setzt die Umgebung, in der der Start abläuft.</li>
+          <li>EXPOSE – die Anweisung startet den Dienst auf dem genannten Port.</li>
+        </ul>
+      </li>
+      <li><em>Du baust ein Image mit `docker image build .` und vergisst den Parameter `-t`.</em><br>
+        <strong>Welchen Namen trägt das Image danach – und warum ist das unpraktisch?</strong>
+        <ul>
+          <li>Gar keinen – es erscheint als `<none>` und ist nur per ID ansprechbar.</li>
+          <li>Den Namen des Verzeichnisses, in dem das Dockerfile gerade liegt.</li>
+          <li>Den Namen des Basis-Images aus der `FROM`-Zeile mit dem Tag `latest`.</li>
+          <li>Einen zufällig erzeugten Namen, so wie Container ihn beim Start bekommen.</li>
+        </ul>
+      </li>
+      <li><em>Ein vollständiger Imagename lautet `registry.example.com/team/app:1.4.2`.</em><br>
+        <strong>Was bezeichnet dabei der Teil `team/app`?</strong>
+        <ul>
+          <li>Das Repository – den benannten Platz für ein Image in vielen Ständen.</li>
+          <li>Die Registry – den Dienst, der die Images speichert und ausliefert.</li>
+          <li>Den Tag – die Kennzeichnung eines bestimmten Standes des Images.</li>
+          <li>Den Layer – die Schicht, aus der das Image beim Bauen entstanden ist.</li>
+        </ul>
+      </li>
+      <li><em>In einem Container läuft eine Datenbank. Der Container wird gelöscht und neu angelegt.</em><br>
+        <strong>Was passiert mit den Daten – und wie verhinderst Du den Verlust?</strong>
+        <ul>
+          <li>Sie sind weg. Ein Volume an der Datenablage hätte sie überleben lassen.</li>
+          <li>Sie bleiben im Image erhalten, sofern Du es vorher neu gebaut hast.</li>
+          <li>Sie bleiben erhalten, weil Docker den Schreibbereich automatisch sichert.</li>
+          <li>Sie sind weg. Nur ein erneutes `docker commit` hätte sie retten können.</li>
+        </ul>
+      </li>
+      <li><em>Zwei Container stehen zusammen in einem selbst angelegten Netzwerk.</em><br>
+        <strong>Wie erreicht der eine Container den anderen?</strong>
+        <ul>
+          <li>Über seinen Container-Namen, den Docker im Netzwerk auflöst.</li>
+          <li>Über `localhost` und den Port, den der andere Container belegt hat.</li>
+          <li>Über die IP-Adresse des Wirtsystems und den veröffentlichten Port.</li>
+          <li>Über gar nichts: Container sind grundsätzlich voneinander abgeschottet.</li>
+        </ul>
+      </li>
+      <li><em>Eine Umgebung besteht aus Datenbank, Webserver und Anwendung mit Volumes und Netzwerk.</em><br>
+        <strong>Womit startest Du alle drei mit einem einzigen Befehl?</strong>
+        <ul>
+          <li>Mit Docker Compose und einer Datei, die alle Services beschreibt.</li>
+          <li>Mit `docker run`, dem Du alle drei Images hintereinander übergibst.</li>
+          <li>Mit einem Dockerfile, das die drei Images als Stufen zusammenfasst.</li>
+          <li>Mit `docker network create`, das alle Container darin gemeinsam startet.</li>
+        </ul>
+      </li>
+      <li><em>In einer Compose-Datei steht bei der Anwendung `depends_on: [datenbank]`.</em><br>
+        <strong>Was garantiert diese Angabe – und was nicht?</strong>
+        <ul>
+          <li>Die Startreihenfolge, aber nicht, dass die Datenbank schon bereit ist.</li>
+          <li>Dass die Datenbank läuft und Verbindungen annimmt, bevor die App startet.</li>
+          <li>Dass die Anwendung neu startet, sobald die Datenbank neu gestartet wurde.</li>
+          <li>Dass beide Container im selben Netzwerk stehen und einander erreichen.</li>
+        </ul>
+      </li>
+      <li><em>Ein Prozess im Container läuft, antwortet aber auf keine Anfrage mehr.</em><br>
+        <strong>Wozu dient in dieser Lage ein `HEALTHCHECK` im Dockerfile?</strong>
+        <ul>
+          <li>Das Image sagt selbst, wie man prüft, ob es tatsächlich arbeitet.</li>
+          <li>Er startet den Container automatisch neu, sobald der Prozess endet.</li>
+          <li>Er prüft beim Bauen, ob alle Abhängigkeiten im Image vorhanden sind.</li>
+          <li>Er meldet an die Registry zurück, ob das Image fehlerfrei gezogen wurde.</li>
+        </ul>
+      </li>
+      <li><em>Du führst `docker container stop meine-app` aus und suchst den Container anschließend.</em><br>
+        <strong>Warum erscheint er in `docker container ls` nicht mehr?</strong>
+        <ul>
+          <li>Weil der Befehl nur laufende Container zeigt – mit `-a` siehst Du ihn wieder.</li>
+          <li>Weil `stop` den Container samt seines Schreibbereichs endgültig entfernt.</li>
+          <li>Weil angehaltene Container automatisch in die Registry zurückgeschrieben werden.</li>
+          <li>Weil der Name nach dem Anhalten freigegeben und der Eintrag gelöscht wird.</li>
+        </ul>
+      </li>
+      <li><em>Ein Team überlegt, Anwendung und Datenbank gemeinsam in einem Container zu betreiben.</em><br>
+        <strong>Was spricht am deutlichsten dagegen?</strong>
+        <ul>
+          <li>Beide hätten denselben Lebenszyklus und ließen sich nicht getrennt ersetzen.</li>
+          <li>Ein Container kann technisch immer nur einen einzigen Prozess ausführen.</li>
+          <li>Datenbanken lassen sich in Containern grundsätzlich nicht sinnvoll betreiben.</li>
+          <li>Das gemeinsame Image würde die zulässige Maximalgröße einer Registry sprengen.</li>
+        </ul>
+      </li>
+      <li><em>Auf einer Plattform werden Container laufend beendet, verschoben und neu gestartet.</em><br>
+        <strong>Welche Eigenschaft muss eine Anwendung dafür mitbringen?</strong>
+        <ul>
+          <li>Zustandslosigkeit – zwischen zwei Anfragen darf nichts im Speicher bleiben.</li>
+          <li>Ein möglichst kleines Image, damit das Verschieben schnell genug abläuft.</li>
+          <li>Einen Healthcheck, damit die Plattform den Zustand jederzeit abfragen kann.</li>
+          <li>Eine eigene Sitzungsverwaltung, die jeden Container gezielt wiederfindet.</li>
+        </ul>
+      </li>
+      <li><em>In Produktion läuft `anwendung:latest`. Heute Nacht ist etwas kaputtgegangen.</em><br>
+        <strong>Welches Vorgehen hätte die Fehlersuche überhaupt erst möglich gemacht?</strong>
+        <ul>
+          <li>Feste Versions-Tags veröffentlichen und im Betrieb darauf verweisen.</li>
+          <li>Das Tag `latest` nach jedem Push zusätzlich mit einem Datum versehen.</li>
+          <li>Die Registry so einstellen, dass sie jeden Push automatisch aufbewahrt.</li>
+          <li>Auf das Pinnen verzichten, damit immer die neuesten Korrekturen ankommen.</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+
+</div>
+
+    </main>
+  </div><div class="avd-academy-print-contact" aria-hidden="true">
+    <span>Kontakt: https://www.atvantage.com</span>
+    <span>academy@atvantage.com</span>
+  </div>
+
+  <footer class="avd-academy-footer">
+  <div class="avd-academy-footer__grid">
+    <div><strong>Containertechnologien (Academy)</strong>
+      <p>Schulungsunterlagen der ATVANTAGE Academy.</p>
+    </div><div>
+      <strong>Kontakt</strong>
+      <p><a href="https://www.atvantage.com" target="_blank" rel="noopener">Website</a><br><a href="mailto:academy@atvantage.com">academy@atvantage.com</a><br>
+      </p>
+    </div></div>
+  <div class="avd-academy-footer__legal">
+    © <span data-avd-academy-year>2026</span> ATVANTAGE
+  </div>
+</footer>
+
+</body>
+</html>

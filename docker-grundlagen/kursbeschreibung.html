@@ -59,9 +59,9 @@
 --><html lang="de">
 <head>
   <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"><title>Containertechnologien · Containertechnologien (Academy)</title><meta name="description" content="Schulungskonzepte der ATVANTAGE Academy rund um Containertechnologien."><meta property="og:site_name" content="Containertechnologien (Academy)">
-<meta property="og:title" content="Containertechnologien">
-<meta property="og:description" content="Schulungskonzepte der ATVANTAGE Academy rund um Containertechnologien.">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Kursbeschreibung · Containertechnologien (Academy)</title><meta name="description" content="Docker-Grundlagen für Entwickler – zwei Tage vom ersten Container bis zum eigenen, veröffentlichten Image."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta property="og:title" content="Kursbeschreibung">
+<meta property="og:description" content="Docker-Grundlagen für Entwickler – zwei Tage vom ersten Container bis zum eigenen, veröffentlichten Image.">
 <meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790157026"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790157026">
@@ -120,7 +120,7 @@
 
   <header class="avd-academy-header" data-avd-academy-header><a class="avd-academy-header__brand" href="/training-material-container-technologies/" aria-label="Startseite"><img class="avd-academy-header__logo" src="/training-material-container-technologies/assets/logo-schulung.svg" alt="ATVANTAGE Academy"></a><button class="avd-academy-tool avd-academy-header__burger" data-avd-academy-nav-toggle="#avd-academy-main-nav"
           aria-label="Navigation umschalten" aria-expanded="false">☰</button><nav class="avd-academy-header__nav" id="avd-academy-main-nav">
-      <a href="/training-material-container-technologies/" aria-current="page">Start</a><div class="avd-academy-header__group" data-avd-academy-menu>
+      <a href="/training-material-container-technologies/">Start</a><div class="avd-academy-header__group" data-avd-academy-menu>
         <button type="button" class="avd-academy-header__grouptoggle"
                 aria-expanded="false" aria-haspopup="true">Allgemeines<span class="avd-academy-header__caret" aria-hidden="true">▾</span></button>
         <div class="avd-academy-header__submenu" role="menu">
@@ -135,40 +135,183 @@
               aria-label="Farbschema umschalten">◐</button></div>
 </header>
 <section class="avd-academy-guide-hero"
-           aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/">Home</a></nav><div class="avd-academy-guide-hero__meta">
+           aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/">Home</a><span>/</span><a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a><span>/</span><span aria-current="page">Kursbeschreibung</span></nav><div class="avd-academy-guide-hero__meta">
       <div class="avd-academy-guide-hero__tags">
       </div>
       <div class="avd-academy-guide-hero__actions">
       </div>
-    </div><h1 id="avd-academy-page-title">Containertechnologien</h1>
+    </div><h1 id="avd-academy-page-title">Kursbeschreibung</h1>
   </section><div class="avd-academy-guide-layout">
     <main class="avd-academy-guide-main" id="avd-academy-content">
 
-<p>Hier findest Du die Unterlagen zu Deinem Kurs. Wähle Dein Training aus – die
-Übungen und das Material zum Nachschlagen stehen dort in der Reihenfolge, in der
-wir sie gemeinsam durchgehen.</p>
+<h2 id="zielgruppe">Zielgruppe</h2>
 
-<div class="avd-academy-grid">
+<p><strong>Softwareentwickler:innen</strong>, die ihre Anwendungen künftig in Containern bauen und
+betreiben – unabhängig von Sprache und Framework. Ebenso geeignet für
+<strong>Entwickler:innen in DevOps-Teams</strong>, die verstehen wollen, was die Plattform von
+einem Image erwartet.</p>
 
-  <div class="avd-academy-card">
-
-    <h3 id="docker-grundlagen-fr-entwickler"><a href="docker-grundlagen/">Docker-Grundlagen (für Entwickler)</a></h3>
-
-    <p>Zwei Tage vom ersten <code>docker run</code> bis zum eigenen, veröffentlichten Image – mit
-dem Schwerpunkt auf den Konzepten dahinter: Image und Container, Lebenszyklus,
-Zustandslosigkeit und Konfiguration über Umgebungsvariablen.</p>
-
-  </div>
-
-</div>
-
-<p>Bevor es losgeht, brauchst Du eine Container-Laufzeitumgebung:</p>
+<p>Mitzubringen sind:</p>
 
 <ul>
-  <li><a href="shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a> – die beiden Wege
-dorthin und die Befehle, mit denen Du auskommst.</li>
+  <li><strong>Erfahrung in der Softwareentwicklung</strong> – eine eigene Anwendung, die irgendwo
+laufen muss, und ein Gefühl dafür, was Konfiguration von Code unterscheidet.</li>
+  <li><strong>Grundkenntnisse in Git</strong> – ein Repository klonen, Änderungen committen und
+pushen.</li>
 </ul>
 
+<p><strong>Kommandozeilenerfahrung wird ausdrücklich nicht vorausgesetzt.</strong> Alle Übungen
+laufen zwar auf der Kommandozeile – das ist bei Containern die einzige Umgebung,
+die überall gleich funktioniert –, aber sie kommen mit einer Handvoll Befehle aus,
+die zu Kursbeginn gemeinsam durchgegangen werden. Wer <code>cd</code> und <code>ls</code> kennt, ist
+bereit.</p>
+
+<p>Der Kurs ist <strong>kein Administrationskurs</strong>: Es geht nicht darum, eine
+Container-Plattform zu betreiben, sondern darum, Anwendungen so zu bauen, dass eine
+Plattform sie betreiben kann.</p>
+
+<h2 id="überblick">Überblick</h2>
+
+<p>„Bei mir läuft es“ ist der teuerste Satz in der Softwareentwicklung. Zwischen dem
+Rechner, auf dem eine Anwendung entstanden ist, und dem Server, auf dem sie laufen
+soll, liegen Bibliotheksversionen, Umgebungsvariablen, Pfade und Annahmen, die
+niemand aufgeschrieben hat – und die erst auffallen, wenn es zu spät ist.</p>
+
+<p>Ein Container beendet dieses Rätselraten, indem er die Frage umdreht: Statt eine
+Umgebung zu beschreiben, in der die Anwendung laufen soll, wird die Umgebung
+mitgeliefert. Was dabei entsteht, ist kein Installationspaket, sondern ein
+<strong>Bauplan, aus dem sich jederzeit dasselbe Ergebnis herstellen lässt</strong>.</p>
+
+<p>Dieser Kurs führt in zwei Tagen durch diesen Wechsel – nicht als Befehlssammlung,
+sondern entlang der Konzepte, an denen sich in der Praxis entscheidet, ob ein Image
+trägt: Was gehört ins Image und was gehört an den Start? Wo bleiben die Daten, wenn
+der Container verschwindet? Und warum ist ein Container, der seinen Zustand
+vergisst, ein Gewinn und kein Mangel?</p>
+
+<h2 id="lernziele">Lernziele</h2>
+
+<p>Die Lernenden…</p>
+
+<ul>
+  <li>erklären, welches Problem Container lösen, und grenzen sie gegen virtuelle
+Maschinen ab.</li>
+  <li>unterscheiden Image, Container, Registry, Repository und Tag und beschreiben den
+Lebenszyklus eines Containers.</li>
+  <li>konfigurieren Anwendungen im Container über Umgebungsvariablen und begründen
+diese Trennung mit den Prinzipien der 12-Factor-App.</li>
+  <li>erstellen eigene Container Images mit einem Dockerfile und veröffentlichen sie
+versioniert in einer Registry.</li>
+  <li>betreiben mehrere Container gemeinsam, indem sie Daten über Volumes auslagern
+und Verbindungen über Netzwerke herstellen.</li>
+</ul>
+
+<h2 id="agenda-2-tage">Agenda (2 Tage)</h2>
+
+<h3 id="warum-überhaupt-container">Warum überhaupt Container?</h3>
+
+<ul>
+  <li>Woran es scheitert, wenn eine Anwendung den Rechner wechseln soll – und welcher
+Teil davon Technik ist und welcher Absprache</li>
+  <li>Warum eine mitgelieferte Umgebung leichter ist als eine mitgelieferte Maschine
+(<em>Container vs. virtuelle Maschine</em>)</li>
+  <li>Was eine Plattform von einer Anwendung erwartet, damit sie sie betreiben kann</li>
+</ul>
+
+<h3 id="container-und-images-verstehen">Container und Images verstehen</h3>
+
+<ul>
+  <li>Warum dasselbe Image auf zehn Rechnern zehn verschiedene Container ergibt – und
+was davon wiederverwendbar ist</li>
+  <li>Wie ein Container entsteht, lebt, aufhört und verschwindet – und an welcher
+Stelle dabei Daten verloren gehen (<em>Lebenszyklus</em>)</li>
+  <li>Woher ein Image kommt und wie man dasselbe zweimal bekommt (<em>Registry,
+Repository, Tag</em>)</li>
+</ul>
+
+<h3 id="konfiguration-statt-neubau">Konfiguration statt Neubau</h3>
+
+<ul>
+  <li>Wie dieselbe Anwendung in Entwicklung, Test und Produktion unterschiedlich
+arbeitet, ohne dass jemand sie neu baut (<em>Umgebungsvariablen</em>)</li>
+  <li>Woran man erkennt, dass eine Anwendung ihre Umgebung zu gut kennt
+(<em>12-Factor-App</em>)</li>
+  <li>Warum ein Container, der sich nichts merkt, leichter zu betreiben ist als einer,
+der es tut (<em>Zustandslosigkeit</em>)</li>
+  <li>Wohin eine Anwendung protokollieren sollte, wenn niemand mehr in die Logdatei
+sieht</li>
+</ul>
+
+<h3 id="eigene-images-bauen">Eigene Images bauen</h3>
+
+<ul>
+  <li>Wie aus einer Anwendung ein Bauplan wird, den auch ein anderer ausführen kann
+(<em>Dockerfile</em>)</li>
+  <li>Warum die Reihenfolge der Zeilen über die Bauzeit entscheidet (<em>Layer,
+Build-Cache</em>)</li>
+  <li>Was beim Start eines Containers passieren soll – und was schon beim Bauen
+passiert sein muss (<code>ENTRYPOINT</code>, <code>CMD</code>, <code>RUN</code>)</li>
+  <li>Wie ein Image sagt, dass es gesund ist (<em>Healthcheck</em>)</li>
+</ul>
+
+<h3 id="images-veröffentlichen">Images veröffentlichen</h3>
+
+<ul>
+  <li>Wie ein Image den Rechner verlässt und woanders wieder auftaucht</li>
+  <li>Warum „die neueste Version“ keine Version ist – und was stattdessen an ein Image
+gehört (<em>Tagging, <code>latest</code></em>)</li>
+  <li>Was passiert, wenn zwei Menschen dasselbe Etikett auf verschiedene Stände kleben</li>
+</ul>
+
+<h3 id="daten-und-verbindungen">Daten und Verbindungen</h3>
+
+<ul>
+  <li>Wo Daten liegen, die einen Container überleben sollen (<em>Volume, Bind Mount</em>)</li>
+  <li>Wie zwei Container voneinander erfahren, ohne dass jemand IP-Adressen verteilt
+(<em>Netzwerk, DNS</em>)</li>
+  <li>Warum Anwendung und Datenbank nicht in denselben Container gehören</li>
+</ul>
+
+<h3 id="mehrere-container-gemeinsam-betreiben">Mehrere Container gemeinsam betreiben</h3>
+
+<ul>
+  <li>Wie aus einer Reihe einzelner Startbefehle eine beschriebene Umgebung wird
+(<em>Compose</em>)</li>
+  <li>Was „hängt ab von“ garantiert – und was nicht</li>
+  <li>Wie man dieselbe Umgebung morgen wieder herstellt, ohne sich an gestern zu
+erinnern</li>
+</ul>
+
+<h3 id="images-die-im-betrieb-tragen">Images, die im Betrieb tragen</h3>
+
+<ul>
+  <li>Woran man einem Image ansieht, dass es Ärger machen wird – Größe, Rechte,
+unscharfe Versionsangaben</li>
+  <li>Warum ein Image, an dem sich nichts geändert hat, trotzdem regelmäßig neu gebaut
+werden sollte</li>
+  <li>Was ein Sicherheits-Scan findet, was er nicht findet, und was man mit dem Befund
+anfängt</li>
+</ul>
+
+<h2 id="technische-voraussetzungen">Technische Voraussetzungen</h2>
+
+<ul>
+  <li><strong>Eine Container-Laufzeitumgebung</strong> – entweder lokal installiert (unter Windows
+Docker Desktop, bedient aus der Git Bash) oder als bereitgestellte Umgebung, in
+der über eine Shell im Browser gearbeitet wird. Welcher Weg gilt, wird vor dem
+Kurs abgestimmt; die Übungen sind in beiden Fällen identisch. Einzelheiten:
+<a href="../shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a>.</li>
+  <li><strong>Ein Git-Client</strong> und ein Repository, in das eigene Ergebnisse gepusht werden
+können.</li>
+  <li><strong>Ein Konto bei einer Container-Registry</strong> mit Schreibrecht auf ein eigenes
+Repository – wird für das Veröffentlichen eigener Images gebraucht.</li>
+  <li><strong>Internetzugang im Browser</strong> für Dokumentation und Registry.</li>
+</ul>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Eine grafische Oberfläche ist nicht erforderlich. Alle Anleitungen
+bleiben auf der Kommandozeile, damit sie lokal und in der bereitgestellten
+Umgebung gleichermaßen funktionieren.</p>
+</blockquote>
 
 
     </main><aside class="avd-academy-guide-sidebar"><details class="avd-academy-guide-side avd-academy-guide-side--toc avd-academy-fold" data-avd-academy-toc-box

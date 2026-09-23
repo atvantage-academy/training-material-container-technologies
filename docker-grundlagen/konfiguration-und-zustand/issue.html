@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<!--
+  ATVANTAGE-Academy – EINZIGES Seitenlayout (Jekyll)
+  --------------------------------------------------
+  Ein Layout für alles: allgemeine Doku-Seiten UND Guides (Übungen/Anleitungen).
+  Optik nach der ATVANTAGE-Website: Meta-Nav, weiße sticky Kopfzeile, Hero-Band,
+  zweispaltig mit rechter Sidebar (automatisches Inhaltsverzeichnis, Fortschritt
+  aus Task-Listen, weiterführende Ressourcen). Überschriften ohne Emoji-Icons.
+
+  Verwendung im Front Matter:  layout: default   (oder `layout: guide` – Alias,
+  siehe guide.html; beides rendert dieselbe Guide-Ansicht)
+
+  `layout: visualization` (siehe visualization.html) rendert dieselbe Seite OHNE
+  obere Navigation (Meta-Leiste + Kopfzeile/TopNav), OHNE Brotkrumen und OHNE den
+  rechten Bereich (Inhaltsverzeichnis, Fortschritt, Ressourcen – auch bei gesetztem
+  `resources`), mit schmalerem Hero-Balken und breiterem, zentriertem Inhalt – für
+  eigenständige Visualisierungen/Simulationen.
+
+  Alle Front-Matter-Felder sind OPTIONAL (Convention over Configuration). Nur der
+  Titel ist faktisch erforderlich – als `title:` ODER als erste `#`-Überschrift:
+
+    title:       "…"                → sonst erste #-Überschrift (eins von beiden nötig)
+    description: "…"                → Meta-Description
+    duration:    8                  → Zahl in Minuten → Hero-Tag „ca. 8 Minuten“
+                                       (ungefähre LESEDAUER; bei Guides/Übungen die
+                                       Dauer der Übung, bei Visualisierungen die
+                                       Bearbeitungszeit – dort unüblich, aber erlaubt).
+    topics:      ["Cloud & DevOps"] → weitere Hero-Tags
+    resources:   [{title, url, icon}, …] → Sidebar-Karte „Weiterführende Informationen“.
+                                       title und/oder icon (Bildpfad); icon erscheint
+                                       rechts und wird kreisrund dargestellt.
+    breadcrumb:                     → Brotkrumen anpassen (beides optional):
+      label: "…"                    → überschreibt den Ordnernamen dieser Ebene;
+                                       in der Ordner-`index.md` gesetzt gilt es für
+                                       ALLE Seiten im Ordner und in Unterordnern.
+      ancestors: [{title, url}, …]  → explizite Vorfahren-Kette OHNE die aktuelle
+                                       Seite (diese wird automatisch angehängt); in
+                                       der `index.md` gesetzt wird sie vererbt.
+
+  „Markdown kopieren“ (Button im Hero) erscheint NUR auf Guides – dort ist das
+  Übernehmen des Quelltexts der Zweck. Bedingungen: Markdown-Seite (`.md`, nicht
+  reines HTML) UND der Schalter `toolbar.copy` (Vorgabe: nur `layout: guide`, siehe
+  `_includes/avd-switch.html`). Doku-Seiten und Visualisierungen haben ihn nicht –
+  bei letzteren, weil ihr Inhalt nicht sinnvoll als Markdown kopierbar ist.
+
+  DIE SEITENWERKZEUGE – QR-Code, Farbschema-Umschalter, Drucken – sind EINE
+  Komponente (`_includes/tools.html`) an zwei Standorten in diesem Rahmen:
+
+    Kopfzeile   `chrome: true`  (page, guide)      QR + Farbschema
+    Hero rechts `hero_tools`    (visualization)    QR + Farbschema + Drucken
+
+  Die Regel dahinter ist die Kopfzeile: Wo es sie gibt, tragen die Werkzeuge sie;
+  wo nicht, tritt der Hero an ihre Stelle. Drucken gibt es nur dort, weil auf einer
+  gewöhnlichen Seite der Browser-Befehl (Strg/Cmd+P) genügt, die rahmenlose
+  Ansicht aber keinen anderen Weg aufs Papier hat.
+
+  Der QR-Code wird erst im Browser erzeugt (theme/academy/atvantage.js), weil die
+  Adresse zur Build-Zeit nicht feststeht; ohne JavaScript erscheint er nicht.
+--><html lang="de">
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Eine Datenbank über Umgebungsvariablen konfigurieren · Containertechnologien (Academy)</title><meta name="description" content="Eine PostgreSQL-Datenbank allein über Umgebungsvariablen einrichten – und am Ende zwei Container aus demselben Image mit verschiedenen Datenbanken betreiben."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta property="og:title" content="Eine Datenbank über Umgebungsvariablen konfigurieren">
+<meta property="og:description" content="Eine PostgreSQL-Datenbank allein über Umgebungsvariablen einrichten – und am Ende zwei Container aus demselben Image mit verschiedenen Datenbanken betreiben.">
+<meta property="og:type" content="article"><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790157026"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790157026">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790157026">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790157026">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790157026"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790157026">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790157026" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790157026" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790157026">
+<script type="module">
+  const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
+  const _hlsprachen = ["java", "http", "json", "xml"];
+  Promise.all([import(_hlbase + "core.min.js"), ..._hlsprachen.map((s) => import(_hlbase + s + ".min.js"))])
+    .then(([core, ...grammatiken]) => {
+      const hljs = core.default;
+      _hlsprachen.forEach((s, i) => hljs.registerLanguage(s, grammatiken[i].default));
+      const _auswahl = _hlsprachen.map((s) => "pre code.language-" + s).join(",");
+      const _faerben = (wurzel) => (wurzel || document)
+        .querySelectorAll(_auswahl)
+        .forEach((el) => { if (!el.dataset.highlighted) { hljs.highlightElement(el); } });
+      _faerben(document);
+
+      /* NACHTRAEGLICH EINGEFUEGTER CODE. Die Hervorhebung laeuft einmal beim Laden.
+         Eine Seite, die ihre Codebloecke per Skript einsetzt - eine Visualisierung,
+         die rohe Nachrichten durchschaltet -, bekam deshalb gar keine Farben und
+         baute sich einen eigenen Hervorheber. Genau die Kopie, die das Theme
+         verhindern soll.
+
+         `AvdHighlight.apply(knoten)` faerbt, was seither dazugekommen ist; `hljs`
+         liegt daneben fuer Faelle, die mehr brauchen. Das Ereignis sagt Seiten, die
+         frueh zeichnen, wann der Haken da ist - die Module laden asynchron. */
+      window.AvdHighlight = { hljs, apply: _faerben, languages: _hlsprachen.slice() };
+      document.dispatchEvent(new CustomEvent("avd-academy-highlight-ready"));
+
+      /* Statuszeile nach Klasse einfaerben. highlight.js gibt jedem dreistelligen
+         Code dieselbe Klasse `hljs-number` - in einem Mitschnitt ist aber genau das
+         die Stelle, auf die man zuerst sieht: 2xx ist etwas anderes als 4xx.
+         Deshalb hier die einzige eigene Zutat, und bewusst nur diese: Die
+         Statusklassen von HTTP aendern sich nicht, das bleibt stabil. */
+      document.querySelectorAll("pre code.language-http .hljs-number").forEach((el) => {
+        const code = parseInt(el.textContent, 10);
+        if (code >= 100 && code <= 599) {
+          el.classList.add("avd-academy-http-status--" + Math.floor(code / 100) + "xx");
+        }
+      });
+    });
+</script>
+<link rel="apple-touch-icon" sizes="180x180" href="/training-material-container-technologies/theme/atvantage/assets/icon-180.png">
+<link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
+<link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
+
+  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790157026">
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790157026"></head><body class="avd-academy-guide">
+  <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><div class="avd-academy-metanav"><span>ATVANTAGE Academy</span>
+  </div>
+
+  <header class="avd-academy-header" data-avd-academy-header><a class="avd-academy-header__brand" href="/training-material-container-technologies/" aria-label="Startseite"><img class="avd-academy-header__logo" src="/training-material-container-technologies/assets/logo-schulung.svg" alt="ATVANTAGE Academy"></a><button class="avd-academy-tool avd-academy-header__burger" data-avd-academy-nav-toggle="#avd-academy-main-nav"
+          aria-label="Navigation umschalten" aria-expanded="false">☰</button><nav class="avd-academy-header__nav" id="avd-academy-main-nav">
+      <a href="/training-material-container-technologies/">Start</a><div class="avd-academy-header__group" data-avd-academy-menu>
+        <button type="button" class="avd-academy-header__grouptoggle"
+                aria-expanded="false" aria-haspopup="true">Allgemeines<span class="avd-academy-header__caret" aria-hidden="true">▾</span></button>
+        <div class="avd-academy-header__submenu" role="menu">
+          <a role="menuitem" href="/training-material-container-technologies/shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a>
+        </div>
+      </div>
+      <a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a>
+  </nav><div class="avd-academy-header__tools"><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
+                title="Diese Seite auf Deinem Smartphone öffnen"
+                aria-label="Diese Seite auf Deinem Smartphone öffnen"></button><button type="button" class="avd-academy-tool avd-academy-tool--theme avd-academy-theme-toggle" data-avd-academy-theme-toggle
+              title="Farbschema umschalten (hell/dunkel)"
+              aria-label="Farbschema umschalten">◐</button></div>
+</header>
+<section class="avd-academy-guide-hero"
+           aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a><span>/</span><span aria-current="page">Eine Datenbank über Umgebungsvariablen konfigurieren</span></nav><div class="avd-academy-guide-hero__meta">
+      <div class="avd-academy-guide-hero__tags"><span class="avd-academy-tag avd-academy-tag--time">ca. 35 Minuten</span><span class="avd-academy-tag">Umgebungsvariablen</span><span class="avd-academy-tag">12-Factor-App</span><span class="avd-academy-tag">Zustandslosigkeit</span>
+      </div>
+      <div class="avd-academy-guide-hero__actions">
+        <button type="button" class="avd-academy-btn avd-academy-btn--ghost avd-academy-copy-md"
+                data-avd-academy-copy-md="#avd-academy-md-source"
+                title="Markdown kopieren" aria-label="Markdown kopieren"></button>
+      </div>
+    </div><h1 id="avd-academy-page-title">Eine Datenbank über Umgebungsvariablen konfigurieren</h1>
+  </section><div class="avd-academy-guide-layout">
+    <main class="avd-academy-guide-main avd-academy-guide-main--numbered" id="avd-academy-content">
+
+<p><strong>Als</strong> Entwickler <strong>möchte ich</strong> eine Datenbank einrichten, ohne ihr Image
+anzufassen, <strong>damit</strong> dasselbe Artefakt in Entwicklung, Test und Produktion
+unterschiedlich arbeiten kann.</p>
+
+<h2 id="lernziele">Lernziele</h2>
+
+<p>Du…</p>
+
+<ul>
+  <li>setzt beim Erzeugen eines Containers Umgebungsvariablen und benennst, woher Du
+weißt, welche ein Image auswertet.</li>
+  <li>richtest eine PostgreSQL-Datenbank vollständig von außen ein – ohne Dockerfile,
+ohne Konfigurationsdatei.</li>
+  <li>rufst die Log-Ausgabe eines Containers ab und liest daraus, warum ein Start
+fehlgeschlagen ist.</li>
+  <li>betreibst zwei Container aus <strong>demselben</strong> Image mit verschiedenen Datenbanken
+und begründest, warum das ohne Neubau möglich ist.</li>
+</ul>
+
+<h2 id="definition-of-done">Definition of Done</h2>
+
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Ein Container <code>meine-db</code> läuft mit einer Datenbank namens <code>helloworld</code>.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast per <code>psql</code> aus dem Container heraus geprüft, dass die Datenbank
+existiert und Deine Tabelle Daten enthält.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast einen Startfehler absichtlich erzeugt und in der Log-Ausgabe
+gefunden, woran er lag.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Ein zweiter Container <code>meine-db-test</code> läuft aus <strong>demselben</strong> Image mit einer
+<strong>anderen</strong> Datenbank und einem anderen Port.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast den ersten Container gestoppt, neu gestartet und geprüft, ob Deine
+Daten noch da sind.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast die Reflexionsfragen schriftlich beantwortet.</li>
+</ul>
+
+<h2 id="arbeitsschritte">Arbeitsschritte</h2>
+
+<h3 id="einen-start-absichtlich-scheitern-lassen">Einen Start absichtlich scheitern lassen</h3>
+
+<p>Fang mit dem Fehler an – er erklärt Dir gleich, wie Du künftig Fehler findest.</p>
+
+<pre><code class="language-bash">docker container create --name db-versuch postgres:18
+</code></pre>
+
+<pre><code class="language-bash">docker container start db-versuch
+</code></pre>
+
+<p>Der Container läuft nicht. Sieh nach, warum:</p>
+
+<pre><code class="language-bash">docker container logs db-versuch
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Die Meldung sagt Dir genau, welche Angabe fehlt. <code>docker logs</code> ist
+ab jetzt Dein erster Griff, wenn etwas nicht tut.</p>
+</blockquote>
+
+<p>Räum den gescheiterten Versuch weg:</p>
+
+<pre><code class="language-bash">docker container rm db-versuch
+</code></pre>
+
+<h3 id="die-datenbank-über-umgebungsvariablen-einrichten">Die Datenbank über Umgebungsvariablen einrichten</h3>
+
+<p>Jede Angabe kommt mit einem eigenen <code>-e</code> von außen dazu.</p>
+
+<pre><code class="language-bash">docker container create --name meine-db -p 5432:5432 -e POSTGRES_DB=helloworld -e POSTGRES_USER=kurs -e POSTGRES_PASSWORD=geheim postgres:18
+</code></pre>
+
+<pre><code class="language-bash">docker container start meine-db
+</code></pre>
+
+<p>Prüfe in der Log-Ausgabe, dass die Datenbank bereit ist:</p>
+
+<pre><code class="language-bash">docker container logs meine-db
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Woher kommen die Namen <code>POSTGRES_DB</code>, <code>POSTGRES_USER</code> und
+<code>POSTGRES_PASSWORD</code>? Sieh im Datenblatt des Images auf Docker Hub nach. Merk
+Dir, wo diese Information steht – bei jedem anderen Image wirst Du sie dort
+wieder suchen.</p>
+</blockquote>
+
+<h3 id="eine-tabelle-anlegen-und-füllen">Eine Tabelle anlegen und füllen</h3>
+
+<p>Du führst <code>psql</code> <strong>im</strong> Container aus – genau wie den <code>echo</code>-Befehl in der
+vorigen Übung.</p>
+
+<pre><code class="language-bash">docker container exec meine-db psql -U kurs -d helloworld -c "CREATE TABLE gruss (id SERIAL PRIMARY KEY, text TEXT NOT NULL)"
+</code></pre>
+
+<pre><code class="language-bash">docker container exec meine-db psql -U kurs -d helloworld -c "INSERT INTO gruss (text) VALUES ('Hallo Welt'), ('Hello World'), ('Bonjour le monde')"
+</code></pre>
+
+<p>Sieh nach, ob die Daten da sind:</p>
+
+<pre><code class="language-bash">docker container exec meine-db psql -U kurs -d helloworld -c "SELECT * FROM gruss"
+</code></pre>
+
+<h3 id="einen-tippfehler-bauen-und-beobachten">Einen Tippfehler bauen und beobachten</h3>
+
+<p>Lege einen weiteren Container an – diesmal mit einem falsch geschriebenen
+Variablennamen.</p>
+
+<pre><code class="language-bash">docker container create --name db-tippfehler -p 5433:5432 -e POSTGRES_DATABASE=helloworld -e POSTGRES_USER=kurs -e POSTGRES_PASSWORD=geheim postgres:18
+</code></pre>
+
+<pre><code class="language-bash">docker container start db-tippfehler
+</code></pre>
+
+<pre><code class="language-bash">docker container exec db-tippfehler psql -U kurs -d helloworld -c "SELECT 1"
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Der Container startet – aber Dein Befehl scheitert. Überleg Dir,
+welche Datenbank stattdessen entstanden ist und warum niemand Dich gewarnt hat.</p>
+</blockquote>
+
+<pre><code class="language-bash">docker container stop db-tippfehler
+</code></pre>
+
+<pre><code class="language-bash">docker container rm db-tippfehler
+</code></pre>
+
+<h3 id="dasselbe-image-eine-andere-datenbank">Dasselbe Image, eine andere Datenbank</h3>
+
+<p>Das ist der Kern der Übung. Kein Neubau, kein zweites Image – nur andere Werte.</p>
+
+<pre><code class="language-bash">docker container create --name meine-db-test -p 5433:5432 -e POSTGRES_DB=testdaten -e POSTGRES_USER=tester -e POSTGRES_PASSWORD=auchgeheim postgres:18
+</code></pre>
+
+<pre><code class="language-bash">docker container start meine-db-test
+</code></pre>
+
+<pre><code class="language-bash">docker container exec meine-db-test psql -U tester -d testdaten -c "\l"
+</code></pre>
+
+<pre><code class="language-bash">docker images
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Sieh Dir die Image-Liste an. Wie viele PostgreSQL-Images liegen bei
+Dir? Und wie viele verschieden konfigurierte Datenbanken betreibst Du gerade?</p>
+</blockquote>
+
+<h3 id="stoppen-neu-starten-und-nachsehen">Stoppen, neu starten und nachsehen</h3>
+
+<pre><code class="language-bash">docker container stop meine-db
+</code></pre>
+
+<pre><code class="language-bash">docker container start meine-db
+</code></pre>
+
+<pre><code class="language-bash">docker container exec meine-db psql -U kurs -d helloworld -c "SELECT * FROM gruss"
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Notiere das Ergebnis. Was wäre nach einem <code>docker container rm</code>
+passiert? Probier es <strong>nicht</strong> aus – wir brauchen die Datenbank morgen noch.</p>
+</blockquote>
+
+<h2 id="reflexionsfragen">Reflexionsfragen</h2>
+
+<ul>
+  <li>Woher weißt Du, welche Umgebungsvariablen ein fremdes Image auswertet? Was
+passiert, wenn Du einen Namen falsch schreibst?</li>
+  <li>Was wäre nötig gewesen, um die Datenbank stattdessen über eine
+Konfigurationsdatei <strong>im Image</strong> einzurichten? Wie viele Images hättest Du für
+Entwicklung, Test und Produktion?</li>
+  <li>Deine Daten haben <code>stop</code> und <code>start</code> überlebt. Was erwartest Du nach einem
+<code>docker container rm</code>, und woran liegt das?</li>
+  <li>Wo landen die Log-Ausgaben der Datenbank, und warum ist das für eine
+Betriebsplattform praktischer als eine Logdatei im Container?</li>
+  <li>Was spricht dagegen, ein echtes Datenbank-Passwort so zu setzen, wie Du es hier
+getan hast?</li>
+</ul>
+
+
+<textarea id="avd-academy-md-source" hidden aria-hidden="true"># Eine Datenbank über Umgebungsvariablen konfigurieren
+
+**Als** Entwickler **möchte ich** eine Datenbank einrichten, ohne ihr Image
+anzufassen, **damit** dasselbe Artefakt in Entwicklung, Test und Produktion
+unterschiedlich arbeiten kann.
+
+## Lernziele
+
+Du…
+
+- setzt beim Erzeugen eines Containers Umgebungsvariablen und benennst, woher Du
+  weißt, welche ein Image auswertet.
+- richtest eine PostgreSQL-Datenbank vollständig von außen ein – ohne Dockerfile,
+  ohne Konfigurationsdatei.
+- rufst die Log-Ausgabe eines Containers ab und liest daraus, warum ein Start
+  fehlgeschlagen ist.
+- betreibst zwei Container aus **demselben** Image mit verschiedenen Datenbanken
+  und begründest, warum das ohne Neubau möglich ist.
+
+## Definition of Done
+
+* [ ] Ein Container `meine-db` läuft mit einer Datenbank namens `helloworld`.
+* [ ] Du hast per `psql` aus dem Container heraus geprüft, dass die Datenbank
+  existiert und Deine Tabelle Daten enthält.
+* [ ] Du hast einen Startfehler absichtlich erzeugt und in der Log-Ausgabe
+  gefunden, woran er lag.
+* [ ] Ein zweiter Container `meine-db-test` läuft aus **demselben** Image mit einer
+  **anderen** Datenbank und einem anderen Port.
+* [ ] Du hast den ersten Container gestoppt, neu gestartet und geprüft, ob Deine
+  Daten noch da sind.
+* [ ] Du hast die Reflexionsfragen schriftlich beantwortet.
+
+## Arbeitsschritte
+
+### Einen Start absichtlich scheitern lassen
+
+Fang mit dem Fehler an – er erklärt Dir gleich, wie Du künftig Fehler findest.
+
+```bash
+docker container create --name db-versuch postgres:18
+```
+
+```bash
+docker container start db-versuch
+```
+
+Der Container läuft nicht. Sieh nach, warum:
+
+```bash
+docker container logs db-versuch
+```
+
+&gt; **Hinweis:** Die Meldung sagt Dir genau, welche Angabe fehlt. `docker logs` ist
+&gt; ab jetzt Dein erster Griff, wenn etwas nicht tut.
+
+Räum den gescheiterten Versuch weg:
+
+```bash
+docker container rm db-versuch
+```
+
+### Die Datenbank über Umgebungsvariablen einrichten
+
+Jede Angabe kommt mit einem eigenen `-e` von außen dazu.
+
+```bash
+docker container create --name meine-db -p 5432:5432 -e POSTGRES_DB=helloworld -e POSTGRES_USER=kurs -e POSTGRES_PASSWORD=geheim postgres:18
+```
+
+```bash
+docker container start meine-db
+```
+
+Prüfe in der Log-Ausgabe, dass die Datenbank bereit ist:
+
+```bash
+docker container logs meine-db
+```
+
+&gt; **Hinweis:** Woher kommen die Namen `POSTGRES_DB`, `POSTGRES_USER` und
+&gt; `POSTGRES_PASSWORD`? Sieh im Datenblatt des Images auf Docker Hub nach. Merk
+&gt; Dir, wo diese Information steht – bei jedem anderen Image wirst Du sie dort
+&gt; wieder suchen.
+
+### Eine Tabelle anlegen und füllen
+
+Du führst `psql` **im** Container aus – genau wie den `echo`-Befehl in der
+vorigen Übung.
+
+```bash
+docker container exec meine-db psql -U kurs -d helloworld -c &quot;CREATE TABLE gruss (id SERIAL PRIMARY KEY, text TEXT NOT NULL)&quot;
+```
+
+```bash
+docker container exec meine-db psql -U kurs -d helloworld -c &quot;INSERT INTO gruss (text) VALUES (&apos;Hallo Welt&apos;), (&apos;Hello World&apos;), (&apos;Bonjour le monde&apos;)&quot;
+```
+
+Sieh nach, ob die Daten da sind:
+
+```bash
+docker container exec meine-db psql -U kurs -d helloworld -c &quot;SELECT * FROM gruss&quot;
+```
+
+### Einen Tippfehler bauen und beobachten
+
+Lege einen weiteren Container an – diesmal mit einem falsch geschriebenen
+Variablennamen.
+
+```bash
+docker container create --name db-tippfehler -p 5433:5432 -e POSTGRES_DATABASE=helloworld -e POSTGRES_USER=kurs -e POSTGRES_PASSWORD=geheim postgres:18
+```
+
+```bash
+docker container start db-tippfehler
+```
+
+```bash
+docker container exec db-tippfehler psql -U kurs -d helloworld -c &quot;SELECT 1&quot;
+```
+
+&gt; **Hinweis:** Der Container startet – aber Dein Befehl scheitert. Überleg Dir,
+&gt; welche Datenbank stattdessen entstanden ist und warum niemand Dich gewarnt hat.
+
+```bash
+docker container stop db-tippfehler
+```
+
+```bash
+docker container rm db-tippfehler
+```
+
+### Dasselbe Image, eine andere Datenbank
+
+Das ist der Kern der Übung. Kein Neubau, kein zweites Image – nur andere Werte.
+
+```bash
+docker container create --name meine-db-test -p 5433:5432 -e POSTGRES_DB=testdaten -e POSTGRES_USER=tester -e POSTGRES_PASSWORD=auchgeheim postgres:18
+```
+
+```bash
+docker container start meine-db-test
+```
+
+```bash
+docker container exec meine-db-test psql -U tester -d testdaten -c &quot;\l&quot;
+```
+
+```bash
+docker images
+```
+
+&gt; **Hinweis:** Sieh Dir die Image-Liste an. Wie viele PostgreSQL-Images liegen bei
+&gt; Dir? Und wie viele verschieden konfigurierte Datenbanken betreibst Du gerade?
+
+### Stoppen, neu starten und nachsehen
+
+```bash
+docker container stop meine-db
+```
+
+```bash
+docker container start meine-db
+```
+
+```bash
+docker container exec meine-db psql -U kurs -d helloworld -c &quot;SELECT * FROM gruss&quot;
+```
+
+&gt; **Hinweis:** Notiere das Ergebnis. Was wäre nach einem `docker container rm`
+&gt; passiert? Probier es **nicht** aus – wir brauchen die Datenbank morgen noch.
+
+## Reflexionsfragen
+
+- Woher weißt Du, welche Umgebungsvariablen ein fremdes Image auswertet? Was
+  passiert, wenn Du einen Namen falsch schreibst?
+- Was wäre nötig gewesen, um die Datenbank stattdessen über eine
+  Konfigurationsdatei **im Image** einzurichten? Wie viele Images hättest Du für
+  Entwicklung, Test und Produktion?
+- Deine Daten haben `stop` und `start` überlebt. Was erwartest Du nach einem
+  `docker container rm`, und woran liegt das?
+- Wo landen die Log-Ausgaben der Datenbank, und warum ist das für eine
+  Betriebsplattform praktischer als eine Logdatei im Container?
+- Was spricht dagegen, ein echtes Datenbank-Passwort so zu setzen, wie Du es hier
+  getan hast?
+
+## Weiterführende Informationen
+
+- [Das PostgreSQL-Image auf Docker Hub](https://hub.docker.com/_/postgres)
+- [The Twelve-Factor App](https://12factor.net/de/)
+</textarea>
+    </main><aside class="avd-academy-guide-sidebar"><details class="avd-academy-guide-side avd-academy-guide-side--toc avd-academy-fold" data-avd-academy-toc-box
+               data-avd-academy-toc-grenze="12" open hidden>
+        <summary class="avd-academy-guide-side__label">Auf dieser Seite</summary>
+        <nav class="avd-academy-toc avd-academy-fold__body" data-avd-academy-toc aria-label="Inhaltsverzeichnis"></nav>
+      </details>
+      <div class="avd-academy-guide-side avd-academy-guide-side--bordered" data-avd-academy-progress hidden><div class="avd-academy-guide-side__label" id="avd-academy-progress-label">Fortschritt</div><div class="avd-academy-progress__bar" aria-labelledby="avd-academy-progress-label"><div class="avd-academy-progress__fill"></div></div>
+        <div class="avd-academy-progress__text"></div>
+      </div>
+      <div class="avd-academy-guide-side avd-academy-guide-side--bordered">
+        <div class="avd-academy-guide-side__label">Weiterführende Informationen</div>
+        <div class="avd-academy-guide-side__links"><a href="https://hub.docker.com/_/postgres" target="_blank" rel="noopener"><span>Das PostgreSQL-Image auf Docker Hub</span></a><a href="https://12factor.net/de/" target="_blank" rel="noopener"><span>The Twelve-Factor App</span></a>
+        </div></div>
+    </aside>
+  </div><div class="avd-academy-print-contact" aria-hidden="true">
+    <span>Kontakt: https://www.atvantage.com</span>
+    <span>academy@atvantage.com</span>
+  </div>
+
+  <footer class="avd-academy-footer">
+  <div class="avd-academy-footer__grid">
+    <div><strong>Containertechnologien (Academy)</strong>
+      <p>Schulungsunterlagen der ATVANTAGE Academy.</p>
+    </div><div>
+      <strong>Kontakt</strong>
+      <p><a href="https://www.atvantage.com" target="_blank" rel="noopener">Website</a><br><a href="mailto:academy@atvantage.com">academy@atvantage.com</a><br>
+      </p>
+    </div></div>
+  <div class="avd-academy-footer__legal">
+    © <span data-avd-academy-year>2026</span> ATVANTAGE
+  </div>
+</footer>
+
+</body>
+</html>

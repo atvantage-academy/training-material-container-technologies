@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<!--
+  ATVANTAGE-Academy – EINZIGES Seitenlayout (Jekyll)
+  --------------------------------------------------
+  Ein Layout für alles: allgemeine Doku-Seiten UND Guides (Übungen/Anleitungen).
+  Optik nach der ATVANTAGE-Website: Meta-Nav, weiße sticky Kopfzeile, Hero-Band,
+  zweispaltig mit rechter Sidebar (automatisches Inhaltsverzeichnis, Fortschritt
+  aus Task-Listen, weiterführende Ressourcen). Überschriften ohne Emoji-Icons.
+
+  Verwendung im Front Matter:  layout: default   (oder `layout: guide` – Alias,
+  siehe guide.html; beides rendert dieselbe Guide-Ansicht)
+
+  `layout: visualization` (siehe visualization.html) rendert dieselbe Seite OHNE
+  obere Navigation (Meta-Leiste + Kopfzeile/TopNav), OHNE Brotkrumen und OHNE den
+  rechten Bereich (Inhaltsverzeichnis, Fortschritt, Ressourcen – auch bei gesetztem
+  `resources`), mit schmalerem Hero-Balken und breiterem, zentriertem Inhalt – für
+  eigenständige Visualisierungen/Simulationen.
+
+  Alle Front-Matter-Felder sind OPTIONAL (Convention over Configuration). Nur der
+  Titel ist faktisch erforderlich – als `title:` ODER als erste `#`-Überschrift:
+
+    title:       "…"                → sonst erste #-Überschrift (eins von beiden nötig)
+    description: "…"                → Meta-Description
+    duration:    8                  → Zahl in Minuten → Hero-Tag „ca. 8 Minuten“
+                                       (ungefähre LESEDAUER; bei Guides/Übungen die
+                                       Dauer der Übung, bei Visualisierungen die
+                                       Bearbeitungszeit – dort unüblich, aber erlaubt).
+    topics:      ["Cloud & DevOps"] → weitere Hero-Tags
+    resources:   [{title, url, icon}, …] → Sidebar-Karte „Weiterführende Informationen“.
+                                       title und/oder icon (Bildpfad); icon erscheint
+                                       rechts und wird kreisrund dargestellt.
+    breadcrumb:                     → Brotkrumen anpassen (beides optional):
+      label: "…"                    → überschreibt den Ordnernamen dieser Ebene;
+                                       in der Ordner-`index.md` gesetzt gilt es für
+                                       ALLE Seiten im Ordner und in Unterordnern.
+      ancestors: [{title, url}, …]  → explizite Vorfahren-Kette OHNE die aktuelle
+                                       Seite (diese wird automatisch angehängt); in
+                                       der `index.md` gesetzt wird sie vererbt.
+
+  „Markdown kopieren“ (Button im Hero) erscheint NUR auf Guides – dort ist das
+  Übernehmen des Quelltexts der Zweck. Bedingungen: Markdown-Seite (`.md`, nicht
+  reines HTML) UND der Schalter `toolbar.copy` (Vorgabe: nur `layout: guide`, siehe
+  `_includes/avd-switch.html`). Doku-Seiten und Visualisierungen haben ihn nicht –
+  bei letzteren, weil ihr Inhalt nicht sinnvoll als Markdown kopierbar ist.
+
+  DIE SEITENWERKZEUGE – QR-Code, Farbschema-Umschalter, Drucken – sind EINE
+  Komponente (`_includes/tools.html`) an zwei Standorten in diesem Rahmen:
+
+    Kopfzeile   `chrome: true`  (page, guide)      QR + Farbschema
+    Hero rechts `hero_tools`    (visualization)    QR + Farbschema + Drucken
+
+  Die Regel dahinter ist die Kopfzeile: Wo es sie gibt, tragen die Werkzeuge sie;
+  wo nicht, tritt der Hero an ihre Stelle. Drucken gibt es nur dort, weil auf einer
+  gewöhnlichen Seite der Browser-Befehl (Strg/Cmd+P) genügt, die rahmenlose
+  Ansicht aber keinen anderen Weg aufs Papier hat.
+
+  Der QR-Code wird erst im Browser erzeugt (theme/academy/atvantage.js), weil die
+  Adresse zur Build-Zeit nicht feststeht; ohne JavaScript erscheint er nicht.
+--><html lang="de">
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Ein Image versioniert in eine Registry pushen · Containertechnologien (Academy)</title><meta name="description" content="Das selbst gebaute Image in eine Registry pushen – mit einem unveränderlichen Versions-Tag und einem beweglichen Zeiger daneben."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta property="og:title" content="Ein Image versioniert in eine Registry pushen">
+<meta property="og:description" content="Das selbst gebaute Image in eine Registry pushen – mit einem unveränderlichen Versions-Tag und einem beweglichen Zeiger daneben.">
+<meta property="og:type" content="article"><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790157026"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790157026">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790157026">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790157026">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790157026"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790157026">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790157026" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790157026" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790157026">
+<script type="module">
+  const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
+  const _hlsprachen = ["java", "http", "json", "xml"];
+  Promise.all([import(_hlbase + "core.min.js"), ..._hlsprachen.map((s) => import(_hlbase + s + ".min.js"))])
+    .then(([core, ...grammatiken]) => {
+      const hljs = core.default;
+      _hlsprachen.forEach((s, i) => hljs.registerLanguage(s, grammatiken[i].default));
+      const _auswahl = _hlsprachen.map((s) => "pre code.language-" + s).join(",");
+      const _faerben = (wurzel) => (wurzel || document)
+        .querySelectorAll(_auswahl)
+        .forEach((el) => { if (!el.dataset.highlighted) { hljs.highlightElement(el); } });
+      _faerben(document);
+
+      /* NACHTRAEGLICH EINGEFUEGTER CODE. Die Hervorhebung laeuft einmal beim Laden.
+         Eine Seite, die ihre Codebloecke per Skript einsetzt - eine Visualisierung,
+         die rohe Nachrichten durchschaltet -, bekam deshalb gar keine Farben und
+         baute sich einen eigenen Hervorheber. Genau die Kopie, die das Theme
+         verhindern soll.
+
+         `AvdHighlight.apply(knoten)` faerbt, was seither dazugekommen ist; `hljs`
+         liegt daneben fuer Faelle, die mehr brauchen. Das Ereignis sagt Seiten, die
+         frueh zeichnen, wann der Haken da ist - die Module laden asynchron. */
+      window.AvdHighlight = { hljs, apply: _faerben, languages: _hlsprachen.slice() };
+      document.dispatchEvent(new CustomEvent("avd-academy-highlight-ready"));
+
+      /* Statuszeile nach Klasse einfaerben. highlight.js gibt jedem dreistelligen
+         Code dieselbe Klasse `hljs-number` - in einem Mitschnitt ist aber genau das
+         die Stelle, auf die man zuerst sieht: 2xx ist etwas anderes als 4xx.
+         Deshalb hier die einzige eigene Zutat, und bewusst nur diese: Die
+         Statusklassen von HTTP aendern sich nicht, das bleibt stabil. */
+      document.querySelectorAll("pre code.language-http .hljs-number").forEach((el) => {
+        const code = parseInt(el.textContent, 10);
+        if (code >= 100 && code <= 599) {
+          el.classList.add("avd-academy-http-status--" + Math.floor(code / 100) + "xx");
+        }
+      });
+    });
+</script>
+<link rel="apple-touch-icon" sizes="180x180" href="/training-material-container-technologies/theme/atvantage/assets/icon-180.png">
+<link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
+<link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
+
+  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790157026">
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790157026"></head><body class="avd-academy-guide">
+  <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><div class="avd-academy-metanav"><span>ATVANTAGE Academy</span>
+  </div>
+
+  <header class="avd-academy-header" data-avd-academy-header><a class="avd-academy-header__brand" href="/training-material-container-technologies/" aria-label="Startseite"><img class="avd-academy-header__logo" src="/training-material-container-technologies/assets/logo-schulung.svg" alt="ATVANTAGE Academy"></a><button class="avd-academy-tool avd-academy-header__burger" data-avd-academy-nav-toggle="#avd-academy-main-nav"
+          aria-label="Navigation umschalten" aria-expanded="false">☰</button><nav class="avd-academy-header__nav" id="avd-academy-main-nav">
+      <a href="/training-material-container-technologies/">Start</a><div class="avd-academy-header__group" data-avd-academy-menu>
+        <button type="button" class="avd-academy-header__grouptoggle"
+                aria-expanded="false" aria-haspopup="true">Allgemeines<span class="avd-academy-header__caret" aria-hidden="true">▾</span></button>
+        <div class="avd-academy-header__submenu" role="menu">
+          <a role="menuitem" href="/training-material-container-technologies/shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a>
+        </div>
+      </div>
+      <a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a>
+  </nav><div class="avd-academy-header__tools"><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
+                title="Diese Seite auf Deinem Smartphone öffnen"
+                aria-label="Diese Seite auf Deinem Smartphone öffnen"></button><button type="button" class="avd-academy-tool avd-academy-tool--theme avd-academy-theme-toggle" data-avd-academy-theme-toggle
+              title="Farbschema umschalten (hell/dunkel)"
+              aria-label="Farbschema umschalten">◐</button></div>
+</header>
+<section class="avd-academy-guide-hero"
+           aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a><span>/</span><span aria-current="page">Ein Image versioniert in eine Registry pushen</span></nav><div class="avd-academy-guide-hero__meta">
+      <div class="avd-academy-guide-hero__tags"><span class="avd-academy-tag avd-academy-tag--time">ca. 30 Minuten</span><span class="avd-academy-tag">Registry</span><span class="avd-academy-tag">Tagging</span><span class="avd-academy-tag">Versionierung</span>
+      </div>
+      <div class="avd-academy-guide-hero__actions">
+        <button type="button" class="avd-academy-btn avd-academy-btn--ghost avd-academy-copy-md"
+                data-avd-academy-copy-md="#avd-academy-md-source"
+                title="Markdown kopieren" aria-label="Markdown kopieren"></button>
+      </div>
+    </div><h1 id="avd-academy-page-title">Ein Image versioniert in eine Registry pushen</h1>
+  </section><div class="avd-academy-guide-layout">
+    <main class="avd-academy-guide-main avd-academy-guide-main--numbered" id="avd-academy-content">
+
+<p><strong>Als</strong> Entwickler <strong>möchte ich</strong> mein Image an einem Ort ablegen, an den andere
+herankommen, <strong>damit</strong> nicht jeder es selbst bauen muss – und <strong>damit</strong> später
+nachvollziehbar bleibt, welche Fassung wo lief.</p>
+
+<h2 id="lernziele">Lernziele</h2>
+
+<p>Du…</p>
+
+<ul>
+  <li>meldest Dich an einer Registry an und legst dort ein Repository an.</li>
+  <li>versiehst ein lokales Image mit dem vollständigen Namen seines Ziels und
+erklärst, woraus dieser Name besteht.</li>
+  <li>veröffentlichst dasselbe Image unter einem Versions-Tag <strong>und</strong> unter einem
+beweglichen Zeiger.</li>
+  <li>begründest, warum ein Verlass auf <code>latest</code> ein Zurückrollen unmöglich macht.</li>
+</ul>
+
+<h2 id="definition-of-done">Definition of Done</h2>
+
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du bist an der Registry angemeldet und hast dort ein Repository
+<code>meine-website</code> angelegt.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Dein Image liegt in der Registry unter dem Tag <code>1.0.0</code>.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Dasselbe Image liegt dort zusätzlich unter dem Tag <code>latest</code>.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Eine zweite Fassung liegt als <code>1.0.1</code> in der Registry, und <code>latest</code> zeigt
+auf sie.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast Dein Image lokal gelöscht und aus der Registry zurückgeholt.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast die Reflexionsfragen schriftlich beantwortet.</li>
+</ul>
+
+<h2 id="arbeitsschritte">Arbeitsschritte</h2>
+
+<h3 id="ein-repository-anlegen-und-sich-anmelden">Ein Repository anlegen und sich anmelden</h3>
+
+<p>Leg in der Registry ein Repository namens <code>meine-website</code> an – das geht über die
+Weboberfläche der Registry.</p>
+
+<p>Melde Dich anschließend auf der Kommandozeile an:</p>
+
+<pre><code class="language-bash">docker login
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Nutzt Dein Konto eine zweistufige Anmeldung, brauchst Du hier ein
+<strong>Zugriffstoken</strong> statt Deines Passworts. Das legst Du in den Einstellungen
+Deines Registry-Kontos an.</p>
+</blockquote>
+
+<h3 id="dem-image-den-namen-seines-ziels-geben">Dem Image den Namen seines Ziels geben</h3>
+
+<p>Ein Image muss so heißen wie der Ort, an den es soll. Ersetze <code>&lt;dein-konto&gt;</code>
+durch Deinen Kontonamen.</p>
+
+<pre><code class="language-bash">docker image tag meine-website:1.0.0 &lt;dein-konto&gt;/meine-website:1.0.0
+</code></pre>
+
+<pre><code class="language-bash">docker images
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Vergleiche die Spalte <code>IMAGE ID</code> der beiden Zeilen. Wie viele
+Images hast Du jetzt – und wie viele Namen?</p>
+</blockquote>
+
+<h3 id="das-image-veröffentlichen">Das Image veröffentlichen</h3>
+
+<pre><code class="language-bash">docker image push &lt;dein-konto&gt;/meine-website:1.0.0
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Sieh Dir an, was während des Pushs zeilenweise passiert. Jede Zeile
+ist ein Layer. Merk Dir, wie lange es gedauert hat.</p>
+</blockquote>
+
+<p>Sieh in der Weboberfläche der Registry nach, ob Dein Image angekommen ist.</p>
+
+<h3 id="einen-beweglichen-zeiger-daneben-setzen">Einen beweglichen Zeiger daneben setzen</h3>
+
+<pre><code class="language-bash">docker image tag meine-website:1.0.0 &lt;dein-konto&gt;/meine-website:latest
+</code></pre>
+
+<pre><code class="language-bash">docker image push &lt;dein-konto&gt;/meine-website:latest
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Dieser Push war deutlich schneller als der erste. Überleg Dir,
+warum – die Antwort hat mit den Layern von gestern zu tun.</p>
+</blockquote>
+
+<h3 id="eine-zweite-fassung-veröffentlichen">Eine zweite Fassung veröffentlichen</h3>
+
+<p>Ändere Deine Seite und bau eine neue Version:</p>
+
+<pre><code class="language-bash">echo "&lt;h1&gt;Meine Seite, dritte Fassung&lt;/h1&gt;" &gt; index.html
+</code></pre>
+
+<pre><code class="language-bash">docker image build -t &lt;dein-konto&gt;/meine-website:1.0.1 .
+</code></pre>
+
+<pre><code class="language-bash">docker image push &lt;dein-konto&gt;/meine-website:1.0.1
+</code></pre>
+
+<p>Zieh jetzt den beweglichen Zeiger nach:</p>
+
+<pre><code class="language-bash">docker image tag &lt;dein-konto&gt;/meine-website:1.0.1 &lt;dein-konto&gt;/meine-website:latest
+</code></pre>
+
+<pre><code class="language-bash">docker image push &lt;dein-konto&gt;/meine-website:latest
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Sieh Dir in der Registry an, welche Tags jetzt auf welchem Stand
+liegen. Und dann die Frage, auf die es ankommt: Wenn jemand gestern
+<code>&lt;dein-konto&gt;/meine-website:latest</code> gezogen hat – welche Fassung hat er
+bekommen? Und wie fändest Du das heute noch heraus?</p>
+</blockquote>
+
+<h3 id="das-image-zurückholen">Das Image zurückholen</h3>
+
+<p>Lösch Deine lokalen Kopien und hol Dir die veröffentlichte Fassung:</p>
+
+<pre><code class="language-bash">docker image rm &lt;dein-konto&gt;/meine-website:1.0.0
+</code></pre>
+
+<pre><code class="language-bash">docker image rm &lt;dein-konto&gt;/meine-website:latest
+</code></pre>
+
+<pre><code class="language-bash">docker image pull &lt;dein-konto&gt;/meine-website:1.0.0
+</code></pre>
+
+<pre><code class="language-bash">docker images
+</code></pre>
+
+<h2 id="reflexionsfragen">Reflexionsfragen</h2>
+
+<ul>
+  <li>Wie weist Du einem bereits gepushten Image zusätzlich das Tag <code>latest</code> zu?
+Musst Du es dafür neu bauen?</li>
+  <li>Welche Schritte führst Du aus, um eine Änderung als Version <code>1.0.1</code> zu
+veröffentlichen und <code>latest</code> mitzuziehen? In welcher Reihenfolge – und warum
+nicht umgekehrt?</li>
+  <li>Was passiert, wenn Du ein Image nur mit dem Tag <code>latest</code> pushst und dieses Tag
+bei jeder Änderung verschiebst? Was kannst Du dann nicht mehr?</li>
+  <li>Warum war der zweite Push so viel schneller als der erste?</li>
+  <li>Was passiert, wenn Du im Dockerfile bei <code>FROM</code> das Tag weglässt? Warum ist das
+für einen Build, den jemand in einem halben Jahr wiederholt, ein Problem?</li>
+</ul>
+
+
+<textarea id="avd-academy-md-source" hidden aria-hidden="true"># Ein Image versioniert in eine Registry pushen
+
+**Als** Entwickler **möchte ich** mein Image an einem Ort ablegen, an den andere
+herankommen, **damit** nicht jeder es selbst bauen muss – und **damit** später
+nachvollziehbar bleibt, welche Fassung wo lief.
+
+## Lernziele
+
+Du…
+
+- meldest Dich an einer Registry an und legst dort ein Repository an.
+- versiehst ein lokales Image mit dem vollständigen Namen seines Ziels und
+  erklärst, woraus dieser Name besteht.
+- veröffentlichst dasselbe Image unter einem Versions-Tag **und** unter einem
+  beweglichen Zeiger.
+- begründest, warum ein Verlass auf `latest` ein Zurückrollen unmöglich macht.
+
+## Definition of Done
+
+* [ ] Du bist an der Registry angemeldet und hast dort ein Repository
+  `meine-website` angelegt.
+* [ ] Dein Image liegt in der Registry unter dem Tag `1.0.0`.
+* [ ] Dasselbe Image liegt dort zusätzlich unter dem Tag `latest`.
+* [ ] Eine zweite Fassung liegt als `1.0.1` in der Registry, und `latest` zeigt
+  auf sie.
+* [ ] Du hast Dein Image lokal gelöscht und aus der Registry zurückgeholt.
+* [ ] Du hast die Reflexionsfragen schriftlich beantwortet.
+
+## Arbeitsschritte
+
+### Ein Repository anlegen und sich anmelden
+
+Leg in der Registry ein Repository namens `meine-website` an – das geht über die
+Weboberfläche der Registry.
+
+Melde Dich anschließend auf der Kommandozeile an:
+
+```bash
+docker login
+```
+
+&gt; **Hinweis:** Nutzt Dein Konto eine zweistufige Anmeldung, brauchst Du hier ein
+&gt; **Zugriffstoken** statt Deines Passworts. Das legst Du in den Einstellungen
+&gt; Deines Registry-Kontos an.
+
+### Dem Image den Namen seines Ziels geben
+
+Ein Image muss so heißen wie der Ort, an den es soll. Ersetze `&lt;dein-konto&gt;`
+durch Deinen Kontonamen.
+
+```bash
+docker image tag meine-website:1.0.0 &lt;dein-konto&gt;/meine-website:1.0.0
+```
+
+```bash
+docker images
+```
+
+&gt; **Hinweis:** Vergleiche die Spalte `IMAGE ID` der beiden Zeilen. Wie viele
+&gt; Images hast Du jetzt – und wie viele Namen?
+
+### Das Image veröffentlichen
+
+```bash
+docker image push &lt;dein-konto&gt;/meine-website:1.0.0
+```
+
+&gt; **Hinweis:** Sieh Dir an, was während des Pushs zeilenweise passiert. Jede Zeile
+&gt; ist ein Layer. Merk Dir, wie lange es gedauert hat.
+
+Sieh in der Weboberfläche der Registry nach, ob Dein Image angekommen ist.
+
+### Einen beweglichen Zeiger daneben setzen
+
+```bash
+docker image tag meine-website:1.0.0 &lt;dein-konto&gt;/meine-website:latest
+```
+
+```bash
+docker image push &lt;dein-konto&gt;/meine-website:latest
+```
+
+&gt; **Hinweis:** Dieser Push war deutlich schneller als der erste. Überleg Dir,
+&gt; warum – die Antwort hat mit den Layern von gestern zu tun.
+
+### Eine zweite Fassung veröffentlichen
+
+Ändere Deine Seite und bau eine neue Version:
+
+```bash
+echo &quot;&lt;h1&gt;Meine Seite, dritte Fassung&lt;/h1&gt;&quot; &gt; index.html
+```
+
+```bash
+docker image build -t &lt;dein-konto&gt;/meine-website:1.0.1 .
+```
+
+```bash
+docker image push &lt;dein-konto&gt;/meine-website:1.0.1
+```
+
+Zieh jetzt den beweglichen Zeiger nach:
+
+```bash
+docker image tag &lt;dein-konto&gt;/meine-website:1.0.1 &lt;dein-konto&gt;/meine-website:latest
+```
+
+```bash
+docker image push &lt;dein-konto&gt;/meine-website:latest
+```
+
+&gt; **Hinweis:** Sieh Dir in der Registry an, welche Tags jetzt auf welchem Stand
+&gt; liegen. Und dann die Frage, auf die es ankommt: Wenn jemand gestern
+&gt; `&lt;dein-konto&gt;/meine-website:latest` gezogen hat – welche Fassung hat er
+&gt; bekommen? Und wie fändest Du das heute noch heraus?
+
+### Das Image zurückholen
+
+Lösch Deine lokalen Kopien und hol Dir die veröffentlichte Fassung:
+
+```bash
+docker image rm &lt;dein-konto&gt;/meine-website:1.0.0
+```
+
+```bash
+docker image rm &lt;dein-konto&gt;/meine-website:latest
+```
+
+```bash
+docker image pull &lt;dein-konto&gt;/meine-website:1.0.0
+```
+
+```bash
+docker images
+```
+
+## Reflexionsfragen
+
+- Wie weist Du einem bereits gepushten Image zusätzlich das Tag `latest` zu?
+  Musst Du es dafür neu bauen?
+- Welche Schritte führst Du aus, um eine Änderung als Version `1.0.1` zu
+  veröffentlichen und `latest` mitzuziehen? In welcher Reihenfolge – und warum
+  nicht umgekehrt?
+- Was passiert, wenn Du ein Image nur mit dem Tag `latest` pushst und dieses Tag
+  bei jeder Änderung verschiebst? Was kannst Du dann nicht mehr?
+- Warum war der zweite Push so viel schneller als der erste?
+- Was passiert, wenn Du im Dockerfile bei `FROM` das Tag weglässt? Warum ist das
+  für einen Build, den jemand in einem halben Jahr wiederholt, ein Problem?
+
+## Weiterführende Informationen
+
+- [docker push – CLI Reference](https://docs.docker.com/reference/cli/docker/image/push/)
+- [Docker Hub: eigene Repositories](https://hub.docker.com/repositories)
+</textarea>
+    </main><aside class="avd-academy-guide-sidebar"><details class="avd-academy-guide-side avd-academy-guide-side--toc avd-academy-fold" data-avd-academy-toc-box
+               data-avd-academy-toc-grenze="12" open hidden>
+        <summary class="avd-academy-guide-side__label">Auf dieser Seite</summary>
+        <nav class="avd-academy-toc avd-academy-fold__body" data-avd-academy-toc aria-label="Inhaltsverzeichnis"></nav>
+      </details>
+      <div class="avd-academy-guide-side avd-academy-guide-side--bordered" data-avd-academy-progress hidden><div class="avd-academy-guide-side__label" id="avd-academy-progress-label">Fortschritt</div><div class="avd-academy-progress__bar" aria-labelledby="avd-academy-progress-label"><div class="avd-academy-progress__fill"></div></div>
+        <div class="avd-academy-progress__text"></div>
+      </div>
+      <div class="avd-academy-guide-side avd-academy-guide-side--bordered">
+        <div class="avd-academy-guide-side__label">Weiterführende Informationen</div>
+        <div class="avd-academy-guide-side__links"><a href="https://docs.docker.com/reference/cli/docker/image/push/" target="_blank" rel="noopener"><span>docker push – CLI Reference</span></a><a href="https://hub.docker.com/repositories" target="_blank" rel="noopener"><span>Docker Hub: eigene Repositories</span></a>
+        </div></div>
+    </aside>
+  </div><div class="avd-academy-print-contact" aria-hidden="true">
+    <span>Kontakt: https://www.atvantage.com</span>
+    <span>academy@atvantage.com</span>
+  </div>
+
+  <footer class="avd-academy-footer">
+  <div class="avd-academy-footer__grid">
+    <div><strong>Containertechnologien (Academy)</strong>
+      <p>Schulungsunterlagen der ATVANTAGE Academy.</p>
+    </div><div>
+      <strong>Kontakt</strong>
+      <p><a href="https://www.atvantage.com" target="_blank" rel="noopener">Website</a><br><a href="mailto:academy@atvantage.com">academy@atvantage.com</a><br>
+      </p>
+    </div></div>
+  <div class="avd-academy-footer__legal">
+    © <span data-avd-academy-year>2026</span> ATVANTAGE
+  </div>
+</footer>
+
+</body>
+</html>

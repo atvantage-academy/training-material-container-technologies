@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<!--
+  ATVANTAGE-Academy – EINZIGES Seitenlayout (Jekyll)
+  --------------------------------------------------
+  Ein Layout für alles: allgemeine Doku-Seiten UND Guides (Übungen/Anleitungen).
+  Optik nach der ATVANTAGE-Website: Meta-Nav, weiße sticky Kopfzeile, Hero-Band,
+  zweispaltig mit rechter Sidebar (automatisches Inhaltsverzeichnis, Fortschritt
+  aus Task-Listen, weiterführende Ressourcen). Überschriften ohne Emoji-Icons.
+
+  Verwendung im Front Matter:  layout: default   (oder `layout: guide` – Alias,
+  siehe guide.html; beides rendert dieselbe Guide-Ansicht)
+
+  `layout: visualization` (siehe visualization.html) rendert dieselbe Seite OHNE
+  obere Navigation (Meta-Leiste + Kopfzeile/TopNav), OHNE Brotkrumen und OHNE den
+  rechten Bereich (Inhaltsverzeichnis, Fortschritt, Ressourcen – auch bei gesetztem
+  `resources`), mit schmalerem Hero-Balken und breiterem, zentriertem Inhalt – für
+  eigenständige Visualisierungen/Simulationen.
+
+  Alle Front-Matter-Felder sind OPTIONAL (Convention over Configuration). Nur der
+  Titel ist faktisch erforderlich – als `title:` ODER als erste `#`-Überschrift:
+
+    title:       "…"                → sonst erste #-Überschrift (eins von beiden nötig)
+    description: "…"                → Meta-Description
+    duration:    8                  → Zahl in Minuten → Hero-Tag „ca. 8 Minuten“
+                                       (ungefähre LESEDAUER; bei Guides/Übungen die
+                                       Dauer der Übung, bei Visualisierungen die
+                                       Bearbeitungszeit – dort unüblich, aber erlaubt).
+    topics:      ["Cloud & DevOps"] → weitere Hero-Tags
+    resources:   [{title, url, icon}, …] → Sidebar-Karte „Weiterführende Informationen“.
+                                       title und/oder icon (Bildpfad); icon erscheint
+                                       rechts und wird kreisrund dargestellt.
+    breadcrumb:                     → Brotkrumen anpassen (beides optional):
+      label: "…"                    → überschreibt den Ordnernamen dieser Ebene;
+                                       in der Ordner-`index.md` gesetzt gilt es für
+                                       ALLE Seiten im Ordner und in Unterordnern.
+      ancestors: [{title, url}, …]  → explizite Vorfahren-Kette OHNE die aktuelle
+                                       Seite (diese wird automatisch angehängt); in
+                                       der `index.md` gesetzt wird sie vererbt.
+
+  „Markdown kopieren“ (Button im Hero) erscheint NUR auf Guides – dort ist das
+  Übernehmen des Quelltexts der Zweck. Bedingungen: Markdown-Seite (`.md`, nicht
+  reines HTML) UND der Schalter `toolbar.copy` (Vorgabe: nur `layout: guide`, siehe
+  `_includes/avd-switch.html`). Doku-Seiten und Visualisierungen haben ihn nicht –
+  bei letzteren, weil ihr Inhalt nicht sinnvoll als Markdown kopierbar ist.
+
+  DIE SEITENWERKZEUGE – QR-Code, Farbschema-Umschalter, Drucken – sind EINE
+  Komponente (`_includes/tools.html`) an zwei Standorten in diesem Rahmen:
+
+    Kopfzeile   `chrome: true`  (page, guide)      QR + Farbschema
+    Hero rechts `hero_tools`    (visualization)    QR + Farbschema + Drucken
+
+  Die Regel dahinter ist die Kopfzeile: Wo es sie gibt, tragen die Werkzeuge sie;
+  wo nicht, tritt der Hero an ihre Stelle. Drucken gibt es nur dort, weil auf einer
+  gewöhnlichen Seite der Browser-Befehl (Strg/Cmd+P) genügt, die rahmenlose
+  Ansicht aber keinen anderen Weg aufs Papier hat.
+
+  Der QR-Code wird erst im Browser erzeugt (theme/academy/atvantage.js), weil die
+  Adresse zur Build-Zeit nicht feststeht; ohne JavaScript erscheint er nicht.
+--><html lang="de">
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Einen Container aus einem fremden Image betreiben · Containertechnologien (Academy)</title><meta name="description" content="Ein fremdes Image ziehen, daraus einen Container erzeugen, ihn starten, hineinsehen, stoppen und löschen – und dabei beobachten, was dabei verloren geht."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta property="og:title" content="Einen Container aus einem fremden Image betreiben">
+<meta property="og:description" content="Ein fremdes Image ziehen, daraus einen Container erzeugen, ihn starten, hineinsehen, stoppen und löschen – und dabei beobachten, was dabei verloren geht.">
+<meta property="og:type" content="article"><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790157026"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790157026">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790157026">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790157026">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790157026"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790157026">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790157026" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790157026" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790157026">
+<script type="module">
+  const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
+  const _hlsprachen = ["java", "http", "json", "xml"];
+  Promise.all([import(_hlbase + "core.min.js"), ..._hlsprachen.map((s) => import(_hlbase + s + ".min.js"))])
+    .then(([core, ...grammatiken]) => {
+      const hljs = core.default;
+      _hlsprachen.forEach((s, i) => hljs.registerLanguage(s, grammatiken[i].default));
+      const _auswahl = _hlsprachen.map((s) => "pre code.language-" + s).join(",");
+      const _faerben = (wurzel) => (wurzel || document)
+        .querySelectorAll(_auswahl)
+        .forEach((el) => { if (!el.dataset.highlighted) { hljs.highlightElement(el); } });
+      _faerben(document);
+
+      /* NACHTRAEGLICH EINGEFUEGTER CODE. Die Hervorhebung laeuft einmal beim Laden.
+         Eine Seite, die ihre Codebloecke per Skript einsetzt - eine Visualisierung,
+         die rohe Nachrichten durchschaltet -, bekam deshalb gar keine Farben und
+         baute sich einen eigenen Hervorheber. Genau die Kopie, die das Theme
+         verhindern soll.
+
+         `AvdHighlight.apply(knoten)` faerbt, was seither dazugekommen ist; `hljs`
+         liegt daneben fuer Faelle, die mehr brauchen. Das Ereignis sagt Seiten, die
+         frueh zeichnen, wann der Haken da ist - die Module laden asynchron. */
+      window.AvdHighlight = { hljs, apply: _faerben, languages: _hlsprachen.slice() };
+      document.dispatchEvent(new CustomEvent("avd-academy-highlight-ready"));
+
+      /* Statuszeile nach Klasse einfaerben. highlight.js gibt jedem dreistelligen
+         Code dieselbe Klasse `hljs-number` - in einem Mitschnitt ist aber genau das
+         die Stelle, auf die man zuerst sieht: 2xx ist etwas anderes als 4xx.
+         Deshalb hier die einzige eigene Zutat, und bewusst nur diese: Die
+         Statusklassen von HTTP aendern sich nicht, das bleibt stabil. */
+      document.querySelectorAll("pre code.language-http .hljs-number").forEach((el) => {
+        const code = parseInt(el.textContent, 10);
+        if (code >= 100 && code <= 599) {
+          el.classList.add("avd-academy-http-status--" + Math.floor(code / 100) + "xx");
+        }
+      });
+    });
+</script>
+<link rel="apple-touch-icon" sizes="180x180" href="/training-material-container-technologies/theme/atvantage/assets/icon-180.png">
+<link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
+<link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
+
+  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790157026">
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790157026"></head><body class="avd-academy-guide">
+  <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><div class="avd-academy-metanav"><span>ATVANTAGE Academy</span>
+  </div>
+
+  <header class="avd-academy-header" data-avd-academy-header><a class="avd-academy-header__brand" href="/training-material-container-technologies/" aria-label="Startseite"><img class="avd-academy-header__logo" src="/training-material-container-technologies/assets/logo-schulung.svg" alt="ATVANTAGE Academy"></a><button class="avd-academy-tool avd-academy-header__burger" data-avd-academy-nav-toggle="#avd-academy-main-nav"
+          aria-label="Navigation umschalten" aria-expanded="false">☰</button><nav class="avd-academy-header__nav" id="avd-academy-main-nav">
+      <a href="/training-material-container-technologies/">Start</a><div class="avd-academy-header__group" data-avd-academy-menu>
+        <button type="button" class="avd-academy-header__grouptoggle"
+                aria-expanded="false" aria-haspopup="true">Allgemeines<span class="avd-academy-header__caret" aria-hidden="true">▾</span></button>
+        <div class="avd-academy-header__submenu" role="menu">
+          <a role="menuitem" href="/training-material-container-technologies/shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a>
+        </div>
+      </div>
+      <a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a>
+  </nav><div class="avd-academy-header__tools"><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
+                title="Diese Seite auf Deinem Smartphone öffnen"
+                aria-label="Diese Seite auf Deinem Smartphone öffnen"></button><button type="button" class="avd-academy-tool avd-academy-tool--theme avd-academy-theme-toggle" data-avd-academy-theme-toggle
+              title="Farbschema umschalten (hell/dunkel)"
+              aria-label="Farbschema umschalten">◐</button></div>
+</header>
+<section class="avd-academy-guide-hero"
+           aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a><span>/</span><span aria-current="page">Einen Container aus einem fremden Image betreiben</span></nav><div class="avd-academy-guide-hero__meta">
+      <div class="avd-academy-guide-hero__tags"><span class="avd-academy-tag avd-academy-tag--time">ca. 35 Minuten</span><span class="avd-academy-tag">Container</span><span class="avd-academy-tag">Images</span><span class="avd-academy-tag">Lebenszyklus</span>
+      </div>
+      <div class="avd-academy-guide-hero__actions">
+        <button type="button" class="avd-academy-btn avd-academy-btn--ghost avd-academy-copy-md"
+                data-avd-academy-copy-md="#avd-academy-md-source"
+                title="Markdown kopieren" aria-label="Markdown kopieren"></button>
+      </div>
+    </div><h1 id="avd-academy-page-title">Einen Container aus einem fremden Image betreiben</h1>
+  </section><div class="avd-academy-guide-layout">
+    <main class="avd-academy-guide-main avd-academy-guide-main--numbered" id="avd-academy-content">
+
+<p><strong>Als</strong> Entwicklerin <strong>möchte ich</strong> einen fertigen Webserver starten, ohne ihn zu
+installieren, <strong>damit</strong> ich sehe, was ein Image mitbringt – und was ich selbst
+dazugeben muss.</p>
+
+<h2 id="lernziele">Lernziele</h2>
+
+<p>Du…</p>
+
+<ul>
+  <li>ziehst ein Image aus einer Registry und erkennst am Namen, welchen Stand Du
+bekommen hast.</li>
+  <li>erzeugst, startest, stoppst und löschst einen Container mit jeweils einem eigenen
+Befehl.</li>
+  <li>listest laufende und angehaltene Container auf und unterscheidest die beiden
+Zustände.</li>
+  <li>führst einen Befehl <strong>in</strong> einem laufenden Container aus.</li>
+  <li>sagst voraus, was mit einer Datei im Container passiert, wenn er gestoppt bzw.
+gelöscht wird – und prüfst Deine Vorhersage.</li>
+</ul>
+
+<h2 id="definition-of-done">Definition of Done</h2>
+
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast <code>nginx</code> in zwei verschiedenen Ständen gezogen und beide in der
+Image-Liste gefunden.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Ein Container mit dem Namen <code>mein-webserver</code> läuft und liefert im Browser
+bzw. über <code>curl</code> die NGINX-Startseite aus.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast im laufenden Container eine zusätzliche Seite angelegt und sie
+abgerufen.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast den Container gestoppt, wieder gestartet und geprüft, ob die Seite
+noch da ist.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast den Container gelöscht, einen neuen aus demselben Image erzeugt und
+geprüft, ob die Seite noch da ist.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast die Reflexionsfragen schriftlich beantwortet.</li>
+</ul>
+
+<h2 id="arbeitsschritte">Arbeitsschritte</h2>
+
+<h3 id="ein-image-ziehen">Ein Image ziehen</h3>
+
+<p>Hol Dir zwei Stände desselben Images – einmal ohne Angabe eines Tags, einmal mit.</p>
+
+<pre><code class="language-bash">docker pull nginx
+</code></pre>
+
+<pre><code class="language-bash">docker pull nginx:1.27.5
+</code></pre>
+
+<p>Sieh Dir an, was jetzt lokal liegt:</p>
+
+<pre><code class="language-bash">docker images
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Schau in der Spalte <code>TAG</code> genau hin. Welchen Tag hat der erste
+Befehl gezogen, obwohl Du keinen angegeben hast?</p>
+</blockquote>
+
+<h3 id="dem-image-ein-eigenes-etikett-geben">Dem Image ein eigenes Etikett geben</h3>
+
+<p>Ein Image kann mehrere Namen tragen, ohne dass es zweimal auf der Platte liegt.</p>
+
+<pre><code class="language-bash">docker image tag nginx:1.27.5 mein-http:1.0.0
+</code></pre>
+
+<pre><code class="language-bash">docker images
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Vergleiche die Spalte <code>IMAGE ID</code> der beiden Zeilen. Was sagt Dir
+das darüber, was ein Tag eigentlich ist?</p>
+</blockquote>
+
+<h3 id="einen-container-erzeugen">Einen Container erzeugen</h3>
+
+<p>Erzeugen heißt noch nicht starten. Mach den Schritt bewusst einzeln.</p>
+
+<pre><code class="language-bash">docker container create --name mein-webserver -p 8080:80 mein-http:1.0.0
+</code></pre>
+
+<p>Sieh nach, ob er da ist:</p>
+
+<pre><code class="language-bash">docker container ls
+</code></pre>
+
+<pre><code class="language-bash">docker container ls -a
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Der erste Befehl zeigt Dir nichts, der zweite schon. Das ist kein
+Fehler – merk Dir den Unterschied, Du wirst ihn noch oft brauchen.</p>
+</blockquote>
+
+<h3 id="den-container-starten-und-aufrufen">Den Container starten und aufrufen</h3>
+
+<pre><code class="language-bash">docker container start mein-webserver
+</code></pre>
+
+<p>Ruf den Webserver auf:</p>
+
+<pre><code class="language-bash">curl http://localhost:8080
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Arbeitest Du lokal, geht auch der Browser unter
+<code>http://localhost:8080</code>. In der bereitgestellten Umgebung läuft der Container
+nicht auf dem Rechner Deines Browsers – nimm dort <code>curl</code> aus derselben Shell.</p>
+</blockquote>
+
+<h3 id="eine-datei-im-container-anlegen">Eine Datei im Container anlegen</h3>
+
+<p>Du kannst einen Befehl <strong>innerhalb</strong> eines laufenden Containers ausführen lassen.</p>
+
+<pre><code class="language-bash">docker container exec mein-webserver bash -c "echo 'Hallo Welt' &gt; /usr/share/nginx/html/hallo.html"
+</code></pre>
+
+<p>Prüfe, ob die neue Seite ausgeliefert wird:</p>
+
+<pre><code class="language-bash">curl http://localhost:8080/hallo.html
+</code></pre>
+
+<h3 id="stoppen-neu-starten-und-nachsehen">Stoppen, neu starten und nachsehen</h3>
+
+<pre><code class="language-bash">docker container stop mein-webserver
+</code></pre>
+
+<pre><code class="language-bash">docker container start mein-webserver
+</code></pre>
+
+<pre><code class="language-bash">curl http://localhost:8080/hallo.html
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Notiere Dein Ergebnis, bevor Du weitermachst. Gleich wird es
+interessant.</p>
+</blockquote>
+
+<h3 id="löschen-neu-erzeugen-und-nachsehen">Löschen, neu erzeugen und nachsehen</h3>
+
+<p>Überleg Dir <strong>vorher</strong>, was Du erwartest – dann probiere es aus.</p>
+
+<pre><code class="language-bash">docker container stop mein-webserver
+</code></pre>
+
+<pre><code class="language-bash">docker container rm mein-webserver
+</code></pre>
+
+<pre><code class="language-bash">docker container create --name mein-webserver -p 8080:80 mein-http:1.0.0
+</code></pre>
+
+<pre><code class="language-bash">docker container start mein-webserver
+</code></pre>
+
+<pre><code class="language-bash">curl http://localhost:8080/hallo.html
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Wenn das Ergebnis Dich überrascht, hast Du gerade den wichtigsten
+Punkt dieser Übung gefunden. Schreib ihn auf.</p>
+</blockquote>
+
+<h3 id="zum-schluss-aufräumen">Zum Schluss aufräumen</h3>
+
+<pre><code class="language-bash">docker container stop mein-webserver
+</code></pre>
+
+<pre><code class="language-bash">docker container rm mein-webserver
+</code></pre>
+
+<h2 id="reflexionsfragen">Reflexionsfragen</h2>
+
+<ul>
+  <li>Was sind Tags und wofür werden sie verwendet?</li>
+  <li>Was passiert, wenn Du beim Erzeugen des Containers keinen Namen angibst?</li>
+  <li>Was bedeuten beim Erzeugen eines Containers die Parameter <code>-e</code>, <code>-v</code> und <code>-p</code>?
+Was haben sie gemeinsam?</li>
+  <li>Was ist mit der Datei <code>hallo.html</code> passiert, als der Container gestoppt wurde?
+Und als er gelöscht und neu angelegt wurde? Wie erklärst Du den Unterschied?</li>
+  <li>Was macht der folgende Befehl, und wozu wäre er nützlich?
+<code>docker run --rm -it nginx:1.27.5 /bin/sh</code></li>
+</ul>
+
+
+<textarea id="avd-academy-md-source" hidden aria-hidden="true"># Einen Container aus einem fremden Image betreiben
+
+**Als** Entwicklerin **möchte ich** einen fertigen Webserver starten, ohne ihn zu
+installieren, **damit** ich sehe, was ein Image mitbringt – und was ich selbst
+dazugeben muss.
+
+## Lernziele
+
+Du…
+
+- ziehst ein Image aus einer Registry und erkennst am Namen, welchen Stand Du
+  bekommen hast.
+- erzeugst, startest, stoppst und löschst einen Container mit jeweils einem eigenen
+  Befehl.
+- listest laufende und angehaltene Container auf und unterscheidest die beiden
+  Zustände.
+- führst einen Befehl **in** einem laufenden Container aus.
+- sagst voraus, was mit einer Datei im Container passiert, wenn er gestoppt bzw.
+  gelöscht wird – und prüfst Deine Vorhersage.
+
+## Definition of Done
+
+* [ ] Du hast `nginx` in zwei verschiedenen Ständen gezogen und beide in der
+  Image-Liste gefunden.
+* [ ] Ein Container mit dem Namen `mein-webserver` läuft und liefert im Browser
+  bzw. über `curl` die NGINX-Startseite aus.
+* [ ] Du hast im laufenden Container eine zusätzliche Seite angelegt und sie
+  abgerufen.
+* [ ] Du hast den Container gestoppt, wieder gestartet und geprüft, ob die Seite
+  noch da ist.
+* [ ] Du hast den Container gelöscht, einen neuen aus demselben Image erzeugt und
+  geprüft, ob die Seite noch da ist.
+* [ ] Du hast die Reflexionsfragen schriftlich beantwortet.
+
+## Arbeitsschritte
+
+### Ein Image ziehen
+
+Hol Dir zwei Stände desselben Images – einmal ohne Angabe eines Tags, einmal mit.
+
+```bash
+docker pull nginx
+```
+
+```bash
+docker pull nginx:1.27.5
+```
+
+Sieh Dir an, was jetzt lokal liegt:
+
+```bash
+docker images
+```
+
+&gt; **Hinweis:** Schau in der Spalte `TAG` genau hin. Welchen Tag hat der erste
+&gt; Befehl gezogen, obwohl Du keinen angegeben hast?
+
+### Dem Image ein eigenes Etikett geben
+
+Ein Image kann mehrere Namen tragen, ohne dass es zweimal auf der Platte liegt.
+
+```bash
+docker image tag nginx:1.27.5 mein-http:1.0.0
+```
+
+```bash
+docker images
+```
+
+&gt; **Hinweis:** Vergleiche die Spalte `IMAGE ID` der beiden Zeilen. Was sagt Dir
+&gt; das darüber, was ein Tag eigentlich ist?
+
+### Einen Container erzeugen
+
+Erzeugen heißt noch nicht starten. Mach den Schritt bewusst einzeln.
+
+```bash
+docker container create --name mein-webserver -p 8080:80 mein-http:1.0.0
+```
+
+Sieh nach, ob er da ist:
+
+```bash
+docker container ls
+```
+
+```bash
+docker container ls -a
+```
+
+&gt; **Hinweis:** Der erste Befehl zeigt Dir nichts, der zweite schon. Das ist kein
+&gt; Fehler – merk Dir den Unterschied, Du wirst ihn noch oft brauchen.
+
+### Den Container starten und aufrufen
+
+```bash
+docker container start mein-webserver
+```
+
+Ruf den Webserver auf:
+
+```bash
+curl http://localhost:8080
+```
+
+&gt; **Hinweis:** Arbeitest Du lokal, geht auch der Browser unter
+&gt; `http://localhost:8080`. In der bereitgestellten Umgebung läuft der Container
+&gt; nicht auf dem Rechner Deines Browsers – nimm dort `curl` aus derselben Shell.
+
+### Eine Datei im Container anlegen
+
+Du kannst einen Befehl **innerhalb** eines laufenden Containers ausführen lassen.
+
+```bash
+docker container exec mein-webserver bash -c &quot;echo &apos;Hallo Welt&apos; &gt; /usr/share/nginx/html/hallo.html&quot;
+```
+
+Prüfe, ob die neue Seite ausgeliefert wird:
+
+```bash
+curl http://localhost:8080/hallo.html
+```
+
+### Stoppen, neu starten und nachsehen
+
+```bash
+docker container stop mein-webserver
+```
+
+```bash
+docker container start mein-webserver
+```
+
+```bash
+curl http://localhost:8080/hallo.html
+```
+
+&gt; **Hinweis:** Notiere Dein Ergebnis, bevor Du weitermachst. Gleich wird es
+&gt; interessant.
+
+### Löschen, neu erzeugen und nachsehen
+
+Überleg Dir **vorher**, was Du erwartest – dann probiere es aus.
+
+```bash
+docker container stop mein-webserver
+```
+
+```bash
+docker container rm mein-webserver
+```
+
+```bash
+docker container create --name mein-webserver -p 8080:80 mein-http:1.0.0
+```
+
+```bash
+docker container start mein-webserver
+```
+
+```bash
+curl http://localhost:8080/hallo.html
+```
+
+&gt; **Hinweis:** Wenn das Ergebnis Dich überrascht, hast Du gerade den wichtigsten
+&gt; Punkt dieser Übung gefunden. Schreib ihn auf.
+
+### Zum Schluss aufräumen
+
+```bash
+docker container stop mein-webserver
+```
+
+```bash
+docker container rm mein-webserver
+```
+
+## Reflexionsfragen
+
+- Was sind Tags und wofür werden sie verwendet?
+- Was passiert, wenn Du beim Erzeugen des Containers keinen Namen angibst?
+- Was bedeuten beim Erzeugen eines Containers die Parameter `-e`, `-v` und `-p`?
+  Was haben sie gemeinsam?
+- Was ist mit der Datei `hallo.html` passiert, als der Container gestoppt wurde?
+  Und als er gelöscht und neu angelegt wurde? Wie erklärst Du den Unterschied?
+- Was macht der folgende Befehl, und wozu wäre er nützlich?
+  `docker run --rm -it nginx:1.27.5 /bin/sh`
+
+## Weiterführende Informationen
+
+- [Docker CLI Reference](https://docs.docker.com/reference/cli/docker/)
+- [Das NGINX-Image auf Docker Hub](https://hub.docker.com/_/nginx)
+- [Die Schulungsumgebung nutzen](/shared/schulungsumgebung/)
+</textarea>
+    </main><aside class="avd-academy-guide-sidebar"><details class="avd-academy-guide-side avd-academy-guide-side--toc avd-academy-fold" data-avd-academy-toc-box
+               data-avd-academy-toc-grenze="12" open hidden>
+        <summary class="avd-academy-guide-side__label">Auf dieser Seite</summary>
+        <nav class="avd-academy-toc avd-academy-fold__body" data-avd-academy-toc aria-label="Inhaltsverzeichnis"></nav>
+      </details>
+      <div class="avd-academy-guide-side avd-academy-guide-side--bordered" data-avd-academy-progress hidden><div class="avd-academy-guide-side__label" id="avd-academy-progress-label">Fortschritt</div><div class="avd-academy-progress__bar" aria-labelledby="avd-academy-progress-label"><div class="avd-academy-progress__fill"></div></div>
+        <div class="avd-academy-progress__text"></div>
+      </div>
+      <div class="avd-academy-guide-side avd-academy-guide-side--bordered">
+        <div class="avd-academy-guide-side__label">Weiterführende Informationen</div>
+        <div class="avd-academy-guide-side__links"><a href="https://docs.docker.com/reference/cli/docker/" target="_blank" rel="noopener"><span>Docker CLI Reference</span></a><a href="https://hub.docker.com/_/nginx" target="_blank" rel="noopener"><span>Das NGINX-Image auf Docker Hub</span></a><a href="/shared/schulungsumgebung/"><span>Die Schulungsumgebung nutzen</span></a>
+        </div></div>
+    </aside>
+  </div><div class="avd-academy-print-contact" aria-hidden="true">
+    <span>Kontakt: https://www.atvantage.com</span>
+    <span>academy@atvantage.com</span>
+  </div>
+
+  <footer class="avd-academy-footer">
+  <div class="avd-academy-footer__grid">
+    <div><strong>Containertechnologien (Academy)</strong>
+      <p>Schulungsunterlagen der ATVANTAGE Academy.</p>
+    </div><div>
+      <strong>Kontakt</strong>
+      <p><a href="https://www.atvantage.com" target="_blank" rel="noopener">Website</a><br><a href="mailto:academy@atvantage.com">academy@atvantage.com</a><br>
+      </p>
+    </div></div>
+  <div class="avd-academy-footer__legal">
+    © <span data-avd-academy-year>2026</span> ATVANTAGE
+  </div>
+</footer>
+
+</body>
+</html>

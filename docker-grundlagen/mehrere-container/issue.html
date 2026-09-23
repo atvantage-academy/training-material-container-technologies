@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<!--
+  ATVANTAGE-Academy – EINZIGES Seitenlayout (Jekyll)
+  --------------------------------------------------
+  Ein Layout für alles: allgemeine Doku-Seiten UND Guides (Übungen/Anleitungen).
+  Optik nach der ATVANTAGE-Website: Meta-Nav, weiße sticky Kopfzeile, Hero-Band,
+  zweispaltig mit rechter Sidebar (automatisches Inhaltsverzeichnis, Fortschritt
+  aus Task-Listen, weiterführende Ressourcen). Überschriften ohne Emoji-Icons.
+
+  Verwendung im Front Matter:  layout: default   (oder `layout: guide` – Alias,
+  siehe guide.html; beides rendert dieselbe Guide-Ansicht)
+
+  `layout: visualization` (siehe visualization.html) rendert dieselbe Seite OHNE
+  obere Navigation (Meta-Leiste + Kopfzeile/TopNav), OHNE Brotkrumen und OHNE den
+  rechten Bereich (Inhaltsverzeichnis, Fortschritt, Ressourcen – auch bei gesetztem
+  `resources`), mit schmalerem Hero-Balken und breiterem, zentriertem Inhalt – für
+  eigenständige Visualisierungen/Simulationen.
+
+  Alle Front-Matter-Felder sind OPTIONAL (Convention over Configuration). Nur der
+  Titel ist faktisch erforderlich – als `title:` ODER als erste `#`-Überschrift:
+
+    title:       "…"                → sonst erste #-Überschrift (eins von beiden nötig)
+    description: "…"                → Meta-Description
+    duration:    8                  → Zahl in Minuten → Hero-Tag „ca. 8 Minuten“
+                                       (ungefähre LESEDAUER; bei Guides/Übungen die
+                                       Dauer der Übung, bei Visualisierungen die
+                                       Bearbeitungszeit – dort unüblich, aber erlaubt).
+    topics:      ["Cloud & DevOps"] → weitere Hero-Tags
+    resources:   [{title, url, icon}, …] → Sidebar-Karte „Weiterführende Informationen“.
+                                       title und/oder icon (Bildpfad); icon erscheint
+                                       rechts und wird kreisrund dargestellt.
+    breadcrumb:                     → Brotkrumen anpassen (beides optional):
+      label: "…"                    → überschreibt den Ordnernamen dieser Ebene;
+                                       in der Ordner-`index.md` gesetzt gilt es für
+                                       ALLE Seiten im Ordner und in Unterordnern.
+      ancestors: [{title, url}, …]  → explizite Vorfahren-Kette OHNE die aktuelle
+                                       Seite (diese wird automatisch angehängt); in
+                                       der `index.md` gesetzt wird sie vererbt.
+
+  „Markdown kopieren“ (Button im Hero) erscheint NUR auf Guides – dort ist das
+  Übernehmen des Quelltexts der Zweck. Bedingungen: Markdown-Seite (`.md`, nicht
+  reines HTML) UND der Schalter `toolbar.copy` (Vorgabe: nur `layout: guide`, siehe
+  `_includes/avd-switch.html`). Doku-Seiten und Visualisierungen haben ihn nicht –
+  bei letzteren, weil ihr Inhalt nicht sinnvoll als Markdown kopierbar ist.
+
+  DIE SEITENWERKZEUGE – QR-Code, Farbschema-Umschalter, Drucken – sind EINE
+  Komponente (`_includes/tools.html`) an zwei Standorten in diesem Rahmen:
+
+    Kopfzeile   `chrome: true`  (page, guide)      QR + Farbschema
+    Hero rechts `hero_tools`    (visualization)    QR + Farbschema + Drucken
+
+  Die Regel dahinter ist die Kopfzeile: Wo es sie gibt, tragen die Werkzeuge sie;
+  wo nicht, tritt der Hero an ihre Stelle. Drucken gibt es nur dort, weil auf einer
+  gewöhnlichen Seite der Browser-Befehl (Strg/Cmd+P) genügt, die rahmenlose
+  Ansicht aber keinen anderen Weg aufs Papier hat.
+
+  Der QR-Code wird erst im Browser erzeugt (theme/academy/atvantage.js), weil die
+  Adresse zur Build-Zeit nicht feststeht; ohne JavaScript erscheint er nicht.
+--><html lang="de">
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Die ganze Landschaft mit einem Befehl starten · Containertechnologien (Academy)</title><meta name="description" content="Die Landschaft aus Datenbank und Webserver in einer Compose-Datei beschreiben und mit einem einzigen Befehl starten, stoppen und wiederherstellen."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta property="og:title" content="Die ganze Landschaft mit einem Befehl starten">
+<meta property="og:description" content="Die Landschaft aus Datenbank und Webserver in einer Compose-Datei beschreiben und mit einem einzigen Befehl starten, stoppen und wiederherstellen.">
+<meta property="og:type" content="article"><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790157026"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790157026">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790157026">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790157026">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790157026"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790157026">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790157026" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790157026" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790157026">
+<script type="module">
+  const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
+  const _hlsprachen = ["java", "http", "json", "xml"];
+  Promise.all([import(_hlbase + "core.min.js"), ..._hlsprachen.map((s) => import(_hlbase + s + ".min.js"))])
+    .then(([core, ...grammatiken]) => {
+      const hljs = core.default;
+      _hlsprachen.forEach((s, i) => hljs.registerLanguage(s, grammatiken[i].default));
+      const _auswahl = _hlsprachen.map((s) => "pre code.language-" + s).join(",");
+      const _faerben = (wurzel) => (wurzel || document)
+        .querySelectorAll(_auswahl)
+        .forEach((el) => { if (!el.dataset.highlighted) { hljs.highlightElement(el); } });
+      _faerben(document);
+
+      /* NACHTRAEGLICH EINGEFUEGTER CODE. Die Hervorhebung laeuft einmal beim Laden.
+         Eine Seite, die ihre Codebloecke per Skript einsetzt - eine Visualisierung,
+         die rohe Nachrichten durchschaltet -, bekam deshalb gar keine Farben und
+         baute sich einen eigenen Hervorheber. Genau die Kopie, die das Theme
+         verhindern soll.
+
+         `AvdHighlight.apply(knoten)` faerbt, was seither dazugekommen ist; `hljs`
+         liegt daneben fuer Faelle, die mehr brauchen. Das Ereignis sagt Seiten, die
+         frueh zeichnen, wann der Haken da ist - die Module laden asynchron. */
+      window.AvdHighlight = { hljs, apply: _faerben, languages: _hlsprachen.slice() };
+      document.dispatchEvent(new CustomEvent("avd-academy-highlight-ready"));
+
+      /* Statuszeile nach Klasse einfaerben. highlight.js gibt jedem dreistelligen
+         Code dieselbe Klasse `hljs-number` - in einem Mitschnitt ist aber genau das
+         die Stelle, auf die man zuerst sieht: 2xx ist etwas anderes als 4xx.
+         Deshalb hier die einzige eigene Zutat, und bewusst nur diese: Die
+         Statusklassen von HTTP aendern sich nicht, das bleibt stabil. */
+      document.querySelectorAll("pre code.language-http .hljs-number").forEach((el) => {
+        const code = parseInt(el.textContent, 10);
+        if (code >= 100 && code <= 599) {
+          el.classList.add("avd-academy-http-status--" + Math.floor(code / 100) + "xx");
+        }
+      });
+    });
+</script>
+<link rel="apple-touch-icon" sizes="180x180" href="/training-material-container-technologies/theme/atvantage/assets/icon-180.png">
+<link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
+<link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
+
+  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790157026">
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790157026"></head><body class="avd-academy-guide">
+  <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><div class="avd-academy-metanav"><span>ATVANTAGE Academy</span>
+  </div>
+
+  <header class="avd-academy-header" data-avd-academy-header><a class="avd-academy-header__brand" href="/training-material-container-technologies/" aria-label="Startseite"><img class="avd-academy-header__logo" src="/training-material-container-technologies/assets/logo-schulung.svg" alt="ATVANTAGE Academy"></a><button class="avd-academy-tool avd-academy-header__burger" data-avd-academy-nav-toggle="#avd-academy-main-nav"
+          aria-label="Navigation umschalten" aria-expanded="false">☰</button><nav class="avd-academy-header__nav" id="avd-academy-main-nav">
+      <a href="/training-material-container-technologies/">Start</a><div class="avd-academy-header__group" data-avd-academy-menu>
+        <button type="button" class="avd-academy-header__grouptoggle"
+                aria-expanded="false" aria-haspopup="true">Allgemeines<span class="avd-academy-header__caret" aria-hidden="true">▾</span></button>
+        <div class="avd-academy-header__submenu" role="menu">
+          <a role="menuitem" href="/training-material-container-technologies/shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a>
+        </div>
+      </div>
+      <a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a>
+  </nav><div class="avd-academy-header__tools"><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
+                title="Diese Seite auf Deinem Smartphone öffnen"
+                aria-label="Diese Seite auf Deinem Smartphone öffnen"></button><button type="button" class="avd-academy-tool avd-academy-tool--theme avd-academy-theme-toggle" data-avd-academy-theme-toggle
+              title="Farbschema umschalten (hell/dunkel)"
+              aria-label="Farbschema umschalten">◐</button></div>
+</header>
+<section class="avd-academy-guide-hero"
+           aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a><span>/</span><span aria-current="page">Die ganze Landschaft mit einem Befehl starten</span></nav><div class="avd-academy-guide-hero__meta">
+      <div class="avd-academy-guide-hero__tags"><span class="avd-academy-tag avd-academy-tag--time">ca. 35 Minuten</span><span class="avd-academy-tag">Docker Compose</span><span class="avd-academy-tag">Servicenamen</span><span class="avd-academy-tag">Wiederholbarkeit</span>
+      </div>
+      <div class="avd-academy-guide-hero__actions">
+        <button type="button" class="avd-academy-btn avd-academy-btn--ghost avd-academy-copy-md"
+                data-avd-academy-copy-md="#avd-academy-md-source"
+                title="Markdown kopieren" aria-label="Markdown kopieren"></button>
+      </div>
+    </div><h1 id="avd-academy-page-title">Die ganze Landschaft mit einem Befehl starten</h1>
+  </section><div class="avd-academy-guide-layout">
+    <main class="avd-academy-guide-main avd-academy-guide-main--numbered" id="avd-academy-content">
+
+<p><strong>Als</strong> Mitglied des Teams <strong>möchte ich</strong> unsere Umgebung in einer Datei
+beschreiben, <strong>damit</strong> eine neue Kollegin sie mit einem Befehl aufbauen kann –
+ohne dass ihr jemand fünfzehn <code>docker</code>-Aufrufe diktiert.</p>
+
+<h2 id="lernziele">Lernziele</h2>
+
+<p>Du…</p>
+
+<ul>
+  <li>überführst eine Folge von <code>docker</code>-Befehlen in eine Compose-Beschreibung und
+ordnest jeden Parameter dem passenden Schlüssel zu.</li>
+  <li>startest, stoppst und entfernst eine mehrteilige Umgebung mit je einem Befehl.</li>
+  <li>sprichst einen Service von einem anderen aus über seinen <strong>Servicenamen</strong> an,
+ohne ein Netzwerk angelegt zu haben.</li>
+  <li>unterscheidest <code>down</code> von <code>down -v</code> und benennst, was jeweils verloren geht.</li>
+  <li>erklärst, was <code>depends_on</code> garantiert und was nicht.</li>
+</ul>
+
+<h2 id="definition-of-done">Definition of Done</h2>
+
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Eine Datei <code>compose.yaml</code> beschreibt drei Services: <code>datenbank</code>, <code>website</code>
+und <code>werkzeug</code>.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" /><code>docker compose up -d</code> startet alle drei, <code>docker compose ps</code> zeigt sie.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Deine Seite ist unter Port 8080 abrufbar.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Aus dem Service <code>werkzeug</code> heraus erreichst Du die Datenbank über den Namen
+<code>datenbank</code> – ohne dass Du ein Netzwerk angelegt hast.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Nach <code>docker compose down</code> und erneutem <code>up -d</code> sind Deine Tabellendaten noch
+da.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast die Reflexionsfragen schriftlich beantwortet.</li>
+</ul>
+
+<h2 id="arbeitsschritte">Arbeitsschritte</h2>
+
+<h3 id="aufräumen-und-ein-projektverzeichnis-anlegen">Aufräumen und ein Projektverzeichnis anlegen</h3>
+
+<p>Die Container von heute Vormittag belegen Namen und Ports.</p>
+
+<pre><code class="language-bash">docker container stop meine-db
+</code></pre>
+
+<pre><code class="language-bash">docker container rm meine-db
+</code></pre>
+
+<pre><code class="language-bash">mkdir ~/meine-landschaft
+</code></pre>
+
+<pre><code class="language-bash">cd ~/meine-landschaft
+</code></pre>
+
+<pre><code class="language-bash">mkdir html
+</code></pre>
+
+<pre><code class="language-bash">echo "&lt;h1&gt;Meine Landschaft&lt;/h1&gt;" &gt; html/index.html
+</code></pre>
+
+<h3 id="die-beschreibung-schreiben">Die Beschreibung schreiben</h3>
+
+<pre><code class="language-bash">nano compose.yaml
+</code></pre>
+
+<p>Schreib diese Beschreibung hinein:</p>
+
+<pre><code class="language-yaml">services:
+
+  datenbank:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: helloworld
+      POSTGRES_USER: kurs
+      POSTGRES_PASSWORD: geheim
+    volumes:
+      - db-daten:/var/lib/postgresql/data
+
+  website:
+    image: nginx:1.27.5
+    ports:
+      - "8080:80"
+    volumes:
+      - ./html:/usr/share/nginx/html:ro
+
+  werkzeug:
+    image: postgres:18
+    command: ["sleep", "infinity"]
+    environment:
+      PGPASSWORD: geheim
+    depends_on:
+      - datenbank
+
+volumes:
+  db-daten:
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> YAML kennt <strong>keine Tabulatoren</strong>, nur Leerzeichen. Wenn Dein
+Editor beim Tippen Tabulatoren einfügt, bricht die Datei – und die Meldung
+nennt nur die Zeilennummer, nicht die Ursache.</p>
+</blockquote>
+
+<p>Bevor Du startest: Geh die Datei mit Deiner Partnerin durch und ordne jeder Zeile
+den <code>docker</code>-Parameter von heute Vormittag zu, der ihr entspricht.</p>
+
+<h3 id="die-landschaft-starten">Die Landschaft starten</h3>
+
+<pre><code class="language-bash">docker compose up -d
+</code></pre>
+
+<pre><code class="language-bash">docker compose ps
+</code></pre>
+
+<pre><code class="language-bash">curl http://localhost:8080
+</code></pre>
+
+<h3 id="nachsehen-was-compose-angelegt-hat">Nachsehen, was Compose angelegt hat</h3>
+
+<pre><code class="language-bash">docker network ls
+</code></pre>
+
+<pre><code class="language-bash">docker volume ls
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Du hast weder ein Netzwerk noch ein Volume von Hand angelegt.
+Trotzdem sind beide da. Merk Dir die Namen – woraus sind sie gebildet?</p>
+</blockquote>
+
+<h3 id="die-datenbank-über-ihren-servicenamen-erreichen">Die Datenbank über ihren Servicenamen erreichen</h3>
+
+<pre><code class="language-bash">docker compose exec werkzeug psql -h datenbank -U kurs -d helloworld -c "SELECT 1"
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Beachte, was hier <strong>nicht</strong> steht: kein <code>docker network create</code>,
+keine IP-Adresse, kein veröffentlichter Port an der Datenbank. Woher kennt
+<code>werkzeug</code> die Adresse von <code>datenbank</code>?</p>
+</blockquote>
+
+<h3 id="daten-anlegen">Daten anlegen</h3>
+
+<pre><code class="language-bash">docker compose exec werkzeug psql -h datenbank -U kurs -d helloworld -c "CREATE TABLE gruss (id SERIAL PRIMARY KEY, text TEXT NOT NULL)"
+</code></pre>
+
+<pre><code class="language-bash">docker compose exec werkzeug psql -h datenbank -U kurs -d helloworld -c "INSERT INTO gruss (text) VALUES ('Hallo aus Compose')"
+</code></pre>
+
+<pre><code class="language-bash">docker compose exec werkzeug psql -h datenbank -U kurs -d helloworld -c "SELECT * FROM gruss"
+</code></pre>
+
+<h3 id="alles-wegräumen-und-wieder-aufbauen">Alles wegräumen und wieder aufbauen</h3>
+
+<pre><code class="language-bash">docker compose down
+</code></pre>
+
+<pre><code class="language-bash">docker compose ps -a
+</code></pre>
+
+<pre><code class="language-bash">docker compose up -d
+</code></pre>
+
+<pre><code class="language-bash">docker compose exec werkzeug psql -h datenbank -U kurs -d helloworld -c "SELECT * FROM gruss"
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Die Container waren weg und sind neu. Die Daten sind da. Erklär
+Dir selbst, warum – Du hast die Antwort heute Vormittag erarbeitet.</p>
+</blockquote>
+
+<h3 id="in-die-log-ausgaben-sehen">In die Log-Ausgaben sehen</h3>
+
+<pre><code class="language-bash">docker compose logs datenbank
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Such in der Ausgabe die Zeile, ab der die Datenbank Verbindungen
+annimmt. Wie lange hat es vom Start bis dahin gedauert? Was hieße das für einen
+Service, der sich sofort verbinden will?</p>
+</blockquote>
+
+<h3 id="bonus-freiwillig-eine-anwendung-dazwischensetzen">Bonus (freiwillig): eine Anwendung dazwischensetzen</h3>
+
+<p>Nur, wenn Du früh fertig bist. Leg eine kleine Anwendung an, die aus der Datenbank
+liest:</p>
+
+<pre><code class="language-bash">mkdir app
+</code></pre>
+
+<pre><code class="language-bash">nano app/server.py
+</code></pre>
+
+<pre><code class="language-python">import os
+from flask import Flask, jsonify
+import psycopg2
+
+app = Flask(__name__)
+
+@app.route("/gruesse")
+def gruesse():
+    verbindung = psycopg2.connect(
+        host=os.getenv("DB_HOST", "datenbank"),
+        dbname=os.getenv("DB_NAME", "helloworld"),
+        user=os.getenv("DB_USER", "kurs"),
+        password=os.getenv("DB_PASSWORD", "geheim"),
+    )
+    zeiger = verbindung.cursor()
+    zeiger.execute("SELECT text FROM gruss")
+    ergebnis = [zeile[0] for zeile in zeiger.fetchall()]
+    verbindung.close()
+    return jsonify(ergebnis)
+
+app.run(host="0.0.0.0", port=5000)
+</code></pre>
+
+<p>Ergänze in <code>compose.yaml</code> einen vierten Service (auf derselben Ebene wie die
+anderen):</p>
+
+<pre><code class="language-yaml">  anwendung:
+    image: python:3.12-slim
+    working_dir: /app
+    command: sh -c "pip install --no-cache-dir flask psycopg2-binary &amp;&amp; python server.py"
+    environment:
+      DB_HOST: datenbank
+    ports:
+      - "8081:5000"
+    volumes:
+      - ./app:/app
+    depends_on:
+      - datenbank
+</code></pre>
+
+<pre><code class="language-bash">docker compose up -d
+</code></pre>
+
+<pre><code class="language-bash">curl http://localhost:8081/gruesse
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Beim allerersten Start kann der Aufruf scheitern – die Anwendung
+installiert erst ihre Abhängigkeiten. Sieh mit <code>docker compose logs anwendung</code>
+nach, was gerade passiert.</p>
+</blockquote>
+
+<h2 id="reflexionsfragen">Reflexionsfragen</h2>
+
+<ul>
+  <li>Welches Netzwerk hast Du angelegt, damit die Services einander finden?</li>
+  <li>Wodurch unterscheidet sich der <strong>Servicename</strong> vom Container-Namen? Welcher von
+beiden ist die Adresse?</li>
+  <li>Was garantiert <code>depends_on</code> – und was garantiert es ausdrücklich nicht? Welchen
+Fehler erzeugt diese Verwechslung, und wann fällt er auf?</li>
+  <li>Was ist der Unterschied zwischen <code>docker compose down</code> und
+<code>docker compose down -v</code>?</li>
+  <li>Was hat sich gegenüber den Einzelbefehlen von heute Vormittag inhaltlich
+geändert – und was nicht?</li>
+  <li>Würdest Du eine solche Datei für den Produktionsbetrieb verwenden? Woran würdest
+Du merken, dass sie nicht mehr reicht?</li>
+</ul>
+
+
+<textarea id="avd-academy-md-source" hidden aria-hidden="true"># Die ganze Landschaft mit einem Befehl starten
+
+**Als** Mitglied des Teams **möchte ich** unsere Umgebung in einer Datei
+beschreiben, **damit** eine neue Kollegin sie mit einem Befehl aufbauen kann –
+ohne dass ihr jemand fünfzehn `docker`-Aufrufe diktiert.
+
+## Lernziele
+
+Du…
+
+- überführst eine Folge von `docker`-Befehlen in eine Compose-Beschreibung und
+  ordnest jeden Parameter dem passenden Schlüssel zu.
+- startest, stoppst und entfernst eine mehrteilige Umgebung mit je einem Befehl.
+- sprichst einen Service von einem anderen aus über seinen **Servicenamen** an,
+  ohne ein Netzwerk angelegt zu haben.
+- unterscheidest `down` von `down -v` und benennst, was jeweils verloren geht.
+- erklärst, was `depends_on` garantiert und was nicht.
+
+## Definition of Done
+
+* [ ] Eine Datei `compose.yaml` beschreibt drei Services: `datenbank`, `website`
+  und `werkzeug`.
+* [ ] `docker compose up -d` startet alle drei, `docker compose ps` zeigt sie.
+* [ ] Deine Seite ist unter Port 8080 abrufbar.
+* [ ] Aus dem Service `werkzeug` heraus erreichst Du die Datenbank über den Namen
+  `datenbank` – ohne dass Du ein Netzwerk angelegt hast.
+* [ ] Nach `docker compose down` und erneutem `up -d` sind Deine Tabellendaten noch
+  da.
+* [ ] Du hast die Reflexionsfragen schriftlich beantwortet.
+
+## Arbeitsschritte
+
+### Aufräumen und ein Projektverzeichnis anlegen
+
+Die Container von heute Vormittag belegen Namen und Ports.
+
+```bash
+docker container stop meine-db
+```
+
+```bash
+docker container rm meine-db
+```
+
+```bash
+mkdir ~/meine-landschaft
+```
+
+```bash
+cd ~/meine-landschaft
+```
+
+```bash
+mkdir html
+```
+
+```bash
+echo &quot;&lt;h1&gt;Meine Landschaft&lt;/h1&gt;&quot; &gt; html/index.html
+```
+
+### Die Beschreibung schreiben
+
+```bash
+nano compose.yaml
+```
+
+Schreib diese Beschreibung hinein:
+
+```yaml
+services:
+
+  datenbank:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: helloworld
+      POSTGRES_USER: kurs
+      POSTGRES_PASSWORD: geheim
+    volumes:
+      - db-daten:/var/lib/postgresql/data
+
+  website:
+    image: nginx:1.27.5
+    ports:
+      - &quot;8080:80&quot;
+    volumes:
+      - ./html:/usr/share/nginx/html:ro
+
+  werkzeug:
+    image: postgres:18
+    command: [&quot;sleep&quot;, &quot;infinity&quot;]
+    environment:
+      PGPASSWORD: geheim
+    depends_on:
+      - datenbank
+
+volumes:
+  db-daten:
+```
+
+&gt; **Hinweis:** YAML kennt **keine Tabulatoren**, nur Leerzeichen. Wenn Dein
+&gt; Editor beim Tippen Tabulatoren einfügt, bricht die Datei – und die Meldung
+&gt; nennt nur die Zeilennummer, nicht die Ursache.
+
+Bevor Du startest: Geh die Datei mit Deiner Partnerin durch und ordne jeder Zeile
+den `docker`-Parameter von heute Vormittag zu, der ihr entspricht.
+
+### Die Landschaft starten
+
+```bash
+docker compose up -d
+```
+
+```bash
+docker compose ps
+```
+
+```bash
+curl http://localhost:8080
+```
+
+### Nachsehen, was Compose angelegt hat
+
+```bash
+docker network ls
+```
+
+```bash
+docker volume ls
+```
+
+&gt; **Hinweis:** Du hast weder ein Netzwerk noch ein Volume von Hand angelegt.
+&gt; Trotzdem sind beide da. Merk Dir die Namen – woraus sind sie gebildet?
+
+### Die Datenbank über ihren Servicenamen erreichen
+
+```bash
+docker compose exec werkzeug psql -h datenbank -U kurs -d helloworld -c &quot;SELECT 1&quot;
+```
+
+&gt; **Hinweis:** Beachte, was hier **nicht** steht: kein `docker network create`,
+&gt; keine IP-Adresse, kein veröffentlichter Port an der Datenbank. Woher kennt
+&gt; `werkzeug` die Adresse von `datenbank`?
+
+### Daten anlegen
+
+```bash
+docker compose exec werkzeug psql -h datenbank -U kurs -d helloworld -c &quot;CREATE TABLE gruss (id SERIAL PRIMARY KEY, text TEXT NOT NULL)&quot;
+```
+
+```bash
+docker compose exec werkzeug psql -h datenbank -U kurs -d helloworld -c &quot;INSERT INTO gruss (text) VALUES (&apos;Hallo aus Compose&apos;)&quot;
+```
+
+```bash
+docker compose exec werkzeug psql -h datenbank -U kurs -d helloworld -c &quot;SELECT * FROM gruss&quot;
+```
+
+### Alles wegräumen und wieder aufbauen
+
+```bash
+docker compose down
+```
+
+```bash
+docker compose ps -a
+```
+
+```bash
+docker compose up -d
+```
+
+```bash
+docker compose exec werkzeug psql -h datenbank -U kurs -d helloworld -c &quot;SELECT * FROM gruss&quot;
+```
+
+&gt; **Hinweis:** Die Container waren weg und sind neu. Die Daten sind da. Erklär
+&gt; Dir selbst, warum – Du hast die Antwort heute Vormittag erarbeitet.
+
+### In die Log-Ausgaben sehen
+
+```bash
+docker compose logs datenbank
+```
+
+&gt; **Hinweis:** Such in der Ausgabe die Zeile, ab der die Datenbank Verbindungen
+&gt; annimmt. Wie lange hat es vom Start bis dahin gedauert? Was hieße das für einen
+&gt; Service, der sich sofort verbinden will?
+
+### Bonus (freiwillig): eine Anwendung dazwischensetzen
+
+Nur, wenn Du früh fertig bist. Leg eine kleine Anwendung an, die aus der Datenbank
+liest:
+
+```bash
+mkdir app
+```
+
+```bash
+nano app/server.py
+```
+
+```python
+import os
+from flask import Flask, jsonify
+import psycopg2
+
+app = Flask(__name__)
+
+@app.route(&quot;/gruesse&quot;)
+def gruesse():
+    verbindung = psycopg2.connect(
+        host=os.getenv(&quot;DB_HOST&quot;, &quot;datenbank&quot;),
+        dbname=os.getenv(&quot;DB_NAME&quot;, &quot;helloworld&quot;),
+        user=os.getenv(&quot;DB_USER&quot;, &quot;kurs&quot;),
+        password=os.getenv(&quot;DB_PASSWORD&quot;, &quot;geheim&quot;),
+    )
+    zeiger = verbindung.cursor()
+    zeiger.execute(&quot;SELECT text FROM gruss&quot;)
+    ergebnis = [zeile[0] for zeile in zeiger.fetchall()]
+    verbindung.close()
+    return jsonify(ergebnis)
+
+app.run(host=&quot;0.0.0.0&quot;, port=5000)
+```
+
+Ergänze in `compose.yaml` einen vierten Service (auf derselben Ebene wie die
+anderen):
+
+```yaml
+  anwendung:
+    image: python:3.12-slim
+    working_dir: /app
+    command: sh -c &quot;pip install --no-cache-dir flask psycopg2-binary &amp;&amp; python server.py&quot;
+    environment:
+      DB_HOST: datenbank
+    ports:
+      - &quot;8081:5000&quot;
+    volumes:
+      - ./app:/app
+    depends_on:
+      - datenbank
+```
+
+```bash
+docker compose up -d
+```
+
+```bash
+curl http://localhost:8081/gruesse
+```
+
+&gt; **Hinweis:** Beim allerersten Start kann der Aufruf scheitern – die Anwendung
+&gt; installiert erst ihre Abhängigkeiten. Sieh mit `docker compose logs anwendung`
+&gt; nach, was gerade passiert.
+
+## Reflexionsfragen
+
+- Welches Netzwerk hast Du angelegt, damit die Services einander finden?
+- Wodurch unterscheidet sich der **Servicename** vom Container-Namen? Welcher von
+  beiden ist die Adresse?
+- Was garantiert `depends_on` – und was garantiert es ausdrücklich nicht? Welchen
+  Fehler erzeugt diese Verwechslung, und wann fällt er auf?
+- Was ist der Unterschied zwischen `docker compose down` und
+  `docker compose down -v`?
+- Was hat sich gegenüber den Einzelbefehlen von heute Vormittag inhaltlich
+  geändert – und was nicht?
+- Würdest Du eine solche Datei für den Produktionsbetrieb verwenden? Woran würdest
+  Du merken, dass sie nicht mehr reicht?
+
+## Weiterführende Informationen
+
+- [Compose file reference](https://docs.docker.com/reference/compose-file/)
+- [docker compose – CLI Reference](https://docs.docker.com/reference/cli/docker/compose/)
+</textarea>
+    </main><aside class="avd-academy-guide-sidebar"><details class="avd-academy-guide-side avd-academy-guide-side--toc avd-academy-fold" data-avd-academy-toc-box
+               data-avd-academy-toc-grenze="12" open hidden>
+        <summary class="avd-academy-guide-side__label">Auf dieser Seite</summary>
+        <nav class="avd-academy-toc avd-academy-fold__body" data-avd-academy-toc aria-label="Inhaltsverzeichnis"></nav>
+      </details>
+      <div class="avd-academy-guide-side avd-academy-guide-side--bordered" data-avd-academy-progress hidden><div class="avd-academy-guide-side__label" id="avd-academy-progress-label">Fortschritt</div><div class="avd-academy-progress__bar" aria-labelledby="avd-academy-progress-label"><div class="avd-academy-progress__fill"></div></div>
+        <div class="avd-academy-progress__text"></div>
+      </div>
+      <div class="avd-academy-guide-side avd-academy-guide-side--bordered">
+        <div class="avd-academy-guide-side__label">Weiterführende Informationen</div>
+        <div class="avd-academy-guide-side__links"><a href="https://docs.docker.com/reference/compose-file/" target="_blank" rel="noopener"><span>Compose file reference</span></a><a href="https://docs.docker.com/reference/cli/docker/compose/" target="_blank" rel="noopener"><span>docker compose – CLI Reference</span></a>
+        </div></div>
+    </aside>
+  </div><div class="avd-academy-print-contact" aria-hidden="true">
+    <span>Kontakt: https://www.atvantage.com</span>
+    <span>academy@atvantage.com</span>
+  </div>
+
+  <footer class="avd-academy-footer">
+  <div class="avd-academy-footer__grid">
+    <div><strong>Containertechnologien (Academy)</strong>
+      <p>Schulungsunterlagen der ATVANTAGE Academy.</p>
+    </div><div>
+      <strong>Kontakt</strong>
+      <p><a href="https://www.atvantage.com" target="_blank" rel="noopener">Website</a><br><a href="mailto:academy@atvantage.com">academy@atvantage.com</a><br>
+      </p>
+    </div></div>
+  <div class="avd-academy-footer__legal">
+    © <span data-avd-academy-year>2026</span> ATVANTAGE
+  </div>
+</footer>
+
+</body>
+</html>

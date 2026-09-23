@@ -240,9 +240,16 @@
      Beide Spalten lesen jetzt dieselben drei Masse. Wer den Rhythmus einer
      Unterlage anpassen will, setzt sie um - und muss nicht mehr die Klassen des
      Themes ueberschreiben, was bei jeder Aenderung hier bricht. */
-  --avd-academy-rhythm-block:   1.1rem;   /* zwischen zwei Bloecken im Fluss */
-  --avd-academy-rhythm-section: 2.75rem;  /* vor einer neuen Abschnitts-Ueberschrift */
-  --avd-academy-rhythm-heading: 0.25rem;  /* NACH einer Ueberschrift - bindet sie an ihren Text */
+  --avd-academy-rhythm-block:      1.6rem;   /* zwischen zwei Bloecken im Fluss */
+  --avd-academy-rhythm-section:    3.75rem;  /* vor einer h2 - eine neue Abschnittsebene */
+  --avd-academy-rhythm-subsection: 2.5rem;   /* vor einer h3 und tiefer */
+  --avd-academy-rhythm-heading:    1.5rem;  /* NACH einer Ueberschrift - knapper als
+     der Blockabstand, damit die Ueberschrift an ihrem Text haengt und nicht frei
+     zwischen zwei Abschnitten schwebt. KNAPPER HEISST WIRKSAM KNAPPER: Bis 2.43.0
+     stand hier 0.25rem und kam nie an, weil der Wert mit dem margin-top der
+     Flussregel KOLLABIERT - gemessen waren es beide Male 17,6 px, und die gemeinte
+     Bindung gab es schlicht nicht. Die Flussregel nimmt Ueberschriften jetzt aus
+     (guide.css), erst dadurch entscheidet dieser Wert wirklich. */
 
   --avd-academy-transition: 160ms ease;
 }
