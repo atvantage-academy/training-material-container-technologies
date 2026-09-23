@@ -64,13 +64,13 @@
 <meta property="og:description" content="Vom Image in der Registry bis zum gelöschten Container – und was passiert, wenn in der Registry ein neuer Stand liegt.">
 <meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790162032"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790162032">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790162032">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790162032">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790162032"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790162032">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790162032" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790162032" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790162032">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790163466"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790163466">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790163466">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790163466">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790163466"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790163466">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790163466" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790163466" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790163466">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -112,8 +112,8 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/training-material-container-technologies/theme/atvantage/assets/icon-180.png">
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/simulation.css?v=1790162032"><script src="/training-material-container-technologies/theme/jekyll/simulation.js?v=1790162032"></script>
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790162032"></head>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/simulation.css?v=1790163466"><script src="/training-material-container-technologies/theme/jekyll/simulation.js?v=1790163466"></script>
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790163466"></head>
 <body class="avd-academy-sim" data-avd-academy-sim data-avd-academy-sim-title="Der Lebenszyklus eines Containers"
       data-avd-academy-sim-speed="1"
       data-avd-academy-sim-step-interval="3000">
@@ -135,11 +135,17 @@
   <main class="avd-academy-sim__main"><div class="avd-academy-sim__stage" id="avd-academy-sim-stage" data-avd-academy-sim-stage>
       <style>
   /* Nur Anordnung. Farben, Radien und Schatten kommen aus den Academy-Tokens
-     bzw. den Bausteinen `avd-academy-sim-*`. */
+     bzw. den Bausteinen `avd-academy-sim-*`.
+
+     DREI SPALTEN, und die mittlere ist der Punkt: Registry und Zielsystem sind
+     zwei ORTE, zwischen denen etwas uebertragen wird. Stuenden sie ohne Abstand
+     nebeneinander, waere die Uebertragung ein Sprung; mit der Leitung dazwischen
+     ist sie ein Weg. Die Registry bekommt die schmale Spalte – dort steht eine
+     Liste, im Zielsystem stehen drei Tafeln. */
   .lz {
     display: grid;
-    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-    gap: clamp(0.75rem, 0.4rem + 1.4vw, 1.75rem);
+    grid-template-columns: minmax(0, 0.34fr) clamp(3rem, 6vw, 7rem) minmax(0, 1fr);
+    gap: clamp(0.5rem, 0.3rem + 0.8vw, 1rem);
     align-content: center;
     min-height: 100%;
   }
@@ -157,6 +163,10 @@
     border: 2px dashed var(--avd-academy-color-border);
     border-radius: var(--avd-academy-radius-lg);
   }
+  /* Die Registry haelt oben Anschluss an die Leitung, statt sich ueber die
+     ganze Hoehe zu strecken – sie traegt nur eine Liste. */
+  .lz__ort--registry { align-self: start; }
+
   .lz__ort-titel {
     margin: 0;
     font-size: var(--avd-academy-fs-sm);
@@ -170,24 +180,98 @@
     text-transform: none;
     font-weight: var(--avd-academy-fw-normal);
   }
+  /* Der Verweis auf eine echte Registry macht den Ort konkret – ohne ihn bleibt
+     "Registry" eine Vokabel. Er oeffnet in einem neuen Tab: Ein Klick mitten in
+     der Vorfuehrung darf die Simulation nicht wegnehmen. */
+  .lz__ort-titel a {
+    color: var(--avd-academy-color-accent-ink, var(--avd-academy-color-ink));
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+  /* `stretch` statt `start`: Beide Tafeln nehmen die Hoehe der Zeile an und sind
+     damit immer gleich hoch. Mit `start` haette die Container-Tafel mal zwei, mal
+     einen Kasten - und die Images-Tafel daneben eine andere Hoehe als sie. */
   .lz__tafeln {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--avd-academy-space-3);
-    align-items: start;
+    align-items: stretch;
   }
   @media (max-width: 48rem) {
     .lz__tafeln { grid-template-columns: 1fr; }
   }
 
-  /* Platz des GRÖSSTEN Zustands von Anfang an reservieren – sonst schiebt die
-     wachsende Tafel alles darunter nach, und das sieht aus wie eine zweite
-     Animation. */
-  #reg-images     { min-height: 4.2rem; }
-  #lok-images     { min-height: 8.4rem; }
-  #lok-container  { min-height: 8.4rem; }
+  /* --- Die Leitung ----------------------------------------------------------
+     Sie liegt in der mittleren Spalte und trifft die Registry auf Hoehe ihrer
+     Image-Liste. Das Paket laeuft nur, wenn wirklich etwas uebertragen wird –
+     eine Leitung, auf der staendig etwas blinkt, sagt nichts mehr aus. */
+  .lz__leitung {
+    position: relative;
+    align-self: start;
+    margin-top: 3.6rem;
+    height: 2px;
+    background: var(--avd-academy-color-border);
+  }
+  .lz__leitung::before,
+  .lz__leitung::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 7px; height: 7px;
+    margin-top: -3.5px;
+    border-radius: 50%;
+    background: var(--avd-academy-color-border);
+  }
+  .lz__leitung::before { left: -3.5px; }
+  .lz__leitung::after  { right: -3.5px; }
+
+  .lz__paket {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 0.85rem; height: 0.85rem;
+    margin-top: -0.425rem;
+    margin-left: -0.425rem;
+    border-radius: var(--avd-academy-radius-sm, 3px);
+    background: var(--avd-academy-color-accent);
+    opacity: 0;
+  }
+  .lz__leitung.is-transfer .lz__paket {
+    animation: lz-transfer 900ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .lz__leitung.is-transfer { background: var(--avd-academy-color-accent); }
+  @keyframes lz-transfer {
+    0%   { left: 0;    opacity: 0; transform: scale(0.6); }
+    12%  { opacity: 1; transform: scale(1); }
+    88%  { opacity: 1; transform: scale(1); }
+    100% { left: 100%; opacity: 0; transform: scale(0.6); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lz__leitung.is-transfer .lz__paket { animation: none; opacity: 1; left: 50%; }
+  }
+  /* Untereinander gestapelt ist die waagerechte Leitung sinnlos – dann traegt
+     der Abstand allein. */
+  @media (max-width: 60rem) {
+    .lz__leitung { display: none; }
+  }
+
+  /* --- Jede Flaeche haelt von Anfang an ihre ENDGUELTIGE Hoehe ----------------
+     Sonst waechst die Buehne mit jedem Schritt, und weil sie senkrecht zentriert
+     steht, rutscht bei jedem Wachsen ALLES nach oben. Das sieht aus wie eine
+     zweite Animation und lenkt genau von der einen ab, auf die es ankommt.
+
+     Reserviert wird der groesste Zustand, den das jeweilige Szenario erreicht –
+     nicht der aktuelle. Leerer Platz ist billiger als ein springendes Bild. */
+  #reg-images   { min-height: 8.2rem; }   /* 2 Etiketten, je zweizeilig */
+  #reg-images-2 { min-height: 12.4rem; }  /* 3 Etiketten */
+  /* Gleicher Wert fuer beide: Images und Container sollen gleich hoch sein,
+     und die Container-Zeile ist die hoehere von beiden. */
+  #lok-images, #lok-images-2,
+  #lok-container, #lok-container-2  { min-height: 13.2rem; }  /* 2 Eintraege */
 
   /* Eine Zeile in einer Tafel: links der Name, rechts der Befund. */
+  /* Auch die einzelne Zelle haelt ihre Hoehe: Bekommt ein Container in Schritt 4
+     seine Datei, waere die Zeile sonst ploetzlich hoeher als vorher. */
   .lz-zeile__links,
   .lz-zeile__rechts {
     display: flex;
@@ -196,6 +280,14 @@
     min-width: 0;
   }
   .lz-zeile__rechts { align-items: flex-end; text-align: right; }
+  /* Die Registry-Spalte ist absichtlich schmal – dort steht Name UEBER Kennung
+     statt daneben, sonst quetscht `webserver:latest` die Plakette an den Rand. */
+  .lz__ort--registry .avd-academy-sim-cell {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
+  .lz__ort--registry .lz-zeile__rechts { align-items: flex-start; text-align: left; }
   .lz-zeile__name {
     font-weight: var(--avd-academy-fw-bold);
     font-size: 0.92em;
@@ -206,29 +298,138 @@
     font-size: 0.72em;
     color: var(--avd-academy-color-ink-muted);
   }
-  .lz-zeile__status { font-size: 0.78em; font-weight: var(--avd-academy-fw-bold); }
-  .lz-zeile__status--laeuft      { color: var(--avd-academy-color-success-ink); }
-  .lz-zeile__status--angehalten  { color: var(--avd-academy-color-ink-muted); }
+
+  /* --- Die Bindung Container -> Image ---------------------------------------
+     Ein Container ist an das Image gebunden, aus dem er erzeugt wurde. Als Text
+     ("aus a1b2c3") steht das da, aber man sieht es nicht – und in Szenario 2
+     haengt genau daran die Pointe: Der laufende Container zeigt nach dem `pull`
+     weiter auf das Image, das gerade seinen Namen verloren hat.
+
+     Deshalb traegt die Bindung eine FARBE, und zwar auf beiden Seiten dieselbe:
+     als Streifen an der Zelle und als Plakette mit der Kennung. Zwei Images
+     kommen in diesen Abloeufen vor, also zwei Farben – aus der kategorialen
+     Fuellpalette, die auch im Dark-Theme traegt. Der Container-Tafel wurde ihr
+     eigener Ton dafuer genommen: Sonst konkurrierte er mit den Plaketten darin. */
+  .lz-bindung--0 { --lz-bindung: var(--avd-academy-tone-4); --lz-bindung-ink: var(--avd-academy-tone-4-ink); }
+  .lz-bindung--1 { --lz-bindung: var(--avd-academy-tone-3); --lz-bindung-ink: var(--avd-academy-tone-3-ink); }
+
+  .avd-academy-sim-cell[class*="lz-bindung--"] {
+    border-left: 4px solid var(--lz-bindung);
+  }
+  .lz-chip {
+    display: inline-block;
+    padding: 0.05rem 0.34rem;
+    border-radius: var(--avd-academy-radius-sm, 3px);
+    background: color-mix(in srgb, var(--lz-bindung) 20%, transparent);
+    color: var(--lz-bindung-ink);
+    font-family: var(--avd-academy-font-mono);
+    font-size: 0.72em;
+    font-weight: var(--avd-academy-fw-bold);
+    white-space: nowrap;
+  }
+  .lz-chip__aus {
+    font-family: var(--avd-academy-font-body, inherit);
+    font-weight: var(--avd-academy-fw-normal);
+    color: var(--avd-academy-color-ink-muted);
+    margin-right: 0.3em;
+  }
+
+  /* --- Der Status als Zeichen, nicht als Wort --------------------------------
+     Aus drei Metern liest niemand "angehalten". Ein leuchtender Punkt und ein
+     Pausenzeichen sind auf einen Blick unterscheidbar – und der Unterschied ist
+     genau das, worum es in dieser Simulation geht. Das Wort bleibt fuer
+     Screenreader erhalten. */
+  .lz-status { display: inline-flex; align-items: center; }
+  .lz-status__zeichen {
+    display: inline-block;
+    width: 0.75rem; height: 0.75rem;
+    border-radius: 50%;
+    position: relative;
+  }
+  .lz-status--laeuft .lz-status__zeichen {
+    background: var(--avd-academy-color-success);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--avd-academy-color-success) 28%, transparent);
+  }
+  /* Pausenzeichen: zwei Balken, gebaut aus den beiden Pseudoelementen. */
+  .lz-status--angehalten .lz-status__zeichen {
+    border-radius: 0;
+    width: 0.7rem;
+  }
+  .lz-status--angehalten .lz-status__zeichen::before,
+  .lz-status--angehalten .lz-status__zeichen::after {
+    content: "";
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 0.24rem;
+    border-radius: 1px;
+    background: var(--avd-academy-color-ink-muted);
+  }
+  .lz-status--angehalten .lz-status__zeichen::before { left: 0; }
+  .lz-status--angehalten .lz-status__zeichen::after  { right: 0; }
+
   .lz-zeile__zustand {
     font-family: var(--avd-academy-font-mono);
     font-size: 0.72em;
     color: var(--avd-academy-color-ink-muted);
   }
+
+  /* --- Was in einem Container steckt ----------------------------------------
+     "laeuft" und "angehalten" sind Worte; was sie BEDEUTEN, sieht man erst an
+     dem, was drin ist. Vier Anteile, und ihr Verhalten ist genau der Lerninhalt
+     dieses Moduls:
+
+       Dateisystem   angelegt beim Erzeugen, ueberlebt `stop`, stirbt mit `rm`
+       Umgebung      dito - sie gehoert zur Festlegung, nicht zum Lauf
+       Prozesse      NUR waehrend er laeuft
+       Ports         NUR waehrend er laeuft (vorher ist nichts gebunden)
+
+     Beim `stop` erloeschen also zwei von vieren, beim `rm` alle. Wer das sieht,
+     braucht die Erklaerung nicht mehr. */
+  .lz-ctr { flex-direction: column; align-items: stretch; gap: 0.45rem; }
+  .lz-ctr__kopf { display: flex; justify-content: space-between; gap: 0.5rem; }
+  .lz-ctr__innen { display: flex; flex-wrap: wrap; gap: 0.22rem; }
+
+  .lz-teil {
+    font-size: 0.64em;
+    line-height: 1.5;
+    padding: 0.04rem 0.4rem;
+    border-radius: 999px;
+    border: 1px solid;
+    white-space: nowrap;
+  }
+  /* Vorhanden: gefuellt und mit durchgezogener Kante. */
+  .lz-teil.is-an {
+    border-style: solid;
+    border-color: color-mix(in srgb, var(--avd-academy-color-ink) 30%, transparent);
+    background: color-mix(in srgb, var(--avd-academy-color-ink) 8%, transparent);
+    color: var(--avd-academy-color-ink);
+  }
+  /* Nicht vorhanden: gestrichelt. KEIN `opacity` – das zoege die Schrift unter
+     die Kontrastschwelle; die gestrichelte Kante traegt die Aussage allein
+     (dieselbe Regel wie in der abgeloesten Visualisierung). */
+  .lz-teil.is-aus {
+    border-style: dashed;
+    border-color: var(--avd-academy-color-border);
+    background: transparent;
+    color: var(--avd-academy-color-ink-muted);
+  }
   /* Kein Zustand ist auch eine Aussage – der Platz bleibt, damit die Zeile beim
      Schreiben der Datei nicht springt. */
-  .lz-zeile__zustand:empty::before { content: "—"; }
+  .lz-zeile__zustand:empty::before { content: "\2014"; }
 
-  /* Die Kommandozeile. Sie füllt sich, statt sich zu ersetzen: Am Ende steht
-     alles da, was man getippt hat – das ist der Zettel, den man abfotografiert. */
-  .lz__term { grid-column: 1 / -1; }
-  #term {
+  /* --- Die Konsole ----------------------------------------------------------
+     Sie steht INNERHALB des Zielsystems, und das ist keine Kosmetik: Wer sie
+     daneben setzt, legt nahe, man tippe von aussen auf die Registry. Getippt
+     wird auf dem Zielsystem, und der Client dort spricht mit allem anderen.
+     Sie fuellt sich, statt sich zu ersetzen: Am Ende steht alles da, was man
+     getippt hat – der Zettel, den man abfotografiert. */
+  #term, #term-2 {
     gap: 0;
-    min-height: 7.5rem;
     padding: var(--avd-academy-space-3);
     border-radius: var(--avd-academy-radius);
     background: var(--avd-academy-code-bg);
     font-family: var(--avd-academy-font-mono);
-    font-size: clamp(0.72rem, 0.62rem + 0.35vw, 0.92rem);
+    font-size: clamp(0.68rem, 0.58rem + 0.32vw, 0.86rem);
     line-height: 1.75;
   }
   .lz-cmd { display: flex; gap: 0.55em; color: var(--avd-academy-color-ink-muted); }
@@ -238,48 +439,60 @@
   .lz-cmd.is-active { color: var(--avd-academy-color-ink); }
   .lz-cmd.is-active .lz-cmd__prompt { color: var(--avd-academy-color-accent); }
   .lz-cmd.is-active .lz-cmd__text { font-weight: var(--avd-academy-fw-bold); }
-  /* Solange nichts getippt wurde, steht der leere Prompt da – eine leere Fläche
-     wäre nicht als Kommandozeile erkennbar. */
-  #term:empty::before {
+  /* Solange nichts getippt wurde, steht der leere Prompt da – eine leere Flaeche
+     waere nicht als Konsole erkennbar. */
+  #term:empty::before, #term-2:empty::before {
     content: "$";
     color: var(--avd-academy-color-accent);
   }
+  /* Die Konsole ist die einzige Flaeche, die WIRKLICH waechst – und damit die
+     Hauptquelle des Ruckelns. Sie bekommt deshalb von Anfang an die Hoehe, die
+     sie am Ende braucht: `em` rechnet in ihrer eigenen Schriftgroesse, also
+     Zeilenzahl x Zeilenhoehe (1.75) plus das Polster.
+     Szenario 1 tippt 8 Befehle, Szenario 2 deren 5. */
+  #term   { min-height: calc(8 * 1.75em + 2 * var(--avd-academy-space-3)); }
+  #term-2 { min-height: calc(5 * 1.75em + 2 * var(--avd-academy-space-3)); }
 
-  /* Nebenbemerkung in der Erklärspalte: leiser als die Aussage des Schritts.
-     Die Erklärspalte liegt im selben Dokument, diese Regel greift also dort. */
+  /* Nebenbemerkung in der Erklaerspalte: leiser als die Aussage des Schritts.
+     Die Erklaerspalte liegt im selben Dokument, diese Regel greift also dort. */
   .lz-nb {
     font-size: 0.88em;
     color: var(--avd-academy-color-ink-muted);
+  }
+
+  .lz-nur-sr {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip-path: inset(50%); white-space: nowrap; border: 0;
   }
 </style>
 
 <div class="lz" data-avd-academy-sim-scene="container">
 
-  <div class="lz__ort">
-    <p class="lz__ort-titel">Registry <span>· irgendwo im Netz</span></p>
+  <div class="lz__ort lz__ort--registry">
+    <p class="lz__ort-titel">Registry <span>· z. B. <a href="https://hub.docker.com" target="_blank" rel="noopener">Docker Hub</a></span></p>
     <div class="avd-academy-sim-panel avd-academy-sim-panel--ton-1" id="reg-panel-1">
       <h2 class="avd-academy-sim-panel__title">Images</h2>
       <div class="avd-academy-sim-panel__body" id="reg-images"></div>
     </div>
   </div>
 
+  <div class="lz__leitung" id="leitung-1" aria-hidden="true"><span class="lz__paket"></span></div>
+
   <div class="lz__ort">
-    <p class="lz__ort-titel">Dein Rechner <span>· lokal</span></p>
+    <p class="lz__ort-titel">Zielsystem <span>· hier arbeitest Du</span></p>
     <div class="lz__tafeln">
       <div class="avd-academy-sim-panel avd-academy-sim-panel--ton-1">
         <h2 class="avd-academy-sim-panel__title">Images</h2>
         <div class="avd-academy-sim-panel__body" id="lok-images"></div>
       </div>
-      <div class="avd-academy-sim-panel avd-academy-sim-panel--ton-3">
+      <div class="avd-academy-sim-panel">
         <h2 class="avd-academy-sim-panel__title">Container</h2>
         <div class="avd-academy-sim-panel__body" id="lok-container"></div>
       </div>
     </div>
-  </div>
-
-  <div class="lz__term">
     <div class="avd-academy-sim-panel">
-      <h2 class="avd-academy-sim-panel__title">Kommandozeile <span class="avd-academy-sim-panel__hint">alles, was bisher getippt wurde</span></h2>
+      <h2 class="avd-academy-sim-panel__title">Konsole <span class="avd-academy-sim-panel__hint">alles, was bisher getippt wurde</span></h2>
       <div class="avd-academy-sim-panel__body" id="term"></div>
     </div>
   </div>
@@ -288,31 +501,30 @@
 
 <div class="lz" data-avd-academy-sim-scene="aktualisierung">
 
-  <div class="lz__ort">
-    <p class="lz__ort-titel">Registry <span>· irgendwo im Netz</span></p>
+  <div class="lz__ort lz__ort--registry">
+    <p class="lz__ort-titel">Registry <span>· z. B. <a href="https://hub.docker.com" target="_blank" rel="noopener">Docker Hub</a></span></p>
     <div class="avd-academy-sim-panel avd-academy-sim-panel--ton-1" id="reg-panel-2">
       <h2 class="avd-academy-sim-panel__title">Images</h2>
       <div class="avd-academy-sim-panel__body" id="reg-images-2"></div>
     </div>
   </div>
 
+  <div class="lz__leitung" id="leitung-2" aria-hidden="true"><span class="lz__paket"></span></div>
+
   <div class="lz__ort">
-    <p class="lz__ort-titel">Dein Rechner <span>· lokal</span></p>
+    <p class="lz__ort-titel">Zielsystem <span>· hier arbeitest Du</span></p>
     <div class="lz__tafeln">
       <div class="avd-academy-sim-panel avd-academy-sim-panel--ton-1">
         <h2 class="avd-academy-sim-panel__title">Images</h2>
         <div class="avd-academy-sim-panel__body" id="lok-images-2"></div>
       </div>
-      <div class="avd-academy-sim-panel avd-academy-sim-panel--ton-3">
+      <div class="avd-academy-sim-panel">
         <h2 class="avd-academy-sim-panel__title">Container</h2>
         <div class="avd-academy-sim-panel__body" id="lok-container-2"></div>
       </div>
     </div>
-  </div>
-
-  <div class="lz__term">
     <div class="avd-academy-sim-panel">
-      <h2 class="avd-academy-sim-panel__title">Kommandozeile <span class="avd-academy-sim-panel__hint">alles, was bisher getippt wurde</span></h2>
+      <h2 class="avd-academy-sim-panel__title">Konsole <span class="avd-academy-sim-panel__hint">alles, was bisher getippt wurde</span></h2>
       <div class="avd-academy-sim-panel__body" id="term-2"></div>
     </div>
   </div>
@@ -327,11 +539,20 @@
   /* Beide Szenarien teilen sich die Bühne. Die Kennung aus `ctx.scenario`
      entscheidet nur, WELCHE Tafeln gezeichnet werden – gezeichnet wird gleich. */
   var ZIELE = {
-    container:      { reg: "reg-images",   img: "lok-images",   ctr: "lok-container",   term: "term",   panel: "reg-panel-1" },
-    aktualisierung: { reg: "reg-images-2", img: "lok-images-2", ctr: "lok-container-2", term: "term-2", panel: "reg-panel-2" }
+    container:      { reg: "reg-images",   img: "lok-images",   ctr: "lok-container",   term: "term",   panel: "reg-panel-1", leitung: "leitung-1" },
+    aktualisierung: { reg: "reg-images-2", img: "lok-images-2", ctr: "lok-container-2", term: "term-2", panel: "reg-panel-2", leitung: "leitung-2" }
   };
 
   function hebt(s, id) { return (s.hebe || []).indexOf(id) !== -1; }
+
+  /* Welche Farbe eine Kennung traegt, steht fest und gilt in BEIDEN Szenarien –
+     sonst muesste man beim Wechsel neu lernen, was violett bedeutet. */
+  var BINDUNG = { a1b2c3: 0, a4f901: 1 };
+  function bindung(el, kurz) {
+    el.classList.remove("lz-bindung--0", "lz-bindung--1");
+    var n = BINDUNG[kurz];
+    if (n !== undefined) el.classList.add("lz-bindung--" + n);
+  }
 
   /* Eine Image-Zeile: Name links, kurze ID rechts. Die ID ist der Beleg dafür,
      dass zwei gleich benannte Images nicht dasselbe sein müssen. */
@@ -343,22 +564,39 @@
         '<span class="lz-zeile__name"></span>' +
       '</span>' +
       '<span class="lz-zeile__rechts">' +
-        '<span class="lz-zeile__id"></span>' +
+        '<span class="lz-chip"></span>' +
       '</span>';
     return el;
   }
 
+  /* Die vier Anteile in fester Reihenfolge: erst was bleibt, dann was mit dem
+     Lauf kommt und geht. So steht die Trennung schon in der Anordnung. */
+  var TEILE = [
+    { schl: "dateien",  text: "Dateisystem" },
+    { schl: "umgebung", text: "Umgebung" },
+    { schl: "prozesse", text: "Prozesse" },
+    { schl: "ports",    text: "Ports" }
+  ];
+
   function containerZeile() {
     var el = document.createElement("div");
-    el.className = "avd-academy-sim-cell";
+    el.className = "avd-academy-sim-cell lz-ctr";
     el.innerHTML =
-      '<span class="lz-zeile__links">' +
-        '<span class="lz-zeile__name"></span>' +
-        '<span class="lz-zeile__id"></span>' +
+      '<span class="lz-ctr__kopf">' +
+        '<span class="lz-zeile__links">' +
+          '<span class="lz-zeile__name"></span>' +
+          '<span><span class="lz-chip__aus">aus</span><span class="lz-chip"></span></span>' +
+        '</span>' +
+        '<span class="lz-zeile__rechts">' +
+          '<span class="lz-status"><span class="lz-status__zeichen"></span>' +
+          '<span class="lz-nur-sr"></span></span>' +
+          '<span class="lz-zeile__zustand"></span>' +
+        '</span>' +
       '</span>' +
-      '<span class="lz-zeile__rechts">' +
-        '<span class="lz-zeile__status"></span>' +
-        '<span class="lz-zeile__zustand"></span>' +
+      '<span class="lz-ctr__innen">' +
+        TEILE.map(function (t) {
+          return '<span class="lz-teil" data-teil="' + t.schl + '"></span>';
+        }).join("") +
       '</span>';
     return el;
   }
@@ -370,7 +608,8 @@
       create: imageZeile,
       update: function (el, x) {
         el.querySelector(".lz-zeile__name").textContent = x.name;
-        el.querySelector(".lz-zeile__id").textContent = x.kurz;
+        el.querySelector(".lz-chip").textContent = x.kurz;
+        bindung(el, x.kurz);
         el.classList.toggle("is-active", hebt(s, x.id));
       }
     });
@@ -388,12 +627,29 @@
       create: containerZeile,
       update: function (el, c) {
         el.querySelector(".lz-zeile__name").textContent = c.name;
-        el.querySelector(".lz-zeile__id").textContent = "aus " + c.kurz;
-        var st = el.querySelector(".lz-zeile__status");
-        st.textContent = c.status === "laeuft" ? "läuft" : "angehalten";
-        st.className = "lz-zeile__status lz-zeile__status--" +
-                       (c.status === "laeuft" ? "laeuft" : "angehalten");
+        el.querySelector(".lz-chip").textContent = c.kurz;
+        bindung(el, c.kurz);
+        /* Das Zeichen traegt die Aussage, das Wort bleibt fuer Screenreader
+           daneben stehen – ein Punkt allein ist nicht vorlesbar. */
+        var laeuft = c.status === "laeuft";
+        var st = el.querySelector(".lz-status");
+        st.className = "lz-status lz-status--" + (laeuft ? "laeuft" : "angehalten");
+        st.setAttribute("title", laeuft ? "läuft" : "angehalten");
+        el.querySelector(".lz-nur-sr").textContent = laeuft ? "läuft" : "angehalten";
         el.querySelector(".lz-zeile__zustand").textContent = c.zustand || "";
+
+        /* Dateisystem und Umgebung gehoeren zur Festlegung des Containers und
+           sind da, solange es ihn gibt. Prozesse und Ports gibt es nur, solange
+           er laeuft – deshalb haengen genau diese beiden am Status. */
+        var an = { dateien: true, umgebung: true, prozesse: laeuft, ports: laeuft };
+        TEILE.forEach(function (t) {
+          var pille = el.querySelector('[data-teil="' + t.schl + '"]');
+          var da = !!an[t.schl];
+          pille.textContent = (t.schl === "ports" && da && c.port) ? c.port : t.text;
+          pille.className = "lz-teil " + (da ? "is-an" : "is-aus");
+          pille.setAttribute("title", t.text + (da ? " – vorhanden" : " – nicht vorhanden, solange er nicht läuft"));
+        });
+
         el.classList.toggle("is-active", hebt(s, c.id));
       }
     });
@@ -421,17 +677,39 @@
       panel.classList.toggle("is-active", !!s.registryMeldet);
       if (s.registryMeldet && ctx.animated) { sim.pulse(panel); }
     }
+
+    /* Die Leitung laeuft NUR beim Schritt, der wirklich uebertraegt – und nur,
+       wenn genau einen Schritt weitergegangen wurde (`ctx.animated`). Beim
+       Springen und beim Zurueckgehen soll das Bild stehen, nicht nachtraeglich
+       etwas durch die Gegend schicken. Dasselbe Muster wie `sim.pulse`. */
+    var leitung = document.getElementById(ziel.leitung);
+    if (leitung) {
+      leitung.classList.remove("is-transfer");
+      if (s.uebertraegt && ctx.animated && ctx.direction > 0) {
+        void leitung.offsetWidth;                    // Reflow → Animation startet neu
+        leitung.classList.add("is-transfer");
+        setTimeout(function () { leitung.classList.remove("is-transfer"); }, 900);
+      }
+    }
   }
 
   sim.setup({
     state: function () {
-      return { remote: [], images: [], container: [], term: [], hebe: [], registryMeldet: false };
+      return { remote: [], images: [], container: [], term: [], hebe: [],
+               registryMeldet: false, uebertraegt: false };
     },
     render: zeichne
   });
 
   /* Hilfen, damit ein Schritt genau das sagt, was er tut. */
-  function tippt(s, nr, befehl) { s.term.push({ id: "t" + nr, cmd: befehl }); }
+  /* Jeder getippte Befehl setzt zugleich, ob dabei etwas ueber die Leitung geht.
+     Das MUSS hier passieren und nicht im einzelnen Schritt: `apply` laeuft beim
+     Zuruecksprung erneut, und ein Schritt, der das Flag nicht zuruecksetzt,
+     liesse die Leitung auch dort laufen, wo nichts uebertragen wird. */
+  function tippt(s, nr, befehl) {
+    s.term.push({ id: "t" + nr, cmd: befehl });
+    s.uebertraegt = befehl.indexOf("image pull") !== -1;
+  }
   function findeContainer(s, id) {
     for (var i = 0; i < s.container.length; i++) { if (s.container[i].id === id) return s.container[i]; }
     return null;
@@ -443,18 +721,23 @@
     description: "Ein Image wird gezogen, ein Container daraus erzeugt, gestartet, beschrieben, gestoppt und gelöscht – und ein zweiter zeigt, wem der Zustand gehört.",
     state: function () {
       return {
-        remote: [{ id: "r1", name: "webserver:latest", kurz: "a1b2c3" }],
-        images: [], container: [], term: [], hebe: ["r1"], registryMeldet: false
+        remote: [
+          { id: "r-10",     name: "webserver:1.0",    kurz: "a1b2c3" },
+          { id: "r-latest", name: "webserver:latest", kurz: "a1b2c3" }
+        ],
+        images: [], container: [], term: [], hebe: ["r-10", "r-latest"],
+        registryMeldet: false, uebertraegt: false
       };
     },
     steps: [
       {
         title: "Die Ausgangslage",
-        text: "<p>In der <b>Registry</b> liegt ein Image: <code>webserver:latest</code>. " +
-              "Dein Rechner kennt es noch nicht – die Tafeln rechts sind leer.</p>" +
-              "<p>Die kurze Kennung <code>a1b2c3</code> daneben ist der Fingerabdruck dieses Standes. " +
-              "Merk sie Dir; gleich wird sie wichtig.</p>",
-        apply: function (s) { s.hebe = ["r1"]; }
+        text: "<p>In der <b>Registry</b> liegt ein Image – und es trägt <b>zwei Etiketten</b>: " +
+              "<code>webserver:1.0</code> und <code>webserver:latest</code>. Beide zeigen auf " +
+              "denselben Stand, erkennbar an der gleichen Kennung und der gleichen Farbe.</p>" +
+              "<p>Dein Rechner kennt es noch nicht – die Tafeln rechts sind leer. Die kurze " +
+              "Kennung <code>a1b2c3</code> ist der Fingerabdruck dieses Standes; merk sie Dir.</p>",
+        apply: function (s) { s.hebe = ["r-10", "r-latest"]; }
       },
       {
         title: "Das Image herunterladen",
@@ -473,15 +756,15 @@
               "<b>nicht läuft</b>. Erzeugen und Starten sind zwei verschiedene Dinge.</p>" +
               "<p>Das Image hat sich dabei nicht verändert. Es verändert sich nie.</p>",
         apply: function (s) {
-          tippt(s, 2, "docker container create --name web-1 webserver:latest");
-          s.container.push({ id: "c1", name: "web-1", kurz: "a1b2c3", status: "angehalten", zustand: "" });
+          tippt(s, 2, "docker container create --name web-1 -p 8080:80 webserver:latest");
+          s.container.push({ id: "c1", name: "web-1", kurz: "a1b2c3", status: "angehalten", zustand: "", port: "8080" });
           s.hebe = ["c1"];
         }
       },
       {
         title: "Den Container starten",
-        text: "<p>Jetzt läuft er. Nur dieser Schritt hat den Prozess gestartet – " +
-              "erzeugt war der Container schon vorher.</p>" +
+        text: "<p>Jetzt läuft er – und erst jetzt gibt es <b>Prozesse</b> und einen <b>belegten Port</b>. " +
+              "Beide Merkmale unten in der Zelle sind eben von gestrichelt auf ausgefüllt gewechselt.</p>" +
               "<p><code>docker container ls</code> zeigt ab hier etwas an. " +
               "Vorher hätte man <code>ls -a</code> gebraucht: <i>„mein Container ist weg“</i> heißt " +
               "meistens <i>„er läuft nur nicht“</i>.</p>",
@@ -504,8 +787,9 @@
       },
       {
         title: "Stoppen – und die Datei bleibt",
-        text: "<p><code>stop</code> hält den Prozess an. <b>Der Container bleibt bestehen</b>, " +
-              "mit allem, was in ihm entstanden ist.</p>" +
+        text: "<p><code>stop</code> hält den Prozess an. <b>Zwei der vier Merkmale erlöschen</b>: " +
+              "Prozesse und Port. <b>Dateisystem und Umgebung bleiben</b> – sie gehören zur " +
+              "Festlegung des Containers, nicht zu seinem Lauf.</p>" +
               "<p>Ein <code>start</code> würde ihn mit der Datei wieder hochfahren. " +
               "Merk Dir diesen Zustand – zwei Schritte weiter wird er gelöscht.</p>",
         apply: function (s) {
@@ -523,15 +807,15 @@
               "<p class=\"lz-nb\"><code>run</code> ist dabei nur die Abkürzung für " +
               "<code>create</code> plus <code>start</code> – dieselben zwei Schritte wie oben, in einem Befehl.</p>",
         apply: function (s) {
-          tippt(s, 6, "docker container run -d --name web-2 webserver:latest");
-          s.container.push({ id: "c2", name: "web-2", kurz: "a1b2c3", status: "laeuft", zustand: "" });
+          tippt(s, 6, "docker container run -d --name web-2 -p 8081:80 webserver:latest");
+          s.container.push({ id: "c2", name: "web-2", kurz: "a1b2c3", status: "laeuft", zustand: "", port: "8081" });
           s.hebe = ["c2"];
         }
       },
       {
         title: "Löschen – und die Datei ist weg",
-        text: "<p><code>rm</code> wirft den Container weg, und mit ihm alles, was in ihm lag. " +
-              "<code>notiz.txt</code> gibt es nicht mehr.</p>" +
+        text: "<p><code>rm</code> wirft den Container weg, und mit ihm <b>alle vier Merkmale</b> – auch die " +
+              "beiden, die den <code>stop</code> überlebt hatten. <code>notiz.txt</code> gibt es nicht mehr.</p>" +
               "<p><b>Das Image ist unberührt.</b> Aus ihm lässt sich jederzeit ein neuer Container " +
               "erzeugen – nur eben wieder ohne die Datei.</p>",
         apply: function (s) {
@@ -563,10 +847,13 @@
     description: "In der Registry liegt plötzlich eine neue Fassung. Was davon lokal ankommt, was nicht – und warum der laufende Container am alten Stand hängen bleibt.",
     state: function () {
       return {
-        remote:    [{ id: "r1", name: "webserver:latest", kurz: "a1b2c3" }],
+        remote: [
+          { id: "r-10",     name: "webserver:1.0",    kurz: "a1b2c3" },
+          { id: "r-latest", name: "webserver:latest", kurz: "a1b2c3" }
+        ],
         images:    [{ id: "i1", name: "webserver:latest", kurz: "a1b2c3" }],
-        container: [{ id: "c1", name: "web-1", kurz: "a1b2c3", status: "laeuft", zustand: "" }],
-        term: [], hebe: [], registryMeldet: false
+        container: [{ id: "c1", name: "web-1", kurz: "a1b2c3", status: "laeuft", zustand: "", port: "8080" }],
+        term: [], hebe: [], registryMeldet: false, uebertraegt: false
       };
     },
     steps: [
@@ -579,21 +866,33 @@
       },
       {
         title: "In der Registry wird neu gebaut",
-        text: "<p>Eine Kollegin hat das Image neu gebaut und hochgeladen. In der Registry steht " +
-              "jetzt <code>a4f901</code> – <b>unter demselben Namen</b>.</p>" +
+        text: "<p>Eine Kollegin hat das Image neu gebaut und als <code>webserver:1.1</code> " +
+              "hochgeladen. <b>Das Etikett <code>latest</code> ist mitgewandert</b> – es zeigt " +
+              "jetzt auf <code>a4f901</code>.</p>" +
+              "<p><b>Der alte Stand ist nicht weg.</b> Er heißt weiter <code>webserver:1.0</code> " +
+              "und liegt unverändert da. Ein Versionstag bleibt, wo er ist; <code>latest</code> " +
+              "wandert.</p>" +
               "<p>Sieh auf Deinen Rechner: <b>Dort hat sich nichts geändert.</b> Kein Befehl ist " +
               "gelaufen, nichts hat sich gemeldet. Der Container läuft weiter wie bisher – und " +
               "niemand merkt es.</p>",
         apply: function (s) {
-          s.remote = [{ id: "r2", name: "webserver:latest", kurz: "a4f901" }];
-          s.hebe = ["r2"];
+          s.remote = [
+            { id: "r-10",     name: "webserver:1.0",    kurz: "a1b2c3" },
+            { id: "r-11",     name: "webserver:1.1",    kurz: "a4f901" },
+            { id: "r-latest", name: "webserver:latest", kurz: "a4f901" }
+          ];
+          s.hebe = ["r-11", "r-latest"];
           s.registryMeldet = true;
         }
       },
       {
         title: "Den neuen Stand holen",
-        text: "<p>Der neue Stand ist jetzt lokal. Der alte ist <b>nicht weg</b> – er hat nur seinen " +
-              "Namen verloren, denn der Name zeigt jetzt auf den neuen.</p>" +
+        text: "<p>Der neue Stand ist jetzt lokal. Der alte ist <b>nicht weg</b> – aber er hat " +
+              "seinen Namen verloren: Lokal hast Du nur je <code>latest</code> geholt, und dieses " +
+              "Etikett zeigt jetzt woandershin.</p>" +
+              "<p><b>Vergleich die beiden Seiten.</b> In der Registry heißt derselbe Stand weiter " +
+              "<code>webserver:1.0</code> – lokal heißt er <code>&lt;none&gt;</code>. Wer einen " +
+              "Versionstag zieht statt <code>latest</code>, hat dieses Problem nicht.</p>" +
               "<p><b>Und der laufende Container hängt weiter am alten.</b> Ein <code>pull</code> " +
               "fasst keinen Container an; er legt nur ein Image daneben.</p>",
         apply: function (s) {
@@ -635,8 +934,8 @@
               "ist ein anderer: <code>a4f901</code>.</p>" +
               "<p>Er ist noch angehalten. Erzeugen und Starten bleiben zwei Dinge.</p>",
         apply: function (s) {
-          tippt(s, 4, "docker container create --name web-1 webserver:latest");
-          s.container = [{ id: "c2", name: "web-1", kurz: "a4f901", status: "angehalten", zustand: "" }];
+          tippt(s, 4, "docker container create --name web-1 -p 8080:80 webserver:latest");
+          s.container = [{ id: "c2", name: "web-1", kurz: "a4f901", status: "angehalten", zustand: "", port: "8080" }];
           s.hebe = ["c2"];
         }
       },

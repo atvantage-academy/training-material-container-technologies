@@ -180,23 +180,45 @@
    muessen sie ihn selbst mitbringen - sonst kleben sie am Absatz davor. */
 .avd-academy-guide-main > ul, .avd-academy-guide-main > ol { margin-bottom: 0; }
 
-/* --- Rhythmus AUCH INNERHALB der Fluss-Container --------------------------
-   `* { margin: 0 }` aus base.css raeumt alle Abstaende ab; zurueck holt sie die
-   Eulenregel darueber - aber nur fuer DIREKTE Kinder. Alles, was in einem
-   Container steckt, blieb damit ohne Abstand: Zwei Absaetze in einem Callout, in
-   einem Zitat oder in einer Tabellenzelle klebten aneinander.
+/* ---------------------------------------------------------------------------
+   DER RHYTHMUS GILT AUCH INNERHALB DER FLUSS-CONTAINER.
 
-   GEMESSEN an einer echten Seite (Trainerleitfaden eines Schulungsrepos): 2 von 3
-   `blockquote` und der einzige Callout hatten je zwei Absaetze ohne einen Pixel
-   dazwischen. Auf dem Bildschirm liest sich das wie ein einziger Block - und es
-   traf jede Seite jedes Repos, nicht eine einzelne.
+   `base.css` raeumt mit `* { margin: 0 }` alles ab; zurueck holt ihn die
+   Eulenregel darueber - aber die zaehlt nur DIREKTE Kinder der Inhaltsspalte.
+   Alles, was in einem Container steckt, bliebe bei `margin: 0`: zwei Absaetze in
+   einem Callout klebten aneinander, eine Liste stiess hart an den Absatz darunter.
 
-   `:where()` HAELT DIE SPEZIFITAET BEI NULL: Ein Repo, das in seiner custom.css
-   einen dieser Container eigens setzt, gewinnt weiterhin ohne `!important`. Und
-   die Regel zaehlt nur Geschwister - ein einzelnes Kind bekommt nichts.
-   ------------------------------------------------------------------------- */
+   DIESE AUFZAEHLUNG IST DIE SCHWACHSTELLE, UND ZWAR NACHWEISLICH. Sie muss bei
+   JEDEM neuen Fluss-Container von Hand nachgezogen werden - in ZWEI Dateien
+   (hier und `jekyll/site.css`). Genau das ist zweimal unterblieben:
+
+     * Die REITER (`avd-academy-tabs__panel`) fehlten seit ihrer Einfuehrung.
+       Gemeldet aus `training-concept-container-technologies` (A-005), gemessen
+       an einer `<ul>`, der unmittelbar ein Absatz folgte: 0 Pixel. Und weil das
+       Didaktikon Reiter fuer JEDES Regiebuch vorschreibt, stand der ganze
+       Inhalt jedes Regiebuchs in genau diesem Container.
+     * Das AKKORDEON (`avd-academy-accordion__body`) fehlte vom ersten Tag an -
+       eingetragen hat es niemand, obwohl die Regel bekannt war.
+
+   DESHALB `avd-academy-flow` ALS MARKE. Wer einen Fluss-Container baut - im
+   Theme oder in einem Repo -, gibt ihm diese Klasse und ist dabei. Das ersetzt
+   die Aufzaehlung nicht, aber es nimmt ihr die Rolle als einzigem Weg: Eine
+   Unterlage muss nicht mehr auf ein Theme-Release warten, um ihren eigenen
+   Container in den Rhythmus zu bringen.
+
+   WARUM NICHT UMGEKEHRT - "alles ausser ..."? Erwogen und verworfen. Die
+   Ausnahmeliste waere laenger als diese hier (Reiterleiste, Karten-Gitter,
+   Materialspalten, Zeilenerklaerung, das Akkordeon SELBST, die Demo-Buehne,
+   und `ul > li + li` bekaeme ploetzlich Blockabstand). Der Vorteil waere die
+   Fehlerrichtung: ein vergessener Eintrag faellt als ZU VIEL Abstand auf statt
+   als gar keiner. Diesen Umbau in einem Zug zu machen, waere allerdings ein
+   Eingriff in jede Seite jedes Repos - das gehoert in einen eigenen Schnitt und
+   nicht in die Behebung eines gemeldeten Befunds.
+   --------------------------------------------------------------------------- */
 .avd-academy-guide-main :where(blockquote, li, td, th, figure,
-  .avd-academy-callout, .avd-academy-reveal__body, .avd-academy-fold__body) > * + * {
+  .avd-academy-callout, .avd-academy-reveal__body, .avd-academy-fold__body,
+  .avd-academy-tabs__panel, .avd-academy-accordion__body,
+  .avd-academy-flow) > * + * {
   margin-top: var(--avd-academy-rhythm-block);
 }
 
@@ -294,7 +316,12 @@
   font-size: 1.125rem; font-weight: 600;
 }
 
-.avd-academy-guide-main ul, .avd-academy-guide-main ol { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; }
+/* KEIN `margin: 0` HIER. Es waere redundant - `base.css` raeumt mit
+   `* { margin: 0 }` ohnehin alles ab -, aber es steht NACH der Eulenregel und
+   hat hoehere Spezifitaet (0-1-1 gegen 0-1-0). Die Liste verlor damit ihren
+   Blockabstand, und zwar ueberall: auf der Seite wie im Container. Gemessen an
+   der Bausteine-Seite: `margin-top: 0px` an jeder `<ul>`. */
+.avd-academy-guide-main ul, .avd-academy-guide-main ol { padding-left: 22px; display: flex; flex-direction: column; gap: 8px; }
 .avd-academy-guide-main li > ul, .avd-academy-guide-main li > ol { margin-top: 8px; }
 
 /* Definition of Done: GFM-Task-Liste als Karte
@@ -350,8 +377,11 @@
   font-family: var(--avd-academy-font-mono, monospace);
   font-size: 0.9em;
 }
+/* Ebenfalls OHNE `margin: 0` - dieselbe Begruendung wie bei den Listen. Ein
+   Zitat nach einem Absatz stand sonst hart daran, und ein Zitat VOR einer
+   Tabelle liess die Tabelle hart anstossen (gemeldet aus
+   `training-concept-container-technologies`, A-005). */
 .avd-academy-guide-main blockquote {
-  margin: 0;
   padding: 12px 18px;
   border-left: 3px solid var(--avd-slate);
   background: var(--avd-academy-color-bg-subtle);

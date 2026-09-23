@@ -1597,6 +1597,13 @@ pre > .avd-academy-copy.is-copied { opacity: 1; }
 .avd-academy-tabs--enhanced > .avd-academy-tabs__panel[open] {
   padding: var(--avd-academy-space-6, 1.5rem);
 }
+/* DAS UNSICHTBARE `summary` ZAEHLT TROTZDEM ALS GESCHWISTER. Im Reiterstreifen
+   ist es `display: none`; die Eulenregel des Rhythmus sieht es dennoch und gibt
+   dem ersten sichtbaren Element einen Blockabstand - der zum Innenabstand des
+   Panels hinzukaeme. Gemessen: 24 px Padding plus 25,6 px Marge ueber dem ersten
+   Absatz. Im Akkordeon-Zustand (ohne `--enhanced`) ist das `summary` sichtbar,
+   und dort gehoert der Abstand hin; deshalb greift diese Regel nur hier. */
+.avd-academy-tabs--enhanced > .avd-academy-tabs__panel > summary + * { margin-top: 0; }
 
 /* --- Reiter links statt oben (`--side`) ----------------------------------- *
    WOFUER: Beschriftungen, die ganze Saetze sind. Der waagerechte Streifen

@@ -64,13 +64,13 @@
 <meta property="og:description" content="Docker-Grundlagen für Entwickler – zwei Tage vom ersten Container bis zum eigenen, veröffentlichten Image.">
 <meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790162032"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790162032">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790162032">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790162032">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790162032"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790162032">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790162032" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790162032" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790162032">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790163466"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790163466">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790163466">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790163466">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790163466"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790163466">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790163466" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790163466" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790163466">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -113,8 +113,8 @@
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
 
-  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790162032">
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790162032"></head><body class="avd-academy-guide">
+  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790163466">
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790163466"></head><body class="avd-academy-guide">
   <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><div class="avd-academy-metanav"><span>ATVANTAGE Academy</span>
   </div>
 
@@ -146,25 +146,26 @@
 
 <h2 id="zielgruppe">Zielgruppe</h2>
 
-<p><strong>Softwareentwickler:innen</strong>, die ihre Anwendungen künftig in Containern bauen und
-betreiben – unabhängig von Sprache und Framework. Ebenso geeignet für
-<strong>Entwickler:innen in DevOps-Teams</strong>, die verstehen wollen, was die Plattform von
-einem Image erwartet.</p>
+<p><strong>IT-Beschäftigte, die künftig mit Containern arbeiten</strong> – unabhängig von Sprache,
+Framework und Rolle. Das sind in erster Linie <strong>Softwareentwickler:innen</strong>, die ihre
+Anwendungen in Containern bauen und betreiben sollen; ebenso richtet sich der Kurs
+an <strong>Test-, Build- und betriebsnahe Rollen</strong>, an <strong>Systemintegration</strong> und an
+<strong>technische Projektleitung</strong>, die mitreden können muss, wenn über Images
+entschieden wird.</p>
 
-<p>Mitzubringen sind:</p>
-
-<ul>
-  <li><strong>Erfahrung in der Softwareentwicklung</strong> – eine eigene Anwendung, die irgendwo
-laufen muss, und ein Gefühl dafür, was Konfiguration von Code unterscheidet.</li>
-  <li><strong>Grundkenntnisse in Git</strong> – ein Repository klonen, Änderungen committen und
-pushen.</li>
-</ul>
+<p>Mitzubringen ist <strong>Erfahrung mit Software, die irgendwo laufen muss</strong> – ein Gefühl
+dafür, was Konfiguration von Programmcode unterscheidet und woran es liegt, wenn
+etwas auf einem Rechner läuft und auf dem nächsten nicht. Eine Anwendung selbst
+geschrieben zu haben ist hilfreich, aber nicht erforderlich.</p>
 
 <p><strong>Kommandozeilenerfahrung wird ausdrücklich nicht vorausgesetzt.</strong> Alle Übungen
 laufen zwar auf der Kommandozeile – das ist bei Containern die einzige Umgebung,
 die überall gleich funktioniert –, aber sie kommen mit einer Handvoll Befehle aus,
 die zu Kursbeginn gemeinsam durchgegangen werden. Wer <code>cd</code> und <code>ls</code> kennt, ist
 bereit.</p>
+
+<p>Ebenso wenig sind <strong>Git-Kenntnisse</strong> nötig: In den Übungen wird nichts geklont und
+nichts gepusht.</p>
 
 <p>Der Kurs ist <strong>kein Administrationskurs</strong>: Es geht nicht darum, eine
 Container-Plattform zu betreiben, sondern darum, Anwendungen so zu bauen, dass eine
@@ -226,6 +227,8 @@ was davon wiederverwendbar ist</li>
 Stelle dabei Daten verloren gehen (<em>Lebenszyklus</em>)</li>
   <li>Woher ein Image kommt und wie man dasselbe zweimal bekommt (<em>Registry,
 Repository, Tag</em>)</li>
+  <li>Wer den Befehl eigentlich ausführt, den Du tippst – und warum das erklärt, wieso
+Docker unter Windows und macOS anders arbeitet (<em>Client, Daemon, Registry</em>)</li>
 </ul>
 
 <h3 id="konfiguration-statt-neubau">Konfiguration statt Neubau</h3>
@@ -300,8 +303,6 @@ Docker Desktop, bedient aus der Git Bash) oder als bereitgestellte Umgebung, in
 der über eine Shell im Browser gearbeitet wird. Welcher Weg gilt, wird vor dem
 Kurs abgestimmt; die Übungen sind in beiden Fällen identisch. Einzelheiten:
 <a href="../shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a>.</li>
-  <li><strong>Ein Git-Client</strong> und ein Repository, in das eigene Ergebnisse gepusht werden
-können.</li>
   <li><strong>Ein Konto bei einer Container-Registry</strong> mit Schreibrecht auf ein eigenes
 Repository – wird für das Veröffentlichen eigener Images gebraucht.</li>
   <li><strong>Internetzugang im Browser</strong> für Dokumentation und Registry.</li>
