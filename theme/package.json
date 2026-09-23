@@ -1,0 +1,69 @@
+{
+  "name": "@avd-academy-tools/academy-theme",
+  "version": "2.44.0",
+  "description": "ATVANTAGE Academy – Design-Fundament (Theme): Farben, Schriften, Logos, Header/Footer, Basiskomponenten. Reines CSS/JS, abhängigkeitsfrei.",
+  "style": "academy/atvantage.css",
+  "main": "academy/atvantage.js",
+  "sideEffects": [
+    "**/*.css",
+    "academy/atvantage.js"
+  ],
+  "_filesComment": [
+    "BEWUSST ENG. Ausgeliefert wird nur, was eine Site zur Laufzeit braucht - Layouts,",
+    "Includes, CSS, JS, Assets. Das Fundament bringt daneben seine WERKSTATT mit:",
+    "components/, guidelines/, ui_kits/, uploads/, SKILL.md, thumbnail.html,",
+    "'ATVANTAGE Homepage.html', _ds_*.js/json sowie academy/page-template.html und",
+    "academy/partials/. Projekte laden das Paket UNTERHALB ihrer Jekyll-Source nach",
+    "site/theme/ - Jekyll rendert die .md dann zu Seiten und kopiert die .html durch.",
+    "Mit dem alten, pauschalen 'atvantage'/'academy' landeten so 24 Werkstatt-Seiten in",
+    "jedem Bundle, im Playground auch im OEFFENTLICH gepushten Lernenden-Bundle.",
+    "",
+    "Der Ausschluss steht hier und nicht in exclude von _config.defaults.yml: Jekyll",
+    "ERSETZT den exclude-Schluessel, statt ihn zu mergen - ein Projekt mit eigener Liste",
+    "verliert die des Themes. Und zwei der drei Consumer laden _config.defaults.yml",
+    "ueberhaupt nicht (bin/build.sh baut mit _config.yml + _config.audience.yml). Was",
+    "nicht im Paket liegt, kann kein Projekt versehentlich veroeffentlichen.",
+    "",
+    "academy/qrcode/README.md ist AUSDRUECKLICH ausgeschlossen ('!'-Muster): Sie",
+    "dokumentiert die Herkunft der Bibliothek fuer dieses Repo, im Paket wuerde Jekyll",
+    "daraus in JEDEM Consumer eine Seite rendern. npm nimmt README-Dateien sonst",
+    "ungefragt mit - auch tief im Baum und ohne Treffer in dieser Liste.",
+    "",
+    "Wer hier erweitert, zieht theme/package-contents.txt nach (bin/package-contents.sh) und",
+    "begruendet im Commit, warum die Dateien ins Paket gehoeren. Der PR-Check",
+    "npm-validate vergleicht den tatsaechlichen Paketinhalt gegen diese Liste - die",
+    "frueher hier geforderte Handpruefung entfaellt damit.",
+    "Siehe Issue #67."
+  ],
+  "files": [
+    "jekyll",
+    "academy/*.css",
+    "academy/icons",
+    "academy/atvantage.js",
+    "academy/demo.js",
+    "academy/hljs",
+    "academy/qrcode",
+    "!academy/qrcode/README.md",
+    "atvantage/styles.css",
+    "atvantage/tokens",
+    "atvantage/assets",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "keywords": [
+    "atvantage",
+    "academy",
+    "theme",
+    "css",
+    "design-system"
+  ],
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+https://timetoact.ghe.com/AVD-Academy-Tools/academy-theme.git"
+  },
+  "scripts": {
+    "prepack": "echo \"Packe @avd-academy-tools/academy-theme@$npm_package_version\"",
+    "prepublishOnly": "bash ../bin/publish-guard.sh"
+  }
+}
