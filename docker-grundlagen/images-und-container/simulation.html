@@ -64,13 +64,13 @@
 <meta property="og:description" content="Vom Image in der Registry bis zum gelöschten Container – und was passiert, wenn in der Registry ein neuer Stand liegt.">
 <meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790165401"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790165401">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790165401">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790165401">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790165401"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790165401">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790165401" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790165401" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790165401">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790165862"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790165862">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790165862">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790165862">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790165862"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790165862">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790165862" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790165862" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790165862">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -112,8 +112,8 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/training-material-container-technologies/theme/atvantage/assets/icon-180.png">
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/simulation.css?v=1790165401"><script src="/training-material-container-technologies/theme/jekyll/simulation.js?v=1790165401"></script>
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790165401"></head>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/simulation.css?v=1790165862"><script src="/training-material-container-technologies/theme/jekyll/simulation.js?v=1790165862"></script>
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790165862"></head>
 <body class="avd-academy-sim" data-avd-academy-sim data-avd-academy-sim-title="Der Lebenszyklus eines Containers"
       data-avd-academy-sim-speed="1"
       data-avd-academy-sim-step-interval="3000">
@@ -205,15 +205,75 @@
 
   /* `stretch`: Beide Tafeln nehmen die Hoehe der Zeile an und sind damit immer
      gleich hoch – sonst haette die Container-Tafel mal zwei, mal einen Kasten. */
+  /* EINE GASSE ZWISCHEN DEN TAFELN. Der «instanceof»-Pfeil gehoert zu einer
+     einzelnen Container-Zelle, zeigt aber aus ihr heraus auf die Image-Tafel –
+     er braucht also Platz AUSSERHALB der Zelle. Die breite Spalten-Luecke ist
+     dieser Platz, und sie liest sich wie die Leitung weiter links: eine Bahn,
+     auf der Beziehungen laufen. */
   .lz__tafeln {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--avd-academy-space-3);
+    gap: var(--avd-academy-space-3) 4rem;
     align-items: stretch;
   }
   @media (max-width: 48rem) {
     .lz__tafeln { grid-template-columns: 1fr; }
   }
+
+  /* --- Der Daemon ist der Rahmen, nicht eine Tafel unter anderen -------------
+     Images und Container gehoeren dem DIENST. Sie stehen deshalb IN seinem
+     Kasten, und die Konsole steht daneben und spricht mit ihm. Das ist genau
+     die Aussage aus dem Begriffskapitel: `docker` tut nichts selbst, es fragt. */
+  .lz__daemon {
+    display: flex;
+    flex-direction: column;
+    gap: var(--avd-academy-space-3);
+    padding: clamp(0.5rem, 0.35rem + 0.6vw, 0.85rem);
+    border: 1px solid color-mix(in srgb, var(--avd-academy-tone-1) 45%, transparent);
+    border-radius: var(--avd-academy-radius-lg);
+    background: color-mix(in srgb, var(--avd-academy-tone-1) 5%, transparent);
+  }
+  /* DIE BESCHRIFTUNG STEHT UNTEN, nicht oben – und das ist keine Kosmetik:
+     Direkt darunter kommt der Draht von der Konsole an. Wer den Befehl mit den
+     Augen verfolgt, trifft als Erstes auf den Namen dessen, der ihn annimmt.
+     Stuende die Beschriftung oben, liefe der Blick am Empfaenger vorbei.
+
+     `order` statt Umstellen im Markup: Fuer Screenreader bleibt der Name VOR
+     dem Inhalt, den er benennt. Fokussierbares gibt es hier nicht, die
+     Reihenfolge kann also gefahrlos auseinandergehen. */
+  .lz__daemon-titel {
+    order: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    margin: 0;
+    padding-top: 0.15rem;
+    font-size: 0.78em;
+    font-weight: var(--avd-academy-fw-bold);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--avd-academy-color-ink);
+  }
+  .lz__daemon-titel svg { flex: 0 0 auto; width: 1.25em; height: 1.25em; color: var(--avd-academy-tone-1); }
+  .lz__daemon-titel span {
+    letter-spacing: 0; text-transform: none;
+    font-weight: var(--avd-academy-fw-normal);
+    color: var(--avd-academy-color-ink-muted);
+  }
+
+  /* Der Draht zwischen Konsole und Dienst. In BEIDE Richtungen: Der Client
+     fragt, der Dienst antwortet – deshalb zwei Pfeilspitzen. */
+  .lz__draht {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    margin: 0;
+    color: var(--avd-academy-color-ink-muted);
+  }
+  .lz__draht svg { width: 0.85rem; height: 1.8rem; display: block; }
+  .lz__draht-text { font-size: 0.68em; letter-spacing: 0.04em; text-transform: uppercase; }
 
   /* Tafel-Ueberschrift mit Sinnbild. */
   .avd-academy-sim-panel__title svg {
@@ -287,8 +347,8 @@
      Sonst waechst die Buehne mit jedem Schritt, und weil sie senkrecht zentriert
      steht, rutscht bei jedem Wachsen ALLES nach oben. Das sieht aus wie eine
      zweite Animation und lenkt von der einen ab, auf die es ankommt. */
-  #reg-images   { min-height: 9.4rem; }   /* 2 Etiketten */
-  #reg-images-2 { min-height: 14.1rem; }  /* 3 Etiketten */
+  #reg-images   { min-height: 5.6rem; }   /* 1 Image mit 2 Tags */
+  #reg-images-2 { min-height: 11.4rem; }  /* 2 Images */
   #lok-images, #lok-images-2,
   #lok-container, #lok-container-2 { min-height: 15.4rem; }  /* 2 Eintraege */
 
@@ -303,12 +363,37 @@
     color: var(--lz-bindung, var(--avd-academy-color-ink-muted));
   }
   .lz-img__stapel svg { width: 100%; height: 100%; }
-  .lz-img__text { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }
+  .lz-img__text { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
 
-  .lz-zeile__name {
+  /* --- EIN Image, mehrere Tags ----------------------------------------------
+     Der Hash ist das Image. Die Tags sind Etiketten, die daran haengen – und
+     genau das muss man sehen: `1.0` und `latest` sind nicht zwei Images,
+     sondern zwei Zettel an demselben.
+
+     Die Form ist die der Seiten-Tags des Themes (`avd-academy-badge`): rund
+     umrahmt mit Flaeche. Eingefaerbt wird in der Bindungsfarbe des Images, an
+     dem sie haengen – dann wandert in Szenario 2 sichtbar ein Zettel von einer
+     Karte zur anderen. */
+  .lz-img__tags { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+  .lz-tag.lz-tag {
+    font-size: 0.68em;
+    font-family: var(--avd-academy-font-mono);
+    padding: 0.05em 0.6em;
+    background: color-mix(in srgb, var(--lz-bindung) 16%, var(--avd-academy-color-bg));
+    border-color: color-mix(in srgb, var(--lz-bindung) 55%, transparent);
+    color: var(--lz-bindung-ink, var(--avd-academy-color-headline));
+  }
+  /* Ein Image ohne Tag ist nicht weg – es ist nur nicht mehr adressierbar. */
+  .lz-img__ohne {
+    font-size: 0.68em;
+    font-style: italic;
+    color: var(--avd-academy-color-ink-muted);
+  }
+  .lz-img__hash {
+    font-family: var(--avd-academy-font-mono);
     font-weight: var(--avd-academy-fw-bold);
-    font-size: 0.92em;
-    overflow-wrap: anywhere;
+    font-size: 0.86em;
+    color: var(--lz-bindung-ink, var(--avd-academy-color-ink));
   }
 
   /* --- Die Bindung Container -> Image ---------------------------------------
@@ -322,27 +407,54 @@
   .lz-bindung--0 { --lz-bindung: var(--avd-academy-tone-4); --lz-bindung-ink: var(--avd-academy-tone-4-ink); }
   .lz-bindung--1 { --lz-bindung: var(--avd-academy-tone-3); --lz-bindung-ink: var(--avd-academy-tone-3-ink); }
 
-  .avd-academy-sim-cell[class*="lz-bindung--"] { border-left: 4px solid var(--lz-bindung); }
-  .lz-chip {
-    display: inline-block;
-    padding: 0.05rem 0.34rem;
-    border-radius: var(--avd-academy-radius-sm, 3px);
-    background: color-mix(in srgb, var(--lz-bindung) 20%, transparent);
-    color: var(--lz-bindung-ink);
-    font-family: var(--avd-academy-font-mono);
-    font-size: 0.72em;
-    font-weight: var(--avd-academy-fw-bold);
-    white-space: nowrap;
+  .lz-img[class*="lz-bindung--"] { border-left: 4px solid var(--lz-bindung); }
+
+  /* --- Der Container ist eine Ausprägung seines Images -----------------------
+     In UML ist das ein gestrichelter Pfeil mit offener Spitze und dem
+     Stereotyp «instanceof». Genau das steht hier: Der Pfeil zeigt aus dem
+     Container nach links zur Image-Tafel, in der Farbe des Images, an dem er
+     haengt. Damit ist die Bindung nicht nur gleichfarbig, sondern GERICHTET –
+     ein Container zeigt auf ein Image, nie umgekehrt. */
+  /* Der Pfeil sitzt in der Gasse, auf Hoehe des Container-NAMENS – er geht von
+     `web-1` aus, nicht von der Zelle als Ganzem. Ueber ihm das Stereotyp, unter
+     ihm die Kennung des Images, auf das er zeigt: So steht beides AM PFEIL und
+     nicht im Container, und die Zuordnung haengt nicht allein an der Farbe. */
+  .lz-ctr__pfeil {
+    position: absolute;
+    left: -4.1rem;
+    top: 0.5rem;
+    width: 3.9rem;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.02rem;
+    color: var(--lz-bindung, var(--avd-academy-color-border));
   }
-  .lz-chip__aus {
-    font-family: var(--avd-academy-font-body, inherit);
-    font-weight: var(--avd-academy-fw-normal);
+  .lz-ctr__pfeil svg { width: 100%; height: 0.62rem; display: block; }
+  .lz-ctr__pfeil-text {
+    font-family: var(--avd-academy-font-mono);
+    font-size: 0.56em;
+    line-height: 1.2;
+    text-align: center;
+    font-style: italic;
     color: var(--avd-academy-color-ink-muted);
-    margin-right: 0.3em;
+  }
+  .lz-ctr__pfeil-hash {
+    font-family: var(--avd-academy-font-mono);
+    font-size: 0.58em;
+    line-height: 1.2;
+    text-align: center;
+    font-weight: var(--avd-academy-fw-bold);
+    color: var(--lz-bindung-ink, var(--avd-academy-color-ink));
+  }
+  /* Gestapelt zeigt der Pfeil ins Leere – die Aussage traegt dann der
+     Screenreader-Text, der ohnehin an der Zelle haengt. */
+  @media (max-width: 48rem) {
+    .lz-ctr__pfeil { display: none; }
   }
 
-  /* Die Registry-Spalte ist absichtlich schmal – dort steht Name UEBER Kennung
-     statt daneben, sonst quetscht `webserver:latest` die Plakette an den Rand. */
+  /* Die Registry-Spalte ist absichtlich schmal – dort steht der Stapel oben
+     statt mittig, damit die Tag-Zeile darunter Platz hat. */
   .lz__ort--registry .lz-img { align-items: flex-start; }
 
   /* --- Der Status als Zeichen, nicht als Wort --------------------------------
@@ -400,7 +512,8 @@
     flex-direction: column;
     align-items: stretch;
     gap: 0.55rem;
-    /* Platz fuer den Stecker, der rechts heraussteht. */
+    /* Platz fuer den Stecker, der rechts heraussteht. Links braucht es nichts:
+       Der Pfeil liegt in der Gasse zwischen den Tafeln. */
     margin-right: 0.85rem;
   }
   .lz-ctr__kopf { display: flex; justify-content: space-between; gap: 0.5rem; }
@@ -430,21 +543,54 @@
     text-align: center;
     letter-spacing: 0.02em;
   }
-  /* Vorhanden: gezeichnet in Textfarbe, auf leicht abgesetzter Flaeche. */
+  /* Nur die Umgebungsvariable traegt einen konkreten Wert. Er steht unter der
+     Beschriftung und ist leer bei den anderen beiden – der Platz bleibt
+     trotzdem reserviert, damit die drei Kacheln gleich hoch sind. */
+  .lz-teil__wert {
+    min-height: 1.1em;
+    font-family: var(--avd-academy-font-mono);
+    font-size: 0.56em;
+    line-height: 1.2;
+    text-align: center;
+    overflow-wrap: anywhere;
+    color: var(--avd-academy-color-ink-muted);
+  }
+  .lz-teil.is-an .lz-teil__wert { color: var(--avd-academy-color-ink); }
+
+  /* Die Umgebungsvariable des Images steht unter seinen Tags. */
+  .lz-img__env {
+    font-family: var(--avd-academy-font-mono);
+    font-size: 0.66em;
+    color: var(--avd-academy-color-ink-muted);
+    overflow-wrap: anywhere;
+  }
+  /* LAEUFT: alles lebt. Die Flaeche nimmt die Erfolgsfarbe auf und glimmt
+     leicht – ein laufender Container soll auf einen Blick warm wirken. */
   .lz-teil.is-an {
     color: var(--avd-academy-color-ink);
-    background: color-mix(in srgb, var(--avd-academy-color-ink) 6%, transparent);
-    border-color: color-mix(in srgb, var(--avd-academy-color-ink) 14%, transparent);
+    background: color-mix(in srgb, var(--avd-academy-color-success) 12%, transparent);
+    border-color: color-mix(in srgb, var(--avd-academy-color-success) 42%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--avd-academy-color-success) 18%, transparent),
+                0 0 10px color-mix(in srgb, var(--avd-academy-color-success) 22%, transparent);
   }
-  /* Nicht vorhanden: gestrichelt und zurueckgenommen. KEIN `opacity` – das zoege
-     die Schrift unter die Kontrastschwelle; die gestrichelte Kante traegt die
-     Aussage allein (dieselbe Regel wie in der abgeloesten Visualisierung). */
+  /* ANGEHALTEN: alles kalt – auch Dateisystem und Umgebungsvariablen. Ein
+     angehaltener Container tut NICHTS, und das soll man sehen.
+
+     Dass er trotzdem nicht leer ist, sagt der INHALT: Der Baum behaelt seinen
+     dritten Ast, die Etiketten bleiben gezeichnet. Weg ist erst, was nach `rm`
+     weg ist – dann naemlich die ganze Zelle. So bleibt der Unterschied zwischen
+     `stop` und `rm` sichtbar, ohne dass "angehalten" faelschlich warm wirkt.
+
+     KEIN `opacity` – das zoege die Schrift unter die Kontrastschwelle; die
+     gestrichelte Kante und die gedaempfte Farbe tragen die Aussage. */
   .lz-teil.is-aus {
     color: var(--avd-academy-color-ink-muted);
     background: transparent;
     border-style: dashed;
     border-color: var(--avd-academy-color-border);
   }
+  .lz-teil { transition: background var(--avd-academy-transition), border-color var(--avd-academy-transition), box-shadow var(--avd-academy-transition); }
+  @media (prefers-reduced-motion: reduce) { .lz-teil { transition: none; } }
   /* Die Faeden laufen, solange Prozesse laufen. */
   .lz-teil.is-an .lz-faden { animation: lz-faden 1.8s linear infinite; }
   @keyframes lz-faden { to { stroke-dashoffset: -12; } }
@@ -464,7 +610,7 @@
     display: flex; align-items: center; justify-content: center;
   }
   .lz-ctr__port svg { width: 100%; height: 100%; }
-  .lz-ctr__port.is-an  { color: var(--avd-academy-color-accent); }
+  .lz-ctr__port.is-an  { color: var(--avd-academy-color-success); filter: drop-shadow(0 0 4px color-mix(in srgb, var(--avd-academy-color-success) 45%, transparent)); }
   .lz-ctr__port.is-aus { color: var(--avd-academy-color-border); }
   .lz-ctr__portnr {
     position: absolute;
@@ -530,18 +676,28 @@
 
   <div class="lz__ort lz__ort--ziel">
     <p class="lz__ort-titel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="3.5" width="19" height="13" rx="2" /><path d="M8.5 20.5h7M12 16.5v4" /></svg>Zielsystem <span>· hier arbeitest Du</span></p>
-    <div class="lz__tafeln">
-      <div class="avd-academy-sim-panel avd-academy-sim-panel--ton-1">
-        <h2 class="avd-academy-sim-panel__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 3 7.5l9 4.5 9-4.5L12 3Z" /><path d="m3 12.5 9 4.5 9-4.5" /><path d="m3 17 9 4.5 9-4.5" /></svg>Images</h2>
-        <div class="avd-academy-sim-panel__body" id="lok-images"></div>
-      </div>
-      <div class="avd-academy-sim-panel">
-        <h2 class="avd-academy-sim-panel__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 7.5 12 3 3.5 7.5v9L12 21l8.5-4.5v-9Z" /><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9" /></svg>Container</h2>
-        <div class="avd-academy-sim-panel__body" id="lok-container"></div>
+
+    <!-- Images und Container gehoeren dem DIENST, nicht der Konsole. Deshalb
+         stehen sie in seinem Kasten: Wer die Konsole schliesst, verliert nichts
+         davon. -->
+    <div class="lz__daemon">
+      <p class="lz__daemon-titel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" /></svg>Docker-Daemon <span>· der Dienst, der die Arbeit tut</span></p>
+      <div class="lz__tafeln">
+        <div class="avd-academy-sim-panel avd-academy-sim-panel--ton-1">
+          <h2 class="avd-academy-sim-panel__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 3 7.5l9 4.5 9-4.5L12 3Z" /><path d="m3 12.5 9 4.5 9-4.5" /><path d="m3 17 9 4.5 9-4.5" /></svg>Images</h2>
+          <div class="avd-academy-sim-panel__body" id="lok-images"></div>
+        </div>
+        <div class="avd-academy-sim-panel">
+          <h2 class="avd-academy-sim-panel__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 7.5 12 3 3.5 7.5v9L12 21l8.5-4.5v-9Z" /><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9" /></svg>Container</h2>
+          <div class="avd-academy-sim-panel__body" id="lok-container"></div>
+        </div>
       </div>
     </div>
+
+    <p class="lz__draht"><span aria-hidden="true"><svg viewBox="0 0 16 34" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6v22" stroke-dasharray="4 4" /><path d="m4.5 9.5 3.5-3.5 3.5 3.5" /><path d="m4.5 24.5 3.5 3.5 3.5-3.5" /></svg></span><span class="lz__draht-text">spricht mit</span></p>
+
     <div class="avd-academy-sim-panel">
-      <h2 class="avd-academy-sim-panel__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="3.5" width="19" height="17" rx="2" /><path d="m7 9.5 3 2.5-3 2.5" /><path d="M13 15h4" /></svg>Konsole <span class="avd-academy-sim-panel__hint">alles, was bisher getippt wurde</span></h2>
+      <h2 class="avd-academy-sim-panel__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="3.5" width="19" height="17" rx="2" /><path d="m7 9.5 3 2.5-3 2.5" /><path d="M13 15h4" /></svg>Konsole <span class="avd-academy-sim-panel__hint"><code>docker</code> – der Client</span></h2>
       <div class="avd-academy-sim-panel__body" id="term"></div>
     </div>
   </div>
@@ -562,18 +718,28 @@
 
   <div class="lz__ort lz__ort--ziel">
     <p class="lz__ort-titel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="3.5" width="19" height="13" rx="2" /><path d="M8.5 20.5h7M12 16.5v4" /></svg>Zielsystem <span>· hier arbeitest Du</span></p>
-    <div class="lz__tafeln">
-      <div class="avd-academy-sim-panel avd-academy-sim-panel--ton-1">
-        <h2 class="avd-academy-sim-panel__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 3 7.5l9 4.5 9-4.5L12 3Z" /><path d="m3 12.5 9 4.5 9-4.5" /><path d="m3 17 9 4.5 9-4.5" /></svg>Images</h2>
-        <div class="avd-academy-sim-panel__body" id="lok-images-2"></div>
-      </div>
-      <div class="avd-academy-sim-panel">
-        <h2 class="avd-academy-sim-panel__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 7.5 12 3 3.5 7.5v9L12 21l8.5-4.5v-9Z" /><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9" /></svg>Container</h2>
-        <div class="avd-academy-sim-panel__body" id="lok-container-2"></div>
+
+    <!-- Images und Container gehoeren dem DIENST, nicht der Konsole. Deshalb
+         stehen sie in seinem Kasten: Wer die Konsole schliesst, verliert nichts
+         davon. -->
+    <div class="lz__daemon">
+      <p class="lz__daemon-titel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" /></svg>Docker-Daemon <span>· der Dienst, der die Arbeit tut</span></p>
+      <div class="lz__tafeln">
+        <div class="avd-academy-sim-panel avd-academy-sim-panel--ton-1">
+          <h2 class="avd-academy-sim-panel__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 3 7.5l9 4.5 9-4.5L12 3Z" /><path d="m3 12.5 9 4.5 9-4.5" /><path d="m3 17 9 4.5 9-4.5" /></svg>Images</h2>
+          <div class="avd-academy-sim-panel__body" id="lok-images-2"></div>
+        </div>
+        <div class="avd-academy-sim-panel">
+          <h2 class="avd-academy-sim-panel__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 7.5 12 3 3.5 7.5v9L12 21l8.5-4.5v-9Z" /><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9" /></svg>Container</h2>
+          <div class="avd-academy-sim-panel__body" id="lok-container-2"></div>
+        </div>
       </div>
     </div>
+
+    <p class="lz__draht"><span aria-hidden="true"><svg viewBox="0 0 16 34" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6v22" stroke-dasharray="4 4" /><path d="m4.5 9.5 3.5-3.5 3.5 3.5" /><path d="m4.5 24.5 3.5 3.5 3.5-3.5" /></svg></span><span class="lz__draht-text">spricht mit</span></p>
+
     <div class="avd-academy-sim-panel">
-      <h2 class="avd-academy-sim-panel__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="3.5" width="19" height="17" rx="2" /><path d="m7 9.5 3 2.5-3 2.5" /><path d="M13 15h4" /></svg>Konsole <span class="avd-academy-sim-panel__hint">alles, was bisher getippt wurde</span></h2>
+      <h2 class="avd-academy-sim-panel__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="3.5" width="19" height="17" rx="2" /><path d="m7 9.5 3 2.5-3 2.5" /><path d="M13 15h4" /></svg>Konsole <span class="avd-academy-sim-panel__hint"><code>docker</code> – der Client</span></h2>
       <div class="avd-academy-sim-panel__body" id="term-2"></div>
     </div>
   </div>
@@ -664,14 +830,22 @@
       '</svg>';
   }
 
+  /* Der gestrichelte Pfeil mit offener Spitze – UML `«instanceof»`. */
+  var BILD_PFEIL =
+    '<svg viewBox="0 0 16 14" fill="none" stroke="currentColor" stroke-width="1.6" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<path d="M16 7H6" stroke-dasharray="3 2.5"/>' +
+    '<path d="m6 3-5 4 5 4"/></svg>';
+
   function imageZeile() {
     var el = document.createElement("div");
     el.className = "avd-academy-sim-cell lz-img";
     el.innerHTML =
       '<span class="lz-img__stapel">' + BILD_STAPEL + '</span>' +
       '<span class="lz-img__text">' +
-        '<span class="lz-zeile__name"></span>' +
-        '<span><span class="lz-chip"></span></span>' +
+        '<span class="lz-img__hash"></span>' +
+        '<span class="lz-img__tags"></span>' +
+        '<span class="lz-img__env"></span>' +
       '</span>';
     return el;
   }
@@ -681,7 +855,7 @@
      Anordnung. Der Port ist bewusst NICHT dabei – er sitzt am Rand. */
   var TEILE = [
     { schl: "dateien",  text: "Dateisystem" },
-    { schl: "umgebung", text: "Umgebung" },
+    { schl: "umgebung", text: "Umgebungsvariablen" },
     { schl: "prozesse", text: "Prozesse" }
   ];
 
@@ -692,7 +866,6 @@
       '<span class="lz-ctr__kopf">' +
         '<span class="lz-zeile__links">' +
           '<span class="lz-zeile__name"></span>' +
-          '<span><span class="lz-chip__aus">aus</span><span class="lz-chip"></span></span>' +
         '</span>' +
         '<span class="lz-zeile__rechts">' +
           '<span class="lz-status"><span class="lz-status__zeichen"></span>' +
@@ -705,8 +878,14 @@
           return '<span class="lz-teil" data-teil="' + t.schl + '">' +
                  '<span class="lz-teil__bild"></span>' +
                  '<span class="lz-teil__text">' + t.text + '</span>' +
+                 '<span class="lz-teil__wert"></span>' +
                  '<span class="lz-nur-sr"></span></span>';
         }).join("") +
+      '</span>' +
+      '<span class="lz-ctr__pfeil">' +
+        '<span class="lz-ctr__pfeil-text">&laquo;instanceof&raquo;</span>' +
+        BILD_PFEIL +
+        '<span class="lz-ctr__pfeil-hash"></span>' +
       '</span>' +
       '<span class="lz-ctr__port"></span>' +
       '<span class="lz-ctr__portnr"></span>' +
@@ -720,8 +899,18 @@
       key: function (x) { return x.id; },
       create: imageZeile,
       update: function (el, x) {
-        el.querySelector(".lz-zeile__name").textContent = x.name;
-        el.querySelector(".lz-chip").textContent = x.kurz;
+        el.querySelector(".lz-img__hash").textContent = x.kurz;
+        /* Die Tags haengen AM Image, sie sind es nicht. Deshalb eine Reihe
+           Etiketten unter dem Hash – in Szenario 2 wandert `latest` dann
+           sichtbar von einer Karte zur anderen. */
+        el.querySelector(".lz-img__tags").innerHTML = (x.tags && x.tags.length)
+          ? x.tags.map(function (t) {
+              return '<span class="avd-academy-badge lz-tag">' + t + '</span>';
+            }).join("")
+          : '<span class="lz-img__ohne">ohne Tag</span>';
+        /* Die Umgebungsvariable steckt im Bauplan – sie kommt aus dem
+           Dockerfile (`ENV`) und wandert beim Erzeugen in den Container. */
+        el.querySelector(".lz-img__env").textContent = x.env || "";
         bindung(el, x.kurz);
         el.classList.toggle("is-active", hebt(s, x.id));
       }
@@ -740,7 +929,12 @@
       create: containerZeile,
       update: function (el, c) {
         el.querySelector(".lz-zeile__name").textContent = c.name;
-        el.querySelector(".lz-chip").textContent = c.kurz;
+        /* Die Kennung steht AM PFEIL, nicht in der Zelle: Sie sagt, worauf der
+           Pfeil zeigt – und ist damit die zweite, farbunabhaengige Angabe dazu,
+           welches Image gemeint ist. */
+        el.querySelector(".lz-ctr__pfeil-hash").textContent = c.kurz;
+        el.querySelector(".lz-ctr__pfeil").setAttribute("title",
+          c.name + " ist eine Ausprägung des Images " + c.kurz);
         bindung(el, c.kurz);
         /* Das Zeichen traegt die Aussage, das Wort bleibt fuer Screenreader
            daneben stehen – ein Punkt allein ist nicht vorlesbar. */
@@ -754,7 +948,11 @@
         /* Dateisystem und Umgebung gehoeren zur Festlegung des Containers und
            sind da, solange es ihn gibt. Prozesse und Ports gibt es nur, solange
            er laeuft – deshalb haengen genau diese beiden am Status. */
-        var an = { dateien: true, umgebung: true, prozesse: laeuft };
+        /* ALLE Anteile haengen am Lauf: Ein angehaltener Container tut nichts,
+           und das soll man sehen. Dass er trotzdem nicht leer ist, sagt der
+           INHALT – der Baum behaelt seinen Ast, die Variable ihren Wert. Weg
+           ist erst, was nach `rm` weg ist: die ganze Zelle. */
+        var an = { dateien: laeuft, umgebung: laeuft, prozesse: laeuft };
         var bild = {
           dateien:  bildBaum(!!c.zustand),
           umgebung: BILD_ETIKETTEN,
@@ -765,6 +963,10 @@
           var da = !!an[t.schl];
           kasten.className = "lz-teil " + (da ? "is-an" : "is-aus");
           kasten.querySelector(".lz-teil__bild").innerHTML = bild[t.schl];
+          /* Nur die Umgebungsvariable traegt einen konkreten Wert – an ihm
+             sieht man, WANN ein Container etwas aus dem Image uebernimmt. */
+          kasten.querySelector(".lz-teil__wert").textContent =
+            t.schl === "umgebung" ? (c.env || "") : "";
           var lage = da ? "vorhanden" : "nicht vorhanden, erst wenn er läuft";
           kasten.setAttribute("title", t.text + " – " + lage);
           kasten.querySelector(".lz-nur-sr").textContent = t.text + ": " + lage + ".";
@@ -861,32 +1063,34 @@
     description: "Ein Image wird gezogen, ein Container daraus erzeugt, gestartet, beschrieben, gestoppt und gelöscht – und ein zweiter zeigt, wem der Zustand gehört.",
     state: function () {
       return {
-        remote: [
-          { id: "r-10",     name: "webserver:1.0",    kurz: "a1b2c3" },
-          { id: "r-latest", name: "webserver:latest", kurz: "a1b2c3" }
-        ],
-        images: [], container: [], term: [], hebe: ["r-10", "r-latest"],
+        remote: [{ id: "r-a", kurz: "a1b2c3", tags: ["1.0", "latest"], env: "APP_VERSION=1.0" }],
+        images: [], container: [], term: [], hebe: ["r-a"],
         registryMeldet: false, uebertraegt: false
       };
     },
     steps: [
       {
         title: "Die Ausgangslage",
-        text: "<p>In der <b>Registry</b> liegt ein Image – und es trägt <b>zwei Etiketten</b>: " +
-              "<code>webserver:1.0</code> und <code>webserver:latest</code>. Beide zeigen auf " +
-              "denselben Stand, erkennbar an der gleichen Kennung und der gleichen Farbe.</p>" +
-              "<p>Dein Rechner kennt es noch nicht – die Tafeln rechts sind leer. Die kurze " +
-              "Kennung <code>a1b2c3</code> ist der Fingerabdruck dieses Standes; merk sie Dir.</p>",
-        apply: function (s) { s.hebe = ["r-10", "r-latest"]; }
+        text: "<p>In der <b>Registry</b> liegt <b>ein</b> Image mit dem Fingerabdruck " +
+              "<code>a1b2c3</code>. Daran hängen <b>zwei Etiketten</b>: <code>1.0</code> und " +
+              "<code>latest</code>. Nicht zwei Images – zwei Zettel an demselben.</p>" +
+              "<p>Im Bauplan steckt eine Umgebungsvariable: <code>APP_VERSION=1.0</code>. " +
+              "Behalte sie im Auge; an ihr wird gleich sichtbar, wann ein Container etwas " +
+              "aus dem Image übernimmt.</p>" +
+              "<p>Rechts das <b>Zielsystem</b>: Die Konsole spricht mit dem <b>Docker-Daemon</b>, " +
+              "und dem gehören Images und Container. Noch sind sie leer.</p>",
+        apply: function (s) { s.hebe = ["r-a"]; }
       },
       {
         title: "Das Image herunterladen",
-        text: "<p>Das Image liegt jetzt <b>zweimal</b> – in der Registry und bei Dir. " +
-              "Gleicher Name, gleiche Kennung: <b>derselbe Stand</b>.</p>" +
+        text: "<p>Das Image liegt jetzt <b>zweimal</b> – in der Registry und beim Daemon. " +
+              "Gleicher Fingerabdruck: <b>derselbe Stand</b>.</p>" +
+              "<p>Geholt wurde es über das Etikett <code>latest</code>, und nur dieses eine " +
+              "ist mitgekommen: Lokal trägt das Image <b>einen</b> Tag, in der Registry zwei.</p>" +
               "<p>Ein Image ist damit noch nichts, was läuft. Es ist der Bauplan.</p>",
         apply: function (s) {
           tippt(s, 1, "docker image pull webserver:latest");
-          s.images.push({ id: "i1", name: "webserver:latest", kurz: "a1b2c3" });
+          s.images.push({ id: "i1", kurz: "a1b2c3", tags: ["latest"], env: "APP_VERSION=1.0" });
           s.hebe = ["i1"];
         }
       },
@@ -894,17 +1098,23 @@
         title: "Einen Container erzeugen",
         text: "<p>Aus dem Bauplan entsteht ein <b>Container</b> – und zwar einer, der noch " +
               "<b>nicht läuft</b>. Erzeugen und Starten sind zwei verschiedene Dinge.</p>" +
-              "<p>Das Image hat sich dabei nicht verändert. Es verändert sich nie.</p>",
+              "<p><b>Jetzt</b> wird übernommen, was im Image stand: <code>APP_VERSION=1.0</code> " +
+              "steht nun auch im Container. Der gestrichelte Pfeil zeigt, woher er stammt – " +
+              "in UML wäre das ein <code>«instanceof»</code>.</p>" +
+              "<p>Alles im Container ist noch kalt: Er ist da, aber er tut nichts. " +
+              "Das Image hat sich nicht verändert. Es verändert sich nie.</p>",
         apply: function (s) {
           tippt(s, 2, "docker container create --name web-1 -p 8080:80 webserver:latest");
-          s.container.push({ id: "c1", name: "web-1", kurz: "a1b2c3", status: "angehalten", zustand: "", port: "8080" });
+          s.container.push({ id: "c1", name: "web-1", kurz: "a1b2c3", status: "angehalten",
+                             zustand: "", port: "8080", env: "APP_VERSION=1.0" });
           s.hebe = ["c1"];
         }
       },
       {
         title: "Den Container starten",
-        text: "<p>Jetzt läuft er – und erst jetzt gibt es <b>Prozesse</b> und einen <b>belegten Port</b>. " +
-              "Beide Merkmale unten in der Zelle sind eben von gestrichelt auf ausgefüllt gewechselt.</p>" +
+        text: "<p>Jetzt läuft er – und der ganze Container wird <b>warm</b>: Dateisystem, " +
+              "Umgebungsvariablen und Prozesse leuchten auf, und der Stecker am Rand ist " +
+              "gesteckt. Vorher war alles da, aber nichts davon <i>tat</i> etwas.</p>" +
               "<p><code>docker container ls</code> zeigt ab hier etwas an. " +
               "Vorher hätte man <code>ls -a</code> gebraucht: <i>„mein Container ist weg“</i> heißt " +
               "meistens <i>„er läuft nur nicht“</i>.</p>",
@@ -927,9 +1137,12 @@
       },
       {
         title: "Stoppen – und die Datei bleibt",
-        text: "<p><code>stop</code> hält den Prozess an. <b>Zwei der vier Merkmale erlöschen</b>: " +
-              "Prozesse und Port. <b>Dateisystem und Umgebung bleiben</b> – sie gehören zur " +
-              "Festlegung des Containers, nicht zu seinem Lauf.</p>" +
+        text: "<p><code>stop</code> hält ihn an – und alles wird wieder kalt. Ein angehaltener " +
+              "Container tut <b>nichts</b>.</p>" +
+              "<p><b>Leer ist er deshalb nicht.</b> Sieh in den Baum: Der Ast mit " +
+              "<code>notiz.txt</code> ist noch da, nur eben grau. Und <code>APP_VERSION</code> " +
+              "steht unverändert im Container. Ein <code>start</code> würde beides " +
+              "wieder aufwecken.</p>" +
               "<p>Ein <code>start</code> würde ihn mit der Datei wieder hochfahren. " +
               "Merk Dir diesen Zustand – zwei Schritte weiter wird er gelöscht.</p>",
         apply: function (s) {
@@ -942,20 +1155,25 @@
         title: "Ein zweiter Container aus demselben Image",
         text: "<p>Derselbe Bauplan, ein zweiter Container – und der weiß <b>nichts</b> von " +
               "<code>notiz.txt</code>. Er startet im Auslieferungszustand.</p>" +
+              "<p>Beide Pfeile zeigen auf dasselbe Image, beide tragen " +
+              "<code>APP_VERSION=1.0</code>. <b>Was aus dem Image kommt, ist bei beiden " +
+              "gleich; was im Container entsteht, gehört nur ihm.</b></p>" +
               "<p>Der Zustand gehört dem Container, nicht dem Image. Deshalb ergibt ein Image " +
               "beliebig viele Container.</p>" +
               "<p class=\"lz-nb\"><code>run</code> ist dabei nur die Abkürzung für " +
               "<code>create</code> plus <code>start</code> – dieselben zwei Schritte wie oben, in einem Befehl.</p>",
         apply: function (s) {
           tippt(s, 6, "docker container run -d --name web-2 -p 8081:80 webserver:latest");
-          s.container.push({ id: "c2", name: "web-2", kurz: "a1b2c3", status: "laeuft", zustand: "", port: "8081" });
+          s.container.push({ id: "c2", name: "web-2", kurz: "a1b2c3", status: "laeuft",
+                             zustand: "", port: "8081", env: "APP_VERSION=1.0" });
           s.hebe = ["c2"];
         }
       },
       {
         title: "Löschen – und die Datei ist weg",
-        text: "<p><code>rm</code> wirft den Container weg, und mit ihm <b>alle vier Merkmale</b> – auch die " +
-              "beiden, die den <code>stop</code> überlebt hatten. <code>notiz.txt</code> gibt es nicht mehr.</p>" +
+        text: "<p><code>rm</code> wirft den Container weg – <b>die ganze Karte verschwindet</b>, " +
+              "mit Baum, Variablen und allem. Beim <code>stop</code> war er nur kalt; jetzt " +
+              "ist er fort. <code>notiz.txt</code> gibt es nicht mehr.</p>" +
               "<p><b>Das Image ist unberührt.</b> Aus ihm lässt sich jederzeit ein neuer Container " +
               "erzeugen – nur eben wieder ohne die Datei.</p>",
         apply: function (s) {
@@ -987,12 +1205,10 @@
     description: "In der Registry liegt plötzlich eine neue Fassung. Was davon lokal ankommt, was nicht – und warum der laufende Container am alten Stand hängen bleibt.",
     state: function () {
       return {
-        remote: [
-          { id: "r-10",     name: "webserver:1.0",    kurz: "a1b2c3" },
-          { id: "r-latest", name: "webserver:latest", kurz: "a1b2c3" }
-        ],
-        images:    [{ id: "i1", name: "webserver:latest", kurz: "a1b2c3" }],
-        container: [{ id: "c1", name: "web-1", kurz: "a1b2c3", status: "laeuft", zustand: "", port: "8080" }],
+        remote:    [{ id: "r-a", kurz: "a1b2c3", tags: ["1.0", "latest"], env: "APP_VERSION=1.0" }],
+        images:    [{ id: "i1", kurz: "a1b2c3", tags: ["latest"], env: "APP_VERSION=1.0" }],
+        container: [{ id: "c1", name: "web-1", kurz: "a1b2c3", status: "laeuft",
+                      zustand: "", port: "8080", env: "APP_VERSION=1.0" }],
         term: [], hebe: [], registryMeldet: false, uebertraegt: false
       };
     },
@@ -1006,40 +1222,44 @@
       },
       {
         title: "In der Registry wird neu gebaut",
-        text: "<p>Eine Kollegin hat das Image neu gebaut und als <code>webserver:1.1</code> " +
-              "hochgeladen. <b>Das Etikett <code>latest</code> ist mitgewandert</b> – es zeigt " +
-              "jetzt auf <code>a4f901</code>.</p>" +
-              "<p><b>Der alte Stand ist nicht weg.</b> Er heißt weiter <code>webserver:1.0</code> " +
-              "und liegt unverändert da. Ein Versionstag bleibt, wo er ist; <code>latest</code> " +
-              "wandert.</p>" +
+        text: "<p>Eine Kollegin hat neu gebaut und hochgeladen. In der Registry liegt jetzt ein " +
+              "<b>zweites</b> Image, <code>a4f901</code>, mit dem Etikett <code>1.1</code> – " +
+              "und im Bauplan <code>APP_VERSION=1.1</code>.</p>" +
+              "<p><b>Sieh, was mit <code>latest</code> passiert ist:</b> Der Zettel hing eben " +
+              "noch an <code>a1b2c3</code> und hängt jetzt an <code>a4f901</code>. Ein Etikett " +
+              "lässt sich umhängen – ein Fingerabdruck nicht.</p>" +
+              "<p><b>Der alte Stand ist nicht weg.</b> Er trägt weiter <code>1.0</code> und " +
+              "liegt unverändert da.</p>" +
               "<p>Sieh auf Deinen Rechner: <b>Dort hat sich nichts geändert.</b> Kein Befehl ist " +
               "gelaufen, nichts hat sich gemeldet. Der Container läuft weiter wie bisher – und " +
               "niemand merkt es.</p>",
         apply: function (s) {
           s.remote = [
-            { id: "r-10",     name: "webserver:1.0",    kurz: "a1b2c3" },
-            { id: "r-11",     name: "webserver:1.1",    kurz: "a4f901" },
-            { id: "r-latest", name: "webserver:latest", kurz: "a4f901" }
+            { id: "r-a", kurz: "a1b2c3", tags: ["1.0"],           env: "APP_VERSION=1.0" },
+            { id: "r-b", kurz: "a4f901", tags: ["1.1", "latest"], env: "APP_VERSION=1.1" }
           ];
-          s.hebe = ["r-11", "r-latest"];
+          s.hebe = ["r-b"];
           s.registryMeldet = true;
         }
       },
       {
         title: "Den neuen Stand holen",
-        text: "<p>Der neue Stand ist jetzt lokal. Der alte ist <b>nicht weg</b> – aber er hat " +
-              "seinen Namen verloren: Lokal hast Du nur je <code>latest</code> geholt, und dieses " +
-              "Etikett zeigt jetzt woandershin.</p>" +
-              "<p><b>Vergleich die beiden Seiten.</b> In der Registry heißt derselbe Stand weiter " +
-              "<code>webserver:1.0</code> – lokal heißt er <code>&lt;none&gt;</code>. Wer einen " +
-              "Versionstag zieht statt <code>latest</code>, hat dieses Problem nicht.</p>" +
-              "<p><b>Und der laufende Container hängt weiter am alten.</b> Ein <code>pull</code> " +
-              "fasst keinen Container an; er legt nur ein Image daneben.</p>",
+        text: "<p>Der neue Stand liegt jetzt beim Daemon. Der alte ist <b>nicht weg</b> – aber " +
+              "sein Etikett ist es: Du hattest nur <code>latest</code> geholt, und das hängt " +
+              "jetzt am neuen. Lokal steht <code>a1b2c3</code> damit <b>ohne Tag</b> da, " +
+              "während er in der Registry weiter <code>1.0</code> trägt.</p>" +
+              "<p><b>Und jetzt sieh auf den Container.</b> Sein Pfeil zeigt unverändert auf " +
+              "<code>a1b2c3</code>, und in ihm steht weiter <code>APP_VERSION=1.0</code> – " +
+              "obwohl daneben ein Image mit <code>1.1</code> liegt. Ein <code>pull</code> " +
+              "fasst keinen Container an.</p>" +
+              "<p class=\"lz-nb\">Übernommen wird beim <b>Erzeugen</b>, nicht beim Holen. " +
+              "Wer einen Versionstag zieht statt <code>latest</code>, sieht wenigstens, " +
+              "woran er ist.</p>",
         apply: function (s) {
           tippt(s, 1, "docker image pull webserver:latest");
           s.images = [
-            { id: "i1", name: "<none>", kurz: "a1b2c3" },
-            { id: "i2", name: "webserver:latest", kurz: "a4f901" }
+            { id: "i1", kurz: "a1b2c3", tags: [],         env: "APP_VERSION=1.0" },
+            { id: "i2", kurz: "a4f901", tags: ["latest"], env: "APP_VERSION=1.1" }
           ];
           s.hebe = ["i2", "c1"];
           s.registryMeldet = false;
@@ -1070,12 +1290,17 @@
       },
       {
         title: "Einen neuen Container erzeugen",
-        text: "<p>Derselbe Befehl wie beim ersten Mal, derselbe Name – aber der Bauplan dahinter " +
-              "ist ein anderer: <code>a4f901</code>.</p>" +
-              "<p>Er ist noch angehalten. Erzeugen und Starten bleiben zwei Dinge.</p>",
+        text: "<p>Derselbe Befehl wie beim ersten Mal, derselbe Name – aber <code>latest</code> " +
+              "zeigt inzwischen woandershin, also ist der Bauplan ein anderer: " +
+              "<code>a4f901</code>. Der Pfeil zeigt jetzt dorthin.</p>" +
+              "<p><b>Und hier wird übernommen:</b> Im Container steht " +
+              "<code>APP_VERSION=1.1</code>. Nicht beim <code>pull</code>, sondern <b>jetzt</b>, " +
+              "beim Erzeugen.</p>" +
+              "<p>Er ist noch angehalten und damit kalt. Erzeugen und Starten bleiben zwei Dinge.</p>",
         apply: function (s) {
           tippt(s, 4, "docker container create --name web-1 -p 8080:80 webserver:latest");
-          s.container = [{ id: "c2", name: "web-1", kurz: "a4f901", status: "angehalten", zustand: "", port: "8080" }];
+          s.container = [{ id: "c2", name: "web-1", kurz: "a4f901", status: "angehalten",
+                           zustand: "", port: "8080", env: "APP_VERSION=1.1" }];
           s.hebe = ["c2"];
         }
       },
