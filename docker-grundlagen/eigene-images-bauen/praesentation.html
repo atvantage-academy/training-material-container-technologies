@@ -1,61 +1,44 @@
 <!DOCTYPE html>
 <!--
-  ATVANTAGE-Academy – EINZIGES Seitenlayout (Jekyll)
+  ATVANTAGE-Academy – Layout „presentation“ (Jekyll)
   --------------------------------------------------
-  Ein Layout für alles: allgemeine Doku-Seiten UND Guides (Übungen/Anleitungen).
-  Optik nach der ATVANTAGE-Website: Meta-Nav, weiße sticky Kopfzeile, Hero-Band,
-  zweispaltig mit rechter Sidebar (automatisches Inhaltsverzeichnis, Fortschritt
-  aus Task-Listen, weiterführende Ressourcen). Überschriften ohne Emoji-Icons.
+  Folienbasierter Vortrag aus GEWÖHNLICHEM MARKDOWN. Die Seite läuft im Vollbild,
+  das Academy-Theme tritt zurück: keine Meta-Leiste, keine TopNav, keine
+  Brotkrumen, kein Footer, keine Sidebar – nur eine schmale Kopfleiste mit dem
+  Präsentationstitel und die Folienfläche darunter.
 
-  Verwendung im Front Matter:  layout: default   (oder `layout: guide` – Alias,
-  siehe guide.html; beides rendert dieselbe Guide-Ansicht)
+  Übersetzung Markdown → Folien (macht presentation.js zur Laufzeit):
+    #  (bzw. Front-Matter `title`)  → Titel der Präsentation: klein in der
+                                      Kopfleiste UND groß auf der Titelfolie
+    ## (h2)                         → Titel einer Folie; JEDES h2 beginnt eine
+                                      neue Folie
+    alles vor dem ersten h2         → Titelfolie (Untertitel, Trainer:in, Datum)
 
-  `layout: visualization` (siehe visualization.html) rendert dieselbe Seite OHNE
-  obere Navigation (Meta-Leiste + Kopfzeile/TopNav), OHNE Brotkrumen und OHNE den
-  rechten Bereich (Inhaltsverzeichnis, Fortschritt, Ressourcen – auch bei gesetztem
-  `resources`), mit schmalerem Hero-Balken und breiterem, zentriertem Inhalt – für
-  eigenständige Visualisierungen/Simulationen.
+  Bedienung: ← → (auch Leertaste, Bild ↑/↓, Pos1/Ende), die Schaltflächen unten
+  rechts oder Wischen auf dem Touchscreen. Beim Wechsel schiebt sich die Folie
+  nach links aus dem Bild. Die aktuelle Folie steht im URL-Hash (#/3) und ist
+  damit verlinkbar und reload-fest.
 
-  Alle Front-Matter-Felder sind OPTIONAL (Convention over Configuration). Nur der
-  Titel ist faktisch erforderlich – als `title:` ODER als erste `#`-Überschrift:
+  Drucken: Jede Präsentation hat ein Drucklayout – im Ausdruck steht jede Folie
+  auf einer eigenen Seite (Schaltflächen und Fortschritt entfallen). Der Knopf in
+  der Kopfleiste löst es aus. Der QR-Code neben dem Knopf bleibt im Ausdruck
+  stehen und führt vom Blatt zurück zur Online-Fassung.
 
-    title:       "…"                → sonst erste #-Überschrift (eins von beiden nötig)
-    description: "…"                → Meta-Description
-    duration:    8                  → Zahl in Minuten → Hero-Tag „ca. 8 Minuten“
-                                       (ungefähre LESEDAUER; bei Guides/Übungen die
-                                       Dauer der Übung, bei Visualisierungen die
-                                       Bearbeitungszeit – dort unüblich, aber erlaubt).
-    topics:      ["Cloud & DevOps"] → weitere Hero-Tags
-    resources:   [{title, url, icon}, …] → Sidebar-Karte „Weiterführende Informationen“.
-                                       title und/oder icon (Bildpfad); icon erscheint
-                                       rechts und wird kreisrund dargestellt.
-    breadcrumb:                     → Brotkrumen anpassen (beides optional):
-      label: "…"                    → überschreibt den Ordnernamen dieser Ebene;
-                                       in der Ordner-`index.md` gesetzt gilt es für
-                                       ALLE Seiten im Ordner und in Unterordnern.
-      ancestors: [{title, url}, …]  → explizite Vorfahren-Kette OHNE die aktuelle
-                                       Seite (diese wird automatisch angehängt); in
-                                       der `index.md` gesetzt wird sie vererbt.
+  QR-Code: links vom Farbschema-Umschalter (dieselbe Reihenfolge wie in der
+  Kopfzeile der übrigen Seiten), gleich groß, Tooltip „Diese Seite auf Deinem
+  Smartphone öffnen“; vergrößert sich bei Hover/Tippen auf Scan-Größe. Er zeigt
+  auf die AKTUELLE Folie (Fragment #/3) und wird beim Blättern neu berechnet.
 
-  „Markdown kopieren“ (Button im Hero) erscheint NUR auf Guides – dort ist das
-  Übernehmen des Quelltexts der Zweck. Bedingungen: Markdown-Seite (`.md`, nicht
-  reines HTML) UND der Schalter `toolbar.copy` (Vorgabe: nur `layout: guide`, siehe
-  `_includes/avd-switch.html`). Doku-Seiten und Visualisierungen haben ihn nicht –
-  bei letzteren, weil ihr Inhalt nicht sinnvoll als Markdown kopierbar ist.
+  Front Matter (alles optional):
+    title:       "…"              → sonst die erste #-Überschrift
+    description: "…"              → Meta-Description
 
-  DIE SEITENWERKZEUGE – QR-Code, Farbschema-Umschalter, Drucken – sind EINE
-  Komponente (`_includes/tools.html`) an zwei Standorten in diesem Rahmen:
+  OHNE JavaScript bleibt die Seite lesbar: Sie rendert dann als eine lange,
+  scrollbare Markdown-Seite (die Folien-Aufteilung ist eine Zutat, keine
+  Voraussetzung).
 
-    Kopfzeile   `chrome: true`  (page, guide)      QR + Farbschema
-    Hero rechts `hero_tools`    (visualization)    QR + Farbschema + Drucken
-
-  Die Regel dahinter ist die Kopfzeile: Wo es sie gibt, tragen die Werkzeuge sie;
-  wo nicht, tritt der Hero an ihre Stelle. Drucken gibt es nur dort, weil auf einer
-  gewöhnlichen Seite der Browser-Befehl (Strg/Cmd+P) genügt, die rahmenlose
-  Ansicht aber keinen anderen Weg aufs Papier hat.
-
-  Der QR-Code wird erst im Browser erzeugt (theme/academy/atvantage.js), weil die
-  Adresse zur Build-Zeit nicht feststeht; ohne JavaScript erscheint er nicht.
+  Das eigenständige Deck (templates/presentations/, reines HTML mit Fragmenten
+  und Speaker-Notes) bleibt daneben bestehen – siehe docs/theme/academy.md.
 --><html lang="de">
 <head>
   <meta charset="utf-8">
@@ -64,13 +47,13 @@
 <meta property="og:description" content="Wie aus einem Dockerfile ein Stapel wird, warum jeder Layer einen Hash aus sich und allem darunter trägt – und was daraus für Cache, geteilte Basis-Images und die Reihenfolge der Zeilen folgt.">
 <meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790249998"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790249998">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790249998">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790249998">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790249998"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790249998">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790249998" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790249998" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790249998">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790251502"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790251502">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790251502">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790251502">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790251502"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790251502">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790251502" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790251502" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790251502">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -112,28 +95,32 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/training-material-container-technologies/theme/atvantage/assets/icon-180.png">
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/presentation.css?v=1790251502">
+  <script src="/training-material-container-technologies/theme/jekyll/presentation.js?v=1790251502" defer></script>
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790251502"></head>
+<body class="avd-academy-present" data-avd-academy-present data-avd-academy-present-title="Layer und Build-Cache">
+  <a class="avd-academy-skip-link" href="#avd-academy-deck">Zum Inhalt springen</a>
 
-  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790249998">
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790249998"></head><body class="avd-academy-guide avd-academy-guide--viz">
-  <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><section class="avd-academy-guide-hero avd-academy-guide-hero--slim"
-           aria-labelledby="avd-academy-page-title"><div class="avd-academy-guide-hero__meta">
-      <div class="avd-academy-guide-hero__tags">
-      </div>
-      <div class="avd-academy-guide-hero__actions"><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
+  <header class="avd-academy-present__bar">
+    <img class="avd-academy-present__logo" src="/training-material-container-technologies/assets/logo-schulung.svg" alt="ATVANTAGE Academy"><span class="avd-academy-present__logo-mask" role="img" aria-label="ATVANTAGE Academy"
+          style="--avd-academy-logo-src: url('/training-material-container-technologies/assets/logo-schulung.svg'); --avd-academy-logo-ratio: 260 / 24;"></span><span class="avd-academy-present__title">Layer und Build-Cache</span>
+    <span class="avd-academy-present__counter" data-avd-academy-present-counter aria-live="off"></span>
+    <div class="avd-academy-present__tools"><button type="button" class="avd-academy-present__back" data-avd-academy-back hidden
+              title="Zurück" aria-label="Zurück">← Zurück</button><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
                 title="Diese Seite auf Deinem Smartphone öffnen"
                 aria-label="Diese Seite auf Deinem Smartphone öffnen"></button><button type="button" class="avd-academy-tool avd-academy-tool--theme avd-academy-theme-toggle" data-avd-academy-theme-toggle
               title="Farbschema umschalten (hell/dunkel)"
               aria-label="Farbschema umschalten">◐</button><button type="button" class="avd-academy-tool avd-academy-tool--print avd-academy-print-btn"
-                data-avd-academy-print
-                title="Diese Seite drucken" aria-label="Diese Seite drucken"></button>
-      </div>
-    </div><h1 id="avd-academy-page-title">Layer und Build-Cache</h1>
-  </section><div class="avd-academy-guide-layout">
-    <main class="avd-academy-guide-main" id="avd-academy-content">
+                data-avd-academy-present-print
+                title="Drucken (alle Folien)" aria-label="Drucken (alle Folien)"></button><button type="button" class="avd-academy-tool avd-academy-tool--full"
+              data-avd-academy-present-full
+              title="Vollbild (Taste F)" aria-label="Vollbild">⛶</button></div>
+  </header><main class="avd-academy-deck" id="avd-academy-deck" data-avd-academy-deck>
+    
+<h1 id="layer-und-build-cache">Layer und Build-Cache</h1>
 
-<p>Ein Image entsteht nicht in einem Stück. Es entsteht Schicht für Schicht – und
-wer diese Schichtung versteht, versteht anschließend von selbst, warum ein
-zweiter Build Sekunden statt Minuten braucht.</p>
+<p>Ein Image entsteht nicht in einem Stück, sondern Schicht für Schicht.
+Wer das versteht, versteht den Rest von selbst.</p>
 
 <style>
   .lc {
@@ -226,7 +213,8 @@ zweiter Build Sekunden statt Minuten braucht.</p>
     gap: var(--avd-academy-space-6);
     align-items: stretch;
     max-width: 42rem;
-    margin: var(--avd-academy-space-6) 0;
+    /* Mittig: Auf einer Folie steht das Bild in der Mitte, nicht am linken Rand. */
+    margin: var(--avd-academy-space-6) auto;
   }
   .lc__achse { display: flex; flex-direction: column; }
   .lc__achse-teil {
@@ -283,10 +271,10 @@ zweiter Build Sekunden statt Minuten braucht.</p>
     font-size: 0.78em;
     color: var(--avd-academy-color-ink-muted);
   }
-  .lc__spalte--einzeln { max-width: 42rem; margin: var(--avd-academy-space-6) 0; }
+  .lc__spalte--einzeln { max-width: 42rem; margin: var(--avd-academy-space-6) auto; }
 
   /* --- Geteilte Basis: Zweige oben, gemeinsamer Grund unten --------------- */
-  .lc__teilen { margin: var(--avd-academy-space-6) 0; max-width: 42rem; }
+  .lc__teilen { margin: var(--avd-academy-space-6) auto; max-width: 42rem; }
   .lc__zweige {
     display: grid; grid-template-columns: repeat(2, 1fr);
     gap: var(--avd-academy-space-4);
@@ -311,6 +299,7 @@ zweiter Build Sekunden statt Minuten braucht.</p>
   /* --- Die Wahl: was hat sich geaendert? ---------------------------------- */
   .lc__wahl {
     display: flex; flex-wrap: wrap; gap: var(--avd-academy-space-2);
+    justify-content: center;
     margin: var(--avd-academy-space-6) 0;
     align-items: center;
   }
@@ -345,12 +334,35 @@ zweiter Build Sekunden statt Minuten braucht.</p>
   @media (max-width: 40rem) {
     .lc__zweige { grid-template-columns: 1fr; }
   }
+
+  /* --- Auf Papier stehen ALLE DREI FAELLE ---------------------------------
+     Am Bildschirm waehlt man einen; auf dem Papier kann niemand klicken. Die
+     drei Fassungen entstehen beim Laden aus demselben Markup (siehe Skript) -
+     eine zweite, von Hand gepflegte Kopie waere binnen einer Aenderung falsch.
+
+     `break-inside: auto` hebt die Regel des Themes fuer GENAU DIESE Folie auf:
+     Drei Faelle passen nicht zuverlaessig auf eine Seite, und ein abgeschnittener
+     Fall waere schlimmer als ein Seitenumbruch. */
+  .lc__druck { display: none; }
+  @media print {
+    .lc__wahl, #lc-vergleich, .lc__quelle--nurbild { display: none !important; }
+    .lc__druck { display: block; }
+    .avd-academy-slide:has(.lc__druck) { break-inside: auto; }
+    .lc__druck .lc { gap: var(--avd-academy-space-4); margin: 0 0 0.5cm; }
+    .lc__druck-fall {
+      margin: 0.5cm 0 0.15cm;
+      font-weight: var(--avd-academy-fw-bold);
+      border-bottom: 1px solid var(--avd-academy-color-border);
+    }
+    .lc__druck .lc__layer { padding: 0.1cm 0.2cm; }
+    .lc__druck .lc__titel { font-size: 1em; }
+    .lc__druck .lc__unter { display: none; }
+  }
 </style>
 
-<h2 id="aufbau">Ein Dockerfile, Schicht für Schicht</h2>
+<h2 id="ein-dockerfile-ist-eine-liste-von-schritten">Ein Dockerfile ist eine Liste von Schritten</h2>
 
-<p>Ein <strong>Dockerfile</strong> ist eine Liste von Schritten. Jeder Schritt geht von dem
-Ergebnis des vorherigen aus:</p>
+<p>Jeder Schritt geht vom Ergebnis des vorherigen aus:</p>
 
 <pre><code class="language-dockerfile">FROM node:20-alpine
 WORKDIR /app
@@ -364,8 +376,9 @@ CMD ["node", "server.js"]
 <a href="https://docs.docker.com/reference/dockerfile/" target="_blank" rel="noopener">offiziellen Dockerfile-Referenz</a>.
 Für diese Seite genügen die sechs oben.</p>
 
-<p>Jede dieser Zeilen legt eine <strong>Schicht</strong> an. Das Bild folgt der Datei – Zeile 1
-zuerst, Zeile 6 zuletzt:</p>
+<h2 id="jede-zeile-legt-eine-schicht-an">Jede Zeile legt eine Schicht an</h2>
+
+<p>Das Bild folgt der Datei – Zeile 1 zuerst, Zeile 6 zuletzt:</p>
 
 <div class="lc__mit-achse">
 
@@ -385,17 +398,18 @@ zuerst, Zeile 6 zuletzt:</p>
 
 </div>
 
-<p><strong>Die Pfeile geben die Sprache vor.</strong> Eine Schicht baut immer auf dem auf, was
-vor ihr entstanden ist: <code>FROM</code> ist die <strong>unterste</strong> Schicht, die letzte Zeile die
-<strong>oberste</strong>. Wenn auf dieser Seite von <em>unteren</em> und <em>oberen</em> Schichten die Rede
-ist, ist das gemeint – die frühere und die spätere Zeile.</p>
+<p><strong>Die Pfeile geben die Sprache vor:</strong> <code>FROM</code> ist die <strong>unterste</strong> Schicht, die
+letzte Zeile die <strong>oberste</strong> – gemeint ist die frühere und die spätere Zeile.</p>
 
-<p><strong>Nicht jede Zeile wird zu einer Schicht.</strong> Nur <code>RUN</code>, <code>COPY</code> und <code>ADD</code> verändern
-das Dateisystem und legen damit eine an. <code>FROM</code> setzt den Grund, und <code>WORKDIR</code>,
-<code>ENV</code>, <code>EXPOSE</code>, <code>CMD</code> oder <code>ENTRYPOINT</code> schreiben nur Angaben ins Image – sie
-kosten keinen Platz, gehören aber trotzdem dazu.</p>
+<h2 id="nicht-jede-zeile-wird-zu-einer-schicht">Nicht jede Zeile wird zu einer Schicht</h2>
 
-<h2 id="hash">Jeder Layer trägt einen Hash</h2>
+<p><strong>Eine Schicht legen nur <code>RUN</code>, <code>COPY</code> und <code>ADD</code> an</strong> – sie verändern das
+Dateisystem.</p>
+
+<p><code>FROM</code> setzt den Grund. <code>WORKDIR</code>, <code>ENV</code>, <code>EXPOSE</code>, <code>CMD</code> und <code>ENTRYPOINT</code>
+schreiben nur Angaben ins Image: kein Platz, aber Teil des Images.</p>
+
+<h2 id="jeder-layer-trägt-einen-hash">Jeder Layer trägt einen Hash</h2>
 
 <p>Beim Bauen bekommt jede Schicht eine Prüfsumme – einen <strong>Hash</strong>. Er entsteht aus
 <strong>zwei</strong> Dingen: aus dem Inhalt der Schicht selbst <strong>und</strong> aus dem Hash der
@@ -417,7 +431,7 @@ ergeben denselben Hash:</p>
   <p class="lc__leserichtung">Jeder Hash steckt in den Hashes darunter mit drin.</p>
 </div>
 
-<p>Daraus folgt beides, was diese Seite ausmacht:</p>
+<h2 id="daraus-folgt-beides">Daraus folgt beides</h2>
 
 <ul>
   <li><strong>Der Cache.</strong> Kennt Docker einen Hash bereits, muss es die Schicht nicht
@@ -429,7 +443,7 @@ Anweisung Wort für Wort dieselbe geblieben ist. Sie steht ja auf einem anderen
 Grund.</li>
 </ul>
 
-<h2 id="image">Ein Image ist ein Layer und alles darunter</h2>
+<h2 id="ein-image-ist-ein-layer-und-alles-darunter">Ein Image ist ein Layer und alles darunter</h2>
 
 <p>Damit lässt sich sagen, was ein Image eigentlich ist:</p>
 
@@ -441,7 +455,7 @@ die Kette selbst ist das Image.</p>
 
 <p>Das klingt nach Wortklauberei und hat zwei sehr praktische Folgen.</p>
 
-<h3 id="zwei-images-ein-gemeinsamer-grund">Zwei Images, ein gemeinsamer Grund</h3>
+<h2 id="zwei-images-ein-gemeinsamer-grund">Zwei Images, ein gemeinsamer Grund</h2>
 
 <p>Zwei Images, die auf demselben Grund aufsetzen, <strong>teilen</strong> sich dessen Schichten
 – dieselben Hashes, dieselben Daten, einmal auf der Platte:</p>
@@ -472,7 +486,7 @@ die Kette selbst ist das Image.</p>
 <p>Deshalb geht das Herunterladen des zweiten Images so viel schneller als das des
 ersten: Was schon liegt, wird nicht noch einmal geholt.</p>
 
-<h3 id="ein-image-als-grund-für-das-nächste">Ein Image als Grund für das nächste</h3>
+<h2 id="ein-image-als-grund-für-das-nächste">Ein Image als Grund für das nächste</h2>
 
 <p>Und weil ein Image nur eine Kette ist, kann ein Dockerfile auch auf einem
 <strong>eigenen</strong> Image aufsetzen statt auf einem fremden:</p>
@@ -502,7 +516,7 @@ CMD ["node", "server.js"]
 viele dünne Anwendungs-Images. Wird die Basis erneuert, erben es alle – und alle
 müssen neu gebaut werden, denn ihr Grund hat einen neuen Hash bekommen.</p>
 
-<h2 id="cache">Was der Cache daraus macht</h2>
+<h2 id="was-der-cache-daraus-macht">Was der Cache daraus macht</h2>
 
 <p>Jetzt lohnt sich der Blick auf die Reihenfolge der Zeilen. Unten stehen zweimal
 dieselben Anweisungen – links in der naheliegenden Reihenfolge, rechts in der,
@@ -517,7 +531,7 @@ betroffene Schicht wird neu gebaut, und mit ihr alles, was darauf steht.</p>
   <button type="button" class="lc__knopf" data-lc-wahl="deps" aria-pressed="false">die Abhängigkeitsliste</button>
 </div>
 
-<div class="lc">
+<div class="lc" id="lc-vergleich">
 
   <div class="lc__spalte">
     <p class="lc__titel">Naheliegend – und teuer</p>
@@ -560,16 +574,17 @@ betroffene Schicht wird neu gebaut, und mit ihr alles, was darauf steht.</p>
 
 <noscript>
 <p class="lc__quelle">Ohne JavaScript steht oben der Fall „eine Quelldatei geändert“ –
-der häufigste. Die übrigen Fälle stehen im Text darunter.</p>
+der häufigste.</p>
 </noscript>
+
+<div class="lc__druck" id="lc-druck" aria-hidden="true"></div>
 
 <script>
 (function () {
   "use strict";
-  /* WAS WIRD NEU GEBAUT? Die Regel steht im Abschnitt darueber, hier wird sie
-     gerechnet - fuer beide Reihenfolgen zugleich. Genau das ist der Grund, die
-     Seite ueberhaupt anklickbar zu machen: Man sieht nicht ZWEI Bilder, sondern
-     DIESELBE Regel auf zwei Anordnungen.
+  /* WAS WIRD NEU GEBAUT? Die Regel steht auf der Folie davor, hier wird sie
+     gerechnet - fuer beide Reihenfolgen zugleich. Man sieht dadurch nicht ZWEI
+     Bilder, sondern DIESELBE Regel auf zwei Anordnungen.
 
      Gerechnet wird von der Basis abwaerts (im Bild von oben nach unten): Die
      erste Schicht, die das Geaenderte enthaelt, wird neu gebaut - und mit ihr
@@ -578,69 +593,80 @@ der häufigste. Die übrigen Fälle stehen im Text darunter.</p>
      `COPY . .` traegt BEIDES (`code deps`): Es kopiert die Abhaengigkeitsliste
      mit. Ohne diese Feinheit saehe die linke Spalte bei einer geaenderten Liste
      faelschlich gut aus. */
-  var knoepfe = [].slice.call(document.querySelectorAll("[data-lc-wahl]"));
-  var stapel  = [].slice.call(document.querySelectorAll("[data-lc-stapel]"));
-  if (!knoepfe.length || !stapel.length) return;
+  var FAELLE = [
+    { wert: "nichts", name: "Nichts geändert" },
+    { wert: "code",   name: "Eine Quelldatei geändert" },
+    { wert: "deps",   name: "Die Abhängigkeitsliste geändert" }
+  ];
 
-  var wahl = "code";                 /* der Stand, in dem das Markup ausgeliefert wird */
+  var vergleich = document.getElementById("lc-vergleich");
+  var knoepfe   = [].slice.call(document.querySelectorAll("[data-lc-wahl]"));
+  if (!vergleich || !knoepfe.length) return;
 
-  function zeichne() {
-    knoepfe.forEach(function (k) {
-      k.setAttribute("aria-pressed", k.getAttribute("data-lc-wahl") === wahl ? "true" : "false");
-    });
-
-    stapel.forEach(function (liste) {
+  /* Rechnet EINEN Fall in EINEM Baum durch - derselbe Code fuer den Bildschirm
+     und fuer die drei Fassungen auf dem Papier. */
+  function zeichne(wurzel, fall) {
+    [].slice.call(wurzel.querySelectorAll("[data-lc-stapel]")).forEach(function (liste) {
       var betroffen = false;
       [].slice.call(liste.children).forEach(function (schicht) {
         if (schicht.classList.contains("lc__layer--meta")) return;
         var enthaelt = (schicht.getAttribute("data-lc-enthaelt") || "").split(" ");
-        if (wahl !== "nichts" && enthaelt.indexOf(wahl) !== -1) betroffen = true;
+        if (fall !== "nichts" && enthaelt.indexOf(fall) !== -1) betroffen = true;
         schicht.classList.toggle("lc__layer--neu", betroffen);
         var marke = schicht.querySelector(".lc__marke");
         if (marke) marke.textContent = betroffen ? "neu gebaut" : "aus dem Cache";
       });
     });
-
-    [].slice.call(document.querySelectorAll("[data-lc-fall]")).forEach(function (t) {
-      t.hidden = t.getAttribute("data-lc-fall") !== wahl;
+    [].slice.call(wurzel.querySelectorAll("[data-lc-fall]")).forEach(function (t) {
+      t.hidden = t.getAttribute("data-lc-fall") !== fall;
     });
+  }
+
+  /* AUF PAPIER STEHEN ALLE DREI FAELLE. Sie entstehen beim Laden aus demselben
+     Markup - eine von Hand gepflegte Kopie waere binnen einer Aenderung falsch.
+     Erzeugt wird hier und nicht erst bei `beforeprint`: Bleibt das Ereignis aus
+     (es kommt nicht in jedem Browser), fehlten sonst zwei Drittel. */
+  var druck = document.getElementById("lc-druck");
+  if (druck) {
+    FAELLE.forEach(function (fall) {
+      var titel = document.createElement("p");
+      titel.className = "lc__druck-fall";
+      titel.textContent = fall.name;
+      var kopie = vergleich.cloneNode(true);
+      kopie.removeAttribute("id");
+      zeichne(kopie, fall.wert);
+      /* Die Kennungen der Kopie muessen weg: Sonst faende die Bedienung oben
+         die Kopien mit und zeichnete sie mit um. */
+      [].slice.call(kopie.querySelectorAll("[data-lc-stapel]")).forEach(function (el) {
+        el.removeAttribute("data-lc-stapel");
+      });
+      druck.appendChild(titel);
+      druck.appendChild(kopie);
+    });
+  }
+
+  var wahl = "code";                 /* der Stand, in dem das Markup ausgeliefert wird */
+  function umschalten(neuerFall) {
+    wahl = neuerFall;
+    knoepfe.forEach(function (k) {
+      k.setAttribute("aria-pressed", k.getAttribute("data-lc-wahl") === wahl ? "true" : "false");
+    });
+    zeichne(vergleich, wahl);
   }
 
   knoepfe.forEach(function (k) {
-    k.addEventListener("click", function () {
-      wahl = k.getAttribute("data-lc-wahl");
-      zeichne();
-      if (window.AvdAcademyState) window.AvdAcademyState.update();
-    });
+    k.addEventListener("click", function () { umschalten(k.getAttribute("data-lc-wahl")); });
   });
 
-  zeichne();
+  umschalten(wahl);
 
-  /* Der Fall steht in der Adresse - ein Lesezeichen zeigt dasselbe Bild.
-     Angemeldet wird auf `DOMContentLoaded` und danach selbst hergestellt: Das
-     Theme-Skript traegt `defer` und hat sein `restore()` da schon hinter sich. */
-  function zustandAnmelden() {
-    var Z = window.AvdAcademyState;
-    if (!Z) return;
-    Z.register({
-      key: "aendert",
-      read: function () { return wahl; },
-      apply: function (wert) {
-        if (wert !== "nichts" && wert !== "code" && wert !== "deps") return;
-        wahl = wert; zeichne();
-      }
-    });
-    Z.restore();
-  }
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", zustandAnmelden);
-  } else {
-    zustandAnmelden();
-  }
+  /* KEIN ZUSTAND IN DER ADRESSE. Auf einer Praesentation gehoert das Fragment
+     dem Layout (`#/3` ist die Foliennummer); `AvdAcademyState` haelt dort
+     ausdruecklich still. Ein zweiter Schreiber zerschoesse die Foliennummer. */
 })();
 </script>
 
-<h2 id="loeschen">Der Nebenbefund, der überrascht</h2>
+<h2 id="löschen-macht-ein-image-nicht-kleiner">Löschen macht ein Image nicht kleiner</h2>
 
 <p>Ein Layer, in dem eine Datei <strong>gelöscht</strong> wird, macht das Image nicht kleiner. Die
 Datei steckt weiterhin im Layer darunter – der obere merkt sich nur, dass sie
@@ -667,31 +693,29 @@ nicht mehr zu sehen ist.</p>
 
 </div>
 
+<h2 id="zum-mitnehmen">Zum Mitnehmen</h2>
+
 <blockquote>
-  <p><strong>Merksatz:</strong> Was sich selten ändert, gehört nach unten. Was aufgeräumt werden
-soll, muss im selben Layer aufgeräumt werden, in dem es entstanden ist.</p>
+  <p>Was sich <strong>selten ändert</strong>, gehört nach <strong>unten</strong>.</p>
+
+  <p>Was <strong>aufgeräumt</strong> werden soll, muss im <strong>selben Layer</strong> aufgeräumt werden, in
+dem es entstanden ist.</p>
 </blockquote>
 
+  </main>
 
-    </main>
+  <nav class="avd-academy-present__controls" aria-label="Foliennavigation" hidden data-avd-academy-present-controls>
+    <button type="button" class="avd-academy-present__nav" data-avd-academy-present-prev
+            title="Vorherige Folie (←)" aria-label="Vorherige Folie">‹</button>
+    <button type="button" class="avd-academy-present__nav" data-avd-academy-present-next
+            title="Nächste Folie (→)" aria-label="Nächste Folie">›</button>
+  </nav>
+
+  <div class="avd-academy-present__progress" aria-hidden="true">
+    <div class="avd-academy-present__progress-fill" data-avd-academy-present-progress></div>
   </div><div class="avd-academy-print-contact" aria-hidden="true">
     <span>Kontakt: https://academy.atvantage-academy.workers.dev/</span>
     <span>academy@atvantage.com</span>
   </div>
-
-  <footer class="avd-academy-footer">
-  <div class="avd-academy-footer__grid">
-    <div><strong>Containertechnologien (Academy)</strong>
-      <p>Schulungsunterlagen der ATVANTAGE Academy.</p>
-    </div><div>
-      <strong>Kontakt</strong>
-      <p><a href="https://academy.atvantage-academy.workers.dev/" target="_blank" rel="noopener">Website</a><br><a href="mailto:academy@atvantage.com">academy@atvantage.com</a><br>
-      </p>
-    </div></div>
-  <div class="avd-academy-footer__legal">
-    © <span data-avd-academy-year>2026</span> ATVANTAGE
-  </div>
-</footer>
-
 </body>
 </html>
