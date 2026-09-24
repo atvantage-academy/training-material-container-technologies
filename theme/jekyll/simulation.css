@@ -55,6 +55,23 @@
   z-index: 2;
 }
 .avd-academy-sim__logo { height: 22px; width: auto; flex: 0 0 auto; }
+/* DIE WORTMARKE TRAEGT DIE SCHULUNGSFARBE - dieselbe Konstruktion wie im Kopfbereich
+   (`academy/components.css`, `__logo-mask`). Ohne sie stand hier die Dateifarbe des
+   SVG: auf jeder gewoehnlichen Seite blau, auf dieser orange. Der span ist DEFAULT
+   unsichtbar und das <img> sichtbar; kann die Engine Masken, kehrt sich das um. */
+.avd-academy-sim__logo-mask { display: none; }
+@supports (mask: url("#x") no-repeat) {
+  .avd-academy-sim__logo-mask ~ .avd-academy-sim__logo,
+  .avd-academy-sim__logo:has(~ .avd-academy-sim__logo-mask) { display: none; }
+  .avd-academy-sim__logo-mask {
+    display: block;
+    height: 22px;
+    flex: 0 0 auto;
+    aspect-ratio: var(--avd-academy-logo-ratio);
+    background-color: var(--avd-academy-color-accent);
+    mask: var(--avd-academy-logo-src) no-repeat left center / contain;
+  }
+}
 .avd-academy-sim__title {
   font-size: var(--avd-academy-fs-sm);
   font-weight: var(--avd-academy-fw-medium);

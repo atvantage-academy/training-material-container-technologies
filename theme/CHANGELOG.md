@@ -15,6 +15,99 @@ Abschnitt „Theme-Version“.
 
 ---
 
+## 2.46.0
+
+### Bausteine merken sich ihren Zustand – gemeinsam, in der Adresse
+
+Eine Bedienung, die man nicht wiederfindet, ist ein Verlust. Wer einen Reiter wählt, einen
+Abschnitt aufklappt oder eine Musterlösung aufdeckt und neu lädt, stand bisher wieder am
+Anfang – und der QR-Code an der Wand zeigte auf ein anderes Bild als das, über das gerade
+gesprochen wird.
+
+**Die Ursache war nicht fehlender Wille, sondern fehlende Zuständigkeit.** Es gibt genau
+**ein** Fragment je Seite. Der Reiterstreifen schrieb bisher `#«panel-id»` selbst hinein –
+und löschte damit alles, was ein anderer Baustein dort hätte stehen haben wollen. Solange
+jeder für sich schreibt, gewinnt der letzte Klick.
+
+**Neu ist deshalb eine gemeinsame Stelle:** `window.AvdAcademyState` in
+`theme/academy/atvantage.js`. Sie sammelt den Zustand aller Bausteine und schreibt die
+Adresse **einmal**:
+
+    #kapitel-2                 eine gewöhnliche Sprungmarke – unverändert
+    #/?open=tag-1,hinweis      nur Zustand
+    #/kapitel-2?open=tag-1     Sprungmarke UND Zustand
+
+**Vier Bausteine hängen ab sofort daran** – ohne eine Zeile in den Unterlagen:
+**Reiter** (`avd-academy-tabs`), **Akkordeon** (`avd-academy-accordion`), **Klappabschnitt**
+(`avd-academy-fold`) und **aufdeckbarer Inhalt** (`avd-academy-reveal`). Der Fold hatte bis
+hierher gar kein JavaScript; er bekommt es nur dafür und bleibt ohne es vollständig
+bedienbar.
+
+**Geschrieben wird nur, was vom Dokument abweicht.** Der Ausgangszustand ist das Markup des
+Autors: Solange niemand etwas anfasst, bleibt die Adresse sauber. Steht `open` dagegen
+darin, ist es die Wahrheit – auch leer (`open=`) heißt dann „alles zu“, sonst ließe sich ein
+zugeklappter Standard-Aufklapper nicht ausdrücken. Reiter und Akkordeon-Abschnitte, die
+nicht genannt sind, bleiben wie sie sind: Dort ist immer höchstens eines offen.
+
+**Für eigene Bausteine** (Consumer des Themes, klickbare Visualisierungen) gibt es zwei
+Aufrufe: `openable({id, istOffen, setzen, exklusiv})` reiht etwas in `open` ein,
+`register({key, read, apply})` nimmt jeden anderen Zustand auf; `update()` nach der
+Bedienung schreibt die Adresse. Die Bibliothek erledigt dabei, was von Hand regelmäßig
+schiefgeht: `replaceState` statt `location.hash` (kein Sprung, kein Verlaufseintrag je
+Klick), das Ereignis `avd-academy-urlchange` für den QR-Code, das Zuhören auf `hashchange`,
+und ein unbekannter Wert führt still in den Ausgangszustand.
+
+**Auf Präsentation und Simulation hält die Bibliothek still.** Dort gehört das Fragment dem
+Layout (`#/3`, `#/abgrenzung/3`); ein zweiter Schreiber zerschösse die Folien- oder
+Schrittnummer.
+
+**Abmelden geht:** `data-avd-academy-state="off"` an einem Baustein oder an einem Container
+darüber. Neu im Markup Contract.
+
+**Was sich für bestehende Unterlagen ändert:** Die Adresse sieht beim Reiterwechsel anders
+aus als bisher (`#/?open=tag-1` statt `#tag-1`). **Bestehende Verweise bleiben gültig** –
+ein `#tag-1` im Text öffnet weiterhin den zugehörigen Reiter, und die Sprungmarken der
+Seite sind unberührt.
+
+**Nachgemessen** im Browser, an einer Seite mit Reitern, Akkordeon, zwei Folds und einem
+Reveal: fünfundzwanzig Prüfungen – Zustand nach dem Neuladen, mehrere Bausteine in einer
+Adresse, Vor/Zurück, tiefer Verweis in einen geschlossenen Reiter, `open=` als „alles zu“,
+abgemeldeter Baustein, unbekannter Wert, und das Fragment einer Präsentationsseite bleibt
+unangetastet.
+
+**Doku:** [Zustand in der Adresse](https://timetoact.ghe.com/AVD-Academy-Tools/academy-theme/blob/main/docs/verwendung/zustand-in-der-url.md)
+und je Baustein ein Abschnitt in `docs/theme/bausteine.md`.
+
+## 2.45.0
+
+### Die Wortmarke war in Simulation und Präsentation orange statt in der Schulungsfarbe
+
+Gemeldet aus dem Docker-Grundlagenkurs: „Nur die Simulation hat ein orangenes Logo."
+
+**Und genau so war es.** `brand.logo_ratio` schaltet die Wortmarke von Bild auf Maske, damit
+sie die Schulungsfarbe trägt – gebaut war das aber nur in `_includes/header.html`, also für
+alles, was durch `default.html` läuft. `presentation` und `simulation` sind **eigenständige
+Dokumente** mit eigenem `<!DOCTYPE html>`; sie banden die Marke als schlichtes `<img>` ein.
+Ein `<img>` lädt das SVG als eigenes Dokument, und dort ist weder ein Token der Seite noch
+`currentColor` sichtbar – die Datei behielt ihre eigene Farbe.
+
+Aufgefallen ist es erst jetzt, weil die Vorlage bis vor Kurzem eine **grüne** Platzhalter-
+Wortmarke lieferte: Grün neben Grün fällt nicht auf, Orange neben Blau schon.
+
+Beide Layouts tragen jetzt dieselbe Konstruktion wie der Kopfbereich – `<img>` plus
+eingefärbter `<span>`, und das Bild bleibt stehen, wenn eine Engine keine Masken kann.
+
+**Nachgemessen** an der mitgelieferten Beispiel-Simulation: `<img>` ausgeblendet, Maske
+sichtbar, Farbe der Akzent der Site.
+
+**Neue Namen:** `avd-academy-sim__logo-mask`, `avd-academy-present__logo-mask`.
+
+**Die eigentliche Lehre steht in der Doku:** Eigenständig heißt, dass jede Gemeinsamkeit
+zweimal gebaut werden muss – und genau dort entstehen Abweichungen, die niemand sucht. Wer
+an Kopfbereich oder Marke etwas ändert, sieht in beiden Layouts nach.
+
+---
+
 ## 2.44.0
 
 ### Der Blockrhythmus fehlte in Reitern, im Akkordeon – und an Listen und Zitaten überall

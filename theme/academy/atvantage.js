@@ -25,6 +25,265 @@
      Nachladepfad auf die Dokument-Basis zurück. */
   var scriptUrl = (document.currentScript && document.currentScript.src) || "";
 
+  /* ==========================================================================
+     ZUSTAND IN DER ADRESSE (`AvdAcademyState`)
+     --------------------------------------------------------------------------
+     EINE BEDIENUNG, DIE MAN NICHT WIEDERFINDET, IST EIN VERLUST. Wer einen Reiter
+     wählt, einen Abschnitt aufklappt oder eine Musterlösung aufdeckt und die Seite
+     neu lädt, steht sonst wieder am Anfang - und der QR-Code an der Wand zeigt auf
+     ein anderes Bild als das, über das gerade gesprochen wird.
+
+     WARUM EINE GEMEINSAME STELLE UND NICHT JE BAUSTEIN EINE: Es gibt genau EIN
+     Fragment je Seite. Schreibt jeder Baustein für sich hinein, gewinnt der letzte
+     Klick und löscht die anderen - genau das tat der Reiterstreifen, solange er
+     `#«panel-id»` selbst setzte. Zustand ist deshalb eine Eigenschaft der SEITE,
+     nicht des einzelnen Bausteins: Hier laufen alle zusammen, und die Adresse
+     entsteht einmal aus allen Teilen.
+
+     DIE FORM:
+
+         #«anker»                 klassische Sprungmarke - unverändert, wie bisher
+         #/?open=a,b              nur Zustand
+         #/«anker»?open=a,b       Sprungmarke UND Zustand
+
+     Der führende Schrägstrich ist das Erkennungszeichen: Ohne ihn ist das Fragment
+     eine gewöhnliche Sprungmarke, und jeder bestehende Verweis funktioniert weiter.
+     Der Preis dieser Form ist, dass der Browser bei `#/…` nicht mehr von selbst
+     springt (kein Element hat diese ID) - das übernimmt `springen()` hier.
+
+     `open` ist der Schlüssel der Bausteine, die auf- und zugehen. Er führt IDs,
+     keine Nummern: `#/?open=windows,hinweis` überlebt das Umsortieren der Seite,
+     `#/?open=2,5` nicht.
+
+     FÜR EIGENE BAUSTEINE (Consumer des Themes) gibt es zwei Wege:
+
+         AvdAcademyState.openable({ id, exklusiv, istOffen, setzen })
+             - alles, was auf- und zugeht, reiht sich in `open` ein.
+
+         AvdAcademyState.register({ key, read, apply })
+             - alles andere: ein gewählter Datensatz, eine Zoomstufe, ein Filter.
+               `read` liefert den Wert (leer = Standard), `apply` stellt ihn her.
+
+         AvdAcademyState.update()
+             - nach jeder Bedienung aufrufen; schreibt die Adresse neu.
+
+     GESCHRIEBEN WIRD MIT `replaceState`, nicht über `location.hash`: Letzteres
+     SPRINGT zum Ziel (die Seite scrollte bei jedem Klick) und legt je Bedienung
+     einen Verlaufseintrag an - wer fünfmal umschaltet, müsste fünfmal zurück, um
+     die Seite zu verlassen. `replaceState` löst kein `hashchange` aus; deshalb
+     geht zusätzlich `avd-academy-urlchange` hinaus, auf das der QR-Code hört.
+
+     GESCHRIEBEN WIRD NUR, WAS VOM DOKUMENT ABWEICHT. Der Ausgangszustand ist das
+     Markup des Autors; solange niemand etwas anfasst, bleibt die Adresse sauber.
+     Umgekehrt gilt: Steht der Schlüssel in der Adresse, ist er die Wahrheit - auch
+     leer (`open=`) bedeutet dann "alles zu", sonst ließe sich ein geschlossener
+     Standard-Aufklapper nicht ausdrücken.
+
+     AUF PRÄSENTATION UND SIMULATION HÄLT DIESE STELLE STILL. Dort gehört das
+     Fragment dem Layout (`#/3`, `#/abgrenzung/3`), und ein zweiter Schreiber
+     zerschösse die Folien- bzw. Schrittnummer.
+     ========================================================================== */
+  var Zustand = (function () {
+    var teile = [];        /* {key, read, apply, standard} */
+    var offenbare = [];    /* {id, exklusiv, istOffen, setzen} */
+    var bereit = false;    /* erst nach dem ersten `anwenden()` wird geschrieben */
+    var imAnwenden = false;
+
+    function fremdesFragment() {
+      var b = document.body;
+      return !!(b && (b.hasAttribute("data-avd-academy-present") ||
+                      b.hasAttribute("data-avd-academy-sim")));
+    }
+
+    /* Aus dem Fragment werden Sprungmarke und Werte. Alles, was nicht mit `/`
+       beginnt, ist eine gewöhnliche Sprungmarke und hat keine Werte. */
+    function adresse() {
+      var roh = location.hash || "";
+      if (roh.charAt(0) === "#") { roh = roh.slice(1); }
+      if (roh.charAt(0) !== "/") { return { anker: entziffern(roh), werte: {} }; }
+      roh = roh.slice(1);
+      var trenn = roh.indexOf("?");
+      var anker = entziffern(trenn === -1 ? roh : roh.slice(0, trenn));
+      var werte = {};
+      if (trenn !== -1) {
+        roh.slice(trenn + 1).split("&").forEach(function (paar) {
+          if (!paar) { return; }
+          var i = paar.indexOf("=");
+          var k = entziffern(i === -1 ? paar : paar.slice(0, i));
+          werte[k] = entziffern(i === -1 ? "" : paar.slice(i + 1));
+        });
+      }
+      return { anker: anker, werte: werte };
+    }
+
+    /* Eine von Hand getippte Adresse darf kaputt sein - sie führt dann in den
+       Ausgangszustand und nicht in eine Ausnahme. */
+    function entziffern(text) {
+      try { return decodeURIComponent(text); } catch (e) { return text; }
+    }
+
+    function beziffern(text) {
+      /* Kommas bleiben lesbar: `open=a,b` ist eine Liste, keine Kodierung. */
+      return encodeURIComponent(text).replace(/%2C/g, ",");
+    }
+
+    function werteJetzt() {
+      var werte = {};
+      teile.forEach(function (t) {
+        var wert;
+        try { wert = t.read(); } catch (e) { return; }
+        if (wert === null || wert === undefined) { return; }
+        wert = String(wert);
+        if (wert !== t.standard) { werte[t.key] = wert; }
+      });
+      return werte;
+    }
+
+    function schreiben() {
+      /* WAEHREND DES HERSTELLENS WIRD NICHT GESCHRIEBEN. `<details>` meldet sein
+         `toggle` verzoegert; ein Baustein, der beim Anwenden aufgeht, ruft also
+         `update()` in dem Moment, in dem die halbe Seite hergestellt ist. Wer
+         dann schreibt, ueberschreibt die Adresse mit einem Zwischenstand - und
+         der Rest der Liste ist danach weg. */
+      if (!bereit || imAnwenden || fremdesFragment()) { return; }
+      var jetzt = adresse();
+      var werte = werteJetzt();
+      var schluessel = Object.keys(werte);
+      var neu;
+      if (!schluessel.length) {
+        neu = jetzt.anker ? "#" + beziffern(jetzt.anker) : "";
+      } else {
+        neu = "#/" + beziffern(jetzt.anker) + "?" + schluessel.map(function (k) {
+          return beziffern(k) + "=" + beziffern(werte[k]);
+        }).join("&");
+      }
+      if (neu === (location.hash || "")) { return; }
+      if (!window.history || !window.history.replaceState) { return; }
+      /* Ohne Fragment bleibt die Adresse ohne `#` stehen - ein nacktes `#` wäre
+         ein sichtbarer Rest von etwas, das nicht mehr da ist. */
+      window.history.replaceState(null, "", neu || (location.pathname + location.search));
+      window.dispatchEvent(new CustomEvent("avd-academy-urlchange"));
+    }
+
+    /* NUR SCHLÜSSEL, DIE DASTEHEN, werden angewendet. Ein fehlender Schlüssel ist
+       keine Aussage "alles zu", sondern gar keine - sonst schlösse der erste
+       Seitenaufruf jeden Abschnitt, den der Autor offen geschrieben hat. */
+    function anwenden() {
+      imAnwenden = true;
+      window.setTimeout(function () { imAnwenden = false; }, 0);
+      var werte = adresse().werte;
+      teile.forEach(function (t) {
+        if (!Object.prototype.hasOwnProperty.call(werte, t.key)) { return; }
+        try { t.apply(werte[t.key]); } catch (e) { /* ein Baustein darf scheitern */ }
+      });
+    }
+
+    /* Bei `#/…` springt der Browser nicht von selbst - und er könnte es auch gar
+       nicht: Das Ziel steckt womöglich in einem Bereich, der erst durch den
+       Zustand aufgeht. Deshalb erst anwenden, dann springen. */
+    function springen() {
+      var roh = location.hash || "";
+      if (roh.slice(0, 2) !== "#/") { return; }
+      var anker = adresse().anker;
+      if (!anker) { return; }
+      var ziel = document.getElementById(anker);
+      if (ziel) { ziel.scrollIntoView(); }
+    }
+
+    var offenTeil = {
+      key: "open",
+      read: function () {
+        var ids = [];
+        offenbare.forEach(function (o) {
+          if (!o.istOffen()) { return; }
+          /* EXKLUSIVES steht nur drin, wenn es abweicht: Ein Reiterstreifen hat
+             IMMER einen offenen Reiter - stünde er stets in der Adresse, trüge
+             jede Seite mit Reitern von Anfang an einen Zustand mit sich. */
+          if (o.exklusiv && o.standardOffen) { return; }
+          ids.push(o.id);
+        });
+        return ids.join(",");
+      },
+      apply: function (wert) {
+        var gewollt = wert ? wert.split(",") : [];
+        offenbare.forEach(function (o) {
+          var soll = gewollt.indexOf(o.id) !== -1;
+          /* EXKLUSIV heißt: Genau eines ist offen. "Nicht genannt" bedeutet dort
+             deshalb nicht "zu" - sonst stünde ein Reiterstreifen ohne Reiter da.
+             Bei allem anderen ist die Liste vollständig: Was fehlt, ist zu. */
+          if (o.exklusiv && !soll) { return; }
+          if (soll !== o.istOffen()) { o.setzen(soll); }
+        });
+      }
+    };
+
+    return {
+      /* Ein Baustein, der auf- und zugeht. `id` ist die ID des Elements, das in
+         der Adresse steht - sie muss auf der Seite eindeutig sein. */
+      openable: function (o) {
+        if (!o || !o.id) { return; }
+        o.standardOffen = !!o.istOffen();
+        offenbare.push(o);
+        if (teile.indexOf(offenTeil) === -1) {
+          offenTeil.standard = "";
+          teile.push(offenTeil);
+        }
+        /* Der Ausgangszustand ist das Markup - und der wächst mit jedem Baustein,
+           der sich anmeldet. Deshalb wird er nach jeder Anmeldung neu bestimmt. */
+        offenTeil.standard = offenTeil.read();
+      },
+      /* Alles, was kein Auf und Zu ist: ein gewählter Datensatz, eine Zoomstufe,
+         ein Filter. `read()` liefert den aktuellen Wert, `apply(wert)` stellt ihn
+         her; was `read()` beim Anmelden liefert, gilt als Standard und steht
+         deshalb nicht in der Adresse. */
+      register: function (t) {
+        if (!t || !t.key || typeof t.read !== "function" || typeof t.apply !== "function") { return; }
+        var wert;
+        try { wert = t.read(); } catch (e) { wert = ""; }
+        t.standard = (wert === null || wert === undefined) ? "" : String(wert);
+        teile.push(t);
+      },
+      /* Nach jeder Bedienung aufrufen. */
+      update: schreiben,
+      /* Die Sprungmarke der Adresse - für Bausteine, die tiefe Verweise auf
+         Inhalte in sich selbst auflösen müssen. */
+      anchor: function () { return adresse().anker; },
+      /* Zustand aus der Adresse herstellen. Ruft das Theme selbst auf: einmal nach
+         dem Aufbau der Seite und bei jedem `hashchange`. */
+      restore: function () { anwenden(); springen(); },
+      /* Ab hier darf geschrieben werden (nach dem ersten Herstellen). */
+      ready: function () { bereit = true; }
+    };
+  })();
+
+  window.AvdAcademyState = Zustand;
+
+  /* --- Lesbare IDs und die Abmeldung vom Zustand --------------------------
+     WAS IN DER ADRESSE STEHT, LIEST JEMAND. `#/?open=musterloesung` ist ein
+     brauchbares Lesezeichen, `#/?open=avd-fold-3` nicht - deshalb kommt der Name
+     aus der Beschriftung, und nur wenn die nichts hergibt (oder der Name schon
+     vergeben ist), aus dem Zaehler. Eine vorhandene ID bleibt unangetastet: Sie
+     steht womoeglich schon in einem Verweis.
+
+     `data-avd-academy-state="off"` meldet einen Baustein (oder alles darunter)
+     vom Zustand ab. Gedacht fuer Faelle, in denen das Aufklappen niemanden
+     interessiert - eine Legende im Fussbereich, ein Gimmick. Der Baustein bleibt
+     voll bedienbar; er traegt nur nichts in die Adresse ein. */
+  function idVergeben(el, text, praefix, nr) {
+    if (el.id) { return el.id; }
+    var wunsch = (text || "").trim().toLowerCase()
+      .replace(/ä/g, "ae").replace(/ö/g, "oe")
+      .replace(/ü/g, "ue").replace(/ß/g, "ss")
+      .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    el.id = (wunsch && !document.getElementById(wunsch)) ? wunsch : (praefix + nr);
+    return el.id;
+  }
+
+  function ohneZustand(el) {
+    var traeger = el.closest && el.closest("[data-avd-academy-state]");
+    return !!(traeger && traeger.getAttribute("data-avd-academy-state") === "off");
+  }
+
   /* --- Theme-Umschaltung -------------------------------------------------- */
   function initThemeToggle() {
     document.querySelectorAll("[data-avd-academy-theme-toggle]").forEach(function (btn) {
@@ -758,10 +1017,24 @@
      Inhalt ist dann erreichbar, nur nicht mittig. Kein Schulungsinhalt hängt
      also am JavaScript. */
   function initReveals() {
-    document.querySelectorAll("details.avd-academy-reveal").forEach(function (details) {
+    document.querySelectorAll("details.avd-academy-reveal").forEach(function (details, nr) {
       if (inVorfuehrung(details)) { return; }
       var summary = details.querySelector(":scope > summary");
       if (!summary) return;
+
+      /* AUFGEDECKT IST EIN ZUSTAND. Wer eine Musterloesung aufschlaegt und neu
+         laedt, soll sie wieder vor sich haben - und ein Verweis darf genau darauf
+         zeigen. NICHT exklusiv: Mehrere duerfen offen sein, die Liste in der
+         Adresse ist deshalb vollstaendig. */
+      if (!ohneZustand(details)) {
+        idVergeben(details, summary.textContent, "avd-reveal-", nr);
+        Zustand.openable({
+          id: details.id,
+          istOffen: function () { return details.open; },
+          setzen: function (auf) { details.open = auf; }
+        });
+        details.addEventListener("toggle", function () { Zustand.update(); });
+      }
 
       var body = details.querySelector(":scope > .avd-academy-reveal__body");
       if (!body) {
@@ -872,6 +1145,25 @@
     }
   }
 
+  /* --- Klappbarer Abschnitt (`avd-academy-fold`) ---------------------------
+     Das Auf und Zu macht der Browser: Der Baustein ist ein gewoehnliches
+     `<details>`, und das bleibt er auch ohne dieses Skript. Hier kommt allein der
+     ZUSTAND IN DER ADRESSE dazu - sonst ist ein aufgeklappter Abschnitt nach dem
+     Neuladen wieder zu, und ein Verweis kann nicht auf ihn zeigen. */
+  function initFolds() {
+    document.querySelectorAll("details.avd-academy-fold").forEach(function (details, nr) {
+      if (inVorfuehrung(details) || ohneZustand(details)) { return; }
+      var summary = details.querySelector(":scope > summary");
+      idVergeben(details, summary ? summary.textContent : "", "avd-fold-", nr);
+      Zustand.openable({
+        id: details.id,
+        istOffen: function () { return details.open; },
+        setzen: function (auf) { details.open = auf; }
+      });
+      details.addEventListener("toggle", function () { Zustand.update(); });
+    });
+  }
+
   /* --- Vorfuehrungen gehoeren dem Demo-Skript ----------------------------- */
   /* EINE BUEHNE IST EINE VORSCHAU, KEIN BAUSTEIN. `demo.js` nimmt ihr Markup und
      baut es in einem eigenen Rahmen noch einmal auf - mit demselben Theme und
@@ -915,17 +1207,14 @@
       leiste.setAttribute("role", "tablist");
       leiste.setAttribute("aria-orientation", seitlich ? "vertical" : "horizontal");
 
-      /* DIE ADRESSE FUEHRT DEN ZUSTAND MIT, damit sie sich als Lesezeichen eignet.
-         `replaceState` und nicht `location.hash`: Letzteres SPRINGT zum Ziel - der
-         Browser scrollte also bei jedem Reiterwechsel - und legt je Klick einen
-         Verlaufseintrag an. Wer fuenfmal umschaltet, muesste fuenfmal zurueck, um
-         die Seite zu verlassen.
+      /* DIE ADRESSE FUEHRT DEN ZUSTAND MIT, damit sie sich als Lesezeichen eignet -
+         aber nicht dieser Baustein allein: Geschrieben wird EINMAL fuer die ganze
+         Seite (`Zustand`, oben). Solange der Reiterstreifen `#«panel-id»` selbst
+         setzte, loeschte jeder Klick den Zustand aller anderen Bausteine.
          Die Tastatur ruft dieselbe Funktion: Ein per Pfeiltaste gewaehlter Reiter
          ist genauso gewaehlt wie ein angeklickter. */
-      function adresseFuehren(panel) {
-        if (window.history && window.history.replaceState) {
-          window.history.replaceState(null, "", "#" + panel.id);
-        }
+      function adresseFuehren() {
+        Zustand.update();
       }
 
       var knoepfe = panels.map(function (panel, i) {
@@ -958,7 +1247,7 @@
         knopf.innerHTML = summary.innerHTML;
         knopf.addEventListener("click", function () {
           panel.open = true;
-          adresseFuehren(panel);
+          adresseFuehren();
         });
         leiste.appendChild(knopf);
         return knopf;
@@ -999,7 +1288,7 @@
         if (ziel === null) return;
         event.preventDefault();
         panels[ziel].open = true;
-        adresseFuehren(panels[ziel]);
+        adresseFuehren();
         knoepfe[ziel].focus();
       });
 
@@ -1011,13 +1300,26 @@
          sieht es kaputt aus. */
       if (!panels.some(function (p) { return p.open; })) { panels[0].open = true; }
       nachfuehren();
+
+      /* ANMELDEN, ERST JETZT: Was hier offen steht, ist der Ausgangszustand des
+         Dokuments - und der entscheidet, ob ueberhaupt etwas in die Adresse muss.
+         EXKLUSIV, weil genau ein Reiter offen ist: "nicht genannt" heisst deshalb
+         "unveraendert" und nicht "zu" - sonst stuende die Leiste ueber nichts. */
+      panels.forEach(function (panel) {
+        Zustand.openable({
+          id: panel.id,
+          exklusiv: true,
+          istOffen: function () { return panel.open; },
+          setzen: function (auf) { if (auf) { panel.open = true; } }
+        });
+      });
     });
 
     /* TIEFE VERWEISE: `#…` auf ein Panel oder auf etwas DARIN muss den
        zugehoerigen Reiter oeffnen - sonst springt der Browser an eine Stelle,
        die gerade zu ist, und die Seite ruehrt sich nicht. */
     function ausHash() {
-      var id = location.hash.slice(1);
+      var id = Zustand.anchor();
       if (!id) return;
       var ziel = document.getElementById(id);
       if (!ziel) return;
@@ -1167,6 +1469,17 @@
         a.knopf.addEventListener("click", function () {
           var war = a.knopf.getAttribute("aria-expanded") === "true";
           waehlen(a, !war, true);
+          Zustand.update();
+        });
+
+        /* EXKLUSIV wie die Reiter, nur dass hier auch ALLES zu sein darf. Die ID
+           ist die der Ueberschrift - derselbe Anker, unter dem sich ein Bereich
+           ohnehin verlinken laesst. */
+        Zustand.openable({
+          id: a.kopf.id,
+          exklusiv: true,
+          istOffen: function () { return a.knopf.getAttribute("aria-expanded") === "true"; },
+          setzen: function (auf) { waehlen(a, auf, false); }
         });
       });
 
@@ -1193,6 +1506,7 @@
         event.preventDefault();
         abschnitte[ziel].knopf.focus();
         waehlen(abschnitte[ziel], true, true);
+        Zustand.update();
       });
 
       /* TIEFE VERWEISE: `#…` auf einen Kopf oder auf etwas DARIN muss den
@@ -1201,7 +1515,7 @@
          wie bei den Reitern, nur dass hier jeder Kasten seinen eigenen Zustand
          fuehrt und die Pruefung deshalb hier drin steht. */
       function ausHash() {
-        var id = location.hash.slice(1);
+        var id = Zustand.anchor();
         if (!id) { return; }
         var ziel = document.getElementById(id);
         if (!ziel) { return; }
@@ -1298,6 +1612,15 @@
     /* NACH beiden - vorher steht nicht fest, ob der rechte Bereich etwas zeigt. */
     initSidebarLeer();
     initReveals();
+    initFolds();
+
+    /* ZULETZT, und in dieser Reihenfolge: Erst wenn ALLE Bausteine angemeldet
+       sind, steht der Ausgangszustand des Dokuments fest - und erst dann laesst
+       sich sagen, was in der Adresse ueberhaupt eine Abweichung ist. `ready()`
+       gibt das Schreiben frei; davor waere jede Anmeldung ein Schreibanlass. */
+    Zustand.restore();
+    Zustand.ready();
+    window.addEventListener("hashchange", function () { Zustand.restore(); });
   }
 
   if (document.readyState === "loading") {

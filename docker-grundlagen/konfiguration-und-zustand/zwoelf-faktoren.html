@@ -59,18 +59,18 @@
 --><html lang="de">
 <head>
   <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"><title>Die zwölf Faktoren – und welche im Container zählen · Containertechnologien (Academy)</title><meta name="description" content="Die 12-Factor-App auf einen Blick, mit den vier Faktoren hervorgehoben, ohne die eine Container-Plattform ihre Arbeit nicht tun kann."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Die zwölf Faktoren – und welche im Container zählen · Containertechnologien (Academy)</title><meta name="description" content="Die 12-Factor-App als Kreis zum Anklicken: jeder Faktor mit Kerngedanke, Positiv- und Negativbeispiel und den Fachbegriffen dazu. Darunter dieselben Inhalte anders geschnitten – vier Stationen entlang des Lebenszyklus, die ohne das dichte Geflecht auskommen."><meta property="og:site_name" content="Containertechnologien (Academy)">
 <meta property="og:title" content="Die zwölf Faktoren – und welche im Container zählen">
-<meta property="og:description" content="Die 12-Factor-App auf einen Blick, mit den vier Faktoren hervorgehoben, ohne die eine Container-Plattform ihre Arbeit nicht tun kann.">
+<meta property="og:description" content="Die 12-Factor-App als Kreis zum Anklicken: jeder Faktor mit Kerngedanke, Positiv- und Negativbeispiel und den Fachbegriffen dazu. Darunter dieselben Inhalte anders geschnitten – vier Stationen entlang des Lebenszyklus, die ohne das dichte Geflecht auskommen.">
 <meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790167043"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790167043">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790167043">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790167043">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790167043"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790167043">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790167043" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790167043" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790167043">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790246916"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790246916">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790246916">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790246916">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790246916"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790246916">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790246916" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790246916" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790246916">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -113,8 +113,8 @@
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
 
-  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790167043">
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790167043"></head><body class="avd-academy-guide avd-academy-guide--viz">
+  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790246916">
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790246916"></head><body class="avd-academy-guide avd-academy-guide--viz">
   <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><section class="avd-academy-guide-hero avd-academy-guide-hero--slim"
            aria-labelledby="avd-academy-page-title"><div class="avd-academy-guide-hero__meta">
       <div class="avd-academy-guide-hero__tags">
@@ -131,151 +131,1672 @@
   </section><div class="avd-academy-guide-layout">
     <main class="avd-academy-guide-main" id="avd-academy-content">
 
-<p>Die <strong>12-Factor-App</strong> ist keine Norm und kein Zertifikat. Sie ist eine Sammlung
-von Beobachtungen aus dem Jahr 2011 darüber, welche Anwendungen sich auf einer
-Plattform betreiben ließen – und welche nicht.</p>
+<p>Die <strong>12-Factor-App</strong> ist keine Norm und kein Zertifikat. Sie entstand 2011 bei
+Heroku als Sammlung von Beobachtungen darüber, welche Anwendungen sich auf einer
+Plattform betreiben ließen – und welche nicht. Erstaunlich gut gealtert.</p>
 
 <p>Alle zwölf sind gute Ratschläge. <strong>Vier davon sind im Container keine Ratschläge,
-sondern Voraussetzungen</strong>: Ohne sie kann die Plattform einen Container nicht neu
+sondern Voraussetzungen</strong>: Ohne sie kann eine Plattform den Container nicht neu
 starten, verschieben oder vervielfältigen. Sie sind hervorgehoben.</p>
 
+<p class="zf__quelle">
+  <strong>Klick auf einen Faktor</strong>, um ihn ausführlich zu lesen.
+  Das Original steht unter
+  <a href="https://12factor.net/de/" target="_blank" rel="noopener">12factor.net</a>
+  – die Erklärungen hier sind eigene, auf den Kurs zugeschnittene Texte.
+</p>
+
 <style>
+  /* =========================================================================
+     ZWÖLF FAKTOREN – ein Kreis zum Anklicken
+     -------------------------------------------------------------------------
+     Warum ein Kreis und keine Liste: Eine nummerierte Liste legt eine Reihen-
+     folge nahe, die es nicht gibt. Die zwölf sind gleichrangig.
+
+     Alle Farben aus den Academy-Tokens. Es gibt KEIN `--avd-academy-space-5`;
+     eine ungültige `var()` lässt die ganze Deklaration fallen.
+     ========================================================================= */
+
+  .zf__quelle {
+    max-width: 44rem;
+    font-size: var(--avd-academy-fs-sm);
+    color: var(--avd-academy-color-ink-muted);
+  }
+
   .zf {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-    gap: var(--avd-academy-space-4);
-    margin: var(--avd-academy-space-8) 0;
-    list-style: none;
-    padding: 0;
-  }
-  .zf__karte {
     position: relative;
-    padding: var(--avd-academy-space-4);
-    border: 1px solid var(--avd-academy-color-border);
-    border-radius: var(--avd-academy-radius-lg);
-    background: var(--avd-academy-color-bg-subtle);
+    width: min(100%, 44rem);
+    margin: var(--avd-academy-space-8) auto;
+    aspect-ratio: 1;
+    /* Der Radius MUSS eine Länge sein: In `translateY()` bezieht sich ein
+       Prozentwert auf die eigene Höhe des Elements, nicht auf die Bühne.
+       Untergrenze gerechnet – Nachbarn liegen 2·r·sin(15°) ≈ 0,52·r
+       auseinander, ein Knopf ist 7,2rem breit, also mindestens 13,9rem. */
+    --zf-ring: clamp(15rem, 38vw, 17rem);
   }
-  .zf__karte--kern {
-    border-width: 2px;
-    border-color: var(--avd-academy-color-accent);
+
+  .zf__kreis { list-style: none; margin: 0; padding: 0; }
+  .zf__kreis > li {
+    position: absolute;
+    z-index: 1;                       /* ueber dem Netz, das darunter liegt */
+    left: 50%; top: 50%;
+    width: 7.2rem;
+    transform:
+      translate(-50%, -50%)
+      rotate(calc(var(--i) * 30deg))
+      translateY(calc(-1 * var(--zf-ring)))
+      rotate(calc(var(--i) * -30deg));
+  }
+
+  .zf__knopf {
+    display: flex; flex-direction: column; align-items: center; gap: 0.15rem;
+    width: 100%;
+    padding: 0.5rem 0.4rem;
+    cursor: pointer; font: inherit; text-align: center;
+    color: var(--avd-academy-color-ink);
+    background: var(--avd-academy-color-bg);
+    border: 2px solid var(--avd-academy-color-border);
+    border-radius: var(--avd-academy-radius-lg);
     box-shadow: var(--avd-academy-shadow-1);
+    transition: transform var(--avd-academy-transition),
+                border-color var(--avd-academy-transition),
+                box-shadow var(--avd-academy-transition);
+  }
+  .zf__knopf:hover, .zf__knopf:focus-visible {
+    transform: scale(1.06);
+    border-color: var(--avd-academy-color-accent);
+    box-shadow: var(--avd-academy-shadow-1),
+                0 0 14px color-mix(in srgb, var(--avd-academy-color-accent) 30%, transparent);
   }
   .zf__nr {
-    display: block;
     font-family: var(--avd-academy-font-mono);
-    font-size: var(--avd-academy-fs-sm);
+    font-size: 0.72em; letter-spacing: 0.08em;
     color: var(--avd-academy-color-ink-muted);
   }
-  .zf__karte--kern .zf__nr { color: var(--avd-academy-color-accent-ink); }
-  .zf__name {
-    display: block;
+  .zf__name { font-weight: var(--avd-academy-fw-bold); font-size: 0.82em; line-height: 1.2; }
+
+  .zf__knopf--kern {
+    border-color: color-mix(in srgb, var(--avd-academy-color-accent) 70%, transparent);
+    background: color-mix(in srgb, var(--avd-academy-color-accent) 10%, var(--avd-academy-color-bg));
+  }
+  .zf__knopf--kern .zf__nr { color: var(--avd-academy-color-accent-ink); }
+
+  .zf__mitte {
+    position: absolute; left: 50%; top: 50%;
+    z-index: 1;
+    transform: translate(-50%, -50%);
+    width: min(17rem, 44%); text-align: center;
+    /* Halbdurchlässig: Die Sehnen des Netzes laufen quer durch die Kreismitte.
+       Ohne eigenen Grund liefe die Beschriftung über Linien – ein deckender
+       Grund wiederum schnitte das Netz mitten entzwei. Der Text bleibt lesbar,
+       die Linien bleiben erkennbar. */
+    padding: var(--avd-academy-space-4);
+    background: color-mix(in srgb, var(--avd-academy-color-bg) 78%, transparent);
+    border-radius: var(--avd-academy-radius-lg);
+  }
+  .zf__mitte h2 { margin: 0 0 0.35rem; font-size: 1.1rem; color: var(--avd-academy-color-headline); }
+  .zf__mitte p { margin: 0; font-size: var(--avd-academy-fs-sm); color: var(--avd-academy-color-ink-muted); }
+  .zf__legende {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    margin-top: 0.6rem; font-size: 0.78em;
+    color: var(--avd-academy-color-ink-muted);
+  }
+  .zf__legende::before {
+    content: ""; width: 0.85rem; height: 0.85rem; border-radius: 3px;
+    border: 2px solid color-mix(in srgb, var(--avd-academy-color-accent) 70%, transparent);
+    background: color-mix(in srgb, var(--avd-academy-color-accent) 10%, var(--avd-academy-color-bg));
+  }
+
+  /* --- Das Netz ------------------------------------------------------------
+     Eine dünne Linie zwischen zwei Faktoren heißt: Die beiden nennen einander
+     im Reiter „Zusammenhänge“. Gezeichnet wird ausschließlich, was von BEIDEN
+     Seiten genannt ist – eine einseitige Nennung ergäbe eine Linie, die auf der
+     Gegenseite nicht wiederzufinden ist.
+
+     Die Linien sind Schmuck im Wortsinn: Sie liegen hinter den Knöpfen, nehmen
+     keine Klicks an und sind für Hilfsmittel unsichtbar. Der Inhalt steht als
+     Text im Fenster. */
+  .zf__netz {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    overflow: visible;
+  }
+  .zf__netz line {
+    /* Grau, nicht in der Akzentfarbe: Das Netz ist Hintergrund. In Blau
+       stritte es mit den Knöpfen um die Aufmerksamkeit, obwohl es nur die
+       Lage beschreibt. Die Akzentfarbe bleibt dem Hervorheben vorbehalten. */
+    stroke: color-mix(in srgb, var(--avd-academy-color-border) 85%, transparent);
+    stroke-width: 1;
+    /* Beim Skalieren des viewBox bliebe die Linie sonst nicht haardünn. */
+    vector-effect: non-scaling-stroke;
+    transition: stroke var(--avd-academy-transition),
+                stroke-width var(--avd-academy-transition);
+  }
+  .zf__netz.is-gedimmt line {
+    stroke: color-mix(in srgb, var(--avd-academy-color-border) 35%, transparent);
+  }
+  .zf__netz line.is-hell {
+    stroke: var(--avd-academy-color-accent);
+    stroke-width: 2;
+  }
+
+  /* Unter dieser Breite gibt die halbe Bühne den Radius nicht mehr her – dann
+     lieber ehrlich ein Raster als ein Kreis mit schneidenden Knöpfen. */
+  @media (max-width: 56rem) {
+    .zf { aspect-ratio: auto; }
+    /* Gleiche Falle wie beim Zeitstrahl: Das Theme setzt `ol` auf Flex. */
+    .zf ol.zf__kreis {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(7.2rem, 1fr));
+      gap: var(--avd-academy-space-3);
+    }
+    .zf ol.zf__kreis > li { position: static; transform: none; width: auto; }
+    .zf__mitte {
+      position: static; transform: none; width: auto;
+      padding: 0; background: none;
+      margin-bottom: var(--avd-academy-space-6);
+    }
+    /* Ohne Kreis keine Sehnen – im Raster verbände die Linie zwei Kacheln,
+       die nur zufällig nebeneinanderliegen. */
+    .zf__netz { display: none; }
+  }
+
+  /* --- Das Fenster ---------------------------------------------------------
+     `<dialog>` bringt Esc, Fokusfang und das Stilllegen der übrigen Seite mit.
+     MITTIG muss hier stehen: Der Browser zentriert ein modales Fenster über
+     `inset: 0` und `margin: auto` – und dieses `auto` nimmt ihm das
+     `* { margin: 0 }` des Themes (siehe Register A-005). */
+  .zf__fenster {
+    position: fixed; inset: 0; margin: auto;
+    width: min(52rem, 95vw);
+    max-height: 88vh;
+    padding: 0;
+    border: 1px solid var(--avd-academy-color-border);
+    border-radius: var(--avd-academy-radius-lg);
+    background: var(--avd-academy-color-bg);
+    color: var(--avd-academy-color-ink);
+    box-shadow: var(--avd-academy-shadow-2);
+  }
+  .zf__fenster::backdrop {
+    background: color-mix(in srgb, var(--avd-academy-color-ink, #000) 55%, transparent);
+    backdrop-filter: blur(2px);
+  }
+  .zf__fenster-kopf {
+    display: flex; align-items: flex-start; gap: var(--avd-academy-space-4);
+    padding: var(--avd-academy-space-6) var(--avd-academy-space-6) 0;
+  }
+  .zf__fenster-kopf h2 { margin: 0; padding: 0; border: 0; font-size: 1.35rem; }
+  .zf__fenster-nr {
+    font-family: var(--avd-academy-font-mono);
+    color: var(--avd-academy-color-ink-muted);
+    font-size: 0.9em;
+  }
+  .zf__zu {
+    margin-left: auto;
+    /* Mindestens 24x24 – darunter verlangt WCAG 2.5.8 freien Abstand ringsum. */
+    min-width: 32px; min-height: 32px;
+    border: 0; border-radius: var(--avd-academy-radius);
+    background: transparent; color: inherit;
+    font-size: 1.4rem; line-height: 1; cursor: pointer;
+  }
+  .zf__zu:hover { background: var(--avd-academy-color-bg-subtle); }
+  .zf__fenster-koerper {
+    padding: var(--avd-academy-space-4) var(--avd-academy-space-6) var(--avd-academy-space-6);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    max-height: calc(88vh - 6rem);
+    /* Etwas kleiner als der Fliesstext der Seite: Was hier steht, sind
+       Einzelheiten zum Nachlesen, und fuenf Reiter brauchen die Hoehe fuer den
+       Inhalt. `--avd-academy-fs-sm` war zu klein zum Lesen, deshalb abgeleitet
+       statt gegriffen – zwischen den beiden Stufen gibt es kein Token. */
+    font-size: calc(var(--avd-academy-fs-base) * 0.94);
+  }
+
+  /* --- DAS FENSTER SPRINGT NICHT -------------------------------------------
+     Die fünf Reiter eines Faktors sind verschieden lang. Wuchs und schrumpfte
+     das Fenster beim Umschalten, sprang der eben noch gelesene Text unter dem
+     Zeiger weg – und auf einem kurzen Reiter stand die Leiste plötzlich in der
+     Bildschirmmitte.
+
+     Deshalb: feste Höhe, und gescrollt wird IM Reiter. Die Leiste bleibt dabei
+     stehen; würde stattdessen der ganze Körper scrollen, verlöre man beim
+     Lesen die Bedienung aus dem Blick.
+
+     Nur für die Faktoren (`:has(.zf__blatt)`). Die Blätter des Zeitstrahls
+     haben keine Reiter und sind kurz – für sie wäre eine feste Höhe ein
+     Fenster mit viel Leere. Wo `:has()` fehlt, bleibt es beim bisherigen
+     Verhalten: Das Fenster wächst mit dem Inhalt. Kein Inhalt geht verloren. */
+  .zf__fenster:has(.zf__blatt) {
+    height: min(88vh, 42rem);
+    display: flex; flex-direction: column;
+  }
+  .zf__fenster:has(.zf__blatt) .zf__fenster-kopf { flex: none; }
+  .zf__fenster:has(.zf__blatt) .zf__fenster-koerper {
+    flex: 1 1 auto; min-height: 0; max-height: none;
+    overflow: hidden;                 /* gescrollt wird eine Ebene tiefer */
+    display: flex; flex-direction: column;
+  }
+  .zf__fenster:has(.zf__blatt) .zf__blatt {
+    flex: 1 1 auto; min-height: 0;
+    display: flex; flex-direction: column;
+  }
+  /* Doppelte Klasse: Das Theme setzt `.avd-academy-tabs.avd-academy-tabs`
+     ausdrücklich auf 0-2-0, um von der Ladereihenfolge unabhängig zu sein. */
+  .zf__fenster .avd-academy-tabs.avd-academy-tabs {
+    flex: 1 1 auto; min-height: 0;
+    display: flex; flex-direction: column;
+    /* Das Theme setzt hier 3rem nach oben – gedacht fuer Reiter im Fliesstext
+       einer Seite. Im Fenster steht der Leitsatz direkt darueber; so viel Luft
+       dazwischen liest sich wie ein Abriss und kostet Hoehe, die der Inhalt
+       braucht. */
+    margin: var(--avd-academy-space-4) 0 0;
+  }
+  .zf__fenster .avd-academy-tabs__bar { flex: none; }
+  .zf__fenster .avd-academy-tabs__panel { flex: none; }
+  /* `min-height: 0` ist der eigentliche Schalter: Ohne ihn wächst ein
+     Flex-Kind über seinen Inhalt hinaus und scrollt nie. */
+  .zf__fenster .avd-academy-tabs--enhanced > .avd-academy-tabs__panel[open] {
+    flex: 1 1 auto; min-height: 0;
+    overflow-y: auto;
+    /* AM ENDE IST SCHLUSS. Ohne das rollt der Zeiger, sobald der Reiter unten
+       angekommen ist, in der Seite DAHINTER weiter – man scrollt also im
+       Fenster und landet im Kreis der Faktoren. */
+    overscroll-behavior: contain;
+
+    /* DASS ES WEITERGEHT, MUSS MAN SEHEN. Zwei Mittel, weil keines allein
+       reicht: ein dauerhaft sichtbarer Balken (macOS blendet den eigenen sonst
+       aus, solange man nicht rollt) und ein Schatten an der Kante.
+       Der Schatten kommt ohne Skript aus: Die deckenden Verläufe rollen mit
+       (`local`), die Schatten stehen still (`scroll`). Am oberen Ende schiebt
+       sich der Deckel über den Schatten – der Schatten ist also genau dann zu
+       sehen, wenn in dieser Richtung noch Inhalt liegt. */
+    scrollbar-width: thin;
+    scrollbar-color: var(--avd-academy-color-border) transparent;
+    background:
+      linear-gradient(var(--avd-academy-color-bg) 30%, transparent) top / 100% 1.4rem no-repeat local,
+      linear-gradient(transparent, var(--avd-academy-color-bg) 70%) bottom / 100% 1.4rem no-repeat local,
+      radial-gradient(farthest-side at 50% 0,
+        color-mix(in srgb, var(--avd-academy-color-ink) 20%, transparent), transparent)
+        top / 100% 0.5rem no-repeat scroll,
+      radial-gradient(farthest-side at 50% 100%,
+        color-mix(in srgb, var(--avd-academy-color-ink) 20%, transparent), transparent)
+        bottom / 100% 0.5rem no-repeat scroll;
+  }
+  /* WebKit und Blink blenden den Balken sonst aus; erst eine eigene Regel macht
+     ihn dauerhaft sichtbar. */
+  .zf__fenster .avd-academy-tabs__panel[open]::-webkit-scrollbar { width: 10px; }
+  .zf__fenster .avd-academy-tabs__panel[open]::-webkit-scrollbar-thumb {
+    background: var(--avd-academy-color-border);
+    border-radius: 5px;
+    border: 3px solid var(--avd-academy-color-bg);
+  }
+  .zf__fenster .avd-academy-tabs__panel[open]::-webkit-scrollbar-track { background: transparent; }
+
+  /* --- Die Reiterleiste --------------------------------------------------
+     Fuenf Beschriftungen muessen nebeneinander passen. Die Leiste des Themes
+     rollt sonst waagerecht – das ist ein tragfaehiger Rueckfall, aber im
+     Fenster soll man alle fuenf auf einen Blick sehen. Deshalb: kuerzere
+     Woerter, schlankeres Polster und ein Symbol, das die Beschriftung
+     stuetzt statt sie zu ersetzen. */
+  /* NUR DIE AUFGEWERTETE LEISTE – UND DIE ZUSAMMENFASSUNGEN NUR OHNE SIE.
+     Hier stand einmal `.zf__fenster .avd-academy-tabs__panel > summary` ohne
+     Einschraenkung. Das Theme blendet die Zusammenfassungen aus, sobald die
+     Leiste steht (`.avd-academy-tabs--enhanced > … > summary { display: none }`) –
+     beide Regeln haben DIESELBE Spezifitaet, und meine stand spaeter. Ergebnis:
+     oben die Leiste und darunter noch einmal alle fuenf zum Aufklappen.
+
+     Deshalb greift die Formatierung der Zusammenfassungen jetzt ausdruecklich
+     nur dort, wo es KEINE Leiste gibt – also ohne JavaScript, wo die Reiter ein
+     Akkordeon sind. */
+  .zf__fenster .avd-academy-tabs__tab,
+  .zf__fenster .avd-academy-tabs:not(.avd-academy-tabs--enhanced)
+    > .avd-academy-tabs__panel > summary {
+    display: inline-flex; align-items: center; gap: 0.4em;
+    padding-left: 0.7rem; padding-right: 0.7rem;
+    font-size: 0.92em;
+    white-space: nowrap;
+  }
+  .zf__reiter-bild { width: 1.05em; height: 1.05em; flex: 0 0 auto; }
+
+  /* --- Ein Blatt ------------------------------------------------------------ */
+  .zf__blatt { display: none; }
+  .zf__fenster .zf__blatt { display: block; }
+  /* Im Fenster tragen Ueberschrift UND Marke der Kopf – das Blatt bringt beide
+     fuer den Druck mit, wo es keinen Kopf gibt. */
+  .zf__fenster .zf__blatt > h2,
+  .zf__fenster .zf__blatt > .zf__kopfmarke { display: none; }
+  .zf__kopfmarke { margin: 0.4rem 0 0; }
+  .zf__marke[hidden] { display: none; }
+  .zf__fenster-kopf .zf__marke { margin-top: 0.45rem; }
+  .zf__leitsatz {
+    margin: 0 0 var(--avd-academy-space-4);
+    font-size: 1.05em;
+    color: var(--avd-academy-color-headline);
+  }
+
+  /* A-005: In `avd-academy-tabs__panel` fehlt der Blockrhythmus des Themes.
+     Diese Regel gleicht ihn aus – dokumentierter Workaround, kein Versehen.
+     Fällt weg, sobald das Theme den Panel-Container in seine Fluss-Liste
+     aufnimmt. */
+  .avd-academy-tabs__panel > * + *,
+  .avd-academy-tabs__panel .zf__beispiel > * + * {
+    margin-top: var(--avd-academy-rhythm-block, 1.1rem);
+  }
+
+  .zf__beispiel {
+    padding: var(--avd-academy-space-4);
+    border-left: 3px solid var(--avd-academy-color-success);
+    border-radius: 0 var(--avd-academy-radius) var(--avd-academy-radius) 0;
+    background: var(--avd-academy-color-bg-subtle);
+  }
+  .zf__beispiel--schlecht { border-left-color: var(--avd-academy-color-danger); }
+  /* Querverweise: Der Faktorname ist ein echter Verweis – er setzt den Hash,
+     und das Fenster wechselt. So wird aus der Liste Navigation statt Prosa. */
+  .zf__bezug { margin: 0; padding-left: 1.1rem; }
+  .zf__bezug li + li { margin-top: var(--avd-academy-space-3); }
+  .zf__bezug a {
     font-weight: var(--avd-academy-fw-bold);
-    font-size: var(--avd-academy-fs-md);
-    line-height: var(--avd-academy-lh-heading);
-    margin-bottom: var(--avd-academy-space-2);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--avd-academy-color-accent) 50%, transparent);
   }
-  .zf__text {
-    font-size: var(--avd-academy-fs-sm);
+  .zf__bezug a:hover { border-bottom-color: var(--avd-academy-color-accent); }
+  .zf__bezug-nr {
+    font-family: var(--avd-academy-font-mono);
+    font-size: 0.82em;
     color: var(--avd-academy-color-ink-muted);
-    margin: 0;
+    margin-right: 0.25em;
+  }
+
+  .zf__folge {
+    font-size: 0.94em;
+    color: var(--avd-academy-color-ink-muted);
+  }
+
+  /* Fachbegriffe als Schlagworte: Wer sie einmal gesehen hat, erkennt sie im
+     nächsten Gespräch wieder – und weiß, was NICHT gemeint ist. */
+  .zf__begriffe { margin: 0; }
+  .zf__begriffe dt {
+    display: inline-block;
+    margin-top: var(--avd-academy-space-3);
+    padding: 0.08em 0.6em;
+    border-radius: 999px;
+    font-family: var(--avd-academy-font-mono);
+    font-size: 0.78em; font-weight: var(--avd-academy-fw-bold);
+    color: var(--avd-academy-color-accent-ink);
+    background: color-mix(in srgb, var(--avd-academy-color-accent) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--avd-academy-color-accent) 40%, transparent);
+  }
+  .zf__begriffe dd { margin: 0.25rem 0 0; }
+  .zf__begriffe dt.zf__begriffe--nein {
+    color: var(--avd-academy-color-danger-ink);
+    background: color-mix(in srgb, var(--avd-academy-color-danger) 12%, transparent);
+    border-color: color-mix(in srgb, var(--avd-academy-color-danger) 40%, transparent);
   }
   .zf__marke {
     display: inline-block;
-    margin-top: var(--avd-academy-space-3);
-    padding: 0 var(--avd-academy-space-2);
-    border-radius: var(--avd-academy-radius-sm);
-    font-size: var(--avd-academy-fs-sm);
-    font-weight: var(--avd-academy-fw-medium);
-    background: var(--avd-academy-color-accent-soft);
+    padding: 0.1em 0.7em; border-radius: 999px;
+    font-size: 0.78em; font-weight: var(--avd-academy-fw-bold);
     color: var(--avd-academy-color-accent-ink);
+    background: color-mix(in srgb, var(--avd-academy-color-accent) 16%, transparent);
+    border: 1px solid color-mix(in srgb, var(--avd-academy-color-accent) 45%, transparent);
+  }
+
+  /* --- Druck: EINE SEITE JE FAKTOR ------------------------------------------
+     Am Bildschirm ist der Kreis die Sache; auf Papier kann man nichts
+     anklicken. Gedruckt wird, was hinter den Knöpfen steckt. Die Reiter werden
+     dafür von `beforeprint` alle geöffnet. */
+  /* =========================================================================
+     VIER STATIONEN – die eigene Aufteilung unter dem Kreis
+     -------------------------------------------------------------------------
+     Ein Zeitstrahl, kein Kreis und kein Netz: Diese vier stehen in einer
+     Reihenfolge, und zwischen ihnen liegt nichts als die Zeit. Genau das ist
+     ihr Vorzug gegenüber den zwölf – also muss man es auch sehen.
+
+     Auf der Seite steht nur Takt und Kernsatz. Alles Weitere liegt im selben
+     Fenster wie bei den Faktoren; eine zweite Fenstermechanik gäbe es sonst
+     doppelt zu pflegen.
+     ========================================================================= */
+
+  /* KEINE eigene Breitenbegrenzung: Der Abschnitt soll genauso breit laufen
+     wie der Text oben auf der Seite. Das Theme gibt die Inhaltsbreite vor;
+     eine eigene `max-width` hier setzte den Absatz sichtbar schmaler daneben. */
+  .sw {
+    margin: var(--avd-academy-space-12) 0 0;
+    padding-top: var(--avd-academy-space-8);
+    border-top: 1px solid var(--avd-academy-color-border);
+  }
+  .sw__lead { color: var(--avd-academy-color-ink-muted); }
+
+  .sw__strahl { margin: var(--avd-academy-space-12) 0 0; }
+  /* `.sw ol.sw__takte` und nicht `.sw__takte`: Das Theme setzt fuer die Seite
+     `.avd-academy-guide-main ol { display: flex; flex-direction: column }` –
+     spezifischer als eine einzelne Klasse. Mit `.sw__takte` allein wurde aus
+     dem Zeitstrahl eine Liste untereinander, und `grid-template-columns`,
+     `gap` und `padding` fielen still unter den Tisch. */
+  .sw ol.sw__takte {
+    position: relative;
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: var(--avd-academy-space-4);
+  }
+  /* Der Strahl liegt auf Höhe der Punkte – deshalb derselbe Abstand von oben
+     wie der halbe Punktdurchmesser. */
+  .sw__takte::before {
+    content: ""; position: absolute;
+    left: 0; right: 0; top: 0.6rem;
+    border-top: 2px solid var(--avd-academy-color-border);
+  }
+  .sw__takte::after {
+    content: ""; position: absolute;
+    right: 0; top: 0.6rem;
+    width: 0.65rem; height: 0.65rem;
+    border-top: 2px solid var(--avd-academy-color-border);
+    border-right: 2px solid var(--avd-academy-color-border);
+    transform: translate(2px, -50%) rotate(45deg);
+  }
+
+  .sw__knopf {
+    position: relative;
+    display: flex; flex-direction: column; align-items: center;
+    gap: var(--avd-academy-space-2);
+    width: 100%; padding: 0 var(--avd-academy-space-2);
+    background: none; border: 0; font: inherit; color: inherit;
+    text-align: center; cursor: pointer;
+  }
+  /* Der Punkt trägt einen Ring in Hintergrundfarbe: So verschwindet der Strahl
+     unter ihm, statt durch ihn hindurchzulaufen. */
+  .sw__punkt {
+    width: 1.2rem; height: 1.2rem; border-radius: 50%;
+    background: var(--avd-academy-color-bg);
+    border: 2px solid var(--avd-academy-color-accent);
+    box-shadow: 0 0 0 5px var(--avd-academy-color-bg);
+    transition: background var(--avd-academy-transition),
+                transform var(--avd-academy-transition);
+  }
+  .sw__wann {
+    font-family: var(--avd-academy-font-mono);
+    font-size: 0.72em; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--avd-academy-color-ink-muted);
+  }
+  .sw__kern {
+    font-weight: var(--avd-academy-fw-bold);
+    color: var(--avd-academy-color-headline);
+    line-height: 1.25;
+  }
+  .sw__mehr {
+    font-size: var(--avd-academy-fs-sm);
+    color: var(--avd-academy-color-link);
+  }
+  .sw__knopf:hover .sw__punkt,
+  .sw__knopf:focus-visible .sw__punkt {
+    background: var(--avd-academy-color-accent);
+    transform: scale(1.15);
+  }
+  .sw__knopf:hover .sw__mehr,
+  .sw__knopf:focus-visible .sw__mehr { text-decoration: underline; }
+
+  /* --- Der querstehende Punkt: Schnittstellen ------------------------------
+     Kein fünfter Takt. Er betrifft als einziger nicht die eigene Anwendung,
+     sondern die Nachbarn – deshalb quer über die Breite und als Skizze einer
+     kleinen Dienstlandschaft statt als weiterer Punkt auf dem Strahl. */
+  .sw__quer {
+    margin-top: var(--avd-academy-space-12);
+    padding: var(--avd-academy-space-6);
+    background: var(--avd-academy-color-bg-subtle);
+    border: 2px dashed color-mix(in srgb, var(--avd-academy-color-accent) 45%, var(--avd-academy-color-border));
+    border-radius: var(--avd-academy-radius-lg);
+  }
+  .sw__quer h3 { margin: 0 0 var(--avd-academy-space-2); color: var(--avd-academy-color-headline); }
+
+
+  .sw__bild { margin: var(--avd-academy-space-6) 0 0; overflow-x: auto; }
+  .sw__bild svg { display: block; width: 100%; min-width: 34rem; height: auto; }
+  .sw__kasten {
+    fill: var(--avd-academy-color-bg);
+    stroke: var(--avd-academy-color-border);
+    stroke-width: 2;
+  }
+  .sw__kasten--mitte { stroke: var(--avd-academy-color-accent); }
+  .sw__beschriftung {
+    fill: var(--avd-academy-color-ink);
+    font-size: 15px; font-weight: var(--avd-academy-fw-bold);
+  }
+  .sw__kante { stroke: var(--avd-academy-color-border); stroke-width: 2; fill: none; }
+  .sw__kante--lose {
+    stroke: var(--avd-academy-color-warning);
+    stroke-dasharray: 6 5;
+  }
+  .sw__art { fill: var(--avd-academy-color-ink-muted); font-size: 12px; }
+  .sw__art--lose { fill: var(--avd-academy-color-warning-ink); }
+
+  .sw__arten { margin: var(--avd-academy-space-6) 0 0; padding-left: 1.1rem; }
+  .sw__arten li + li { margin-top: var(--avd-academy-space-2); }
+  .sw__arten strong { color: var(--avd-academy-color-headline); }
+
+  .sw__rest {
+    margin-top: var(--avd-academy-space-8);
+    font-size: var(--avd-academy-fs-sm);
+    color: var(--avd-academy-color-ink-muted);
+  }
+
+  /* --- Die Blätter der Stationen im Fenster -------------------------------- */
+  .sw__blatt .zf__leitsatz { margin-top: 0; }
+  .sw__frage {
+    margin: var(--avd-academy-space-4) 0;
+    padding: var(--avd-academy-space-3);
+    background: var(--avd-academy-color-bg-subtle);
+    border-left: 3px solid var(--avd-academy-color-accent);
+    border-radius: var(--avd-academy-radius-sm);
+  }
+  .sw__marke {
+    display: block;
+    margin-bottom: var(--avd-academy-space-1);
+    font-family: var(--avd-academy-font-mono);
+    font-size: 0.72em; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--avd-academy-color-ink-muted);
+  }
+  .sw__blatt .sw__zu { font-size: var(--avd-academy-fs-sm); }
+
+  /* Wie bei den Faktoren: Das Blatt lebt im Lager und wird ins Fenster
+     geschoben. Die eigene Ueberschrift ist dort doppelt - der Fensterkopf
+     zeigt sie schon. Auf Papier ist sie die einzige. */
+  .sw__blatt { display: none; }
+  .zf__fenster .sw__blatt { display: block; }
+  .zf__fenster .sw__blatt > h2 { display: none; }
+
+  @media (max-width: 56rem) {
+    /* Untereinander statt nebeneinander – der Strahl steht dann links. */
+    .sw ol.sw__takte { grid-template-columns: 1fr; gap: var(--avd-academy-space-6); }
+    .sw__takte::before { left: 0.6rem; right: auto; top: 0; bottom: 0; border-top: 0;
+      border-left: 2px solid var(--avd-academy-color-border); }
+    .sw__takte::after { right: auto; left: 0.6rem; top: auto; bottom: 0;
+      transform: translate(-50%, 2px) rotate(135deg); }
+    .sw__knopf { flex-direction: row; align-items: center; text-align: left;
+      gap: var(--avd-academy-space-4); padding: 0; }
+    .sw__punkt { flex: none; }
+    .sw__wann { flex: none; min-width: 5.5rem; }
+  }
+
+  @media print {
+    .zf, .zf__quelle, .zf__fenster { display: none !important; }
+    /* DAS LAGER MUSS AUF PAPIER AUFGEHEN. Es traegt am Bildschirm `hidden`,
+       und ein `display: none` am Vorfahren laesst sich von den Blaettern darin
+       NICHT aufheben – `.zf__blatt { display: block !important }` lief deshalb
+       ins Leere, und im Ausdruck fehlten saemtliche Faktoren. */
+    #zf-lager { display: block !important; }
+    /* Die eigene Aufteilung kommt aufs Papier – sie ist die Lehrlinie. Der
+       Strahl entfällt (anklicken geht auf Papier nicht), stattdessen steht
+       jede Station ausgeschrieben da. */
+    .sw__strahl { display: none !important; }
+    .sw__quer { break-inside: avoid; background: none; }
+    .sw { break-before: page; border-top: none; }
+    .sw__blatt {
+      display: block !important;
+      break-inside: avoid;
+      margin-top: 0.8cm;
+    }
+    .sw__blatt > h2 { display: block !important; font-size: 16pt; margin: 0 0 0.2cm; }
+    .sw__bild { break-inside: avoid; }
+    .zf__blatt {
+      display: block !important;
+      break-after: page;
+      padding-top: 1.2cm;
+    }
+    .zf__blatt:last-of-type { break-after: auto; }
+    .zf__blatt > h2 { display: block !important; font-size: 20pt; margin: 0 0 0.2cm; }
+    .zf__blatt .avd-academy-tabs__panel > summary {
+      font-size: 10pt; letter-spacing: 0.06em; text-transform: uppercase;
+      margin-top: 0.7cm;
+    }
+    /* NUR TEXT, KEINE KAESTCHEN. Am Bildschirm trennen Rahmen und Flächen das
+       Bedienbare vom Text – der Reiterkasten, die Beispielspalten, die
+       Begriffe als Plaketten. Auf Papier gibt es nichts zu bedienen: Dort
+       stehen Kapitel hintereinander, und jeder Rahmen ist nur noch Farbe auf
+       dem Blatt. Was er bedeutete, sagt die Überschrift darüber ohnehin. */
+    .zf__blatt .avd-academy-tabs,
+    .zf__blatt .avd-academy-tabs__panel,
+    .avd-academy-tabs--enhanced > .avd-academy-tabs__panel[open],
+    .zf__beispiel,
+    .zf__begriffe dt,
+    .zf__marke,
+    .sw__frage,
+    .sw__quer {
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: none !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+    }
+    /* Ohne Plakette braucht der Begriff einen anderen Halt als die Fläche. */
+    .zf__begriffe dt { font-weight: bold; }
   }
 </style>
 
-<ul class="zf">
+<div class="zf">
+  <div class="zf__mitte">
+    <h2>12-Factor-App</h2>
+    <p>Zwölf Beobachtungen darüber, was eine Anwendung mitbringen muss, damit eine Plattform sie betreiben kann.</p>
+    <span class="zf__legende">im Container: Voraussetzung</span>
+  </div>
 
-  <li class="zf__karte">
-    <span class="zf__nr">I</span>
-    <span class="zf__name">Codebase</span>
-    <p class="zf__text">Eine Codebasis unter Versionskontrolle, viele Deployments daraus.</p>
-  </li>
+  <svg class="zf__netz" id="zf-netz" aria-hidden="true" focusable="false"></svg>
 
-  <li class="zf__karte">
-    <span class="zf__nr">II</span>
-    <span class="zf__name">Dependencies</span>
-    <p class="zf__text">Abhängigkeiten ausdrücklich erklären, nichts aus der Umgebung voraussetzen.</p>
-  </li>
+  <ol class="zf__kreis">
+    <li style="--i: 0"><button class="zf__knopf" type="button" data-zf="1"><span class="zf__nr">I</span><span class="zf__name">Codebase</span></button></li>
+    <li style="--i: 1"><button class="zf__knopf" type="button" data-zf="2"><span class="zf__nr">II</span><span class="zf__name">Dependencies</span></button></li>
+    <li style="--i: 2"><button class="zf__knopf zf__knopf--kern" type="button" data-zf="3"><span class="zf__nr">III</span><span class="zf__name">Config</span></button></li>
+    <li style="--i: 3"><button class="zf__knopf" type="button" data-zf="4"><span class="zf__nr">IV</span><span class="zf__name">Backing Services</span></button></li>
+    <li style="--i: 4"><button class="zf__knopf" type="button" data-zf="5"><span class="zf__nr">V</span><span class="zf__name">Build, release, run</span></button></li>
+    <li style="--i: 5"><button class="zf__knopf zf__knopf--kern" type="button" data-zf="6"><span class="zf__nr">VI</span><span class="zf__name">Processes</span></button></li>
+    <li style="--i: 6"><button class="zf__knopf" type="button" data-zf="7"><span class="zf__nr">VII</span><span class="zf__name">Port binding</span></button></li>
+    <li style="--i: 7"><button class="zf__knopf" type="button" data-zf="8"><span class="zf__nr">VIII</span><span class="zf__name">Concurrency</span></button></li>
+    <li style="--i: 8"><button class="zf__knopf zf__knopf--kern" type="button" data-zf="9"><span class="zf__nr">IX</span><span class="zf__name">Disposability</span></button></li>
+    <li style="--i: 9"><button class="zf__knopf" type="button" data-zf="10"><span class="zf__nr">X</span><span class="zf__name">Dev/prod parity</span></button></li>
+    <li style="--i: 10"><button class="zf__knopf zf__knopf--kern" type="button" data-zf="11"><span class="zf__nr">XI</span><span class="zf__name">Logs</span></button></li>
+    <li style="--i: 11"><button class="zf__knopf" type="button" data-zf="12"><span class="zf__nr">XII</span><span class="zf__name">Admin processes</span></button></li>
+  </ol>
+</div>
 
-  <li class="zf__karte zf__karte--kern">
-    <span class="zf__nr">III</span>
-    <span class="zf__name">Config</span>
-    <p class="zf__text">Konfiguration kommt aus der Umgebung, nicht aus dem Artefakt. Sonst braucht jede Umgebung ihr eigenes Image – und keines davon ist das getestete.</p>
-    <span class="zf__marke">im Container: Voraussetzung</span>
-  </li>
+<div id="zf-lager" hidden="">
 
-  <li class="zf__karte">
-    <span class="zf__nr">IV</span>
-    <span class="zf__name">Backing Services</span>
-    <p class="zf__text">Datenbanken, Warteschlangen, Speicher sind austauschbare angebundene Dienste.</p>
-  </li>
-
-  <li class="zf__karte">
-    <span class="zf__nr">V</span>
-    <span class="zf__name">Build, release, run</span>
-    <p class="zf__text">Bauen, konfigurieren und ausführen sind drei getrennte Schritte.</p>
-  </li>
-
-  <li class="zf__karte zf__karte--kern">
-    <span class="zf__nr">VI</span>
-    <span class="zf__name">Processes</span>
-    <p class="zf__text">Prozesse sind zustandslos: nichts bleibt zwischen zwei Anfragen im Speicher. Sonst lässt sich der Container nicht ersetzen – und ohne Ersetzbarkeit gibt es weder Skalierung noch Selbstheilung.</p>
-    <span class="zf__marke">im Container: Voraussetzung</span>
-  </li>
-
-  <li class="zf__karte">
-    <span class="zf__nr">VII</span>
-    <span class="zf__name">Port binding</span>
-    <p class="zf__text">Die Anwendung bringt ihren eigenen Server mit und lauscht auf einem Port.</p>
-  </li>
-
-  <li class="zf__karte">
-    <span class="zf__nr">VIII</span>
-    <span class="zf__name">Concurrency</span>
-    <p class="zf__text">Mehr Last wird mit mehr Prozessen bedient, nicht mit einem größeren.</p>
-  </li>
-
-  <li class="zf__karte zf__karte--kern">
-    <span class="zf__nr">IX</span>
-    <span class="zf__name">Disposability</span>
-    <p class="zf__text">Schnell starten, auf ein Stopp-Signal sauber aufräumen. Eine Plattform beendet Container ständig – geplant und ungeplant.</p>
-    <span class="zf__marke">im Container: Voraussetzung</span>
-  </li>
-
-  <li class="zf__karte">
-    <span class="zf__nr">X</span>
-    <span class="zf__name">Dev/prod parity</span>
-    <p class="zf__text">Entwicklung, Test und Produktion halten möglichst wenig Abstand voneinander.</p>
-  </li>
-
-  <li class="zf__karte zf__karte--kern">
-    <span class="zf__nr">XI</span>
-    <span class="zf__name">Logs</span>
-    <p class="zf__text">Logs sind ein Ereignisstrom nach <code>stdout</code>, keine Datei. Wer in eine Datei schreibt, schreibt in einen Container, den es morgen nicht mehr gibt.</p>
-    <span class="zf__marke">im Container: Voraussetzung</span>
-  </li>
-
-  <li class="zf__karte">
-    <span class="zf__nr">XII</span>
-    <span class="zf__name">Admin processes</span>
-    <p class="zf__text">Einmalige Aufgaben – Migration, Reparatur – laufen in derselben Umgebung wie die Anwendung.</p>
-  </li>
-
+<article class="zf__blatt" id="zf-1" data-titel="Codebase" data-slug="codebase" data-nr="I">
+<h2><span class="zf__fenster-nr">I</span> Codebase</h2>
+<p class="zf__leitsatz"><strong>Eine Anwendung, ein Quelltext-Stand – und daraus beliebig viele laufende Fassungen.</strong></p>
+<div class="avd-academy-tabs">
+<details class="avd-academy-tabs__panel" id="codebase--worum" name="zf-1" open="">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 18h5" /><path d="M10 21h4" /><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.45.9 1.1.9 1.8V16h5.4v-.4c0-.7.3-1.35.9-1.8A6 6 0 0 0 12 3Z" /></svg><span>Worum geht’s?</span></summary>
+<p>Sobald es zwei Quellen für dieselbe Anwendung gibt, weiß niemand mehr sicher, was in Produktion eigentlich läuft. Und wer das nicht weiß, kann einen Fehler nicht nachstellen – er kann nur raten.</p>
+<p>Der Faktor sagt deshalb: Was Du gebaut hast, steht an genau einer Stelle. Aus diesem einen Stand entstehen alle Ausprägungen – Deine Entwicklungsmaschine, der Testserver, die Produktion. Nicht drei Zweige für drei Umgebungen, nicht ein Ordner auf einem Netzlaufwerk daneben.</p>
+<p>„Umgebung“ meint hier <em>Ausprägung derselben Anwendung</em>, nicht Betriebssystem oder Prozessorarchitektur. Es geht um dev/test/prod, nicht um Windows/Linux.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="codebase--so-gehts" name="zf-1">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m8 12.2 2.8 2.8L16.2 9" /></svg><span>So geht’s</span></summary>
+<div class="zf__beispiel"><p>Die Anwendung liegt im Repository <code>bestellportal</code>. Aus dem Stand <code>v2.3.1</code> wird ein Image gebaut. Dasselbe Image läuft in Test und in Produktion – nur mit anderen Umgebungsvariablen.</p></div>
+<p class="zf__folge">Warum das trägt: Es gibt genau ein Artefakt und genau eine Herkunft. Tritt in Produktion ein Fehler auf, lässt er sich mit demselben Image lokal nachstellen.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="codebase--so-nicht" name="zf-1">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m9 9 6 6M15 9l-6 6" /></svg><span>So nicht</span></summary>
+<div class="zf__beispiel zf__beispiel--schlecht"><p>Jemand kopiert für den Testserver eine angepasste Fassung in ein zweites Repository – „nur kurz zum Ausprobieren“. Aus dem Provisorium wird ein Dauerzustand.</p></div>
+<p class="zf__folge">Drei Monate später weicht diese Fassung an sieben Stellen ab, und niemand weiß mehr, an welchen. Ein Fehlerbericht aus Test lässt sich nicht mehr auf den Produktionsstand beziehen – und umgekehrt.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="codebase--begriffe" name="zf-1">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5A2.5 2.5 0 0 0 4 22.5Z" /><path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20" /></svg><span>Begriffe</span></summary>
+<dl class="zf__begriffe">
+<dt>Single Source of Truth</dt><dd>Es gibt genau eine Stelle, an der die Wahrheit steht. Alles andere ist davon abgeleitet.</dd>
+<dt>Monorepo</dt><dd>Mehrere Anwendungen in einem Repository. Dem Faktor widerspricht das nicht – er verlangt nur, dass eine Anwendung nicht in zweien liegt.</dd>
+<dt>GitOps</dt><dd>Jüngerer Ansatz (ab 2017): Auch der gewünschte <em>Betriebszustand</em> steht in Git, ein Agent gleicht ihn ab. Baut auf diesem Faktor auf, geht aber weiter – Faktor I sagt nichts über das Ausrollen.</dd>
+<dt class="zf__begriffe--nein">Write once, run anywhere</dt><dd>Gemeint ist NICHT dasselbe. Der Java-Slogan meint Programme, die auf verschiedenen Betriebssystemen laufen. Hier geht es um <em>einen Quelltext-Stand für mehrere Ausprägungen derselben Anwendung</em>.</dd>
+</dl>
+</details>
+<details class="avd-academy-tabs__panel" id="codebase--zusammenhaenge" name="zf-1">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="2.4" /><circle cx="18" cy="6" r="2.4" /><circle cx="18" cy="18" r="2.4" /><path d="m8.3 10.9 7.4-3.5M8.3 13.1l7.4 3.5" /></svg><span>Zusammenhänge</span></summary>
+<ul class="zf__bezug">
+<li><a href="#build-release-run"><span class="zf__bezug-nr">V</span> Build, release, run</a> – Aus dem einen Stand entsteht das eine Artefakt. Ohne eine Quelle gibt es kein Bauergebnis, dem man ansieht, woher es kommt.</li>
+<li><a href="#dev-prod-parity"><span class="zf__bezug-nr">X</span> Dev/prod parity</a> – Umgebungen lassen sich nur vergleichen, wenn sie aus demselben Stand kommen. Zwei Quellen heben den Vergleich auf.</li>
+<li><a href="#admin-processes"><span class="zf__bezug-nr">XII</span> Admin processes</a> – Auch Einmalaufgaben gehören in diese eine Quelle – sonst gibt es sie nur auf einem Rechner.</li>
+<li><a href="#dependencies"><span class="zf__bezug-nr">II</span> Dependencies</a> – Die Abhängigkeitsdatei liegt in derselben Quelle. Ein Stand, der die Bibliotheken nicht mit aufzählt, beschreibt sich nur halb.</li>
 </ul>
+<p class="zf__folge">Ein Klick öffnet den Faktor – die Adresse wandert mit, ein Lesezeichen führt zurück.</p>
+</details>
+</div>
+</article>
 
-<blockquote>
-  <p><strong>Merksatz:</strong> Die vier hervorgehobenen Faktoren sind kein Qualitätsanspruch,
-sondern der Preis der Ersetzbarkeit. Wer sie nicht erfüllt, bekommt einen
-Container, den die Plattform nicht anfassen darf.</p>
-</blockquote>
+<article class="zf__blatt" id="zf-2" data-titel="Dependencies" data-slug="dependencies" data-nr="II">
+<h2><span class="zf__fenster-nr">II</span> Dependencies</h2>
+<p class="zf__leitsatz"><strong>Schreib auf, was Deine Anwendung braucht – und verlass Dich auf nichts, was Du nicht aufgeschrieben hast.</strong></p>
+<div class="avd-academy-tabs">
+<details class="avd-academy-tabs__panel" id="dependencies--worum" name="zf-2" open="">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 18h5" /><path d="M10 21h4" /><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.45.9 1.1.9 1.8V16h5.4v-.4c0-.7.3-1.35.9-1.8A6 6 0 0 0 12 3Z" /></svg><span>Worum geht’s?</span></summary>
+<p>Der Fehler entsteht fast nie bei den großen Dingen. Bibliotheken werden aufgeschrieben; was fehlt, sind Kleinigkeiten: ein Kommandozeilenwerkzeug, das auf dem eigenen Rechner seit Jahren da ist, eine Schriftart, ein Zeichensatz.</p>
+<p>Der Faktor verlangt zweierlei: Jede Abhängigkeit steht <em>vollständig</em> in einer Datei neben dem Quelltext – und die Anwendung nutzt <em>nur</em>, was dort steht. Sie darf sich nicht darauf verlassen, dass auf dem Zielsystem „schon irgendwas installiert ist“.</p>
+<p>Die Probe ist ein frischer Rechner: Reicht Quelltext plus Abhängigkeitsdatei, um die Anwendung zum Laufen zu bringen?</p>
+</details>
+<details class="avd-academy-tabs__panel" id="dependencies--so-gehts" name="zf-2">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m8 12.2 2.8 2.8L16.2 9" /></svg><span>So geht’s</span></summary>
+<div class="zf__beispiel"><p>Eine Python-Anwendung führt alle Pakete in <code>requirements.txt</code> auf, jeweils mit fester Version. Das Dockerfile installiert daraus – und sonst nichts.</p></div>
+<p class="zf__folge">Warum das trägt: Wer das Image baut, bekommt überall dieselben Pakete in denselben Ständen. Ein Unterschied zwischen zwei Rechnern kann gar nicht erst entstehen.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="dependencies--so-nicht" name="zf-2">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m9 9 6 6M15 9l-6 6" /></svg><span>So nicht</span></summary>
+<div class="zf__beispiel zf__beispiel--schlecht"><p>Dieselbe Anwendung ruft im Hintergrund <code>pdftk</code> auf, um PDFs zusammenzufügen. Auf dem Entwicklungsrechner ist das Werkzeug seit Jahren installiert, im <code>requirements.txt</code> steht es nicht.</p></div>
+<p class="zf__folge">Im Container fehlt es. Der Fehler zeigt sich nicht beim Start, sondern erst, wenn ein Kunde eine Rechnung herunterlädt – also im Betrieb, bei einem echten Vorgang.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="dependencies--begriffe" name="zf-2">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5A2.5 2.5 0 0 0 4 22.5Z" /><path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20" /></svg><span>Begriffe</span></summary>
+<dl class="zf__begriffe">
+<dt>Dependency Pinning</dt><dd>Versionen festnageln statt „neueste nehmen“. Sonst baut derselbe Bauplan an zwei Tagen zwei verschiedene Ergebnisse.</dd>
+<dt>Lock File</dt><dd>Datei, die die aufgelösten Versionen aller Abhängigkeiten festhält – auch die, die Du nie selbst angefordert hast.</dd>
+<dt>Vendoring</dt><dd>Abhängigkeiten mit ins Repository legen. Ein gangbarer Weg zum selben Ziel, nicht das Gegenteil.</dd>
+<dt class="zf__begriffe--nein">Es läuft doch bei mir</dt><dd>Kein Fachbegriff, sondern das Symptom. Fast immer steckt eine nicht aufgeschriebene Abhängigkeit dahinter.</dd>
+</dl>
+</details>
+<details class="avd-academy-tabs__panel" id="dependencies--zusammenhaenge" name="zf-2">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="2.4" /><circle cx="18" cy="6" r="2.4" /><circle cx="18" cy="18" r="2.4" /><path d="m8.3 10.9 7.4-3.5M8.3 13.1l7.4 3.5" /></svg><span>Zusammenhänge</span></summary>
+<ul class="zf__bezug">
+<li><a href="#dev-prod-parity"><span class="zf__bezug-nr">X</span> Dev/prod parity</a> – Vollständig aufgeschriebene Abhängigkeiten sind der wirksamste Hebel gegen unterschiedliche Werkzeuge.</li>
+<li><a href="#build-release-run"><span class="zf__bezug-nr">V</span> Build, release, run</a> – Was aufgeschrieben ist, wird beim Bauen eingefroren – danach ändert sich nichts mehr daran.</li>
+<li><a href="#codebase"><span class="zf__bezug-nr">I</span> Codebase</a> – Die Abhängigkeitsdatei liegt neben dem Quelltext, in derselben Quelle.</li>
+</ul>
+<p class="zf__folge">Ein Klick öffnet den Faktor – die Adresse wandert mit, ein Lesezeichen führt zurück.</p>
+</details>
+</div>
+</article>
+
+<article class="zf__blatt" id="zf-3" data-titel="Config" data-slug="config" data-nr="III" data-kern="ja">
+<h2><span class="zf__fenster-nr">III</span> Config</h2>
+<p class="zf__kopfmarke"><span class="zf__marke">im Container: Voraussetzung</span></p>
+<p class="zf__leitsatz"><strong>Alles, was sich zwischen Entwicklung, Test und Produktion unterscheidet, kommt von außen – nicht aus dem Quelltext.</strong></p>
+<div class="avd-academy-tabs">
+<details class="avd-academy-tabs__panel" id="config--worum" name="zf-3" open="">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 18h5" /><path d="M10 21h4" /><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.45.9 1.1.9 1.8V16h5.4v-.4c0-.7.3-1.35.9-1.8A6 6 0 0 0 12 3Z" /></svg><span>Worum geht’s?</span></summary>
+<p>Konfiguration ist alles, was je Ausprägung anders ist: Datenbank-Adressen, Zugangsdaten, Schalter für einzelne Funktionen. Sie gehört nicht ins Image und nicht in eine Datei, die mitgebaut wird. Sie kommt beim <em>Start</em> dazu.</p>
+<p>Die Probe ist einfach: <em>Könntest Du den Quelltext dieser Anwendung ab morgen öffentlich stellen, ohne dass etwas Vertrauliches herauskäme?</em> Wenn nein, steckt Konfiguration im Code.</p>
+<p>Im Container ist das keine Empfehlung mehr. Ein Image, das je Umgebung neu gebaut werden muss, ist in Produktion <em>nicht</em> das Artefakt, das getestet wurde – damit ist die Testaussage weg.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="config--so-gehts" name="zf-3">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m8 12.2 2.8 2.8L16.2 9" /></svg><span>So geht’s</span></summary>
+<div class="zf__beispiel"><p>Dasselbe Image <code>bestellportal:2.3.1</code> startet zweimal: einmal mit <code>DB_HOST=test-db</code>, einmal mit <code>DB_HOST=prod-db</code>.</p></div>
+<p class="zf__folge">Warum das trägt: Kein neuer Build, kein zweites Image, kein Zweifel daran, dass beide identisch sind. Was in Test geprüft wurde, läuft in Produktion – Zeichen für Zeichen dasselbe.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="config--so-nicht" name="zf-3">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m9 9 6 6M15 9l-6 6" /></svg><span>So nicht</span></summary>
+<div class="zf__beispiel zf__beispiel--schlecht"><p>Dieselbe Anwendung enthält <code>if (umgebung == "prod") { ... }</code>, und die Adressen stehen als Konstanten daneben.</p></div>
+<p class="zf__folge">Damit gibt es eine Codezeile, die in Produktion ein anderes Verhalten auslöst als im Test – und genau dort wurde sie nie ausgeführt. Der Test hat den Zweig geprüft, der später nicht läuft.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="config--begriffe" name="zf-3">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5A2.5 2.5 0 0 0 4 22.5Z" /><path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20" /></svg><span>Begriffe</span></summary>
+<dl class="zf__begriffe">
+<dt>Environment Variables</dt><dd>Der kleinste gemeinsame Nenner: sprach-, betriebssystem- und plattformunabhängig, von jeder Umgebung setzbar.</dd>
+<dt>Secrets Management</dt><dd>Zugangsdaten gehören zwar nach außen, aber Umgebungsvariablen sind dafür nur die einfachste Stufe – sie stehen in der Prozessliste und in <code>docker inspect</code>. Plattformen bringen eigene Mittel mit.</dd>
+<dt>Configuration Drift</dt><dd>Wenn Umgebungen im Lauf der Zeit auseinanderlaufen, weil jemand hier und dort etwas nachgezogen hat.</dd>
+<dt class="zf__begriffe--nein">Konfigurationsdatei im Image</dt><dd>Nicht gemeint. Eine Datei, die mitgebaut wird, ist Teil des Artefakts – und macht je Umgebung ein eigenes Artefakt nötig.</dd>
+</dl>
+</details>
+<details class="avd-academy-tabs__panel" id="config--zusammenhaenge" name="zf-3">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="2.4" /><circle cx="18" cy="6" r="2.4" /><circle cx="18" cy="18" r="2.4" /><path d="m8.3 10.9 7.4-3.5M8.3 13.1l7.4 3.5" /></svg><span>Zusammenhänge</span></summary>
+<ul class="zf__bezug">
+<li><a href="#backing-services"><span class="zf__bezug-nr">IV</span> Backing Services</a> – Die Adresse eines angebundenen Dienstes ist Konfiguration – beide Faktoren greifen an derselben Stelle ineinander.</li>
+<li><a href="#build-release-run"><span class="zf__bezug-nr">V</span> Build, release, run</a> – Konfigurieren ist dort der zweite der drei Schritte. Dieser Faktor sagt, was hineingehört.</li>
+<li><a href="#dev-prod-parity"><span class="zf__bezug-nr">X</span> Dev/prod parity</a> – Konfiguration ist das Einzige, was sich zwischen den Umgebungen unterscheiden soll. Alles andere ist ein Befund.</li>
+<li><a href="#port-binding"><span class="zf__bezug-nr">VII</span> Port binding</a> – Unter welcher Adresse und welchem Port die Anwendung nach außen erscheint, ist Konfiguration – nicht Quelltext.</li>
+</ul>
+<p class="zf__folge">Ein Klick öffnet den Faktor – die Adresse wandert mit, ein Lesezeichen führt zurück.</p>
+</details>
+</div>
+</article>
+
+<article class="zf__blatt" id="zf-4" data-titel="Backing Services" data-slug="backing-services" data-nr="IV">
+<h2><span class="zf__fenster-nr">IV</span> Backing Services</h2>
+<p class="zf__leitsatz"><strong>Datenbank, Warteschlange, Dateispeicher, Mailversand: Behandle sie als etwas, das man austauschen kann.</strong></p>
+<div class="avd-academy-tabs">
+<details class="avd-academy-tabs__panel" id="backing-services--worum" name="zf-4" open="">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 18h5" /><path d="M10 21h4" /><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.45.9 1.1.9 1.8V16h5.4v-.4c0-.7.3-1.35.9-1.8A6 6 0 0 0 12 3Z" /></svg><span>Worum geht’s?</span></summary>
+<p>Für die Anwendung soll es keinen Unterschied machen, ob die Datenbank auf demselben Rechner läuft, im Nachbarcontainer oder als eingekaufter Dienst. Sie kennt nur eine Adresse und Zugangsdaten – und die kommen von außen (Faktor III).</p>
+<p>Daraus folgt zweierlei. <em>Erstens:</em> keine Verbindung fest eingebaut – kein Pfad, kein Rechnername, keine IP im Quelltext. <em>Zweitens:</em> die Anwendung rechnet damit, dass ein angebundener Dienst kurz weg ist, und versucht es erneut.</p>
+<p>Die Unterscheidung „eigener Dienst“ gegen „fremder Dienst“ spielt bewusst keine Rolle. Ob die Datenbank vom eigenen Team betrieben oder eingekauft ist, ändert für die Anwendung nichts – beides ist eine Adresse.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="backing-services--so-gehts" name="zf-4">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m8 12.2 2.8 2.8L16.2 9" /></svg><span>So geht’s</span></summary>
+<div class="zf__beispiel"><p>Die Anwendung liest <code>DATABASE_URL</code>. Lokal zeigt die Adresse auf einen PostgreSQL-Container, in Produktion auf eine verwaltete Datenbank beim Anbieter.</p></div>
+<p class="zf__folge">Warum das trägt: Ein Umzug der Datenbank ist eine geänderte Umgebungsvariable, kein Umbau. Und ein Neustart der Datenbank ist ein Aussetzer, kein Ausfall der Anwendung.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="backing-services--so-nicht" name="zf-4">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m9 9 6 6M15 9l-6 6" /></svg><span>So nicht</span></summary>
+<div class="zf__beispiel zf__beispiel--schlecht"><p>Dieselbe Anwendung schreibt hochgeladene Dateien nach <code>/var/uploads</code> auf die lokale Platte des Containers.</p></div>
+<p class="zf__folge">Beim zweiten Container hat plötzlich jede Hälfte der Nutzer andere Dateien – je nachdem, wo ihre Anfrage gelandet ist. Und beim Neustart ist alles weg, weil der Schreibbereich mit dem Container stirbt.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="backing-services--begriffe" name="zf-4">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5A2.5 2.5 0 0 0 4 22.5Z" /><path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20" /></svg><span>Begriffe</span></summary>
+<dl class="zf__begriffe">
+<dt>Loose Coupling</dt><dd>Lose Kopplung: Die Anwendung kennt den Dienst nur über eine Schnittstelle, nicht über seinen Ort.</dd>
+<dt>Service Discovery</dt><dd>Wie ein Dienst seine Adresse erfährt. In Compose und Kubernetes über Namen statt IP-Adressen.</dd>
+<dt>Retry / Backoff</dt><dd>Erneut versuchen, mit wachsender Wartezeit. Die praktische Umsetzung von „rechne damit, dass es kurz weg ist“.</dd>
+<dt>Attached Resource</dt><dd>Der Begriff aus dem Original: eine Ressource, die man an- und abhängen kann wie ein Kabel.</dd>
+<dt class="zf__begriffe--nein">Lokale Platte als Speicher</dt><dd>Kein angebundener Dienst, sondern das Gegenteil: Sie gehört dem Container und stirbt mit ihm. Wer dort ablegt, hat die Anwendung an genau ein Exemplar gefesselt.</dd>
+</dl>
+</details>
+<details class="avd-academy-tabs__panel" id="backing-services--zusammenhaenge" name="zf-4">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="2.4" /><circle cx="18" cy="6" r="2.4" /><circle cx="18" cy="18" r="2.4" /><path d="m8.3 10.9 7.4-3.5M8.3 13.1l7.4 3.5" /></svg><span>Zusammenhänge</span></summary>
+<ul class="zf__bezug">
+<li><a href="#config"><span class="zf__bezug-nr">III</span> Config</a> – Adresse und Zugangsdaten kommen von außen – ohne das wäre der Dienst nicht austauschbar.</li>
+<li><a href="#processes"><span class="zf__bezug-nr">VI</span> Processes</a> – Hierhin wandert der Zustand, den der Prozess nicht behalten darf. Die beiden Faktoren sind zwei Hälften derselben Antwort.</li>
+<li><a href="#port-binding"><span class="zf__bezug-nr">VII</span> Port binding</a> – Wer selbst einen Port anbietet, ist für eine andere Anwendung ein angebundener Dienst. Dieselbe Sache von der anderen Seite.</li>
+<li><a href="#logs"><span class="zf__bezug-nr">XI</span> Logs</a> – Das System, das die Protokollströme einsammelt, ist ein angebundener Dienst wie Datenbank oder Warteschlange – austauschbar über seine Adresse.</li>
+</ul>
+<p class="zf__folge">Ein Klick öffnet den Faktor – die Adresse wandert mit, ein Lesezeichen führt zurück.</p>
+</details>
+</div>
+</article>
+
+<article class="zf__blatt" id="zf-5" data-titel="Build, release, run" data-slug="build-release-run" data-nr="V">
+<h2><span class="zf__fenster-nr">V</span> Build, release, run</h2>
+<p class="zf__leitsatz"><strong>Bauen, Konfigurieren und Ausführen sind drei Schritte – und sie werden nicht vermischt.</strong></p>
+<div class="avd-academy-tabs">
+<details class="avd-academy-tabs__panel" id="build-release-run--worum" name="zf-5" open="">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 18h5" /><path d="M10 21h4" /><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.45.9 1.1.9 1.8V16h5.4v-.4c0-.7.3-1.35.9-1.8A6 6 0 0 0 12 3Z" /></svg><span>Worum geht’s?</span></summary>
+<p><em>Bauen</em> macht aus Quelltext ein fertiges Artefakt, hier: ein Image. <em>Konfigurieren</em> verbindet dieses Artefakt mit den Werten einer bestimmten Umgebung. <em>Ausführen</em> startet das Ergebnis.</p>
+<p>Entscheidend ist die Einbahnstraße: Am laufenden Stand wird nichts mehr geändert. Jede Freigabe bekommt eine eigene, unveränderliche Kennung – nur so lässt sich die Frage „was lief gestern um 14 Uhr?“ beantworten und auf gestern zurückrollen, ohne neu zu bauen.</p>
+<p>Im Container fallen die Schritte sichtbar auseinander: <code>docker image build</code> ist das Bauen, <code>docker container run</code> mit seinen Variablen das Konfigurieren und Ausführen.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="build-release-run--so-gehts" name="zf-5">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m8 12.2 2.8 2.8L16.2 9" /></svg><span>So geht’s</span></summary>
+<div class="zf__beispiel"><p>Ein Image wird einmal gebaut und als <code>2.3.1</code> abgelegt. Für Produktion wird es mit den dortigen Variablen gestartet. Soll etwas geändert werden, entsteht <code>2.3.2</code> und wird erneut durchgereicht.</p></div>
+<p class="zf__folge">Warum das trägt: Jeder Stand ist benannt und wiederherstellbar. Ein Rückfall auf gestern ist ein Startbefehl, kein Bauvorgang.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="build-release-run--so-nicht" name="zf-5">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m9 9 6 6M15 9l-6 6" /></svg><span>So nicht</span></summary>
+<div class="zf__beispiel zf__beispiel--schlecht"><p>Jemand korrigiert einen Tippfehler direkt im laufenden Container mit <code>docker exec</code> und schreibt die Datei um.</p></div>
+<p class="zf__folge">Der Fehler ist weg, bis der Container neu startet – dann ist er wieder da, und niemand weiß, warum. Es existiert eine Fassung, die in keinem Repository steht und die niemand nachbauen kann.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="build-release-run--begriffe" name="zf-5">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5A2.5 2.5 0 0 0 4 22.5Z" /><path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20" /></svg><span>Begriffe</span></summary>
+<dl class="zf__begriffe">
+<dt>Immutable Infrastructure</dt><dd>Laufendes wird nicht verändert, sondern ersetzt. Dieser Faktor ist ihre Anwendung auf die eigene Software.</dd>
+<dt>Artifact Promotion</dt><dd>Dasselbe Artefakt wandert durch die Stufen – von Test nach Produktion wird nichts neu gebaut.</dd>
+<dt>Release</dt><dd>Bauergebnis PLUS Konfiguration einer Umgebung, mit eigener Kennung. Nicht dasselbe wie das Image allein.</dd>
+<dt class="zf__begriffe--nein">Hotfix am laufenden System</dt><dd>Nicht gemeint – und genau das, was dieser Faktor ausschließt.</dd>
+</dl>
+</details>
+<details class="avd-academy-tabs__panel" id="build-release-run--zusammenhaenge" name="zf-5">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="2.4" /><circle cx="18" cy="6" r="2.4" /><circle cx="18" cy="18" r="2.4" /><path d="m8.3 10.9 7.4-3.5M8.3 13.1l7.4 3.5" /></svg><span>Zusammenhänge</span></summary>
+<ul class="zf__bezug">
+<li><a href="#codebase"><span class="zf__bezug-nr">I</span> Codebase</a> – Eine Quelle, ein Bauergebnis. Der Bau ist der Übergang vom Quelltext zum Artefakt.</li>
+<li><a href="#config"><span class="zf__bezug-nr">III</span> Config</a> – Der mittlere der drei Schritte. Was dort einfließt, regelt Faktor III.</li>
+<li><a href="#disposability"><span class="zf__bezug-nr">IX</span> Disposability</a> – Ein Ausrollen ist ein Austausch laufender Prozesse. Es funktioniert nur, wenn sie ersetzbar sind.</li>
+<li><a href="#dependencies"><span class="zf__bezug-nr">II</span> Dependencies</a> – Der Bau friert die aufgeschriebenen Versionen ein. Was dort nicht steht, ist später entweder weg oder zufällig da.</li>
+<li><a href="#admin-processes"><span class="zf__bezug-nr">XII</span> Admin processes</a> – Eine Einmalaufgabe läuft aus demselben Artefakt, nur mit anderem Startbefehl. Ein zweiter Bau dafür wäre ein zweites Ergebnis.</li>
+</ul>
+<p class="zf__folge">Ein Klick öffnet den Faktor – die Adresse wandert mit, ein Lesezeichen führt zurück.</p>
+</details>
+</div>
+</article>
+
+<article class="zf__blatt" id="zf-6" data-titel="Processes" data-slug="processes" data-nr="VI" data-kern="ja">
+<h2><span class="zf__fenster-nr">VI</span> Processes</h2>
+<p class="zf__kopfmarke"><span class="zf__marke">im Container: Voraussetzung</span></p>
+<p class="zf__leitsatz"><strong>Die Anwendung merkt sich nichts zwischen zwei Anfragen – jedenfalls nicht bei sich selbst.</strong></p>
+<div class="avd-academy-tabs">
+<details class="avd-academy-tabs__panel" id="processes--worum" name="zf-6" open="">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 18h5" /><path d="M10 21h4" /><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.45.9 1.1.9 1.8V16h5.4v-.4c0-.7.3-1.35.9-1.8A6 6 0 0 0 12 3Z" /></svg><span>Worum geht’s?</span></summary>
+<p>Alles, was länger leben soll als eine einzelne Anfrage, gehört nach draußen: in eine Datenbank, einen gemeinsamen Zwischenspeicher, einen Dateidienst. Im Arbeitsspeicher des Prozesses steht nur, was für diese eine Anfrage gebraucht wird.</p>
+<p>Warum das im Container so schwer wiegt: Eine Plattform beendet Container und startet sie woanders neu – geplant bei jedem Update, ungeplant bei jedem Ausfall. Wer etwas im Speicher hält, verliert es dabei.</p>
+<p>Und weil die Plattform das jederzeit tun darf, darf sie es bei einer solchen Anwendung eben <em>nicht</em>. Damit fallen Skalierung und Selbstheilung weg – die beiden Dinge, wegen derer man die Plattform überhaupt betreibt.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="processes--so-gehts" name="zf-6">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m8 12.2 2.8 2.8L16.2 9" /></svg><span>So geht’s</span></summary>
+<div class="zf__beispiel"><p>Die Anmeldung legt eine Sitzung in Redis ab. Ob die nächste Anfrage bei Container 1 oder Container 3 landet, ist gleichgültig – beide fragen dieselbe Stelle.</p></div>
+<p class="zf__folge">Warum das trägt: Jeder Container ist austauschbar. Man kann jederzeit einen dazunehmen oder wegnehmen, ohne dass ein Nutzer es merkt.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="processes--so-nicht" name="zf-6">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m9 9 6 6M15 9l-6 6" /></svg><span>So nicht</span></summary>
+<div class="zf__beispiel zf__beispiel--schlecht"><p>Dieselbe Anwendung hält die Sitzung im Speicher des Prozesses.</p></div>
+<p class="zf__folge">Mit zwei Containern wird jede zweite Anfrage abgewiesen, weil die Sitzung „dort drüben“ liegt. Das sieht aus wie ein sporadischer Fehler und ist in Wahrheit ein Entwurfsfehler – er verschwindet, sobald man auf einen Container zurückgeht, und kommt beim nächsten Skalieren wieder.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="processes--begriffe" name="zf-6">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5A2.5 2.5 0 0 0 4 22.5Z" /><path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20" /></svg><span>Begriffe</span></summary>
+<dl class="zf__begriffe">
+<dt>Stateless</dt><dd>Zustandslos. Meint nicht „es gibt keinen Zustand“, sondern „der Zustand liegt nicht im Prozess“.</dd>
+<dt>Shared Nothing</dt><dd>Kein Container weiß etwas, das die anderen nicht auch erfahren könnten.</dd>
+<dt class="zf__begriffe--nein">Sticky Session</dt><dd>Der Notbehelf: Ein Nutzer wird immer zum selben Container geschickt. Löst das Symptom und behält das Problem – fällt der Container aus, ist die Sitzung weg.</dd>
+<dt class="zf__begriffe--nein">Session Affinity</dt><dd>Anderer Name für dasselbe Notbehelf.</dd>
+</dl>
+</details>
+<details class="avd-academy-tabs__panel" id="processes--zusammenhaenge" name="zf-6">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="2.4" /><circle cx="18" cy="6" r="2.4" /><circle cx="18" cy="18" r="2.4" /><path d="m8.3 10.9 7.4-3.5M8.3 13.1l7.4 3.5" /></svg><span>Zusammenhänge</span></summary>
+<ul class="zf__bezug">
+<li><a href="#backing-services"><span class="zf__bezug-nr">IV</span> Backing Services</a> – Dorthin wandert alles, was länger leben soll als eine Anfrage.</li>
+<li><a href="#concurrency"><span class="zf__bezug-nr">VIII</span> Concurrency</a> – Nur zustandslose Prozesse lassen sich vervielfachen. Ohne diesen Faktor gibt es den anderen nicht.</li>
+<li><a href="#disposability"><span class="zf__bezug-nr">IX</span> Disposability</a> – Nur wer nichts im Speicher hält, darf jederzeit beendet werden.</li>
+<li><a href="#logs"><span class="zf__bezug-nr">XI</span> Logs</a> – Eine Logdatei IM Container ist auch Zustand. Wer dorthin schreibt, verstößt gegen beide Faktoren gleichzeitig – der Verstoß fällt nur erst später auf.</li>
+</ul>
+<p class="zf__folge">Ein Klick öffnet den Faktor – die Adresse wandert mit, ein Lesezeichen führt zurück.</p>
+</details>
+</div>
+</article>
+
+<article class="zf__blatt" id="zf-7" data-titel="Port binding" data-slug="port-binding" data-nr="VII">
+<h2><span class="zf__fenster-nr">VII</span> Port binding</h2>
+<p class="zf__leitsatz"><strong>Die Anwendung bringt ihren eigenen Server mit und lauscht auf einem Port. Mehr braucht sie nicht.</strong></p>
+<div class="avd-academy-tabs">
+<details class="avd-academy-tabs__panel" id="port-binding--worum" name="zf-7" open="">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 18h5" /><path d="M10 21h4" /><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.45.9 1.1.9 1.8V16h5.4v-.4c0-.7.3-1.35.9-1.8A6 6 0 0 0 12 3Z" /></svg><span>Worum geht’s?</span></summary>
+<p>Sie wird nicht in einen vorhandenen Webserver „hineingestellt“, der auf dem Zielsystem schon läuft. Sie ist selbst erreichbar – und wer davor noch etwas setzen will, kann das tun, ohne dass die Anwendung davon weiß.</p>
+<p>Daraus folgt auch: Die Anwendung darf nicht wissen, unter welcher Adresse sie von außen erreichbar ist. Ob davor ein Verteiler steht, wo die Verschlüsselung endet, unter welchem Namen Nutzer sie aufrufen – das entscheidet die Umgebung.</p>
+<p>Umgekehrt gilt dasselbe nach innen: Eine Anwendung, die selbst einen Port anbietet, kann für eine andere ein angebundener Dienst sein (Faktor IV). Die beiden Faktoren sind zwei Seiten derselben Sache.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="port-binding--so-gehts" name="zf-7">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m8 12.2 2.8 2.8L16.2 9" /></svg><span>So geht’s</span></summary>
+<div class="zf__beispiel"><p>Der Container lauscht auf Port 8080. Beim Start wird er mit <code>-p 80:8080</code> nach außen gelegt; in einer Plattform übernimmt das ein Dienst davor.</p></div>
+<p class="zf__folge">Warum das trägt: Dieselbe Anwendung lässt sich zweimal unter zwei Namen betreiben, hinter einem Verteiler stellen oder in ein anderes Netz hängen – ohne eine Zeile zu ändern.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="port-binding--so-nicht" name="zf-7">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m9 9 6 6M15 9l-6 6" /></svg><span>So nicht</span></summary>
+<div class="zf__beispiel zf__beispiel--schlecht"><p>Dieselbe Anwendung erwartet, in ein bestimmtes Verzeichnis eines schon laufenden Apache gelegt zu werden, und schreibt sich ihre öffentliche Adresse in die Konfiguration.</p></div>
+<p class="zf__folge">Damit ist sie an eine Installation gebunden, die es im Container nicht gibt – und an genau eine Adresse. Ein zweiter Auftritt unter anderem Namen erzwingt einen Eingriff im Quelltext.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="port-binding--begriffe" name="zf-7">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5A2.5 2.5 0 0 0 4 22.5Z" /><path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20" /></svg><span>Begriffe</span></summary>
+<dl class="zf__begriffe">
+<dt>Self-contained</dt><dd>Die Anwendung bringt ihren Server mit, statt einen vorzufinden.</dd>
+<dt>Reverse Proxy</dt><dd>Der Dienst davor: nimmt Anfragen an, beendet die Verschlüsselung, verteilt. Die Anwendung weiß nichts von ihm.</dd>
+<dt>Ingress</dt><dd>Derselbe Gedanke in Kubernetes: Die Regel, wie von außen hereingekommen wird, liegt außerhalb der Anwendung.</dd>
+<dt class="zf__begriffe--nein">Application Server</dt><dd>Der ältere Weg – ein Server, in den Anwendungen hineingestellt werden. Nicht falsch, aber das Gegenmodell zu diesem Faktor.</dd>
+</dl>
+</details>
+<details class="avd-academy-tabs__panel" id="port-binding--zusammenhaenge" name="zf-7">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="2.4" /><circle cx="18" cy="6" r="2.4" /><circle cx="18" cy="18" r="2.4" /><path d="m8.3 10.9 7.4-3.5M8.3 13.1l7.4 3.5" /></svg><span>Zusammenhänge</span></summary>
+<ul class="zf__bezug">
+<li><a href="#backing-services"><span class="zf__bezug-nr">IV</span> Backing Services</a> – Die Rückseite derselben Medaille: Was einen Port anbietet, kann angebunden werden.</li>
+<li><a href="#concurrency"><span class="zf__bezug-nr">VIII</span> Concurrency</a> – Erst wenn jedes Exemplar selbst erreichbar ist, kann ein Verteiler davor überhaupt verteilen.</li>
+<li><a href="#config"><span class="zf__bezug-nr">III</span> Config</a> – Unter welcher Adresse die Anwendung von außen erscheint, ist Sache der Umgebung – nicht des Quelltextes.</li>
+</ul>
+<p class="zf__folge">Ein Klick öffnet den Faktor – die Adresse wandert mit, ein Lesezeichen führt zurück.</p>
+</details>
+</div>
+</article>
+
+<article class="zf__blatt" id="zf-8" data-titel="Concurrency" data-slug="concurrency" data-nr="VIII">
+<h2><span class="zf__fenster-nr">VIII</span> Concurrency</h2>
+<p class="zf__leitsatz"><strong>Mehr Last wird mit <em>mehr</em> Prozessen beantwortet, nicht mit einem größeren.</strong></p>
+<div class="avd-academy-tabs">
+<details class="avd-academy-tabs__panel" id="concurrency--worum" name="zf-8" open="">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 18h5" /><path d="M10 21h4" /><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.45.9 1.1.9 1.8V16h5.4v-.4c0-.7.3-1.35.9-1.8A6 6 0 0 0 12 3Z" /></svg><span>Worum geht’s?</span></summary>
+<p>Statt einer Maschine immer mehr Speicher zu geben, laufen mehrere gleichartige Exemplare nebeneinander, und die Arbeit verteilt sich. Das geht nur, wenn jedes Exemplar austauschbar ist – also wenn Faktor VI eingehalten ist.</p>
+<p>Dazu gehört, verschiedene Arten von Arbeit zu trennen. Anfragen aus dem Web, Hintergrundaufträge und geplante Aufgaben sind drei Lasten; stecken sie in einem Prozess, muss man immer alles vervielfachen, auch wenn nur eines eng wird.</p>
+<p>Und es hat eine Folge, die man leicht übersieht: Sobald mehr als ein Exemplar läuft, darf keines etwas tun, das <em>genau einmal</em> passieren soll – es sei denn, es ist ausdrücklich dafür eingerichtet.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="concurrency--so-gehts" name="zf-8">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m8 12.2 2.8 2.8L16.2 9" /></svg><span>So geht’s</span></summary>
+<div class="zf__beispiel"><p>Am Monatsende verdreifacht sich der Andrang. Statt eines Servers mit dreifachem Speicher laufen drei Container derselben Anwendung; ein Verteiler davor schickt die Anfragen abwechselnd hin.</p></div>
+<p class="zf__folge">Warum das trägt: Man kann in Minuten hoch- und wieder runtergehen, und der Ausfall eines Exemplars kostet keinen Betrieb – die anderen übernehmen.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="concurrency--so-nicht" name="zf-8">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m9 9 6 6M15 9l-6 6" /></svg><span>So nicht</span></summary>
+<div class="zf__beispiel zf__beispiel--schlecht"><p>Dieselbe Anwendung startet beim Hochfahren einen Zeitplaner, der nachts Rechnungen verschickt.</p></div>
+<p class="zf__folge">Bei drei Containern verschickt sie jede Rechnung dreimal. Der Fehler fällt nicht beim Skalieren auf, sondern am nächsten Morgen beim Kunden – und er lässt sich mit einem Container nie nachstellen.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="concurrency--begriffe" name="zf-8">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5A2.5 2.5 0 0 0 4 22.5Z" /><path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20" /></svg><span>Begriffe</span></summary>
+<dl class="zf__begriffe">
+<dt>Horizontal Scaling</dt><dd>In die Breite gehen: mehr Exemplare. Das Gegenstück ist vertikales Skalieren – eine größere Maschine.</dd>
+<dt>Process Model</dt><dd>Verschiedene Arten von Arbeit laufen als eigene Prozesstypen, jeder für sich vervielfachbar.</dd>
+<dt>Leader Election</dt><dd>Das Mittel, wenn doch etwas genau einmal passieren soll: Genau ein Exemplar übernimmt die Aufgabe, die anderen halten still.</dd>
+<dt class="zf__begriffe--nein">Vertical Scaling</dt><dd>Eine größere Maschine kaufen. Nicht verboten – aber irgendwann gibt es keine größere mehr.</dd>
+</dl>
+</details>
+<details class="avd-academy-tabs__panel" id="concurrency--zusammenhaenge" name="zf-8">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="2.4" /><circle cx="18" cy="6" r="2.4" /><circle cx="18" cy="18" r="2.4" /><path d="m8.3 10.9 7.4-3.5M8.3 13.1l7.4 3.5" /></svg><span>Zusammenhänge</span></summary>
+<ul class="zf__bezug">
+<li><a href="#processes"><span class="zf__bezug-nr">VI</span> Processes</a> – Die Voraussetzung. Vervielfachen lässt sich nur, was austauschbar ist.</li>
+<li><a href="#disposability"><span class="zf__bezug-nr">IX</span> Disposability</a> – Exemplare kommen und gehen ständig – beim Hoch- wie beim Runtergehen.</li>
+<li><a href="#admin-processes"><span class="zf__bezug-nr">XII</span> Admin processes</a> – Eine geplante Aufgabe darf nicht in jedem Exemplar laufen. Genau hier entsteht der Fehler mit der dreifach verschickten Rechnung.</li>
+<li><a href="#port-binding"><span class="zf__bezug-nr">VII</span> Port binding</a> – Jedes Exemplar bringt seinen eigenen Server mit – sonst gäbe es nichts zu verteilen.</li>
+<li><a href="#logs"><span class="zf__bezug-nr">XI</span> Logs</a> – Bei mehreren Exemplaren läge das Protokoll an ebenso vielen Orten. Der Strom nach außen ist die Antwort darauf.</li>
+</ul>
+<p class="zf__folge">Ein Klick öffnet den Faktor – die Adresse wandert mit, ein Lesezeichen führt zurück.</p>
+</details>
+</div>
+</article>
+
+<article class="zf__blatt" id="zf-9" data-titel="Disposability" data-slug="disposability" data-nr="IX" data-kern="ja">
+<h2><span class="zf__fenster-nr">IX</span> Disposability</h2>
+<p class="zf__kopfmarke"><span class="zf__marke">im Container: Voraussetzung</span></p>
+<p class="zf__leitsatz"><strong>Schnell starten, auf Zuruf sauber aufhören – und einen plötzlichen Abbruch verkraften.</strong></p>
+<div class="avd-academy-tabs">
+<details class="avd-academy-tabs__panel" id="disposability--worum" name="zf-9" open="">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 18h5" /><path d="M10 21h4" /><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.45.9 1.1.9 1.8V16h5.4v-.4c0-.7.3-1.35.9-1.8A6 6 0 0 0 12 3Z" /></svg><span>Worum geht’s?</span></summary>
+<p>Ein Container wird ständig beendet: bei jedem Update, bei jeder Verschiebung, bei jedem Ausfall. Die Anwendung soll das als Normalfall behandeln, nicht als Störung.</p>
+<p>Dazu gehören drei Dinge. <em>Erstens:</em> zügig startbereit sein – wer zwei Minuten braucht, blockiert jedes Ausrollen. <em>Zweitens:</em> auf das Stopp-Signal reagieren, angefangene Arbeit zu Ende bringen, keine neue mehr annehmen. <em>Drittens:</em> auch einen harten Abbruch überstehen, ohne halb geschriebene Daten zu hinterlassen.</p>
+<p>Der dritte Punkt ist der unbequeme: Ein sauberes Beenden kann man üben, ein Stromausfall lässt sich nicht ankündigen.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="disposability--so-gehts" name="zf-9">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m8 12.2 2.8 2.8L16.2 9" /></svg><span>So geht’s</span></summary>
+<div class="zf__beispiel"><p>Beim Stopp-Signal nimmt die Anwendung keine neuen Anfragen mehr an, beendet die laufenden und meldet sich ab. Nach zwei Sekunden ist der Container weg.</p></div>
+<p class="zf__folge">Warum das trägt: Ein Update kostet keine Ausfallzeit. Die Plattform kann Container tauschen, wann immer es passt – und niemand merkt es.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="disposability--so-nicht" name="zf-9">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m9 9 6 6M15 9l-6 6" /></svg><span>So nicht</span></summary>
+<div class="zf__beispiel zf__beispiel--schlecht"><p>Dieselbe Anwendung ignoriert das Signal und arbeitet weiter.</p></div>
+<p class="zf__folge">Nach zehn Sekunden wird sie hart beendet, mitten in einer Buchung. Die eine Hälfte steht in der Datenbank, die andere nicht – und weil das nur bei Updates passiert, sucht man den Fehler an der falschen Stelle.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="disposability--begriffe" name="zf-9">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5A2.5 2.5 0 0 0 4 22.5Z" /><path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20" /></svg><span>Begriffe</span></summary>
+<dl class="zf__begriffe">
+<dt>Graceful Shutdown</dt><dd>Geordnetes Beenden: kein neuer Auftrag, laufende zu Ende, dann Schluss.</dd>
+<dt>SIGTERM</dt><dd>Das Signal, mit dem ein Container gebeten wird aufzuhören. Danach kommt <code>SIGKILL</code>, und das lässt sich nicht abfangen.</dd>
+<dt>Idempotenz</dt><dd>Dieselbe Arbeit zweimal ausführen darf nicht schaden. Das Mittel gegen den harten Abbruch.</dd>
+<dt>Crash-only Software</dt><dd>Weitergedacht: Wenn Abstürzen ohnehin folgenlos sein muss, kann man auf geordnetes Beenden ganz verzichten und immer abstürzen.</dd>
+<dt class="zf__begriffe--nein">Warmlaufphase</dt><dd>Nicht gemeint. Eine Anwendung, die nach dem Start erst Minuten lang Zwischenspeicher füllt, ist genau das, was dieser Faktor ausschließt – sie blockiert jedes Ausrollen und jede Verschiebung.</dd>
+</dl>
+</details>
+<details class="avd-academy-tabs__panel" id="disposability--zusammenhaenge" name="zf-9">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="2.4" /><circle cx="18" cy="6" r="2.4" /><circle cx="18" cy="18" r="2.4" /><path d="m8.3 10.9 7.4-3.5M8.3 13.1l7.4 3.5" /></svg><span>Zusammenhänge</span></summary>
+<ul class="zf__bezug">
+<li><a href="#processes"><span class="zf__bezug-nr">VI</span> Processes</a> – Nichts im Speicher zu halten ist die Bedingung dafür, dass ein Abbruch folgenlos bleibt.</li>
+<li><a href="#concurrency"><span class="zf__bezug-nr">VIII</span> Concurrency</a> – Wo Exemplare ständig getauscht werden, ist Beenden der Normalfall und keine Störung.</li>
+<li><a href="#logs"><span class="zf__bezug-nr">XI</span> Logs</a> – Beim harten Abbruch ist eine Logdatei im Container weg – gerade dann, wenn man sie bräuchte.</li>
+<li><a href="#build-release-run"><span class="zf__bezug-nr">V</span> Build, release, run</a> – Jedes Ausrollen beendet laufende Prozesse. Ohne diesen Faktor kostet es Ausfallzeit.</li>
+</ul>
+<p class="zf__folge">Ein Klick öffnet den Faktor – die Adresse wandert mit, ein Lesezeichen führt zurück.</p>
+</details>
+</div>
+</article>
+
+<article class="zf__blatt" id="zf-10" data-titel="Dev/prod parity" data-slug="dev-prod-parity" data-nr="X">
+<h2><span class="zf__fenster-nr">X</span> Dev/prod parity</h2>
+<p class="zf__leitsatz"><strong>Halte den Abstand zwischen Deinem Rechner und der Produktion so klein wie möglich.</strong></p>
+<div class="avd-academy-tabs">
+<details class="avd-academy-tabs__panel" id="dev-prod-parity--worum" name="zf-10" open="">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 18h5" /><path d="M10 21h4" /><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.45.9 1.1.9 1.8V16h5.4v-.4c0-.7.3-1.35.9-1.8A6 6 0 0 0 12 3Z" /></svg><span>Worum geht’s?</span></summary>
+<p>Gemeint sind drei Abstände: die <em>Zeit</em> zwischen Schreiben und Ausliefern, die Zahl der <em>Menschen</em> dazwischen, und die Unterschiede in den <em>Werkzeugen</em>.</p>
+<p>Der teuerste ist meist der zeitliche. Wer einmal im Quartal ausliefert, sammelt hunderte Änderungen an; geht danach etwas schief, ist unklar, welche schuld ist. Wer täglich ausliefert, hat im Zweifel eine zu prüfen.</p>
+<p>Beim Werkzeug-Abstand lohnt der genaue Blick: Es reicht nicht, dass „auch eine Datenbank“ läuft. Eine andere Fassung sortiert womöglich anders, kennt eine Funktion nicht oder behandelt Zeitzonen abweichend.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="dev-prod-parity--so-gehts" name="zf-10">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m8 12.2 2.8 2.8L16.2 9" /></svg><span>So geht’s</span></summary>
+<div class="zf__beispiel"><p>Lokal startet eine Compose-Datei dieselbe PostgreSQL-Fassung wie in Produktion, mit denselben Einstellungen.</p></div>
+<p class="zf__folge">Warum das trägt: Ein Verhalten, das an der Datenbankversion hängt, fällt schon auf dem eigenen Rechner auf – also dort, wo es am billigsten zu beheben ist.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="dev-prod-parity--so-nicht" name="zf-10">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m9 9 6 6M15 9l-6 6" /></svg><span>So nicht</span></summary>
+<div class="zf__beispiel zf__beispiel--schlecht"><p>Lokal läuft SQLite, weil es schneller aufgesetzt ist; in Produktion PostgreSQL.</p></div>
+<p class="zf__folge">Die Anwendung funktioniert monatelang – bis eine Abfrage in Produktion anders sortiert und eine Auswertung falsche Zahlen liefert. Nachstellen lässt sich das lokal nicht, weil es die Ursache lokal nicht gibt.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="dev-prod-parity--begriffe" name="zf-10">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5A2.5 2.5 0 0 0 4 22.5Z" /><path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20" /></svg><span>Begriffe</span></summary>
+<dl class="zf__begriffe">
+<dt>Parity</dt><dd>Gleichstand. Gemeint ist Ähnlichkeit der Umgebungen, nicht Gleichheit der Daten.</dd>
+<dt>Continuous Delivery</dt><dd>Der Weg, den zeitlichen Abstand klein zu halten: jederzeit auslieferbar sein.</dd>
+<dt class="zf__begriffe--nein">Works on my machine</dt><dd>Das Symptom eines großen Werkzeug-Abstands – und der Satz, den Container überflüssig machen sollen.</dd>
+<dt class="zf__begriffe--nein">Gleiche Daten in allen Umgebungen</dt><dd>Nicht gemeint und meist verboten. Es geht um gleiche <em>Technik</em>, nicht um Produktionsdaten im Test.</dd>
+</dl>
+</details>
+<details class="avd-academy-tabs__panel" id="dev-prod-parity--zusammenhaenge" name="zf-10">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="2.4" /><circle cx="18" cy="6" r="2.4" /><circle cx="18" cy="18" r="2.4" /><path d="m8.3 10.9 7.4-3.5M8.3 13.1l7.4 3.5" /></svg><span>Zusammenhänge</span></summary>
+<ul class="zf__bezug">
+<li><a href="#codebase"><span class="zf__bezug-nr">I</span> Codebase</a> – Ein Stand für alle Umgebungen – der erste der drei Abstände.</li>
+<li><a href="#dependencies"><span class="zf__bezug-nr">II</span> Dependencies</a> – Gleiche Abhängigkeiten in gleichen Ständen – der Werkzeug-Abstand.</li>
+<li><a href="#config"><span class="zf__bezug-nr">III</span> Config</a> – Nur die Konfiguration darf sich unterscheiden. Was sonst noch abweicht, ist ein Befund.</li>
+<li><a href="#admin-processes"><span class="zf__bezug-nr">XII</span> Admin processes</a> – Auch Einmalaufgaben laufen in derselben Umgebung – sonst öffnet man den Abstand an genau der Stelle wieder, an der es weh tut.</li>
+</ul>
+<p class="zf__folge">Ein Klick öffnet den Faktor – die Adresse wandert mit, ein Lesezeichen führt zurück.</p>
+</details>
+</div>
+</article>
+
+<article class="zf__blatt" id="zf-11" data-titel="Logs" data-slug="logs" data-nr="XI" data-kern="ja">
+<h2><span class="zf__fenster-nr">XI</span> Logs</h2>
+<p class="zf__kopfmarke"><span class="zf__marke">im Container: Voraussetzung</span></p>
+<p class="zf__leitsatz"><strong>Protokolliere als fortlaufenden Strom nach <code>stdout</code> – und kümmere Dich nicht darum, wohin er geht.</strong></p>
+<div class="avd-academy-tabs">
+<details class="avd-academy-tabs__panel" id="logs--worum" name="zf-11" open="">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 18h5" /><path d="M10 21h4" /><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.45.9 1.1.9 1.8V16h5.4v-.4c0-.7.3-1.35.9-1.8A6 6 0 0 0 12 3Z" /></svg><span>Worum geht’s?</span></summary>
+<p>Die Anwendung schreibt keine Logdatei, dreht keine Dateien um und räumt nichts auf. Sie schreibt eine Zeile nach der anderen auf die Standardausgabe. Wohin dieser Strom fließt, entscheidet die Umgebung.</p>
+<p>Im Container ist das keine Stilfrage. Wer in eine Datei <em>im</em> Container schreibt, schreibt an eine Stelle, die es beim nächsten Neustart nicht mehr gibt. Und selbst wenn sie überlebte: Bei zwölf Containern läge das Protokoll an zwölf Orten.</p>
+<p>Der Gewinn ist, dass die Anwendung eine Sorge weniger hat – und die Umgebung eine Freiheit mehr: Sie kann den Strom heute in eine Datei und morgen in ein Suchsystem leiten, ohne dass jemand die Anwendung anfasst.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="logs--so-gehts" name="zf-11">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m8 12.2 2.8 2.8L16.2 9" /></svg><span>So geht’s</span></summary>
+<div class="zf__beispiel"><p>Die Anwendung schreibt nach <code>stdout</code>. <code>docker logs</code> zeigt es an; eine Plattform sammelt denselben Strom aus allen Containern ein und macht ihn durchsuchbar.</p></div>
+<p class="zf__folge">Warum das trägt: Ein Fehler lässt sich über alle Exemplare hinweg suchen, an einer Stelle, mit einem Werkzeug – auch für Container, die es längst nicht mehr gibt.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="logs--so-nicht" name="zf-11">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m9 9 6 6M15 9l-6 6" /></svg><span>So nicht</span></summary>
+<div class="zf__beispiel zf__beispiel--schlecht"><p>Dieselbe Anwendung schreibt nach <code>/var/log/app.log</code> und löscht die Datei wöchentlich selbst.</p></div>
+<p class="zf__folge">Im Container ist sie nach jedem Neustart leer. Wenn es einmal darauf ankommt, fehlt genau der Tag, den man sucht – und bei mehreren Containern weiß niemand, in welchem man nachsehen müsste.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="logs--begriffe" name="zf-11">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5A2.5 2.5 0 0 0 4 22.5Z" /><path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20" /></svg><span>Begriffe</span></summary>
+<dl class="zf__begriffe">
+<dt>Log Aggregation</dt><dd>Das Einsammeln der Ströme aller Exemplare an einer Stelle.</dd>
+<dt>Structured Logging</dt><dd>Zeilen als maschinenlesbare Datensätze statt als Fließtext – dann lässt sich danach filtern.</dd>
+<dt>stdout / stderr</dt><dd>Die beiden Standardausgaben eines Prozesses. Der Container reicht sie weiter, ohne sie zu deuten.</dd>
+<dt class="zf__begriffe--nein">Log Rotation in der Anwendung</dt><dd>Nicht gemeint. Das Umbrechen und Aufräumen von Logdateien ist Sache der Umgebung, nicht der Anwendung.</dd>
+</dl>
+</details>
+<details class="avd-academy-tabs__panel" id="logs--zusammenhaenge" name="zf-11">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="2.4" /><circle cx="18" cy="6" r="2.4" /><circle cx="18" cy="18" r="2.4" /><path d="m8.3 10.9 7.4-3.5M8.3 13.1l7.4 3.5" /></svg><span>Zusammenhänge</span></summary>
+<ul class="zf__bezug">
+<li><a href="#processes"><span class="zf__bezug-nr">VI</span> Processes</a> – <strong>Der engste Bezug:</strong> Eine Logdatei im Container IST Zustand. Wer dorthin schreibt, hält etwas im Container fest, das ihn überleben soll – und verstößt damit gegen beide Faktoren, auch wenn es zunächst nur nach einer Stilfrage aussieht.</li>
+<li><a href="#backing-services"><span class="zf__bezug-nr">IV</span> Backing Services</a> – Das System, das die Ströme einsammelt, ist ein angebundener Dienst wie jeder andere.</li>
+<li><a href="#concurrency"><span class="zf__bezug-nr">VIII</span> Concurrency</a> – Bei mehreren Exemplaren läge das Protokoll sonst an ebenso vielen Orten.</li>
+<li><a href="#disposability"><span class="zf__bezug-nr">IX</span> Disposability</a> – Nach einem Abbruch ist alles weg, was nur im Container stand.</li>
+</ul>
+<p class="zf__folge">Ein Klick öffnet den Faktor – die Adresse wandert mit, ein Lesezeichen führt zurück.</p>
+</details>
+</div>
+</article>
+
+<article class="zf__blatt" id="zf-12" data-titel="Admin processes" data-slug="admin-processes" data-nr="XII">
+<h2><span class="zf__fenster-nr">XII</span> Admin processes</h2>
+<p class="zf__leitsatz"><strong>Einmalige Aufgaben laufen in derselben Umgebung wie die Anwendung – nicht daneben.</strong></p>
+<div class="avd-academy-tabs">
+<details class="avd-academy-tabs__panel" id="admin-processes--worum" name="zf-12" open="">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 18h5" /><path d="M10 21h4" /><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.45.9 1.1.9 1.8V16h5.4v-.4c0-.7.3-1.35.9-1.8A6 6 0 0 0 12 3Z" /></svg><span>Worum geht’s?</span></summary>
+<p>Eine Datenbank-Migration, ein Reparaturskript, ein einmaliger Import: Solche Arbeiten gehören zum Quelltext und laufen mit demselben Stand, denselben Bibliotheken und derselben Konfiguration wie die Anwendung selbst.</p>
+<p>Der Grund ist derselbe wie bei Faktor X: Sobald das Skript in einer anderen Umgebung läuft, arbeitet es womöglich mit anderen Annahmen – und schreibt Daten, die die Anwendung nicht mehr lesen kann.</p>
+<p>Im Container ist die Umsetzung naheliegend: dasselbe Image, nur ein anderer Startbefehl. Der Container lebt für die Dauer der Aufgabe und verschwindet danach wieder.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="admin-processes--so-gehts" name="zf-12">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m8 12.2 2.8 2.8L16.2 9" /></svg><span>So geht’s</span></summary>
+<div class="zf__beispiel"><p>Die Migration liegt im Repository und läuft als <code>docker container run --rm bestellportal:2.3.1 migrate</code> – dasselbe Image, dieselben Variablen, anderer Startbefehl.</p></div>
+<p class="zf__folge">Warum das trägt: Die Aufgabe wird mitgeprüft, mitversioniert und mitbesprochen wie jede andere Änderung. Und sie läuft nachweislich gegen denselben Stand wie die Anwendung.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="admin-processes--so-nicht" name="zf-12">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m9 9 6 6M15 9l-6 6" /></svg><span>So nicht</span></summary>
+<div class="zf__beispiel zf__beispiel--schlecht"><p>Jemand führt ein SQL-Skript von seinem Rechner aus direkt auf der Produktionsdatenbank aus.</p></div>
+<p class="zf__folge">Es steht in keinem Repository, niemand kann es nachvollziehen, und beim nächsten Mal sieht es leicht anders aus. Gebraucht wird es erfahrungsgemäß genau dann, wenn der Kollege im Urlaub ist.</p>
+</details>
+<details class="avd-academy-tabs__panel" id="admin-processes--begriffe" name="zf-12">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5A2.5 2.5 0 0 0 4 22.5Z" /><path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20" /></svg><span>Begriffe</span></summary>
+<dl class="zf__begriffe">
+<dt>One-off Process</dt><dd>Ein Vorgang, der einmal läuft und dann endet – im Gegensatz zum dauernd laufenden Dienst.</dd>
+<dt>Migration</dt><dd>Änderung am Datenbankschema, versioniert und wiederholbar, als Teil des Quelltextes.</dd>
+<dt>Ephemeral Container</dt><dd>Ein Container nur für die Dauer der Aufgabe. <code>--rm</code> räumt ihn danach weg.</dd>
+<dt class="zf__begriffe--nein">Zugriff per Hand auf Produktion</dt><dd>Nicht gemeint – und das, wovon dieser Faktor wegführen will.</dd>
+</dl>
+</details>
+<details class="avd-academy-tabs__panel" id="admin-processes--zusammenhaenge" name="zf-12">
+<summary><svg class="zf__reiter-bild" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="12" r="2.4" /><circle cx="18" cy="6" r="2.4" /><circle cx="18" cy="18" r="2.4" /><path d="m8.3 10.9 7.4-3.5M8.3 13.1l7.4 3.5" /></svg><span>Zusammenhänge</span></summary>
+<ul class="zf__bezug">
+<li><a href="#build-release-run"><span class="zf__bezug-nr">V</span> Build, release, run</a> – Dasselbe Artefakt, nur ein anderer Startbefehl – kein zweiter Bau.</li>
+<li><a href="#dev-prod-parity"><span class="zf__bezug-nr">X</span> Dev/prod parity</a> – Gleiche Umgebung wie die Anwendung, sonst arbeitet die Aufgabe mit anderen Annahmen.</li>
+<li><a href="#concurrency"><span class="zf__bezug-nr">VIII</span> Concurrency</a> – Eine Einmalaufgabe darf nicht in jedem Exemplar laufen.</li>
+<li><a href="#codebase"><span class="zf__bezug-nr">I</span> Codebase</a> – Die Aufgabe liegt in derselben Quelle und wird mitversioniert.</li>
+</ul>
+<p class="zf__folge">Ein Klick öffnet den Faktor – die Adresse wandert mit, ein Lesezeichen führt zurück.</p>
+</details>
+</div>
+</article>
+</div>
+
+<section class="sw" aria-labelledby="sw-titel">
+
+<h2 id="sw-titel">Zusammenfassung</h2>
+
+<p class="sw__lead">
+  Die zwölf Faktoren sind eine Liste von Beobachtungen, keine Gliederung. Darum
+  hängt oben alles mit allem zusammen. Dieselben Inhalte lassen sich anders
+  ordnen: <strong>vier Stationen, eine nach der anderen.</strong> Jede lässt sich
+  einzeln verfehlen, und dazwischen liegt nur die Zeit.
+</p>
+
+<div class="sw__strahl">
+  <ol class="sw__takte">
+    <li>
+      <button class="sw__knopf" type="button" data-sw="bauen">
+        <span class="sw__punkt" aria-hidden="true"></span>
+        <span class="sw__wann">Bauen</span>
+        <span class="sw__kern">Der Bauplan ist vollständig</span>
+        <span class="sw__mehr">Details ansehen</span>
+      </button>
+    </li>
+    <li>
+      <button class="sw__knopf" type="button" data-sw="starten">
+        <span class="sw__punkt" aria-hidden="true"></span>
+        <span class="sw__wann">Starten</span>
+        <span class="sw__kern">Die Umgebung kommt von außen</span>
+        <span class="sw__mehr">Details ansehen</span>
+      </button>
+    </li>
+    <li>
+      <button class="sw__knopf" type="button" data-sw="laufen">
+        <span class="sw__punkt" aria-hidden="true"></span>
+        <span class="sw__wann">Laufen</span>
+        <span class="sw__kern">Der Container merkt sich nichts</span>
+        <span class="sw__mehr">Details ansehen</span>
+      </button>
+    </li>
+    <li>
+      <button class="sw__knopf" type="button" data-sw="aufhoeren">
+        <span class="sw__punkt" aria-hidden="true"></span>
+        <span class="sw__wann">Aufhören</span>
+        <span class="sw__kern">Der Container ist ersetzbar</span>
+        <span class="sw__mehr">Details ansehen</span>
+      </button>
+    </li>
+  </ol>
+</div>
+
+<article class="sw__blatt" id="sw-bauen" data-titel="Der Bauplan ist vollständig" data-slug="bauen" data-nr="Station 1 · Bauen">
+<h2>Bauen: Der Bauplan ist vollständig</h2>
+<p class="zf__leitsatz"><strong>Alles, was die Anwendung zum Laufen braucht, liegt im Image. Beim Start kommt nichts mehr dazu.</strong></p>
+<p>Wer ein Image baut, schreibt damit auf, was die Anwendung benötigt: die Laufzeit, die Bibliotheken, die Werkzeuge. Was dort fehlt, fehlt später auch – und fällt erst auf dem Rechner auf, auf dem es zufällig nicht schon installiert war.</p>
+<p class="sw__frage"><span class="sw__marke">Prüffrage</span>Muss nach dem Start noch etwas nachinstalliert oder heruntergeladen werden, damit es läuft?</p>
+<p><span class="sw__marke">So nicht</span>Das Image holt sich beim Start noch Pakete aus dem Netz. Ist die Quelle weg, startet nichts mehr – <em>obwohl</em> Konfiguration, Zustand und Austauschbarkeit in Ordnung wären. Genau daran sieht man: Das ist ein eigener Punkt.</p>
+<p class="sw__zu"><span class="sw__marke">Aus den zwölf Faktoren</span><a href="#codebase">I&nbsp;Codebase</a>, <a href="#dependencies">II&nbsp;Dependencies</a></p>
+</article>
+
+<article class="sw__blatt" id="sw-starten" data-titel="Die Umgebung kommt von außen" data-slug="starten" data-nr="Station 2 · Starten">
+<h2>Starten: Die Umgebung kommt von außen</h2>
+<p class="zf__leitsatz"><strong>Alles, was sich zwischen Test und Produktion unterscheidet, wird beim Start hineingereicht.</strong></p>
+<p>Werte, Zugangsdaten, die Adressen der Nachbardienste: Das Image weiß nicht, wo es läuft, und soll es auch nicht wissen. Dasselbe Image läuft überall – nur mit anderen Angaben davor.</p>
+<p class="sw__frage"><span class="sw__marke">Prüffrage</span>Muss ich für eine andere Umgebung ein neues Image bauen?</p>
+<p><span class="sw__marke">So nicht</span>Die Adresse der Produktionsdatenbank steht fest im Quelltext. Für den Test wird ein zweites Image gebaut – dann ist das, was läuft, nicht das, was geprüft wurde. Der Bauplan wäre dabei vollständig; nur diese Station ist verfehlt.</p>
+<p class="sw__zu"><span class="sw__marke">Aus den zwölf Faktoren</span><a href="#config">III&nbsp;Config</a>, <a href="#backing-services">IV&nbsp;Backing Services</a>, <a href="#admin-processes">XII&nbsp;Admin processes</a></p>
+</article>
+
+<article class="sw__blatt" id="sw-laufen" data-titel="Der Container merkt sich nichts" data-slug="laufen" data-nr="Station 3 · Laufen">
+<h2>Laufen: Der Container merkt sich nichts</h2>
+<p class="zf__leitsatz"><strong>Keine Sitzung im Speicher, keine Datei auf der Platte, kein Protokoll in einer Logdatei.</strong></p>
+<p>Was bleiben soll, liegt in einem anderen System – oder kommt mit der Anfrage mit. Der Container selbst ist dann nur die Stelle, an der gerade gearbeitet wird.</p>
+<p class="sw__frage"><span class="sw__marke">Prüffrage</span>Was ist weg, wenn dieser Container jetzt sofort verschwindet? Alles außer „nichts“ ist ein Befund.</p>
+<p><span class="sw__marke">So nicht</span>Die Anmeldung liegt im Speicher des Prozesses. Beim Neustart sind alle Benutzer abgemeldet – obwohl das Image vollständig ist und von außen konfiguriert wird.</p>
+<p><span class="sw__marke">Hängt zusammen mit Starten</span>Das ist die einzige echte Verbindung in dieser Aufteilung: Was nicht im Container bleiben darf, liegt in einem anderen System. Und dessen Adresse kommt von außen.</p>
+<p class="sw__zu"><span class="sw__marke">Aus den zwölf Faktoren</span><a href="#processes">VI&nbsp;Processes</a>, <a href="#logs">XI&nbsp;Logs</a></p>
+</article>
+
+<article class="sw__blatt" id="sw-aufhoeren" data-titel="Der Container ist ersetzbar" data-slug="aufhoeren" data-nr="Station 4 · Aufhören">
+<h2>Aufhören: Der Container ist ersetzbar</h2>
+<p class="zf__leitsatz"><strong>Er startet schnell, hört auf das Stopp-Signal und verträgt es, abgeschaltet zu werden.</strong></p>
+<p>Eine Plattform startet Container neu, verschiebt sie und legt weitere daneben. Das geht nur, wenn jedes Exemplar so gut ist wie jedes andere – und wenn keines beleidigt ist, wenn es endet.</p>
+<p class="sw__frage"><span class="sw__marke">Prüffrage</span>Darf ich diesen Container jetzt, mitten im Betrieb, abschalten?</p>
+<p><span class="sw__marke">So nicht</span>Die Anwendung hört nicht auf das Stopp-Signal und braucht vier Minuten zum Starten. Sie hält dabei keinerlei Zustand – und ist trotzdem nicht austauschbar.</p>
+<p class="sw__zu"><span class="sw__marke">Aus den zwölf Faktoren</span><a href="#concurrency">VIII&nbsp;Concurrency</a>, <a href="#disposability">IX&nbsp;Disposability</a></p>
+</article>
+
+<section class="sw__quer" aria-labelledby="sw-quer-titel">
+  <h3 id="sw-quer-titel">Quer zu allen vier: die Schnittstellen</h3>
+  <p>
+    Ein Dienst steht selten allein. Er nimmt Anfragen an, schickt Nachrichten
+    weg, spricht mit seiner Datenbank und wird von der Plattform abgefragt.
+    <strong>Jeder dieser Wege ist ein Versprechen an jemand anderen</strong> –
+    und am anderen Ende sitzt meist ein anderes Team.
+  </p>
+
+  <div class="sw__bild">
+    <svg viewBox="0 0 820 370" role="img" aria-labelledby="sw-bild-titel sw-bild-text">
+      <title id="sw-bild-titel">Ein Dienst und seine Schnittstellen</title>
+      <desc id="sw-bild-text">Der Bestell-Dienst in der Mitte ist über fünf
+        verschiedene Arten von Schnittstellen mit seinen Nachbarn verbunden:
+        HTTP/REST zur Weboberfläche, Messaging zum Versand-Dienst, ein
+        Datenbank-Protokoll zur Datenbank, Metriken zur Plattform und eine
+        gemeinsame Dateiablage, die sich Bestellung und Versand teilen.</desc>
+
+      <line class="sw__kante" x1="170" y1="180" x2="310" y2="180" />
+      <line class="sw__kante" x1="510" y1="180" x2="640" y2="180" />
+      <line class="sw__kante" x1="410" y1="150" x2="410" y2="75" />
+      <line class="sw__kante" x1="330" y1="210" x2="180" y2="290" />
+      <line class="sw__kante sw__kante--lose" x1="500" y1="210" x2="650" y2="288" />
+      <line class="sw__kante sw__kante--lose" x1="715" y1="205" x2="700" y2="288" />
+
+      <rect class="sw__kasten" x="330" y="25" width="160" height="50" rx="8" />
+      <text class="sw__beschriftung" x="410" y="55" text-anchor="middle">Plattform</text>
+
+      <rect class="sw__kasten" x="20" y="155" width="150" height="50" rx="8" />
+      <text class="sw__beschriftung" x="95" y="185" text-anchor="middle">Weboberfläche</text>
+
+      <rect class="sw__kasten sw__kasten--mitte" x="310" y="150" width="200" height="60" rx="8" />
+      <text class="sw__beschriftung" x="410" y="186" text-anchor="middle">Bestell-Dienst</text>
+
+      <rect class="sw__kasten" x="640" y="155" width="160" height="50" rx="8" />
+      <text class="sw__beschriftung" x="720" y="185" text-anchor="middle">Versand-Dienst</text>
+
+      <rect class="sw__kasten" x="30" y="290" width="150" height="50" rx="8" />
+      <text class="sw__beschriftung" x="105" y="320" text-anchor="middle">Datenbank</text>
+
+      <rect class="sw__kasten" x="600" y="290" width="190" height="50" rx="8" />
+      <text class="sw__beschriftung" x="695" y="320" text-anchor="middle">Dateiablage</text>
+
+      <text class="sw__art" x="240" y="170" text-anchor="middle">HTTP/REST</text>
+      <text class="sw__art" x="575" y="170" text-anchor="middle">Messaging</text>
+      <text class="sw__art" x="422" y="116">Metriken, Gesundheit</text>
+      <text class="sw__art" x="105" y="275" text-anchor="middle">Datenbank-Protokoll</text>
+      <text class="sw__art sw__art--lose" x="695" y="270" text-anchor="middle">gemeinsame Dateiablage</text>
+    </svg>
+  </div>
+
+  <ul class="sw__arten">
+    <li><strong>HTTP/REST</strong> – der übliche Weg hinein. Jemand fragt, der Dienst antwortet.</li>
+    <li><strong>Messaging</strong> – eine Nachricht in die Warteschlange. Der Empfänger muss gerade gar nicht laufen.</li>
+    <li><strong>Datenbank-Protokoll</strong> – der Dienst spricht mit seiner eigenen Datenbank. Mit einer fremden spricht er nicht.</li>
+    <li><strong>Metriken und Gesundheitsprüfung</strong> – was die Plattform von außen abfragt, um zu sehen, ob es dem Dienst gut geht.</li>
+    <li><strong>Gemeinsame Dateiablage</strong> – gestrichelt, weil sie leicht übersehen wird: Zwei Dienste über demselben Verzeichnis sind auch verbunden. Nur steht das in keiner Beschreibung, bis einer das Dateiformat ändert.</li>
+  </ul>
+
+  <details class="avd-academy-reveal" id="schnittstellen">
+  <summary>Warum das ein eigener Punkt ist</summary>
+
+  <p>Die vier Stationen betreffen die eigene Anwendung. Dieser Punkt betrifft die
+    Nachbarn: An jeder Schnittstelle hängt ein anderes Team, und sie zu ändern ist
+    kein interner Umbau. Deshalb steht er quer und nicht auf dem Zeitstrahl – er
+    begleitet alle vier: beschrieben beim Bauen, veröffentlicht beim Starten,
+    bedient im Laufen, sauber abgemeldet beim Aufhören.</p>
+  <p class="sw__frage"><span class="sw__marke">Prüffrage</span>Kann ich alle Wege
+    aufzählen, die in diesen Container hinein- und hinausführen? Was in der
+    Aufzählung fehlt, ist ein Befund.</p>
+  <p><span class="sw__marke">So nicht</span>Zwei Dienste tauschen Dateien über ein
+    gemeinsames Verzeichnis, oder der eine liest direkt in der Datenbank des
+    anderen. Beides läuft einwandfrei und steht in keiner Beschreibung – bis eine
+    Seite ihr Format ändert.</p>
+  <p class="sw__zu"><span class="sw__marke">Aus den zwölf Faktoren</span><a href="#port-binding">VII&nbsp;Port binding</a>
+    – und die Gegenseite von <a href="#backing-services">IV&nbsp;Backing Services</a>:
+    Die eigene Schnittstelle ist für den Nachbarn ein angebundener Dienst. Über die
+    zwölf Faktoren hinaus geht dabei, dass es mehrere sein können; die kennen nur
+    den einen Port.</p>
+  </details>
+</section>
+
+<p class="sw__rest">
+  Zwei der zwölf Faktoren stehen in keiner Station, und das mit Absicht:
+  <a href="#build-release-run">V&nbsp;Build, release, run</a> ist die Grenze
+  zwischen Bauen und Starten – die Regel, dass beides sich nicht vermischen darf.
+  <a href="#dev-prod-parity">X&nbsp;Dev/prod parity</a> ist das Ergebnis aller
+  vier: Wer sie einhält, bekommt es geschenkt.
+</p>
+
+</section>
+
+<dialog class="zf__fenster" id="zf-fenster" aria-labelledby="zf-titel">
+  <div class="zf__fenster-kopf">
+    <div>
+      <span class="zf__fenster-nr" id="zf-nr"></span>
+      <h2 id="zf-titel"></h2>
+      <span class="zf__marke" id="zf-marke" hidden="">im Container: Voraussetzung</span>
+    </div>
+    <button class="zf__zu" type="button" aria-label="Schließen">✕</button>
+  </div>
+  <div class="zf__fenster-koerper" id="zf-koerper"></div>
+</dialog>
+
+<script>
+(function () {
+  "use strict";
+  var fenster = document.getElementById("zf-fenster");
+  var koerper = document.getElementById("zf-koerper");
+  var titel   = document.getElementById("zf-titel");
+  var nr      = document.getElementById("zf-nr");
+  var marke   = document.getElementById("zf-marke");
+  if (!fenster || !fenster.showModal) return;   /* ohne <dialog> bleibt die Seite lesbar */
+
+  /* DAS BLATT WIRD VERSCHOBEN, NICHT KOPIERT. Die Reiter sind Bausteine des
+     Themes; sein Skript wertet sie beim Laden der Seite auf. Eine Kopie waere
+     roher Markup-Abzug und bliebe ein Akkordeon. Ein verschobener Knoten nimmt
+     die Aufwertung mit – und wandert beim Schliessen zurueck ins Lager, damit
+     der Druck ihn wieder an seiner Stelle findet. */
+  /* Die Blaetter liegen an zwei Stellen: die zwoelf Faktoren im Lager VOR der
+     Zusammenfassung, die vier Stationen mitten in ihr. Auf Papier ist das die
+     Lesereihenfolge. Deshalb merkt sich das Fenster nicht "das Lager", sondern
+     die Stelle, von der es das Blatt geholt hat - samt Nachbarn. Mit
+     `appendChild` landete ein einmal geoeffneter Faktor am ENDE des Lagers und
+     stuende im Ausdruck hinter allen anderen. */
+  var offen = null, heimat = null, nachbar = null;
+  function zurueck() {
+    if (offen && heimat) heimat.insertBefore(offen, nachbar);
+    offen = null; heimat = null; nachbar = null;
+  }
+
+  /* Faktoren UND Stationen liegen im selben Lager und benutzen dasselbe
+     Fenster. Eine zweite Fenstermechanik waere doppelt zu pflegen - und der
+     Hash muesste zweimal bedacht werden. */
+  var BLAETTER = ".zf__blatt, .sw__blatt";
+
+  function oeffne(id, ausHash) {
+    oeffneBlatt(document.getElementById(id), ausHash);
+  }
+
+  function oeffneBlatt(blatt, ausHash) {
+    if (!blatt) return;
+    zurueck();
+    titel.textContent = blatt.getAttribute("data-titel");
+    nr.textContent    = blatt.getAttribute("data-nr");
+    /* Die Marke gehoert neben den Titel, nicht in einen Reiter: Sie gilt fuer
+       den ganzen Faktor und darf nicht erst beim Umschalten auftauchen. */
+    if (marke) marke.hidden = blatt.getAttribute("data-kern") !== "ja";
+    heimat  = blatt.parentNode;          /* VOR dem Verschieben merken */
+    nachbar = blatt.nextSibling;
+    koerper.appendChild(blatt);
+    offen = blatt;
+    koerper.scrollTop = 0;
+    /* Gescrollt wird im Reiter, also dort auch wieder nach oben. */
+    Array.prototype.forEach.call(
+      blatt.querySelectorAll(".avd-academy-tabs__panel"), function (t) { t.scrollTop = 0; });
+    if (!fenster.open) fenster.showModal();
+    /* Kommt der Aufruf AUS der Adresse, waere ein erneutes Schreiben eine Schleife. */
+    if (!ausHash) zustandMelden();
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll("[data-zf]"), function (knopf) {
+    knopf.addEventListener("click", function () { oeffne("zf-" + knopf.getAttribute("data-zf")); });
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll("[data-sw]"), function (knopf) {
+    knopf.addEventListener("click", function () {
+      oeffneBlatt(blattZuSlug(knopf.getAttribute("data-sw")));
+    });
+  });
+
+  /* --- DAS NETZ AUF DER UEBERSICHT -----------------------------------------
+     Die Paare kommen AUS den Querverweisen der Blaetter – nicht aus einer
+     zweiten Liste hier im Skript. Eine solche Liste waere binnen einer
+     Ueberarbeitung veraltet, und niemand saehe es ihr an: Die Linie zeigte
+     einen Zusammenhang, den der Text nicht mehr nennt.
+
+     Gezeichnet wird nur, was BEIDE Seiten nennen. Eine einseitige Nennung ist
+     kein Fehler (X nennt IX als Voraussetzung, IX kommt ohne X aus) – sie
+     traegt nur keine Linie, weil man am anderen Ende nichts dazu faende. */
+  var netz = document.getElementById("zf-netz");
+  var SVG_NS = "http://www.w3.org/2000/svg";
+
+  function netzPaare() {
+    var nrZuSlug = {};
+    Array.prototype.forEach.call(document.querySelectorAll(".zf__blatt"), function (b) {
+      nrZuSlug[b.getAttribute("data-slug")] = b.id.replace("zf-", "");
+    });
+    var genannt = {};
+    Array.prototype.forEach.call(document.querySelectorAll(".zf__blatt"), function (b) {
+      var von = b.id.replace("zf-", "");
+      Array.prototype.forEach.call(b.querySelectorAll(".zf__bezug a"), function (a) {
+        var nach = nrZuSlug[(a.getAttribute("href") || "").replace(/^#/, "")];
+        if (nach) genannt[von + ">" + nach] = true;
+      });
+    });
+    var paare = [], gesehen = {};
+    Object.keys(genannt).forEach(function (k) {
+      var t = k.split(">");
+      if (!genannt[t[1] + ">" + t[0]]) return;
+      var a = Math.min(Number(t[0]), Number(t[1]));
+      var b = Math.max(Number(t[0]), Number(t[1]));
+      var schluessel = a + "-" + b;
+      if (gesehen[schluessel]) return;
+      gesehen[schluessel] = true;
+      paare.push({ a: a, b: b, schluessel: schluessel });
+    });
+    return paare;
+  }
+
+  /* In Pixeln gerechnet, nicht in Winkeln: Die Knopfmitte steht auch dann
+     richtig, wenn die Medienabfrage die Buehne anders aufbaut oder ein Knopf
+     durch laengeren Text hoeher wird. */
+  function netzZeichnen() {
+    var buehne = document.querySelector(".zf");
+    if (!netz || !buehne) return;
+    var rb = buehne.getBoundingClientRect();
+    if (!rb.width || !rb.height) return;
+    var mitte = {};
+    Array.prototype.forEach.call(
+      document.querySelectorAll(".zf__kreis [data-zf]"), function (k) {
+        var r = k.getBoundingClientRect();
+        mitte[k.getAttribute("data-zf")] = {
+          x: r.left - rb.left + r.width / 2,
+          y: r.top - rb.top + r.height / 2
+        };
+      });
+    netz.setAttribute("viewBox", "0 0 " + rb.width + " " + rb.height);
+    while (netz.firstChild) netz.removeChild(netz.firstChild);
+    netzPaare().forEach(function (p) {
+      var a = mitte[p.a], b = mitte[p.b];
+      if (!a || !b) return;
+      var linie = document.createElementNS(SVG_NS, "line");
+      linie.setAttribute("x1", a.x); linie.setAttribute("y1", a.y);
+      linie.setAttribute("x2", b.x); linie.setAttribute("y2", b.y);
+      linie.setAttribute("data-paar", p.schluessel);
+      netz.appendChild(linie);
+    });
+  }
+
+  /* Beim Zeigen auf einen Knopf treten SEINE Linien hervor, der Rest tritt
+     zurueck. Erst dadurch wird aus dem Geflecht eine Auskunft. */
+  function netzHervorheben(nummer) {
+    if (!netz) return;
+    netz.classList.toggle("is-gedimmt", !!nummer);
+    Array.prototype.forEach.call(netz.querySelectorAll("line"), function (l) {
+      var t = (l.getAttribute("data-paar") || "").split("-");
+      l.classList.toggle("is-hell", !!nummer && (t[0] === nummer || t[1] === nummer));
+    });
+  }
+
+  Array.prototype.forEach.call(
+    document.querySelectorAll(".zf__kreis [data-zf]"), function (knopf) {
+      var an  = function () { netzHervorheben(knopf.getAttribute("data-zf")); };
+      var aus = function () { netzHervorheben(null); };
+      knopf.addEventListener("mouseenter", an);
+      knopf.addEventListener("focus", an);
+      knopf.addEventListener("mouseleave", aus);
+      knopf.addEventListener("blur", aus);
+    });
+
+  netzZeichnen();
+  /* Schriften kommen spaeter an und aendern die Knopfhoehe; die Breite aendert
+     sich beim Drehen des Geraets. Beides verschoebe die Enden. */
+  window.addEventListener("load", netzZeichnen);
+  window.addEventListener("resize", netzZeichnen);
+
+  /* --- DER OFFENE FAKTOR STEHT IN DER ADRESSE -------------------------------
+     DAS FRAGMENT GEHOERT DEM THEME, NICHT DIESER SEITE. Seit 2.46.0 fuehrt
+     `AvdAcademyState` den Zustand aller Bausteine zusammen und schreibt die
+     Adresse EINMAL (`#/?open=…&faktor=…`). Frueher schrieb hier jeder fuer
+     sich, und der letzte Klick loeschte den anderen - genau daran ging schon
+     einmal das Lesezeichen auf einen Faktor verloren, weil der Reiterstreifen
+     `#«panel-id»` hineinschrieb.
+
+     Das Fenster ist kein Auf-und-Zu unter vielen, sondern eine Auswahl: Es
+     zeigt GENAU EIN Blatt. Deshalb `register({key})` und nicht `openable`.
+     `#config` bleibt dabei lesbar - der Wert ist der Slug, nicht `zf-3`: Ein
+     Lesezeichen soll das Umsortieren der Faktoren ueberleben. */
+  function blattZuSlug(slug) {
+    var treffer = null;
+    Array.prototype.forEach.call(document.querySelectorAll(BLAETTER), function (b) {
+      if (b.getAttribute("data-slug") === slug) treffer = b;
+    });
+    return treffer;
+  }
+
+  function zustandMelden() {
+    if (window.AvdAcademyState) window.AvdAcademyState.update();
+  }
+
+  function zustandAnmelden() {
+    var Z = window.AvdAcademyState;
+    if (!Z) return;                   /* aelteres Theme: Seite bleibt bedienbar */
+    Z.register({
+      key: "faktor",
+      read: function () { return offen ? offen.getAttribute("data-slug") : ""; },
+      apply: function (wert) {
+        var blatt = wert ? blattZuSlug(wert) : null;
+        if (blatt) { if (offen !== blatt) oeffneBlatt(blatt, true); }
+        else if (fenster.open) { fenster.close(); }
+      }
+    });
+    /* SELBST HERSTELLEN, weil die Anmeldung zu spaet kommt: Das Theme-Skript
+       traegt `defer`, laeuft also nach diesem hier und ruft `restore()` sofort
+       auf - da ist dieser Teil noch nicht angemeldet. Ein zweites `restore()`
+       ist harmlos, es wendet nur an, was in der Adresse steht. */
+    Z.restore();
+
+    /* ALTE LESEZEICHEN BLEIBEN GUELTIG. Vor 2.46.0 stand der Faktor als blosse
+       Sprungmarke in der Adresse (`#logs`), beim Reiter zweigeteilt
+       (`#logs--zusammenhaenge`). Fuer das Theme ist das eine Sprungmarke ins
+       Leere - hier wird sie aufgeloest. Den Reiter macht das Theme selbst auf. */
+    var anker = Z.anchor ? Z.anchor() : "";
+    if (!offen && anker) {
+      var alt = blattZuSlug(anker) || blattZuSlug(String(anker).split("--")[0]);
+      if (alt) oeffneBlatt(alt, true);
+    }
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", zustandAnmelden);
+  } else {
+    zustandAnmelden();
+  }
+
+  /* QUERVERWEISE OEFFNEN DAS FENSTER SELBST. Ein `href="#logs"` ist fuer das
+     Theme eine gewoehnliche Sprungmarke - es gibt kein Element mit dieser ID,
+     also passiert nichts. Der Klick wird deshalb hier abgefangen; das ist
+     ohnehin ehrlicher, als einen Zustand ueber einen Seitensprung zu
+     transportieren. */
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest ? e.target.closest('a[href^="#"]') : null;
+    if (!a) return;
+    var blatt = blattZuSlug(a.getAttribute("href").slice(1));
+    if (!blatt) return;
+    e.preventDefault();
+    oeffneBlatt(blatt);
+  });
+
+  fenster.querySelector(".zf__zu").addEventListener("click", function () { fenster.close(); });
+
+  /* NEBEN DAS FENSTER KLICKEN SCHLIESST. Ein Klick auf den abgedunkelten Grund
+     landet beim <dialog> selbst – der Inhalt liegt in Kindelementen. Genau
+     daran laesst sich beides unterscheiden, ohne Koordinaten zu pruefen. */
+  fenster.addEventListener("click", function (e) {
+    if (e.target === fenster) fenster.close();
+  });
+  /* Auch Esc laeuft hier durch – `close` feuert in jedem Fall. */
+  fenster.addEventListener("close", function () {
+    zurueck();
+    zustandMelden();                  /* raeumt den Faktor aus der Adresse */
+  });
+
+  /* DRUCK. Das Aufklappen der Reiter macht das Theme (es nimmt dafuer die
+     `name`-Attribute kurz weg, sonst schlossen sich die Geschwister reihum).
+     Hier bleibt nur, was es nicht wissen kann: Ein Blatt, das gerade im Fenster
+     liegt, muss zurueck an seinen Platz - das Fenster ist auf Papier
+     ausgeblendet, das Blatt fehlte sonst.
+
+     `close()` allein genuegt dafuer nicht: Das `close`-Ereignis - und mit ihm
+     `zurueck()` - kommt erst in einer eigenen Aufgabe, moeglicherweise also
+     nach dem Druck. */
+  window.addEventListener("beforeprint", function () {
+    if (fenster.open) fenster.close();
+    zurueck();
+  });
+
+  /* WORKAROUND A-007 (Theme <= 2.46.0). `nameAus()` im Theme merkt sich die
+     `name`-Attribute der Reiter und nimmt sie fuer den Druck weg. Die Funktion
+     laeuft aber zweimal - `beforeprint` UND der Medienwechsel auf `print`
+     rufen sie - und der zweite Lauf ueberschreibt das Gemerkte mit einer leeren
+     Liste, weil kein Reiter mehr ein `name` hat. Danach setzt `nameAn()` nichts
+     zurueck: Die Reiter verlieren ihre Exklusivitaet, und ab da bleibt beim
+     Umschalten jeder zuvor geoeffnete Reiter offen stehen. Dasselbe passiert,
+     wenn `afterprint` gar nicht eintrifft.
+
+     Deshalb werden die Namen hier gemerkt und nach dem Druck wieder gesetzt -
+     verzoegert, damit es NACH dem Aufraeumen des Themes geschieht. */
+  var namen = [];
+  Array.prototype.forEach.call(
+    document.querySelectorAll(".zf__blatt details[name]"), function (d) {
+      namen.push([d, d.getAttribute("name")]);
+    });
+  function namenZurueck() {
+    namen.forEach(function (e) {
+      if (!e[0].getAttribute("name")) e[0].setAttribute("name", e[1]);
+    });
+  }
+  window.addEventListener("afterprint", function () {
+    window.setTimeout(namenZurueck, 0);
+  });
+  if (window.matchMedia) {
+    var druckmodus = window.matchMedia("print");
+    var beiWechsel = function (e) { if (!e.matches) window.setTimeout(namenZurueck, 0); };
+    if (druckmodus.addEventListener) druckmodus.addEventListener("change", beiWechsel);
+    else if (druckmodus.addListener) druckmodus.addListener(beiWechsel);
+  }
+})();
+</script>
+
 
 
     </main>
