@@ -47,13 +47,13 @@
 <meta property="og:description" content="Wie aus einem Dockerfile ein Stapel wird, warum jeder Layer einen Hash aus sich und allem darunter trägt – und was daraus für Cache, geteilte Basis-Images und die Reihenfolge der Zeilen folgt.">
 <meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790252978"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790252978">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790252978">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790252978">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790252978"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790252978">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790252978" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790252978" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790252978">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790253681"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790253681">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790253681">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790253681">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790253681"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790253681">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790253681" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790253681" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790253681">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -95,9 +95,9 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/training-material-container-technologies/theme/atvantage/assets/icon-180.png">
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/presentation.css?v=1790252978">
-  <script src="/training-material-container-technologies/theme/jekyll/presentation.js?v=1790252978" defer></script>
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790252978"></head>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/presentation.css?v=1790253681">
+  <script src="/training-material-container-technologies/theme/jekyll/presentation.js?v=1790253681" defer></script>
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790253681"></head>
 <body class="avd-academy-present" data-avd-academy-present data-avd-academy-present-title="Layer und Build-Cache">
   <a class="avd-academy-skip-link" href="#avd-academy-deck">Zum Inhalt springen</a>
 
@@ -344,11 +344,34 @@ Wer das versteht, versteht den Rest von selbst.</p>
 
      Die Zahl kommt vom breitesten Element, dem Vergleich: zwei Spalten zu je
      19rem plus 2rem Abstand. Wer sie aendert, rechnet dort nach. */
-  .avd-academy-slide__inner { max-width: 46rem; }
+  .avd-academy-slide__inner {
+    max-width: 46rem;
+    /* MITTIG BIS IN DIE ZEILE. Auf einer projizierten Folie steht wenig Text,
+       und der steht in der Mitte. Ausgenommen ist alles, dessen Ausrichtung
+       Bedeutung traegt: Code wird links gelesen, und in einer Schicht steht
+       der Name links und die Marke rechts (das macht Flex, nicht die
+       Textausrichtung). */
+    text-align: center;
+  }
+  .avd-academy-slide pre,
+  .avd-academy-slide pre code,
+  .lc__formel { text-align: left; }
+
+  /* LUFT, WO PLATZ IST. Eine Folie traegt EINE Aussage; die Abstaende duerfen
+     das zeigen. Das Theme rechnet fuer Doku-Seiten enger. */
+  .avd-academy-slide h2 { margin-bottom: var(--avd-academy-space-8); }
+  .avd-academy-slide p { margin-bottom: var(--avd-academy-space-6); }
+  .avd-academy-slide__inner > :last-child { margin-bottom: 0; }
+  .lc__mit-achse, .lc__teilen, .lc__spalte--einzeln {
+    margin-top: var(--avd-academy-space-8);
+    margin-bottom: var(--avd-academy-space-8);
+  }
+  .lc { margin-top: var(--avd-academy-space-8); }
+  .lc__wahl { margin: var(--avd-academy-space-8) 0; }
   /* Der Vergleich ist so breit wie die Spalte - sonst steht er wieder eingerueckt. */
   .lc { margin-left: auto; margin-right: auto; }
   /* Ueberschrift und Kernsatz stehen mittig ueber dem Bild, das sie beschreiben. */
-  .lc__titel, .lc__unter, .lc__kopf, .lc__zweig-name, .lc__druck-fall { text-align: center; }
+  .lc__bilanz, .lc__quelle { text-align: center; }
 
   /* --- Auf Papier stehen ALLE DREI FAELLE ---------------------------------
      Am Bildschirm waehlt man einen; auf dem Papier kann niemand klicken. Die
@@ -448,15 +471,12 @@ ergeben denselben Hash:</p>
 
 <h2 id="daraus-folgt-beides">Daraus folgt beides</h2>
 
-<ul>
-  <li><strong>Der Cache.</strong> Kennt Docker einen Hash bereits, muss es die Schicht nicht
-erneut bauen und nicht erneut herunterladen. Es genügt der Verweis auf das,
-was schon da ist.</li>
-  <li><strong>Die Ungültigkeit nach oben.</strong> Ändert sich eine Schicht, ändert sich ihr Hash
-– und damit zwangsläufig der Hash <strong>jeder darüberliegenden</strong>, auch wenn deren
-Anweisung Wort für Wort dieselbe geblieben ist. Sie steht ja auf einem anderen
-Grund.</li>
-</ul>
+<p><strong>Der Cache.</strong> Kennt Docker einen Hash bereits, baut es die Schicht nicht
+erneut und lädt sie nicht erneut herunter.</p>
+
+<p><strong>Die Ungültigkeit nach oben.</strong> Ändert sich eine Schicht, ändert sich ihr Hash –
+und damit der Hash <strong>jeder darüberliegenden</strong>, auch wenn deren Anweisung Wort
+für Wort dieselbe ist. Sie steht ja auf einem anderen Grund.</p>
 
 <h2 id="ein-image-ist-ein-layer-und-alles-darunter">Ein Image ist ein Layer und alles darunter</h2>
 
