@@ -64,13 +64,13 @@
 
 <meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790246916"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790246916">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790246916">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790246916">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790246916"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790246916">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790246916" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790246916" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790246916">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790248252"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790248252">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790248252">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790248252">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790248252"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790248252">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790248252" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790248252" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790248252">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -113,8 +113,8 @@
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
 
-  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790246916">
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790246916"></head><body class="avd-academy-guide">
+  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790248252">
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790248252"></head><body class="avd-academy-guide">
   <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><div class="avd-academy-metanav"><span>ATVANTAGE Academy</span>
   </div>
 
@@ -180,6 +180,34 @@ inkompatibel gilt und wie eingestuft wird, steht in
 Abschnitt „Theme-Version“.</p>
 
 <hr />
+
+<h2 id="2461">2.46.1</h2>
+
+<h3 id="ein-baustein-der-sich-spät-anmeldet-bekam-seinen-zustand-nie">Ein Baustein, der sich spät anmeldet, bekam seinen Zustand nie</h3>
+
+<p>Gefunden beim Umstellen von <code>training-concept-api-engineering</code>: Sechs eigene
+Visualisierungen schrieben ihren Zustand brav in die Adresse – und stellten ihn nach dem
+Neuladen <strong>nicht</strong> her. Die Adresse war richtig, niemand las sie.</p>
+
+<p><strong>Die Ursache ist die Reihenfolge, und sie trifft jeden Aufrufer.</strong> <code>atvantage.js</code> trägt
+<code>defer</code>: Wenn es läuft, steht <code>document.readyState</code> bereits auf <code>interactive</code>, das Theme
+richtet sich also <strong>sofort</strong> ein und stellt den Zustand her. Ein Inline-Skript der Seite
+kann sich zu diesem Zeitpunkt noch gar nicht angemeldet haben – es wartet, wie üblich, auf
+<code>DOMContentLoaded</code>, und das kommt danach. Wer sich später meldet, fand ein <code>restore()</code> vor,
+das längst gelaufen war.</p>
+
+<p><strong>Jetzt reicht die Bibliothek den Wert nach</strong>, sobald sich jemand anmeldet. Anmelden darf
+damit <strong>jederzeit</strong> passieren – das ist die Zusage an eigene Bausteine; ohne sie müsste
+jeder Aufrufer die innere Reihenfolge des Themes kennen.</p>
+
+<p>Dazu ein zweiter, feinerer Punkt: Der <strong>Ausgangszustand</strong> wird jetzt aus dem Markup
+bestimmt (<code>standardOffen</code> je Baustein) statt aus dem gerade sichtbaren Stand. Beides fällt
+auseinander, sobald eine späte Anmeldung nachträgt – sonst vergliche „weicht ab?” künftig
+gegen die Adresse statt gegen das Dokument, und die Adresse räumte sich nicht mehr auf.</p>
+
+<p><strong>Nachgemessen</strong> an einer Seite, deren eigener Baustein sich bewusst erst bei
+<code>DOMContentLoaded</code> meldet: schreiben, neu laden, Zustand da – und zusammen mit den
+Theme-Bausteinen in <strong>einer</strong> Adresse (<code>#/?open=…&amp;ansicht=netz</code>).</p>
 
 <h2 id="2460">2.46.0</h2>
 

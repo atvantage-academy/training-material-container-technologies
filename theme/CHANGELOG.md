@@ -15,6 +15,34 @@ Abschnitt „Theme-Version“.
 
 ---
 
+## 2.46.1
+
+### Ein Baustein, der sich spät anmeldet, bekam seinen Zustand nie
+
+Gefunden beim Umstellen von `training-concept-api-engineering`: Sechs eigene
+Visualisierungen schrieben ihren Zustand brav in die Adresse – und stellten ihn nach dem
+Neuladen **nicht** her. Die Adresse war richtig, niemand las sie.
+
+**Die Ursache ist die Reihenfolge, und sie trifft jeden Aufrufer.** `atvantage.js` trägt
+`defer`: Wenn es läuft, steht `document.readyState` bereits auf `interactive`, das Theme
+richtet sich also **sofort** ein und stellt den Zustand her. Ein Inline-Skript der Seite
+kann sich zu diesem Zeitpunkt noch gar nicht angemeldet haben – es wartet, wie üblich, auf
+`DOMContentLoaded`, und das kommt danach. Wer sich später meldet, fand ein `restore()` vor,
+das längst gelaufen war.
+
+**Jetzt reicht die Bibliothek den Wert nach**, sobald sich jemand anmeldet. Anmelden darf
+damit **jederzeit** passieren – das ist die Zusage an eigene Bausteine; ohne sie müsste
+jeder Aufrufer die innere Reihenfolge des Themes kennen.
+
+Dazu ein zweiter, feinerer Punkt: Der **Ausgangszustand** wird jetzt aus dem Markup
+bestimmt (`standardOffen` je Baustein) statt aus dem gerade sichtbaren Stand. Beides fällt
+auseinander, sobald eine späte Anmeldung nachträgt – sonst vergliche „weicht ab?" künftig
+gegen die Adresse statt gegen das Dokument, und die Adresse räumte sich nicht mehr auf.
+
+**Nachgemessen** an einer Seite, deren eigener Baustein sich bewusst erst bei
+`DOMContentLoaded` meldet: schreiben, neu laden, Zustand da – und zusammen mit den
+Theme-Bausteinen in **einer** Adresse (`#/?open=…&ansicht=netz`).
+
 ## 2.46.0
 
 ### Bausteine merken sich ihren Zustand – gemeinsam, in der Adresse

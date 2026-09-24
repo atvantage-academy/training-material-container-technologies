@@ -1,6 +1,6 @@
 {
   "name": "@avd-academy-tools/academy-theme",
-  "version": "2.46.0",
+  "version": "2.46.1",
   "description": "ATVANTAGE Academy – Design-Fundament (Theme): Farben, Schriften, Logos, Header/Footer, Basiskomponenten. Reines CSS/JS, abhängigkeitsfrei.",
   "style": "academy/atvantage.css",
   "main": "academy/atvantage.js",

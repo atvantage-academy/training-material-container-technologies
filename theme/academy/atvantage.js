@@ -190,6 +190,36 @@
       if (ziel) { ziel.scrollIntoView(); }
     }
 
+    /* SPAETE ANMELDUNG. Dieses Skript laeuft mit `defer` und damit VOR
+       `DOMContentLoaded` - ein Inline-Skript einer Seite, das auf dieses Ereignis
+       wartet (der uebliche Weg), meldet sich also erst NACH `restore()`. Ohne
+       Nachtrag bekaeme es seinen Zustand nie: Die Adresse traegt ihn, und niemand
+       liest ihn mehr. Deshalb wird er hier sofort nachgereicht, sobald sich jemand
+       anmeldet. Anmelden darf damit jederzeit passieren - das ist die Zusage an
+       eigene Bausteine, und ohne sie muesste jeder Aufrufer die Reihenfolge des
+       Themes kennen. */
+    function nachtragen(t) {
+      if (!bereit) { return; }   /* vor dem ersten `restore()` erledigt das `anwenden()` */
+      var werte = adresse().werte;
+      if (!Object.prototype.hasOwnProperty.call(werte, t.key)) { return; }
+      imAnwenden = true;
+      window.setTimeout(function () { imAnwenden = false; }, 0);
+      try { t.apply(werte[t.key]); } catch (e) { /* ein Baustein darf scheitern */ }
+    }
+
+    /* DER AUSGANGSZUSTAND IST DAS MARKUP, nicht der gerade sichtbare Stand. Beides
+       faellt auseinander, sobald eine Anmeldung nachtraegt: `read()` lieferte dann
+       den bereits hergestellten Zustand, und der Vergleich „weicht ab?" ginge
+       kuenftig gegen die Adresse statt gegen das Dokument. */
+    function offenStandard() {
+      var ids = [];
+      offenbare.forEach(function (o) {
+        if (!o.standardOffen || o.exklusiv) { return; }
+        ids.push(o.id);
+      });
+      return ids.join(",");
+    }
+
     var offenTeil = {
       key: "open",
       read: function () {
@@ -228,9 +258,10 @@
           offenTeil.standard = "";
           teile.push(offenTeil);
         }
-        /* Der Ausgangszustand ist das Markup - und der wächst mit jedem Baustein,
-           der sich anmeldet. Deshalb wird er nach jeder Anmeldung neu bestimmt. */
-        offenTeil.standard = offenTeil.read();
+        /* Der Ausgangszustand waechst mit jedem Baustein, der sich anmeldet -
+           deshalb nach jeder Anmeldung neu bestimmt. */
+        offenTeil.standard = offenStandard();
+        nachtragen(offenTeil);
       },
       /* Alles, was kein Auf und Zu ist: ein gewählter Datensatz, eine Zoomstufe,
          ein Filter. `read()` liefert den aktuellen Wert, `apply(wert)` stellt ihn
@@ -242,6 +273,7 @@
         try { wert = t.read(); } catch (e) { wert = ""; }
         t.standard = (wert === null || wert === undefined) ? "" : String(wert);
         teile.push(t);
+        nachtragen(t);
       },
       /* Nach jeder Bedienung aufrufen. */
       update: schreiben,

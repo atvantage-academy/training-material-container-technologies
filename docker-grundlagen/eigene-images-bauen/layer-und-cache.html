@@ -59,18 +59,18 @@
 --><html lang="de">
 <head>
   <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"><title>Layer und Build-Cache · Containertechnologien (Academy)</title><meta name="description" content="Warum die Reihenfolge der Zeilen im Dockerfile über die Bauzeit entscheidet – dieselben Anweisungen, zweimal angeordnet, nach einer Codeänderung."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Layer und Build-Cache · Containertechnologien (Academy)</title><meta name="description" content="Wie aus einem Dockerfile ein Stapel wird, warum jeder Layer einen Hash aus sich und allem darunter trägt – und was daraus für Cache, geteilte Basis-Images und die Reihenfolge der Zeilen folgt."><meta property="og:site_name" content="Containertechnologien (Academy)">
 <meta property="og:title" content="Layer und Build-Cache">
-<meta property="og:description" content="Warum die Reihenfolge der Zeilen im Dockerfile über die Bauzeit entscheidet – dieselben Anweisungen, zweimal angeordnet, nach einer Codeänderung.">
+<meta property="og:description" content="Wie aus einem Dockerfile ein Stapel wird, warum jeder Layer einen Hash aus sich und allem darunter trägt – und was daraus für Cache, geteilte Basis-Images und die Reihenfolge der Zeilen folgt.">
 <meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790246916"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790246916">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790246916">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790246916">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790246916"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790246916">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790246916" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790246916" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790246916">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790248252"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790248252">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790248252">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790248252">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790248252"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790248252">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790248252" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790248252" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790248252">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -113,8 +113,8 @@
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
 
-  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790246916">
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790246916"></head><body class="avd-academy-guide avd-academy-guide--viz">
+  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790248252">
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790248252"></head><body class="avd-academy-guide avd-academy-guide--viz">
   <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><section class="avd-academy-guide-hero avd-academy-guide-hero--slim"
            aria-labelledby="avd-academy-page-title"><div class="avd-academy-guide-hero__meta">
       <div class="avd-academy-guide-hero__tags">
@@ -131,20 +131,9 @@
   </section><div class="avd-academy-guide-layout">
     <main class="avd-academy-guide-main" id="avd-academy-content">
 
-<p>Jede Anweisung im Dockerfile erzeugt einen <strong>Layer</strong>. Die Layer werden gestapelt,
-und beim nächsten Bauen darf Docker jeden wiederverwenden, bei dem sich nichts
-geändert hat.</p>
-
-<p>Die Regel dazu ist unscheinbar und hat große Folgen:</p>
-
-<blockquote>
-  <p>Ändert sich ein Layer, sind <strong>alle darüberliegenden</strong> ungültig – auch wenn ihre
-Anweisung Wort für Wort dieselbe geblieben ist.</p>
-</blockquote>
-
-<p>Unten stehen zweimal dieselben vier Anweisungen. Links in der naheliegenden
-Reihenfolge, rechts in der, die den Cache trägt. Gezeigt ist der <strong>zweite</strong> Build,
-nachdem sich eine Quelldatei geändert hat.</p>
+<p>Ein Image entsteht nicht in einem Stück. Es entsteht Schicht für Schicht – und
+wer diese Schichtung versteht, versteht anschließend von selbst, warum ein
+zweiter Build Sekunden statt Minuten braucht.</p>
 
 <style>
   .lc {
@@ -165,8 +154,17 @@ nachdem sich eine Quelldatei geändert hat.</p>
     margin: 0 0 var(--avd-academy-space-4);
   }
 
-  /* Der Stapel wird von unten nach oben gelesen: FROM liegt zuunterst. */
-  .lc__stapel {
+  /* DER STAPEL STEHT AUF DEM KOPF - ABSICHTLICH. Die erste Zeile des
+     Dockerfiles ist der Grund und gehoert nach UNTEN; `column-reverse` dreht
+     die Quelltextreihenfolge um, damit im Markup weiter von oben nach unten
+     geschrieben werden kann.
+
+     `ul.lc__stapel` und nicht `.lc__stapel`: Das Theme setzt fuer die Seite
+     `.avd-academy-guide-main ul { display: flex; flex-direction: column;
+     gap: 8px; padding-left: 22px }` - Klasse plus Element schlaegt eine
+     einzelne Klasse. Mit der schwachen Regel stand FROM oben, waehrend der
+     Text von "darueberliegenden" Layern sprach. */
+  ul.lc__stapel {
     display: flex;
     flex-direction: column-reverse;
     gap: 2px;
@@ -185,8 +183,10 @@ nachdem sich eine Quelldatei geändert hat.</p>
     font-size: var(--avd-academy-fs-sm);
     background: var(--avd-academy-color-bg-subtle);
   }
-  .lc__stapel > .lc__layer:first-child { border-radius: 0 0 var(--avd-academy-radius) var(--avd-academy-radius); }
-  .lc__stapel > .lc__layer:last-child  { border-radius: var(--avd-academy-radius) var(--avd-academy-radius) 0 0; }
+  /* Unten rund ist der Grund (das ERSTE Element, weil gedreht), oben rund der
+     letzte Layer. */
+  ul.lc__stapel > .lc__layer:first-child { border-radius: 0 0 var(--avd-academy-radius) var(--avd-academy-radius); }
+  ul.lc__stapel > .lc__layer:last-child  { border-radius: var(--avd-academy-radius) var(--avd-academy-radius) 0 0; }
 
   .lc__layer--neu {
     border-color: var(--avd-academy-color-warning);
@@ -213,7 +213,268 @@ nachdem sich eine Quelldatei geändert hat.</p>
     color: var(--avd-academy-color-ink-muted);
     margin-top: var(--avd-academy-space-2);
   }
+
+  /* --- Aufbau: Dockerfile neben dem Stapel -------------------------------- */
+  .lc__quelle {
+    font-size: var(--avd-academy-fs-sm);
+    color: var(--avd-academy-color-ink-muted);
+  }
+  .lc__paar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    gap: var(--avd-academy-space-8);
+    align-items: start;
+    margin: var(--avd-academy-space-8) 0;
+  }
+  ol.lc__zeilen {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .lc__zeilen li {
+    display: flex; align-items: baseline; gap: var(--avd-academy-space-3);
+    padding: var(--avd-academy-space-3) var(--avd-academy-space-4);
+    border: 1px solid transparent;
+    font-family: var(--avd-academy-font-mono);
+    font-size: var(--avd-academy-fs-sm);
+  }
+  /* Die Nummer ist der Beweis der Umkehr: dieselbe Zahl, andere Hoehe. */
+  .lc__nr {
+    flex: 0 0 auto;
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.4rem; height: 1.4rem; border-radius: 50%;
+    font-family: var(--avd-academy-font-sans);
+    font-size: 0.75rem; font-weight: var(--avd-academy-fw-bold);
+    color: var(--avd-academy-color-accent-ink);
+    background: var(--avd-academy-color-accent-soft);
+  }
+  .lc__layer > span:nth-child(2) { flex: 1 1 auto; }
+
+  /* Metadaten sind keine Schicht - das muss man sehen. */
+  .lc__layer--meta {
+    background: none;
+    border-style: dashed;
+    color: var(--avd-academy-color-ink-muted);
+  }
+
+  .lc__formel {
+    margin: var(--avd-academy-space-6) 0;
+    padding: var(--avd-academy-space-4);
+    border-left: 3px solid var(--avd-academy-color-accent);
+    background: var(--avd-academy-color-bg-subtle);
+    font-family: var(--avd-academy-font-mono);
+    font-size: var(--avd-academy-fs-sm);
+  }
+  .lc__hash {
+    flex: 0 0 auto;
+    font-family: var(--avd-academy-font-mono);
+    font-size: 0.78em;
+    color: var(--avd-academy-color-ink-muted);
+  }
+  .lc__spalte--einzeln { max-width: 32rem; margin: var(--avd-academy-space-6) 0; }
+
+  /* --- Geteilte Basis: Zweige oben, gemeinsamer Grund unten --------------- */
+  .lc__teilen { margin: var(--avd-academy-space-6) 0; max-width: 42rem; }
+  .lc__zweige {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: var(--avd-academy-space-4);
+    margin-bottom: 2px;
+  }
+  .lc__zweige--eins { grid-template-columns: 1fr; }
+  .lc__zweig-name {
+    margin: 0 0 var(--avd-academy-space-2);
+    font-size: var(--avd-academy-fs-sm);
+  }
+  .lc__layer--eigen { background: var(--avd-academy-color-bg); }
+  /* Der gemeinsame Grund traegt beide Zweige - deshalb die Akzentkante. */
+  ul.lc__stapel--basis > .lc__layer {
+    border-color: color-mix(in srgb, var(--avd-academy-color-accent) 55%, var(--avd-academy-color-border));
+  }
+  .lc__fuss {
+    margin: var(--avd-academy-space-2) 0 0;
+    font-size: var(--avd-academy-fs-sm);
+    color: var(--avd-academy-color-ink-muted);
+  }
+
+  @media (max-width: 40rem) {
+    .lc__zweige { grid-template-columns: 1fr; }
+  }
 </style>
+
+<h2 id="aufbau">Erst das Dockerfile, dann der Stapel</h2>
+
+<p>Ein <strong>Dockerfile</strong> ist eine Liste von Schritten. Jeder Schritt geht von dem
+Ergebnis des vorherigen aus:</p>
+
+<pre><code class="language-dockerfile">FROM node:20-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+CMD ["node", "server.js"]
+</code></pre>
+
+<p class="lc__quelle">Alle Anweisungen und ihre Feinheiten stehen in der
+<a href="https://docs.docker.com/reference/dockerfile/" target="_blank" rel="noopener">offiziellen Dockerfile-Referenz</a>.
+Für diese Seite genügen die sechs oben.</p>
+
+<p><strong>Das Dockerfile liest man von oben nach unten – gestapelt wird von unten nach
+oben.</strong> <code>FROM</code> ist der Grund, auf dem alles steht; jede weitere Anweisung legt
+eine Schicht <strong>darauf</strong>. Die letzte Zeile des Dockerfiles ist damit die
+<strong>oberste</strong> Schicht des Stapels.</p>
+
+<p>Diese Umkehr ist der Grund, warum im Folgenden von <em>darüberliegenden</em> Layern die
+Rede ist, obwohl es im Dockerfile die <em>späteren</em> Zeilen sind. Die Nummern auf
+beiden Seiten sind dieselben:</p>
+
+<div class="lc__paar">
+
+  <div class="lc__spalte">
+    <p class="lc__titel">Das Dockerfile</p>
+    <p class="lc__unter">von oben nach unten gelesen</p>
+    <ol class="lc__zeilen">
+      <li><span class="lc__nr">1</span><code>FROM node:20-alpine</code></li>
+      <li><span class="lc__nr">2</span><code>WORKDIR /app</code></li>
+      <li><span class="lc__nr">3</span><code>COPY package*.json ./</code></li>
+      <li><span class="lc__nr">4</span><code>RUN npm install</code></li>
+      <li><span class="lc__nr">5</span><code>COPY . .</code></li>
+      <li><span class="lc__nr">6</span><code>CMD ["node", "server.js"]</code></li>
+    </ol>
+  </div>
+
+  <div class="lc__spalte">
+    <p class="lc__titel">Das Image</p>
+    <p class="lc__unter">von unten nach oben gestapelt</p>
+    <ul class="lc__stapel">
+      <li class="lc__layer"><span class="lc__nr">1</span><span>node:20-alpine</span><span class="lc__marke">Grund</span></li>
+      <li class="lc__layer lc__layer--meta"><span class="lc__nr">2</span><span>WORKDIR /app</span><span class="lc__marke">nur Metadaten</span></li>
+      <li class="lc__layer"><span class="lc__nr">3</span><span>package*.json</span><span class="lc__marke">Layer</span></li>
+      <li class="lc__layer"><span class="lc__nr">4</span><span>node_modules</span><span class="lc__marke">Layer</span></li>
+      <li class="lc__layer"><span class="lc__nr">5</span><span>Anwendungsdateien</span><span class="lc__marke">Layer</span></li>
+      <li class="lc__layer lc__layer--meta"><span class="lc__nr">6</span><span>CMD …</span><span class="lc__marke">nur Metadaten</span></li>
+    </ul>
+    <p class="lc__leserichtung">Unten der Grund, oben die letzte Zeile.</p>
+  </div>
+
+</div>
+
+<p><strong>Nicht jede Zeile wird zu einer Schicht.</strong> Nur <code>RUN</code>, <code>COPY</code> und <code>ADD</code> verändern
+das Dateisystem und legen damit einen Layer an. <code>FROM</code> setzt den Grund, und
+<code>WORKDIR</code>, <code>ENV</code>, <code>EXPOSE</code>, <code>CMD</code> oder <code>ENTRYPOINT</code> schreiben nur Angaben ins
+Image – sie kosten keinen Platz, gehören aber trotzdem dazu.</p>
+
+<h2 id="hash">Jeder Layer trägt einen Hash</h2>
+
+<p>Beim Bauen bekommt jede Schicht eine Prüfsumme – einen <strong>Hash</strong>. Er entsteht aus
+<strong>zwei</strong> Dingen: aus dem Inhalt der Schicht selbst <strong>und</strong> aus dem Hash der
+Schicht, auf der sie liegt.</p>
+
+<p class="lc__formel">Hash(Layer) = f( Inhalt des Layers, Hash des Layers darunter )</p>
+
+<p>Damit benennt ein Hash nie nur eine Schicht, sondern <strong>die ganze Kette unter
+ihr</strong>. Zwei Bauläufe, bei denen dieselben Schritte auf demselben Grund landen,
+ergeben denselben Hash:</p>
+
+<div class="lc__spalte lc__spalte--einzeln">
+  <ul class="lc__stapel">
+    <li class="lc__layer"><span>node:20-alpine</span><span class="lc__hash">sha256:1f4c…</span></li>
+    <li class="lc__layer"><span>package*.json</span><span class="lc__hash">sha256:9a02…</span></li>
+    <li class="lc__layer"><span>node_modules</span><span class="lc__hash">sha256:c771…</span></li>
+    <li class="lc__layer"><span>Anwendungsdateien</span><span class="lc__hash">sha256:3e8b…</span></li>
+  </ul>
+  <p class="lc__leserichtung">Jeder Hash steckt im Hash über ihm mit drin.</p>
+</div>
+
+<p>Daraus folgt beides, was diese Seite ausmacht:</p>
+
+<ul>
+  <li><strong>Der Cache.</strong> Kennt Docker einen Hash bereits, muss es die Schicht nicht
+erneut bauen und nicht erneut herunterladen. Es genügt der Verweis auf das,
+was schon da ist.</li>
+  <li><strong>Die Ungültigkeit nach oben.</strong> Ändert sich eine Schicht, ändert sich ihr Hash
+– und damit zwangsläufig der Hash <strong>jeder darüberliegenden</strong>, auch wenn deren
+Anweisung Wort für Wort dieselbe geblieben ist. Sie steht ja auf einem anderen
+Grund.</li>
+</ul>
+
+<h2 id="image">Ein Image ist ein Layer und alles darunter</h2>
+
+<p>Damit lässt sich sagen, was ein Image eigentlich ist:</p>
+
+<blockquote>
+  <p>Ein <strong>Image</strong> ist nichts anderes als ein Layer <strong>samt allem, was unter ihm
+liegt</strong>. Der Name <code>meine-app:1.0</code> zeigt auf das oberste Glied einer Kette –
+die Kette selbst ist das Image.</p>
+</blockquote>
+
+<p>Das klingt nach Wortklauberei und hat zwei sehr praktische Folgen.</p>
+
+<h3 id="zwei-images-ein-gemeinsamer-grund">Zwei Images, ein gemeinsamer Grund</h3>
+
+<p>Zwei Images, die auf demselben Grund aufsetzen, <strong>teilen</strong> sich dessen Schichten
+– dieselben Hashes, dieselben Daten, einmal auf der Platte:</p>
+
+<div class="lc__teilen">
+  <div class="lc__zweige">
+    <div class="lc__zweig">
+      <p class="lc__zweig-name"><code>bestellung:2.1</code></p>
+      <ul class="lc__stapel">
+        <li class="lc__layer lc__layer--eigen"><span>node_modules</span></li>
+        <li class="lc__layer lc__layer--eigen"><span>Bestell-Anwendung</span></li>
+      </ul>
+    </div>
+    <div class="lc__zweig">
+      <p class="lc__zweig-name"><code>versand:1.4</code></p>
+      <ul class="lc__stapel">
+        <li class="lc__layer lc__layer--eigen"><span>node_modules</span></li>
+        <li class="lc__layer lc__layer--eigen"><span>Versand-Anwendung</span></li>
+      </ul>
+    </div>
+  </div>
+  <ul class="lc__stapel lc__stapel--basis">
+    <li class="lc__layer"><span>node:20-alpine</span><span class="lc__hash">sha256:1f4c…</span></li>
+  </ul>
+  <p class="lc__fuss">Gemeinsamer Grund – einmal vorhanden, von beiden benutzt.</p>
+</div>
+
+<p>Deshalb geht das Herunterladen des zweiten Images so viel schneller als das des
+ersten: Was schon liegt, wird nicht noch einmal geholt.</p>
+
+<h3 id="ein-image-als-grund-für-das-nächste">Ein Image als Grund für das nächste</h3>
+
+<p>Und weil ein Image nur eine Kette ist, kann ein Dockerfile auch auf einem
+<strong>eigenen</strong> Image aufsetzen statt auf einem fremden:</p>
+
+<pre><code class="language-dockerfile">FROM meine-basis:1.0
+COPY . .
+CMD ["node", "server.js"]
+</code></pre>
+
+<div class="lc__teilen">
+  <div class="lc__zweige lc__zweige--eins">
+    <div class="lc__zweig">
+      <p class="lc__zweig-name"><code>meine-app:2.0</code></p>
+      <ul class="lc__stapel">
+        <li class="lc__layer lc__layer--eigen"><span>Anwendungsdateien</span></li>
+      </ul>
+    </div>
+  </div>
+  <ul class="lc__stapel lc__stapel--basis">
+    <li class="lc__layer"><span>node:20-alpine</span><span class="lc__marke">von der Basis geerbt</span></li>
+    <li class="lc__layer"><span>Werkzeuge, Zertifikate, Benutzer</span><span class="lc__marke">von der Basis geerbt</span></li>
+  </ul>
+  <p class="lc__fuss"><code>meine-basis:1.0</code> – ein vollständiges Image, das hier nur der Grund ist.</p>
+</div>
+
+<p>So arbeiten Häuser mit vielen Anwendungen: <strong>ein</strong> gepflegtes Basis-Image, darauf
+viele dünne Anwendungs-Images. Wird die Basis erneuert, erben es alle – und alle
+müssen neu gebaut werden, denn ihr Grund hat einen neuen Hash bekommen.</p>
+
+<h2 id="cache">Was der Cache daraus macht</h2>
+
+<p>Jetzt lohnt sich der Blick auf die Reihenfolge der Zeilen. Unten stehen zweimal
+dieselben Anweisungen – links in der naheliegenden Reihenfolge, rechts in der,
+die den Cache trägt. Gezeigt ist der <strong>zweite</strong> Build, nachdem sich eine
+Quelldatei geändert hat.</p>
 
 <div class="lc">
 
@@ -225,9 +486,9 @@ nachdem sich eine Quelldatei geändert hat.</p>
       <li class="lc__layer"><span>FROM node:20-alpine</span><span class="lc__marke">aus dem Cache</span></li>
       <li class="lc__layer lc__layer--neu"><span>COPY . .</span><span class="lc__marke">neu gebaut</span></li>
       <li class="lc__layer lc__layer--neu"><span>RUN npm install</span><span class="lc__marke">neu gebaut</span></li>
-      <li class="lc__layer lc__layer--neu"><span>CMD ["node", "server.js"]</span><span class="lc__marke">neu gebaut</span></li>
+      <li class="lc__layer lc__layer--meta"><span>CMD ["node", "server.js"]</span><span class="lc__marke">nur Metadaten</span></li>
     </ul>
-    <p class="lc__leserichtung">Von unten nach oben gelesen.</p>
+    <p class="lc__leserichtung">Unten der Grund, oben die letzte Zeile.</p>
 
     <p class="lc__bilanz"><strong>Eine Zeile Code geändert</strong> – und die Abhängigkeiten werden erneut heruntergeladen und installiert. Bei jedem Build. Jeden Tag.</p>
   </div>
@@ -241,9 +502,9 @@ nachdem sich eine Quelldatei geändert hat.</p>
       <li class="lc__layer"><span>COPY package*.json ./</span><span class="lc__marke">aus dem Cache</span></li>
       <li class="lc__layer"><span>RUN npm install</span><span class="lc__marke">aus dem Cache</span></li>
       <li class="lc__layer lc__layer--neu"><span>COPY . .</span><span class="lc__marke">neu gebaut</span></li>
-      <li class="lc__layer lc__layer--neu"><span>CMD ["node", "server.js"]</span><span class="lc__marke">neu gebaut</span></li>
+      <li class="lc__layer lc__layer--meta"><span>CMD ["node", "server.js"]</span><span class="lc__marke">nur Metadaten</span></li>
     </ul>
-    <p class="lc__leserichtung">Von unten nach oben gelesen.</p>
+    <p class="lc__leserichtung">Unten der Grund, oben die letzte Zeile.</p>
 
     <p class="lc__bilanz"><strong>Dieselbe Änderung</strong> – der teure Schritt bleibt liegen, weil sich die Abhängigkeitsliste nicht geändert hat. Erst wenn <em>sie</em> sich ändert, wird wieder installiert.</p>
   </div>
@@ -265,7 +526,7 @@ nicht mehr zu sehen ist.</p>
       <li class="lc__layer lc__layer--neu"><span>RUN apt-get update &amp;&amp; apt-get install -y curl</span><span class="lc__marke">+ Paketlisten</span></li>
       <li class="lc__layer"><span>RUN rm -rf /var/lib/apt/lists/*</span><span class="lc__marke">nur unsichtbar</span></li>
     </ul>
-    <p class="lc__leserichtung">Von unten nach oben gelesen.</p>
+    <p class="lc__leserichtung">Unten der Grund, oben die letzte Zeile.</p>
   </div>
 
   <div class="lc__spalte">
@@ -274,7 +535,7 @@ nicht mehr zu sehen ist.</p>
       <li class="lc__layer"><span>FROM debian:12-slim</span><span class="lc__marke">Basis</span></li>
       <li class="lc__layer"><span>RUN apt-get update &amp;&amp; apt-get install -y curl \<br />&nbsp;&nbsp;&amp;&amp; rm -rf /var/lib/apt/lists/*</span><span class="lc__marke">sauber</span></li>
     </ul>
-    <p class="lc__leserichtung">Von unten nach oben gelesen.</p>
+    <p class="lc__leserichtung">Unten der Grund, oben die letzte Zeile.</p>
   </div>
 
 </div>
