@@ -64,13 +64,13 @@
 <meta property="og:description" content="Wie aus einem Dockerfile ein Stapel wird, warum jeder Layer einen Hash aus sich und allem darunter trägt – und was daraus für Cache, geteilte Basis-Images und die Reihenfolge der Zeilen folgt.">
 <meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790249249"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790249249">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790249249">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790249249">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790249249"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790249249">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790249249" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790249249" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790249249">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790249998"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790249998">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790249998">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790249998">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790249998"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790249998">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790249998" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790249998" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790249998">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -113,8 +113,8 @@
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
 
-  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790249249">
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790249249"></head><body class="avd-academy-guide avd-academy-guide--viz">
+  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790249998">
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790249998"></head><body class="avd-academy-guide avd-academy-guide--viz">
   <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><section class="avd-academy-guide-hero avd-academy-guide-hero--slim"
            aria-labelledby="avd-academy-page-title"><div class="avd-academy-guide-hero__meta">
       <div class="avd-academy-guide-hero__tags">
@@ -308,6 +308,40 @@ zweiter Build Sekunden statt Minuten braucht.</p>
     border-color: color-mix(in srgb, var(--avd-academy-color-accent) 55%, var(--avd-academy-color-border));
   }
 
+  /* --- Die Wahl: was hat sich geaendert? ---------------------------------- */
+  .lc__wahl {
+    display: flex; flex-wrap: wrap; gap: var(--avd-academy-space-2);
+    margin: var(--avd-academy-space-6) 0;
+    align-items: center;
+  }
+  .lc__knopf {
+    padding: 0.45rem 0.9rem;
+    font: inherit;
+    font-size: var(--avd-academy-fs-sm);
+    color: var(--avd-academy-color-ink);
+    background: var(--avd-academy-color-bg);
+    border: 2px solid var(--avd-academy-color-border);
+    border-radius: var(--avd-academy-radius);
+    cursor: pointer;
+    transition: border-color var(--avd-academy-transition),
+                background var(--avd-academy-transition);
+  }
+  .lc__knopf:hover { border-color: var(--avd-academy-color-accent); }
+  .lc__knopf[aria-pressed="true"] {
+    border-color: var(--avd-academy-color-accent);
+    background: var(--avd-academy-color-accent-soft);
+    color: var(--avd-academy-color-accent-ink);
+    font-weight: var(--avd-academy-fw-bold);
+  }
+  .lc__knopf:focus-visible {
+    outline: 2px solid var(--avd-academy-color-accent); outline-offset: 2px;
+  }
+  /* Die Schicht wechselt ihren Zustand - eine kurze Blende macht sichtbar,
+     WELCHE sich geaendert hat, statt das Bild springen zu lassen. */
+  .lc__layer { transition: border-color var(--avd-academy-transition),
+                           background var(--avd-academy-transition); }
+  @media (prefers-reduced-motion: reduce) { .lc__layer { transition: none; } }
+
   @media (max-width: 40rem) {
     .lc__zweige { grid-template-columns: 1fr; }
   }
@@ -472,8 +506,16 @@ müssen neu gebaut werden, denn ihr Grund hat einen neuen Hash bekommen.</p>
 
 <p>Jetzt lohnt sich der Blick auf die Reihenfolge der Zeilen. Unten stehen zweimal
 dieselben Anweisungen – links in der naheliegenden Reihenfolge, rechts in der,
-die den Cache trägt. Gezeigt ist der <strong>zweite</strong> Build, nachdem sich eine
-Quelldatei geändert hat.</p>
+die den Cache trägt.</p>
+
+<p><strong>Wähle, was sich geändert hat.</strong> Beide Seiten rechnen dieselbe Regel: Die erste
+betroffene Schicht wird neu gebaut, und mit ihr alles, was darauf steht.</p>
+
+<div class="lc__wahl" role="group" aria-label="Was hat sich seit dem letzten Build geändert?">
+  <button type="button" class="lc__knopf" data-lc-wahl="nichts" aria-pressed="false">nichts</button>
+  <button type="button" class="lc__knopf" data-lc-wahl="code" aria-pressed="true">eine Quelldatei</button>
+  <button type="button" class="lc__knopf" data-lc-wahl="deps" aria-pressed="false">die Abhängigkeitsliste</button>
+</div>
 
 <div class="lc">
 
@@ -481,32 +523,122 @@ Quelldatei geändert hat.</p>
     <p class="lc__titel">Naheliegend – und teuer</p>
     <p class="lc__unter">Erst alles kopieren, dann installieren.</p>
 
-    <ul class="lc__stapel">
-      <li class="lc__layer"><span>FROM node:20-alpine</span><span class="lc__marke">aus dem Cache</span></li>
-      <li class="lc__layer lc__layer--neu"><span>COPY . .</span><span class="lc__marke">neu gebaut</span></li>
-      <li class="lc__layer lc__layer--neu"><span>RUN npm install</span><span class="lc__marke">neu gebaut</span></li>
+    <ul class="lc__stapel" data-lc-stapel="teuer">
+      <li class="lc__layer" data-lc-enthaelt=""><span>FROM node:20-alpine</span><span class="lc__marke">aus dem Cache</span></li>
+      <li class="lc__layer lc__layer--neu" data-lc-enthaelt="code deps"><span>COPY . .</span><span class="lc__marke">neu gebaut</span></li>
+      <li class="lc__layer lc__layer--neu" data-lc-enthaelt=""><span>RUN npm install</span><span class="lc__marke">neu gebaut</span></li>
       <li class="lc__layer lc__layer--meta"><span>CMD ["node", "server.js"]</span><span class="lc__marke">nur Metadaten</span></li>
     </ul>
 
-    <p class="lc__bilanz"><strong>Eine Zeile Code geändert</strong> – und die Abhängigkeiten werden erneut heruntergeladen und installiert. Bei jedem Build. Jeden Tag.</p>
+    <p class="lc__bilanz">
+      <span data-lc-fall="nichts" hidden="">Nichts geändert – der ganze Stapel kommt aus dem Cache. Der Build dauert Sekunden.</span>
+      <span data-lc-fall="code"><strong>Eine Zeile Code geändert</strong> – und die Abhängigkeiten werden erneut heruntergeladen und installiert. Bei jedem Build. Jeden Tag.</span>
+      <span data-lc-fall="deps" hidden=""><strong>Die Abhängigkeitsliste geändert</strong> – dasselbe Bild. Diese Reihenfolge kennt den Unterschied gar nicht.</span>
+    </p>
   </div>
 
   <div class="lc__spalte">
     <p class="lc__titel">Stabiles zuerst</p>
     <p class="lc__unter">Erst die Abhängigkeitsliste, dann installieren, dann der Rest.</p>
 
-    <ul class="lc__stapel">
-      <li class="lc__layer"><span>FROM node:20-alpine</span><span class="lc__marke">aus dem Cache</span></li>
-      <li class="lc__layer"><span>COPY package*.json ./</span><span class="lc__marke">aus dem Cache</span></li>
-      <li class="lc__layer"><span>RUN npm install</span><span class="lc__marke">aus dem Cache</span></li>
-      <li class="lc__layer lc__layer--neu"><span>COPY . .</span><span class="lc__marke">neu gebaut</span></li>
+    <ul class="lc__stapel" data-lc-stapel="stabil">
+      <li class="lc__layer" data-lc-enthaelt=""><span>FROM node:20-alpine</span><span class="lc__marke">aus dem Cache</span></li>
+      <li class="lc__layer" data-lc-enthaelt="deps"><span>COPY package*.json ./</span><span class="lc__marke">aus dem Cache</span></li>
+      <li class="lc__layer" data-lc-enthaelt=""><span>RUN npm install</span><span class="lc__marke">aus dem Cache</span></li>
+      <li class="lc__layer lc__layer--neu" data-lc-enthaelt="code deps"><span>COPY . .</span><span class="lc__marke">neu gebaut</span></li>
       <li class="lc__layer lc__layer--meta"><span>CMD ["node", "server.js"]</span><span class="lc__marke">nur Metadaten</span></li>
     </ul>
 
-    <p class="lc__bilanz"><strong>Dieselbe Änderung</strong> – der teure Schritt bleibt liegen, weil sich die Abhängigkeitsliste nicht geändert hat. Erst wenn <em>sie</em> sich ändert, wird wieder installiert.</p>
+    <p class="lc__bilanz">
+      <span data-lc-fall="nichts" hidden="">Nichts geändert – alles aus dem Cache, wie nebenan.</span>
+      <span data-lc-fall="code"><strong>Dieselbe Änderung</strong> – der teure Schritt bleibt liegen, weil die Abhängigkeitsliste unberührt ist. Nur die Anwendungsdateien werden neu kopiert.</span>
+      <span data-lc-fall="deps" hidden=""><strong>Jetzt wird installiert</strong> – und das ist richtig so: Die Liste hat sich geändert, also muss sie neu aufgelöst werden. Der Preis fällt nur an, wenn er anfällt.</span>
+    </p>
   </div>
 
 </div>
+
+<noscript>
+<p class="lc__quelle">Ohne JavaScript steht oben der Fall „eine Quelldatei geändert“ –
+der häufigste. Die übrigen Fälle stehen im Text darunter.</p>
+</noscript>
+
+<script>
+(function () {
+  "use strict";
+  /* WAS WIRD NEU GEBAUT? Die Regel steht im Abschnitt darueber, hier wird sie
+     gerechnet - fuer beide Reihenfolgen zugleich. Genau das ist der Grund, die
+     Seite ueberhaupt anklickbar zu machen: Man sieht nicht ZWEI Bilder, sondern
+     DIESELBE Regel auf zwei Anordnungen.
+
+     Gerechnet wird von der Basis abwaerts (im Bild von oben nach unten): Die
+     erste Schicht, die das Geaenderte enthaelt, wird neu gebaut - und mit ihr
+     alles, was auf ihr steht.
+
+     `COPY . .` traegt BEIDES (`code deps`): Es kopiert die Abhaengigkeitsliste
+     mit. Ohne diese Feinheit saehe die linke Spalte bei einer geaenderten Liste
+     faelschlich gut aus. */
+  var knoepfe = [].slice.call(document.querySelectorAll("[data-lc-wahl]"));
+  var stapel  = [].slice.call(document.querySelectorAll("[data-lc-stapel]"));
+  if (!knoepfe.length || !stapel.length) return;
+
+  var wahl = "code";                 /* der Stand, in dem das Markup ausgeliefert wird */
+
+  function zeichne() {
+    knoepfe.forEach(function (k) {
+      k.setAttribute("aria-pressed", k.getAttribute("data-lc-wahl") === wahl ? "true" : "false");
+    });
+
+    stapel.forEach(function (liste) {
+      var betroffen = false;
+      [].slice.call(liste.children).forEach(function (schicht) {
+        if (schicht.classList.contains("lc__layer--meta")) return;
+        var enthaelt = (schicht.getAttribute("data-lc-enthaelt") || "").split(" ");
+        if (wahl !== "nichts" && enthaelt.indexOf(wahl) !== -1) betroffen = true;
+        schicht.classList.toggle("lc__layer--neu", betroffen);
+        var marke = schicht.querySelector(".lc__marke");
+        if (marke) marke.textContent = betroffen ? "neu gebaut" : "aus dem Cache";
+      });
+    });
+
+    [].slice.call(document.querySelectorAll("[data-lc-fall]")).forEach(function (t) {
+      t.hidden = t.getAttribute("data-lc-fall") !== wahl;
+    });
+  }
+
+  knoepfe.forEach(function (k) {
+    k.addEventListener("click", function () {
+      wahl = k.getAttribute("data-lc-wahl");
+      zeichne();
+      if (window.AvdAcademyState) window.AvdAcademyState.update();
+    });
+  });
+
+  zeichne();
+
+  /* Der Fall steht in der Adresse - ein Lesezeichen zeigt dasselbe Bild.
+     Angemeldet wird auf `DOMContentLoaded` und danach selbst hergestellt: Das
+     Theme-Skript traegt `defer` und hat sein `restore()` da schon hinter sich. */
+  function zustandAnmelden() {
+    var Z = window.AvdAcademyState;
+    if (!Z) return;
+    Z.register({
+      key: "aendert",
+      read: function () { return wahl; },
+      apply: function (wert) {
+        if (wert !== "nichts" && wert !== "code" && wert !== "deps") return;
+        wahl = wert; zeichne();
+      }
+    });
+    Z.restore();
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", zustandAnmelden);
+  } else {
+    zustandAnmelden();
+  }
+})();
+</script>
 
 <h2 id="loeschen">Der Nebenbefund, der überrascht</h2>
 
