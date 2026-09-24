@@ -47,13 +47,13 @@
 <meta property="og:description" content="Wie aus einem Dockerfile ein Stapel wird, warum jeder Layer einen Hash aus sich und allem darunter trägt – und was daraus für Cache, geteilte Basis-Images und die Reihenfolge der Zeilen folgt.">
 <meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790251502"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790251502">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790251502">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790251502">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790251502"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790251502">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790251502" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790251502" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790251502">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790252978"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790252978">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790252978">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790252978">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790252978"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790252978">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790252978" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790252978" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790252978">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -95,9 +95,9 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/training-material-container-technologies/theme/atvantage/assets/icon-180.png">
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/presentation.css?v=1790251502">
-  <script src="/training-material-container-technologies/theme/jekyll/presentation.js?v=1790251502" defer></script>
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790251502"></head>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/presentation.css?v=1790252978">
+  <script src="/training-material-container-technologies/theme/jekyll/presentation.js?v=1790252978" defer></script>
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790252978"></head>
 <body class="avd-academy-present" data-avd-academy-present data-avd-academy-present-title="Layer und Build-Cache">
   <a class="avd-academy-skip-link" href="#avd-academy-deck">Zum Inhalt springen</a>
 
@@ -334,6 +334,21 @@ Wer das versteht, versteht den Rest von selbst.</p>
   @media (max-width: 40rem) {
     .lc__zweige { grid-template-columns: 1fr; }
   }
+
+  /* --- EINE SPALTE, MITTIG ------------------------------------------------
+     Das Theme gibt der Folie eine Inhaltsspalte von 1100px. Der Text lief
+     darin ueber die volle Breite, waehrend die Bilder bei 42rem mittig
+     standen - das liest sich als linksbuendiger Text neben zentrierten
+     Bildern. Eine gemeinsame Breite raeumt das auf: Text, Code und Bilder
+     stehen auf derselben Spalte, und die Spalte steht in der Mitte.
+
+     Die Zahl kommt vom breitesten Element, dem Vergleich: zwei Spalten zu je
+     19rem plus 2rem Abstand. Wer sie aendert, rechnet dort nach. */
+  .avd-academy-slide__inner { max-width: 46rem; }
+  /* Der Vergleich ist so breit wie die Spalte - sonst steht er wieder eingerueckt. */
+  .lc { margin-left: auto; margin-right: auto; }
+  /* Ueberschrift und Kernsatz stehen mittig ueber dem Bild, das sie beschreiben. */
+  .lc__titel, .lc__unter, .lc__kopf, .lc__zweig-name, .lc__druck-fall { text-align: center; }
 
   /* --- Auf Papier stehen ALLE DREI FAELLE ---------------------------------
      Am Bildschirm waehlt man einen; auf dem Papier kann niemand klicken. Die
