@@ -59,10 +59,10 @@
 --><html lang="de">
 <head>
   <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"><title>Docker-Grundlagen · Containertechnologien (Academy)</title><meta name="description" content="Zwei Tage vom ersten Container bis zum eigenen, veröffentlichten Image – mit dem Schwerpunkt auf den Konzepten dahinter."><meta property="og:site_name" content="Containertechnologien (Academy)">
-<meta property="og:title" content="Docker-Grundlagen">
-<meta property="og:description" content="Zwei Tage vom ersten Container bis zum eigenen, veröffentlichten Image – mit dem Schwerpunkt auf den Konzepten dahinter.">
-<meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Die Webanwendung spricht mit der Datenbank · Containertechnologien (Academy)</title><meta name="description" content="Die Webanwendung aus Block 3 liest aus der Datenbank aus Block 4 – über ein eigenes Netzwerk und den Containernamen."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta property="og:title" content="Die Webanwendung spricht mit der Datenbank">
+<meta property="og:description" content="Die Webanwendung aus Block 3 liest aus der Datenbank aus Block 4 – über ein eigenes Netzwerk und den Containernamen.">
+<meta property="og:type" content="article"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790327546"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790327546">
 <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790327546">
@@ -128,7 +128,7 @@
           <a role="menuitem" href="/training-material-container-technologies/shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a>
         </div>
       </div>
-      <a href="/training-material-container-technologies/docker-grundlagen/" aria-current="page">Docker-Grundlagen</a>
+      <a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a>
   </nav><div class="avd-academy-header__tools"><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
                 title="Diese Seite auf Deinem Smartphone öffnen"
                 aria-label="Diese Seite auf Deinem Smartphone öffnen"></button><button type="button" class="avd-academy-tool avd-academy-tool--theme avd-academy-theme-toggle" data-avd-academy-theme-toggle
@@ -136,141 +136,279 @@
               aria-label="Farbschema umschalten">◐</button></div>
 </header>
 <section class="avd-academy-guide-hero"
-           aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/">Home</a><span>/</span><span aria-current="page">Docker-Grundlagen</span></nav><div class="avd-academy-guide-hero__meta">
-      <div class="avd-academy-guide-hero__tags">
+           aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a><span>/</span><span aria-current="page">Die Webanwendung spricht mit der Datenbank</span></nav><div class="avd-academy-guide-hero__meta">
+      <div class="avd-academy-guide-hero__tags"><span class="avd-academy-tag avd-academy-tag--time">ca. 35 Minuten</span><span class="avd-academy-tag">Netzwerke</span><span class="avd-academy-tag">Umgebungsvariablen</span><span class="avd-academy-tag">Container</span>
       </div>
       <div class="avd-academy-guide-hero__actions">
+        <button type="button" class="avd-academy-btn avd-academy-btn--ghost avd-academy-copy-md"
+                data-avd-academy-copy-md="#avd-academy-md-source"
+                title="Markdown kopieren" aria-label="Markdown kopieren"></button>
       </div>
-    </div><h1 id="avd-academy-page-title">Docker-Grundlagen</h1>
+    </div><h1 id="avd-academy-page-title">Die Webanwendung spricht mit der Datenbank</h1>
   </section><div class="avd-academy-guide-layout">
-    <main class="avd-academy-guide-main" id="avd-academy-content">
+    <main class="avd-academy-guide-main avd-academy-guide-main--numbered" id="avd-academy-content">
 
-<p>„Bei mir läuft es“ ist der teuerste Satz in der Softwareentwicklung. Zwei Tage
-lang geht es darum, ihn überflüssig zu machen – nicht mit einer Befehlssammlung,
-sondern entlang der Konzepte, an denen sich entscheidet, ob ein Image trägt.</p>
+<p><strong>Als</strong> Entwicklerin <strong>möchte ich</strong>, dass meine Anwendung ihre Datenbank findet,
+<strong>ohne</strong> eine IP-Adresse zu kennen, <strong>damit</strong> dieselbe Anwendung in jeder
+Umgebung läuft.</p>
 
-<p>Willkommen. Du brauchst für diesen Kurs keine Kommandozeilenroutine – nur die
-Bereitschaft, zu tippen statt zu klicken. Wir gehen zu Beginn gemeinsam durch die
-Handvoll Befehle, mit der Du durchkommst, und danach arbeitest Du Dich Übung für
-Übung an einer kleinen Anwendungslandschaft entlang, die über die zwei Tage wächst.</p>
+<h2 id="lernziele">Lernziele</h2>
+
+<p>Du…</p>
 
 <ul>
-  <li><a href="/training-material-container-technologies/docker-grundlagen/kursbeschreibung.html">Kursbeschreibung</a></li>
-  <li><a href="../shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a> – die beiden Wege
-zur Container-Laufzeitumgebung und die Befehle, die Du brauchst.</li>
+  <li>legst ein eigenes Netzwerk an und hängst Container hinein.</li>
+  <li>sprichst einen Container über seinen <strong>Namen</strong> an statt über eine IP-Adresse.</li>
+  <li>gibst einer Anwendung die Adresse ihrer Datenbank von außen mit.</li>
+  <li>erklärst, warum <code>localhost</code> hier die falsche Adresse ist.</li>
 </ul>
 
-<h2 id="kursmaterial">Kursmaterial</h2>
+<h2 id="definition-of-done">Definition of Done</h2>
 
-<p>Die Unterlagen sind nach <strong>Themen</strong> gruppiert, nicht nach dem Ablauf. Links stehen
-die <strong>Übungen</strong>, an denen Du selbst arbeitest – rechts das <strong>Material zum
-Nachschlagen</strong>, das Du auch nach dem Kurs noch brauchen kannst. Vom ersten Tag an
-begleitet Dich dieselbe Landschaft: ein Webserver, eine kleine Anwendung und eine
-Datenbank dahinter.</p>
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Ein Netzwerk <code>kurs-netz</code> existiert, und beide Container hängen darin.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" /><code>curl http://localhost:8080</code> liefert den Text, der in der Datenbanktabelle
+<code>gruss</code> steht.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />In <code>app.py</code> steht <strong>keine</strong> Adresse – sie kommt als Umgebungsvariable.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Deine <code>befehle.md</code> enthält alle Befehle, die für den Start beider Container
+nötig sind.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast die Reflexionsfragen schriftlich beantwortet.</li>
+</ul>
 
-<div class="avd-academy-topic">
+<h2 id="arbeitsschritte">Arbeitsschritte</h2>
 
-  <h3 id="verwalten-von-containern">Verwalten von Containern</h3>
+<h3 id="ein-netzwerk-anlegen">Ein Netzwerk anlegen</h3>
 
-  <div class="avd-academy-materials">
+<p>Das ist neu – deshalb steht es hier vollständig:</p>
 
-    <div class="avd-academy-materials__col">
+<pre><code class="language-bash">docker network create kurs-netz
+</code></pre>
 
-      <p class="avd-academy-materials__head">Übungen</p>
+<pre><code class="language-bash">docker network ls
+</code></pre>
 
-      <ul>
-        <li><a href="/training-material-container-technologies/docker-grundlagen/container-verwalten/issue.html" class="avd-academy-doclink avd-academy-doclink--guide">Einen Container aus einem fremden Image betreiben</a></li>
-        <li><a href="/training-material-container-technologies/docker-grundlagen/anwendungen-im-container/issue.html" class="avd-academy-doclink avd-academy-doclink--guide">Ein Python-Skript im Container ausführen</a></li>
-        <li><a href="/training-material-container-technologies/docker-grundlagen/anwendungen-im-container/issue-webapp.html" class="avd-academy-doclink avd-academy-doclink--guide">Eine Webanwendung mit Abhängigkeiten betreiben</a></li>
-        <li><a href="/training-material-container-technologies/docker-grundlagen/konfiguration-und-zustand/issue.html" class="avd-academy-doclink avd-academy-doclink--guide">Eine Datenbank konfigurieren – und ihre Daten retten</a></li>
-        <li><a href="/training-material-container-technologies/docker-grundlagen/anwendung-und-datenbank/issue.html" class="avd-academy-doclink avd-academy-doclink--guide">Die Webanwendung spricht mit der Datenbank</a></li>
-      </ul>
+<h3 id="die-datenbank-in-das-netzwerk-hängen">Die Datenbank in das Netzwerk hängen</h3>
 
-    </div>
+<p>Ein laufender Container wechselt das Netzwerk nicht nachträglich. Erzeuge die
+Datenbank aus der vorigen Übung <strong>neu</strong> – mit denselben Umgebungsvariablen,
+demselben Volume und zusätzlich:</p>
 
-    <div class="avd-academy-materials__col">
+<pre><code class="language-text">--network kurs-netz
+</code></pre>
 
-      <p class="avd-academy-materials__head">Zum Nachschlagen</p>
+<blockquote>
+  <p><strong>Hinweis:</strong> Die Befehle dafür stehen in Deiner <code>befehle.md</code>. Das Volume
+<code>kurs-daten</code> sorgt dafür, dass Deine Tabelle <code>gruss</code> noch da ist – prüf das,
+bevor Du weitermachst.</p>
+</blockquote>
 
-      <ul>
-        <li><a href="/training-material-container-technologies/docker-grundlagen/einfuehrung/praesentation.html" class="avd-academy-doclink avd-academy-doclink--slides">Präsentation: Warum Container?</a></li>
-        <li><a href="/training-material-container-technologies/docker-grundlagen/einfuehrung/simulation.html" class="avd-academy-doclink avd-academy-doclink--simulation">Simulation: Der Lebenszyklus eines Containers</a></li>
-        <li><a href="/training-material-container-technologies/docker-grundlagen/konfiguration-und-zustand/zwoelf-faktoren.html" class="avd-academy-doclink avd-academy-doclink--visualization">Die zwölf Faktoren – und welche im Container zählen</a></li>
-      </ul>
+<h3 id="die-anwendung-erweitern">Die Anwendung erweitern</h3>
 
-    </div>
+<p>Ersetze <code>app.py</code> durch diese Fassung. Sie liest die Adresse der Datenbank aus der
+Umgebung:</p>
 
-  </div>
+<pre><code class="language-python">import os
+from flask import Flask
+import psycopg
 
-  <h3 id="verwalten-von-images">Verwalten von Images</h3>
+app = Flask(__name__)
 
-  <div class="avd-academy-materials">
+@app.get("/")
+def start():
+    with psycopg.connect(os.environ["DATABASE_URL"]) as verbindung:
+        zeilen = verbindung.execute("SELECT text FROM gruss").fetchall()
+    return "\n".join(zeile[0] for zeile in zeilen) + "\n"
 
-    <div class="avd-academy-materials__col">
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8080)
+</code></pre>
 
-      <p class="avd-academy-materials__head">Übungen</p>
+<p>Ergänze <code>requirements.txt</code>:</p>
 
-      <ul>
-        <li><a href="/training-material-container-technologies/docker-grundlagen/eigene-images-bauen/issue.html" class="avd-academy-doclink avd-academy-doclink--guide">Ein eigenes Image aus einem Dockerfile bauen</a></li>
-        <li><a href="/training-material-container-technologies/docker-grundlagen/eigene-images-bauen/issue-webapp.html" class="avd-academy-doclink avd-academy-doclink--guide">Die Webanwendung als eigenes Image</a></li>
-        <li><a href="/training-material-container-technologies/docker-grundlagen/eigene-images-bauen/issue-veroeffentlichen.html" class="avd-academy-doclink avd-academy-doclink--guide">Das Image veröffentlichen</a></li>
-        <li><a href="/training-material-container-technologies/docker-grundlagen/best-practices/issue.html" class="avd-academy-doclink avd-academy-doclink--guide">Die Reihenfolge umbauen und messen</a></li>
-      </ul>
+<pre><code class="language-text">flask==3.0.3
+psycopg[binary]==3.2.3
+</code></pre>
 
-    </div>
+<h3 id="die-anwendung-starten">Die Anwendung starten</h3>
 
-    <div class="avd-academy-materials__col">
+<p>Starte sie wie in der vorigen Übung – mit drei Ergänzungen:</p>
 
-      <p class="avd-academy-materials__head">Zum Nachschlagen</p>
+<ul>
+  <li>Sie gehört in dasselbe Netzwerk: <code>--network kurs-netz</code></li>
+  <li>Sie bekommt die Adresse der Datenbank mit:
+<code>-e DATABASE_URL=postgresql://kurs:geheim@meine-db:5432/helloworld</code></li>
+  <li>Der Port 8080 muss nach außen.</li>
+</ul>
 
-      <ul>
-        <li><a href="/training-material-container-technologies/docker-grundlagen/best-practices/praesentation.html" class="avd-academy-doclink avd-academy-doclink--slides">Präsentation: Layer und Build-Cache</a></li>
-        <li><a href="/training-material-container-technologies/docker-grundlagen/best-practices/uebersicht.html" class="avd-academy-doclink avd-academy-doclink--visualization">Best Practices für Container Images</a></li>
-      </ul>
+<blockquote>
+  <p><strong>Hinweis:</strong> Sieh Dir die Adresse genau an. Der Teil <code>meine-db</code> ist der <strong>Name
+des Datenbank-Containers</strong> – nicht <code>localhost</code>, nicht eine IP.</p>
+</blockquote>
 
-    </div>
+<p>Ruf die Anwendung auf:</p>
 
-  </div>
+<pre><code class="language-bash">curl http://localhost:8080
+</code></pre>
 
-  <h3 id="weitere-themen">Weitere Themen</h3>
+<blockquote>
+  <p><strong>Hinweis:</strong> Wenn eine Fehlermeldung kommt, lies sie zu Ende. „Connection
+refused“ heißt etwas anderes als „could not translate host name“ – das eine ist
+ein Zeitproblem, das andere ein Namensproblem.</p>
+</blockquote>
 
-  <div class="avd-academy-materials">
+<h3 id="den-namen-auf-die-probe-stellen">Den Namen auf die Probe stellen</h3>
 
-    <div class="avd-academy-materials__col">
+<p>Stopp den Datenbank-Container, ruf die Anwendung erneut auf und sieh Dir an, was
+passiert. Starte die Datenbank danach wieder.</p>
 
-      <p class="avd-academy-materials__head">Übungen</p>
+<h2 id="reflexionsfragen">Reflexionsfragen</h2>
 
-      <ul>
-        <li><a href="/training-material-container-technologies/docker-grundlagen/mehrere-container/issue.html" class="avd-academy-doclink avd-academy-doclink--guide">Die ganze Landschaft mit einem Befehl starten</a></li>
-        <li><a href="/training-material-container-technologies/docker-grundlagen/images-die-tragen/issue.html" class="avd-academy-doclink avd-academy-doclink--guide">Ein Image auf Betriebstauglichkeit prüfen</a></li>
-      </ul>
-
-    </div>
-
-    <div class="avd-academy-materials__col">
-
-      <p class="avd-academy-materials__head">Zum Nachschlagen</p>
-
-      <ul>
-        <li><a href="/training-material-container-technologies/docker-grundlagen/wissens-check-docker-grundlagen.html" class="avd-academy-doclink avd-academy-doclink--overview">Wissens-Check: Docker-Grundlagen</a></li>
-      </ul>
-
-    </div>
-
-  </div>
-
-</div>
-
+<ul>
+  <li>Warum funktioniert <code>meine-db</code> als Adresse, und warum wäre <code>localhost</code> falsch?</li>
+  <li>Was steht alles in <code>DATABASE_URL</code>, und warum steht diese Zeichenkette nicht im
+Quelltext der Anwendung?</li>
+  <li>Was ist passiert, als die Datenbank weg war? Wie sollte sich eine Anwendung in
+diesem Fall verhalten?</li>
+  <li>Du brauchst jetzt mehrere Befehle, um diese zwei Container zu starten. <strong>Was
+stört Dich daran?</strong></li>
+</ul>
 
 
+<textarea id="avd-academy-md-source" hidden aria-hidden="true"># Die Webanwendung spricht mit der Datenbank
+
+**Als** Entwicklerin **möchte ich**, dass meine Anwendung ihre Datenbank findet,
+**ohne** eine IP-Adresse zu kennen, **damit** dieselbe Anwendung in jeder
+Umgebung läuft.
+
+## Lernziele
+
+Du…
+
+- legst ein eigenes Netzwerk an und hängst Container hinein.
+- sprichst einen Container über seinen **Namen** an statt über eine IP-Adresse.
+- gibst einer Anwendung die Adresse ihrer Datenbank von außen mit.
+- erklärst, warum `localhost` hier die falsche Adresse ist.
+
+## Definition of Done
+
+* [ ] Ein Netzwerk `kurs-netz` existiert, und beide Container hängen darin.
+* [ ] `curl http://localhost:8080` liefert den Text, der in der Datenbanktabelle
+  `gruss` steht.
+* [ ] In `app.py` steht **keine** Adresse – sie kommt als Umgebungsvariable.
+* [ ] Deine `befehle.md` enthält alle Befehle, die für den Start beider Container
+  nötig sind.
+* [ ] Du hast die Reflexionsfragen schriftlich beantwortet.
+
+## Arbeitsschritte
+
+### Ein Netzwerk anlegen
+
+Das ist neu – deshalb steht es hier vollständig:
+
+```bash
+docker network create kurs-netz
+```
+
+```bash
+docker network ls
+```
+
+### Die Datenbank in das Netzwerk hängen
+
+Ein laufender Container wechselt das Netzwerk nicht nachträglich. Erzeuge die
+Datenbank aus der vorigen Übung **neu** – mit denselben Umgebungsvariablen,
+demselben Volume und zusätzlich:
+
+```text
+--network kurs-netz
+```
+
+&gt; **Hinweis:** Die Befehle dafür stehen in Deiner `befehle.md`. Das Volume
+&gt; `kurs-daten` sorgt dafür, dass Deine Tabelle `gruss` noch da ist – prüf das,
+&gt; bevor Du weitermachst.
+
+### Die Anwendung erweitern
+
+Ersetze `app.py` durch diese Fassung. Sie liest die Adresse der Datenbank aus der
+Umgebung:
+
+```python
+import os
+from flask import Flask
+import psycopg
+
+app = Flask(__name__)
+
+@app.get(&quot;/&quot;)
+def start():
+    with psycopg.connect(os.environ[&quot;DATABASE_URL&quot;]) as verbindung:
+        zeilen = verbindung.execute(&quot;SELECT text FROM gruss&quot;).fetchall()
+    return &quot;\n&quot;.join(zeile[0] for zeile in zeilen) + &quot;\n&quot;
+
+if __name__ == &quot;__main__&quot;:
+    app.run(host=&quot;0.0.0.0&quot;, port=8080)
+```
+
+Ergänze `requirements.txt`:
+
+```text
+flask==3.0.3
+psycopg[binary]==3.2.3
+```
+
+### Die Anwendung starten
+
+Starte sie wie in der vorigen Übung – mit drei Ergänzungen:
+
+- Sie gehört in dasselbe Netzwerk: `--network kurs-netz`
+- Sie bekommt die Adresse der Datenbank mit:
+  `-e DATABASE_URL=postgresql://kurs:geheim@meine-db:5432/helloworld`
+- Der Port 8080 muss nach außen.
+
+&gt; **Hinweis:** Sieh Dir die Adresse genau an. Der Teil `meine-db` ist der **Name
+&gt; des Datenbank-Containers** – nicht `localhost`, nicht eine IP.
+
+Ruf die Anwendung auf:
+
+```bash
+curl http://localhost:8080
+```
+
+&gt; **Hinweis:** Wenn eine Fehlermeldung kommt, lies sie zu Ende. „Connection
+&gt; refused“ heißt etwas anderes als „could not translate host name“ – das eine ist
+&gt; ein Zeitproblem, das andere ein Namensproblem.
+
+### Den Namen auf die Probe stellen
+
+Stopp den Datenbank-Container, ruf die Anwendung erneut auf und sieh Dir an, was
+passiert. Starte die Datenbank danach wieder.
+
+## Reflexionsfragen
+
+- Warum funktioniert `meine-db` als Adresse, und warum wäre `localhost` falsch?
+- Was steht alles in `DATABASE_URL`, und warum steht diese Zeichenkette nicht im
+  Quelltext der Anwendung?
+- Was ist passiert, als die Datenbank weg war? Wie sollte sich eine Anwendung in
+  diesem Fall verhalten?
+- Du brauchst jetzt mehrere Befehle, um diese zwei Container zu starten. **Was
+  stört Dich daran?**
+
+## Weiterführende Informationen
+
+- [Docker CLI Reference](https://docs.docker.com/reference/cli/docker/)
+- [Netzwerke in Docker](https://docs.docker.com/engine/network/)
+</textarea>
     </main><aside class="avd-academy-guide-sidebar"><details class="avd-academy-guide-side avd-academy-guide-side--toc avd-academy-fold" data-avd-academy-toc-box
                data-avd-academy-toc-grenze="12" open hidden>
         <summary class="avd-academy-guide-side__label">Auf dieser Seite</summary>
         <nav class="avd-academy-toc avd-academy-fold__body" data-avd-academy-toc aria-label="Inhaltsverzeichnis"></nav>
       </details>
+      <div class="avd-academy-guide-side avd-academy-guide-side--bordered" data-avd-academy-progress hidden><div class="avd-academy-guide-side__label" id="avd-academy-progress-label">Fortschritt</div><div class="avd-academy-progress__bar" aria-labelledby="avd-academy-progress-label"><div class="avd-academy-progress__fill"></div></div>
+        <div class="avd-academy-progress__text"></div>
+      </div>
       <div class="avd-academy-guide-side avd-academy-guide-side--bordered">
         <div class="avd-academy-guide-side__label">Weiterführende Informationen</div>
-        <div class="avd-academy-guide-side__links"><a href="/shared/schulungsumgebung/"><span>Die Schulungsumgebung nutzen</span></a>
+        <div class="avd-academy-guide-side__links"><a href="https://docs.docker.com/reference/cli/docker/" target="_blank" rel="noopener"><span>Docker CLI Reference</span></a><a href="https://docs.docker.com/engine/network/" target="_blank" rel="noopener"><span>Netzwerke in Docker</span></a>
         </div></div>
     </aside>
   </div><div class="avd-academy-print-contact" aria-hidden="true">

@@ -64,13 +64,13 @@
 <meta property="og:description" content="Ein fremdes Image ziehen, daraus einen Container erzeugen, ihn starten, hineinsehen, stoppen und löschen – und dabei beobachten, was dabei verloren geht.">
 <meta property="og:type" content="article"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790321818"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790321818">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790321818">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790321818">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790321818"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790321818">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790321818" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790321818" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790321818">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790327546"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790327546">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790327546">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790327546">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790327546"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790327546">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790327546" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790327546" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790327546">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -113,8 +113,8 @@
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
 
-  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790321818">
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790321818"></head><body class="avd-academy-guide">
+  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790327546">
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790327546"></head><body class="avd-academy-guide">
   <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><div class="avd-academy-metanav"><span>ATVANTAGE Academy</span>
   </div>
 
@@ -206,26 +206,11 @@ geprüft, ob die Seite noch da ist.</li>
 Befehl gezogen, obwohl Du keinen angegeben hast?</p>
 </blockquote>
 
-<h3 id="dem-image-ein-eigenes-etikett-geben">Dem Image ein eigenes Etikett geben</h3>
-
-<p>Ein Image kann mehrere Namen tragen, ohne dass es zweimal auf der Platte liegt.</p>
-
-<pre><code class="language-bash">docker image tag nginx:1.27.5 mein-http:1.0.0
-</code></pre>
-
-<pre><code class="language-bash">docker images
-</code></pre>
-
-<blockquote>
-  <p><strong>Hinweis:</strong> Vergleiche die Spalte <code>IMAGE ID</code> der beiden Zeilen. Was sagt Dir
-das darüber, was ein Tag eigentlich ist?</p>
-</blockquote>
-
-<h3 id="einen-container-erzeugen">Einen Container erzeugen</h3>
+<h3 id="einen-container-erzeugen--zunächst-ohne-tür-nach-außen">Einen Container erzeugen – zunächst ohne Tür nach außen</h3>
 
 <p>Erzeugen heißt noch nicht starten. Mach den Schritt bewusst einzeln.</p>
 
-<pre><code class="language-bash">docker container create --name mein-webserver -p 8080:80 mein-http:1.0.0
+<pre><code class="language-bash">docker container create --name mein-webserver nginx:1.27.5
 </code></pre>
 
 <p>Sieh nach, ob er da ist:</p>
@@ -241,12 +226,39 @@ das darüber, was ein Tag eigentlich ist?</p>
 Fehler – merk Dir den Unterschied, Du wirst ihn noch oft brauchen.</p>
 </blockquote>
 
-<h3 id="den-container-starten-und-aufrufen">Den Container starten und aufrufen</h3>
+<h3 id="den-container-starten-und-aufrufen--versuch-eins">Den Container starten und aufrufen – Versuch eins</h3>
 
 <pre><code class="language-bash">docker container start mein-webserver
 </code></pre>
 
-<p>Ruf den Webserver auf:</p>
+<p>Der Webserver im Container lauscht auf Port 80. Versuch, ihn zu erreichen:</p>
+
+<pre><code class="language-bash">curl http://localhost:8080
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Das geht schief, und das ist so gewollt. Notiere, was <code>curl</code>
+meldet. Der Webserver <strong>läuft</strong> – schau selbst nach:
+<code>docker container logs mein-webserver</code>.</p>
+</blockquote>
+
+<h3 id="noch-einmal-diesmal-mit-tür-nach-außen">Noch einmal, diesmal mit Tür nach außen</h3>
+
+<p>Ob ein Port nach außen gelegt wird, entscheidet sich beim <strong>Erzeugen</strong> des
+Containers. Ein laufender Container lässt sich darin nicht mehr ändern – also
+weg damit und neu:</p>
+
+<pre><code class="language-bash">docker container stop mein-webserver
+</code></pre>
+
+<pre><code class="language-bash">docker container rm mein-webserver
+</code></pre>
+
+<pre><code class="language-bash">docker container create --name mein-webserver -p 8080:80 nginx:1.27.5
+</code></pre>
+
+<pre><code class="language-bash">docker container start mein-webserver
+</code></pre>
 
 <pre><code class="language-bash">curl http://localhost:8080
 </code></pre>
@@ -255,6 +267,8 @@ Fehler – merk Dir den Unterschied, Du wirst ihn noch oft brauchen.</p>
   <p><strong>Hinweis:</strong> Arbeitest Du lokal, geht auch der Browser unter
 <code>http://localhost:8080</code>. In der bereitgestellten Umgebung läuft der Container
 nicht auf dem Rechner Deines Browsers – nimm dort <code>curl</code> aus derselben Shell.</p>
+
+  <p><code>-p 8080:80</code> liest sich von außen nach innen: <strong>außen 8080, innen 80.</strong></p>
 </blockquote>
 
 <h3 id="eine-datei-im-container-anlegen">Eine Datei im Container anlegen</h3>
@@ -295,7 +309,7 @@ interessant.</p>
 <pre><code class="language-bash">docker container rm mein-webserver
 </code></pre>
 
-<pre><code class="language-bash">docker container create --name mein-webserver -p 8080:80 mein-http:1.0.0
+<pre><code class="language-bash">docker container create --name mein-webserver -p 8080:80 nginx:1.27.5
 </code></pre>
 
 <pre><code class="language-bash">docker container start mein-webserver
@@ -320,14 +334,19 @@ Punkt dieser Übung gefunden. Schreib ihn auf.</p>
 <h2 id="reflexionsfragen">Reflexionsfragen</h2>
 
 <ul>
-  <li>Was sind Tags und wofür werden sie verwendet?</li>
-  <li>Was passiert, wenn Du beim Erzeugen des Containers keinen Namen angibst?</li>
-  <li>Was bedeuten beim Erzeugen eines Containers die Parameter <code>-e</code>, <code>-v</code> und <code>-p</code>?
-Was haben sie gemeinsam?</li>
-  <li>Was ist mit der Datei <code>hallo.html</code> passiert, als der Container gestoppt wurde?
-Und als er gelöscht und neu angelegt wurde? Wie erklärst Du den Unterschied?</li>
+  <li>Der erste Container lief, war aber nicht erreichbar. <strong>Woran lag das</strong> – und
+warum ließ sich das am laufenden Container nicht nachträglich beheben?</li>
+  <li>Was ist mit der Datei <code>hallo.html</code> passiert, als der Container <strong>gestoppt und
+wieder gestartet</strong> wurde? Und als er <strong>gelöscht und neu angelegt</strong> wurde? Wie
+erklärst Du den Unterschied?</li>
   <li>Was macht der folgende Befehl, und wozu wäre er nützlich?
-<code>docker run --rm -it nginx:1.27.5 /bin/sh</code></li>
+<code>docker run --rm -it nginx:1.27.5 /bin/sh</code>
+Welche drei Schritte dieser Übung fasst er zusammen, und was bedeutet <code>--rm</code>?</li>
+  <li>Der erste <code>docker pull</code> ohne Tag hat etwas gezogen. <strong>Was genau</strong>, und warum ist
+das für einen Server, der morgen noch laufen soll, ein Problem?</li>
+  <li><strong>Wie findest Du das passende Image für Deinen Anwendungsfall?</strong> Woran erkennst
+Du auf Docker Hub, ob Du einem Image trauen kannst – und was tust Du, wenn es
+für Deine Anwendung gar keins gibt?</li>
 </ul>
 
 
@@ -388,27 +407,12 @@ docker images
 &gt; **Hinweis:** Schau in der Spalte `TAG` genau hin. Welchen Tag hat der erste
 &gt; Befehl gezogen, obwohl Du keinen angegeben hast?
 
-### Dem Image ein eigenes Etikett geben
-
-Ein Image kann mehrere Namen tragen, ohne dass es zweimal auf der Platte liegt.
-
-```bash
-docker image tag nginx:1.27.5 mein-http:1.0.0
-```
-
-```bash
-docker images
-```
-
-&gt; **Hinweis:** Vergleiche die Spalte `IMAGE ID` der beiden Zeilen. Was sagt Dir
-&gt; das darüber, was ein Tag eigentlich ist?
-
-### Einen Container erzeugen
+### Einen Container erzeugen – zunächst ohne Tür nach außen
 
 Erzeugen heißt noch nicht starten. Mach den Schritt bewusst einzeln.
 
 ```bash
-docker container create --name mein-webserver -p 8080:80 mein-http:1.0.0
+docker container create --name mein-webserver nginx:1.27.5
 ```
 
 Sieh nach, ob er da ist:
@@ -424,13 +428,43 @@ docker container ls -a
 &gt; **Hinweis:** Der erste Befehl zeigt Dir nichts, der zweite schon. Das ist kein
 &gt; Fehler – merk Dir den Unterschied, Du wirst ihn noch oft brauchen.
 
-### Den Container starten und aufrufen
+### Den Container starten und aufrufen – Versuch eins
 
 ```bash
 docker container start mein-webserver
 ```
 
-Ruf den Webserver auf:
+Der Webserver im Container lauscht auf Port 80. Versuch, ihn zu erreichen:
+
+```bash
+curl http://localhost:8080
+```
+
+&gt; **Hinweis:** Das geht schief, und das ist so gewollt. Notiere, was `curl`
+&gt; meldet. Der Webserver **läuft** – schau selbst nach:
+&gt; `docker container logs mein-webserver`.
+
+### Noch einmal, diesmal mit Tür nach außen
+
+Ob ein Port nach außen gelegt wird, entscheidet sich beim **Erzeugen** des
+Containers. Ein laufender Container lässt sich darin nicht mehr ändern – also
+weg damit und neu:
+
+```bash
+docker container stop mein-webserver
+```
+
+```bash
+docker container rm mein-webserver
+```
+
+```bash
+docker container create --name mein-webserver -p 8080:80 nginx:1.27.5
+```
+
+```bash
+docker container start mein-webserver
+```
 
 ```bash
 curl http://localhost:8080
@@ -439,6 +473,8 @@ curl http://localhost:8080
 &gt; **Hinweis:** Arbeitest Du lokal, geht auch der Browser unter
 &gt; `http://localhost:8080`. In der bereitgestellten Umgebung läuft der Container
 &gt; nicht auf dem Rechner Deines Browsers – nimm dort `curl` aus derselben Shell.
+&gt;
+&gt; `-p 8080:80` liest sich von außen nach innen: **außen 8080, innen 80.**
 
 ### Eine Datei im Container anlegen
 
@@ -484,7 +520,7 @@ docker container rm mein-webserver
 ```
 
 ```bash
-docker container create --name mein-webserver -p 8080:80 mein-http:1.0.0
+docker container create --name mein-webserver -p 8080:80 nginx:1.27.5
 ```
 
 ```bash
@@ -510,14 +546,19 @@ docker container rm mein-webserver
 
 ## Reflexionsfragen
 
-- Was sind Tags und wofür werden sie verwendet?
-- Was passiert, wenn Du beim Erzeugen des Containers keinen Namen angibst?
-- Was bedeuten beim Erzeugen eines Containers die Parameter `-e`, `-v` und `-p`?
-  Was haben sie gemeinsam?
-- Was ist mit der Datei `hallo.html` passiert, als der Container gestoppt wurde?
-  Und als er gelöscht und neu angelegt wurde? Wie erklärst Du den Unterschied?
+- Der erste Container lief, war aber nicht erreichbar. **Woran lag das** – und
+  warum ließ sich das am laufenden Container nicht nachträglich beheben?
+- Was ist mit der Datei `hallo.html` passiert, als der Container **gestoppt und
+  wieder gestartet** wurde? Und als er **gelöscht und neu angelegt** wurde? Wie
+  erklärst Du den Unterschied?
 - Was macht der folgende Befehl, und wozu wäre er nützlich?
   `docker run --rm -it nginx:1.27.5 /bin/sh`
+  Welche drei Schritte dieser Übung fasst er zusammen, und was bedeutet `--rm`?
+- Der erste `docker pull` ohne Tag hat etwas gezogen. **Was genau**, und warum ist
+  das für einen Server, der morgen noch laufen soll, ein Problem?
+- **Wie findest Du das passende Image für Deinen Anwendungsfall?** Woran erkennst
+  Du auf Docker Hub, ob Du einem Image trauen kannst – und was tust Du, wenn es
+  für Deine Anwendung gar keins gibt?
 
 ## Weiterführende Informationen
 

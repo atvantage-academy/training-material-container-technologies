@@ -59,18 +59,18 @@
 --><html lang="de">
 <head>
   <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"><title>Die ganze Landschaft mit einem Befehl starten · Containertechnologien (Academy)</title><meta name="description" content="Die Landschaft aus Datenbank und Webserver in einer Compose-Datei beschreiben und mit einem einzigen Befehl starten, stoppen und wiederherstellen."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Die ganze Landschaft mit einem Befehl starten · Containertechnologien (Academy)</title><meta name="description" content="Die Landschaft aus Datenbank und Webanwendung in einer Compose-Datei beschreiben und mit einem einzigen Befehl starten, stoppen und wiederherstellen."><meta property="og:site_name" content="Containertechnologien (Academy)">
 <meta property="og:title" content="Die ganze Landschaft mit einem Befehl starten">
-<meta property="og:description" content="Die Landschaft aus Datenbank und Webserver in einer Compose-Datei beschreiben und mit einem einzigen Befehl starten, stoppen und wiederherstellen.">
+<meta property="og:description" content="Die Landschaft aus Datenbank und Webanwendung in einer Compose-Datei beschreiben und mit einem einzigen Befehl starten, stoppen und wiederherstellen.">
 <meta property="og:type" content="article"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790321818"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790321818">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790321818">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790321818">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790321818"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790321818">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790321818" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790321818" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790321818">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790327546"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790327546">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790327546">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790327546">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790327546"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790327546">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790327546" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790327546" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790327546">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -113,8 +113,8 @@
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
 
-  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790321818">
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790321818"></head><body class="avd-academy-guide">
+  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790327546">
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790327546"></head><body class="avd-academy-guide">
   <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><div class="avd-academy-metanav"><span>ATVANTAGE Academy</span>
   </div>
 
@@ -169,14 +169,14 @@ ohne ein Netzwerk angelegt zu haben.</li>
 <h2 id="definition-of-done">Definition of Done</h2>
 
 <ul class="task-list">
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Eine Datei <code>compose.yaml</code> beschreibt drei Services: <code>datenbank</code>, <code>website</code>
-und <code>werkzeug</code>.</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" /><code>docker compose up -d</code> startet alle drei, <code>docker compose ps</code> zeigt sie.</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Deine Seite ist unter Port 8080 abrufbar.</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Aus dem Service <code>werkzeug</code> heraus erreichst Du die Datenbank über den Namen
-<code>datenbank</code> – ohne dass Du ein Netzwerk angelegt hast.</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Nach <code>docker compose down</code> und erneutem <code>up -d</code> sind Deine Tabellendaten noch
-da.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Eine Datei <code>compose.yaml</code> beschreibt zwei Services: <code>datenbank</code> und
+<code>webapp</code>.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" /><code>docker compose up -d</code> startet beide, <code>docker compose ps</code> zeigt sie.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Deine Anwendung antwortet unter Port 8080 mit den Daten aus der Datenbank.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Die Anwendung erreicht die Datenbank über den Namen <code>datenbank</code> – ohne dass
+Du ein Netzwerk angelegt hast.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Nach <code>docker compose down</code> und erneutem <code>up -d</code> sind Deine Tabellendaten
+noch da.</li>
   <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast die Reflexionsfragen schriftlich beantwortet.</li>
 </ul>
 
@@ -184,12 +184,9 @@ da.</li>
 
 <h3 id="aufräumen-und-ein-projektverzeichnis-anlegen">Aufräumen und ein Projektverzeichnis anlegen</h3>
 
-<p>Die Container von heute Vormittag belegen Namen und Ports.</p>
+<p>Die Container aus den vorigen Übungen belegen Namen und Ports.</p>
 
-<pre><code class="language-bash">docker container stop meine-db
-</code></pre>
-
-<pre><code class="language-bash">docker container rm meine-db
+<pre><code class="language-bash">docker container rm -f meine-db
 </code></pre>
 
 <pre><code class="language-bash">mkdir ~/meine-landschaft
@@ -198,57 +195,58 @@ da.</li>
 <pre><code class="language-bash">cd ~/meine-landschaft
 </code></pre>
 
-<pre><code class="language-bash">mkdir html
-</code></pre>
+<h3 id="die-vorlage-übernehmen-und-anpassen">Die Vorlage übernehmen und anpassen</h3>
 
-<pre><code class="language-bash">echo "&lt;h1&gt;Meine Landschaft&lt;/h1&gt;" &gt; html/index.html
-</code></pre>
+<p>Du bekommst die Beschreibung als <strong>Vorlage</strong>. Deine Aufgabe ist nicht, sie zu
+tippen, sondern sie zu verstehen und an Deine Landschaft anzupassen.</p>
 
-<h3 id="die-beschreibung-schreiben">Die Beschreibung schreiben</h3>
-
-<pre><code class="language-bash">nano compose.yaml
-</code></pre>
-
-<p>Schreib diese Beschreibung hinein:</p>
+<p>Leg <code>compose.yaml</code> mit diesem Inhalt an:</p>
 
 <pre><code class="language-yaml">services:
 
   datenbank:
-    image: postgres:18
+    image: postgres:16
     environment:
-      POSTGRES_DB: helloworld
       POSTGRES_USER: kurs
       POSTGRES_PASSWORD: geheim
+      POSTGRES_DB: helloworld
     volumes:
-      - db-daten:/var/lib/postgresql/data
+      - kurs-daten:/var/lib/postgresql/data
 
-  website:
-    image: nginx:1.27.5
-    ports:
-      - "8080:80"
-    volumes:
-      - ./html:/usr/share/nginx/html:ro
-
-  werkzeug:
-    image: postgres:18
-    command: ["sleep", "infinity"]
+  webapp:
+    image: MEIN-IMAGE:MEINE-VERSION
     environment:
-      PGPASSWORD: geheim
+      DATABASE_URL: postgresql://kurs:geheim@datenbank:5432/helloworld
+    ports:
+      - "8080:8080"
     depends_on:
       - datenbank
 
 volumes:
-  db-daten:
+  kurs-daten:
 </code></pre>
 
+<p>Pass drei Dinge an:</p>
+
+<ol>
+  <li><strong>Das Image Deiner Webanwendung</strong> – der Name, den Du beim Bauen vergeben hast.</li>
+  <li><strong>Den Hostnamen in <code>DATABASE_URL</code></strong> – vergleiche ihn mit dem Namen, unter dem
+die Datenbank in den vorigen Übungen lief. Was fällt Dir auf?</li>
+  <li><strong>Den Port</strong>, falls 8080 bei Dir belegt ist.</li>
+</ol>
+
 <blockquote>
-  <p><strong>Hinweis:</strong> YAML kennt <strong>keine Tabulatoren</strong>, nur Leerzeichen. Wenn Dein
-Editor beim Tippen Tabulatoren einfügt, bricht die Datei – und die Meldung
-nennt nur die Zeilennummer, nicht die Ursache.</p>
+  <p><strong>Hinweis:</strong> Ein Netzwerk steht <strong>nicht</strong> in der Datei. Compose legt für jedes
+Projekt eines an und hängt alle Services hinein – sie erreichen einander über
+ihren <strong>Servicenamen</strong>. Genau deshalb steht dort <code>datenbank</code> und nicht
+<code>meine-db</code>.</p>
 </blockquote>
 
-<p>Bevor Du startest: Geh die Datei mit Deiner Partnerin durch und ordne jeder Zeile
-den <code>docker</code>-Parameter von heute Vormittag zu, der ihr entspricht.</p>
+<blockquote>
+  <p><strong>Hinweis:</strong> Das Volume steht zweimal in der Datei: einmal beim Service, der es
+benutzt, und einmal unten in der Liste der Volumes. Das untere ist die
+Anmeldung, das obere die Verwendung.</p>
+</blockquote>
 
 <h3 id="die-landschaft-starten">Die Landschaft starten</h3>
 
@@ -256,9 +254,6 @@ den <code>docker</code>-Parameter von heute Vormittag zu, der ihr entspricht.</p
 </code></pre>
 
 <pre><code class="language-bash">docker compose ps
-</code></pre>
-
-<pre><code class="language-bash">curl http://localhost:8080
 </code></pre>
 
 <h3 id="nachsehen-was-compose-angelegt-hat">Nachsehen, was Compose angelegt hat</h3>
@@ -274,27 +269,24 @@ den <code>docker</code>-Parameter von heute Vormittag zu, der ihr entspricht.</p
 Trotzdem sind beide da. Merk Dir die Namen – woraus sind sie gebildet?</p>
 </blockquote>
 
-<h3 id="die-datenbank-über-ihren-servicenamen-erreichen">Die Datenbank über ihren Servicenamen erreichen</h3>
+<h3 id="die-tabelle-anlegen-und-daten-hineinschreiben">Die Tabelle anlegen und Daten hineinschreiben</h3>
 
-<pre><code class="language-bash">docker compose exec werkzeug psql -h datenbank -U kurs -d helloworld -c "SELECT 1"
+<p>Das Volume ist neu, die Tabelle gibt es also noch nicht.</p>
+
+<pre><code class="language-bash">docker compose exec datenbank psql -U kurs -d helloworld -c "CREATE TABLE gruss (id SERIAL PRIMARY KEY, text TEXT NOT NULL)"
+</code></pre>
+
+<pre><code class="language-bash">docker compose exec datenbank psql -U kurs -d helloworld -c "INSERT INTO gruss (text) VALUES ('Hallo aus Compose')"
+</code></pre>
+
+<pre><code class="language-bash">curl http://localhost:8080
 </code></pre>
 
 <blockquote>
   <p><strong>Hinweis:</strong> Beachte, was hier <strong>nicht</strong> steht: kein <code>docker network create</code>,
-keine IP-Adresse, kein veröffentlichter Port an der Datenbank. Woher kennt
-<code>werkzeug</code> die Adresse von <code>datenbank</code>?</p>
+keine IP-Adresse, kein veröffentlichter Port an der Datenbank. Woher kennt die
+Anwendung die Adresse der Datenbank?</p>
 </blockquote>
-
-<h3 id="daten-anlegen">Daten anlegen</h3>
-
-<pre><code class="language-bash">docker compose exec werkzeug psql -h datenbank -U kurs -d helloworld -c "CREATE TABLE gruss (id SERIAL PRIMARY KEY, text TEXT NOT NULL)"
-</code></pre>
-
-<pre><code class="language-bash">docker compose exec werkzeug psql -h datenbank -U kurs -d helloworld -c "INSERT INTO gruss (text) VALUES ('Hallo aus Compose')"
-</code></pre>
-
-<pre><code class="language-bash">docker compose exec werkzeug psql -h datenbank -U kurs -d helloworld -c "SELECT * FROM gruss"
-</code></pre>
 
 <h3 id="alles-wegräumen-und-wieder-aufbauen">Alles wegräumen und wieder aufbauen</h3>
 
@@ -307,12 +299,13 @@ keine IP-Adresse, kein veröffentlichter Port an der Datenbank. Woher kennt
 <pre><code class="language-bash">docker compose up -d
 </code></pre>
 
-<pre><code class="language-bash">docker compose exec werkzeug psql -h datenbank -U kurs -d helloworld -c "SELECT * FROM gruss"
+<pre><code class="language-bash">curl http://localhost:8080
 </code></pre>
 
 <blockquote>
   <p><strong>Hinweis:</strong> Die Container waren weg und sind neu. Die Daten sind da. Erklär
-Dir selbst, warum – Du hast die Antwort heute Vormittag erarbeitet.</p>
+Dir selbst, warum – Du hast die Antwort in der Übung zu Konfiguration und
+Zustand erarbeitet.</p>
 </blockquote>
 
 <h3 id="in-die-log-ausgaben-sehen">In die Log-Ausgaben sehen</h3>
@@ -326,67 +319,41 @@ annimmt. Wie lange hat es vom Start bis dahin gedauert? Was hieße das für eine
 Service, der sich sofort verbinden will?</p>
 </blockquote>
 
-<h3 id="bonus-freiwillig-eine-anwendung-dazwischensetzen">Bonus (freiwillig): eine Anwendung dazwischensetzen</h3>
+<h3 id="bonus-freiwillig-wirklich-warten-statt-nur-starten">Bonus (freiwillig): wirklich warten statt nur starten</h3>
 
-<p>Nur, wenn Du früh fertig bist. Leg eine kleine Anwendung an, die aus der Datenbank
-liest:</p>
+<p>Nur, wenn Du früh fertig bist. <code>depends_on</code> wartet bloß auf den <strong>Start</strong> der
+Datenbank, nicht auf ihre <strong>Bereitschaft</strong>. Bring Compose dazu, wirklich zu
+warten.</p>
 
-<pre><code class="language-bash">mkdir app
+<p>Ergänze beim Service <code>datenbank</code> eine Prüfung:</p>
+
+<pre><code class="language-yaml">    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kurs -d helloworld"]
+      interval: 5s
+      retries: 10
 </code></pre>
 
-<pre><code class="language-bash">nano app/server.py
+<p>Und schreib beim Service <code>webapp</code> die Abhängigkeit in der ausführlichen Form:</p>
+
+<pre><code class="language-yaml">    depends_on:
+      datenbank:
+        condition: service_healthy
 </code></pre>
 
-<pre><code class="language-python">import os
-from flask import Flask, jsonify
-import psycopg2
+<p>Dann von vorn, mit leerem Volume:</p>
 
-app = Flask(__name__)
-
-@app.route("/gruesse")
-def gruesse():
-    verbindung = psycopg2.connect(
-        host=os.getenv("DB_HOST", "datenbank"),
-        dbname=os.getenv("DB_NAME", "helloworld"),
-        user=os.getenv("DB_USER", "kurs"),
-        password=os.getenv("DB_PASSWORD", "geheim"),
-    )
-    zeiger = verbindung.cursor()
-    zeiger.execute("SELECT text FROM gruss")
-    ergebnis = [zeile[0] for zeile in zeiger.fetchall()]
-    verbindung.close()
-    return jsonify(ergebnis)
-
-app.run(host="0.0.0.0", port=5000)
-</code></pre>
-
-<p>Ergänze in <code>compose.yaml</code> einen vierten Service (auf derselben Ebene wie die
-anderen):</p>
-
-<pre><code class="language-yaml">  anwendung:
-    image: python:3.12-slim
-    working_dir: /app
-    command: sh -c "pip install --no-cache-dir flask psycopg2-binary &amp;&amp; python server.py"
-    environment:
-      DB_HOST: datenbank
-    ports:
-      - "8081:5000"
-    volumes:
-      - ./app:/app
-    depends_on:
-      - datenbank
+<pre><code class="language-bash">docker compose down -v
 </code></pre>
 
 <pre><code class="language-bash">docker compose up -d
 </code></pre>
 
-<pre><code class="language-bash">curl http://localhost:8081/gruesse
+<pre><code class="language-bash">docker compose ps
 </code></pre>
 
 <blockquote>
-  <p><strong>Hinweis:</strong> Beim allerersten Start kann der Aufruf scheitern – die Anwendung
-installiert erst ihre Abhängigkeiten. Sieh mit <code>docker compose logs anwendung</code>
-nach, was gerade passiert.</p>
+  <p><strong>Achtung:</strong> <code>down -v</code> löscht das Volume – und damit Deine Tabelle. Genau
+deshalb steht dieser Befehl erst hier und nicht weiter oben.</p>
 </blockquote>
 
 <h2 id="reflexionsfragen">Reflexionsfragen</h2>
@@ -399,7 +366,7 @@ beiden ist die Adresse?</li>
 Fehler erzeugt diese Verwechslung, und wann fällt er auf?</li>
   <li>Was ist der Unterschied zwischen <code>docker compose down</code> und
 <code>docker compose down -v</code>?</li>
-  <li>Was hat sich gegenüber den Einzelbefehlen von heute Vormittag inhaltlich
+  <li>Was hat sich gegenüber den Einzelbefehlen der vorigen Übungen inhaltlich
 geändert – und was nicht?</li>
   <li>Würdest Du eine solche Datei für den Produktionsbetrieb verwenden? Woran würdest
 Du merken, dass sie nicht mehr reicht?</li>
@@ -426,28 +393,24 @@ Du…
 
 ## Definition of Done
 
-* [ ] Eine Datei `compose.yaml` beschreibt drei Services: `datenbank`, `website`
-  und `werkzeug`.
-* [ ] `docker compose up -d` startet alle drei, `docker compose ps` zeigt sie.
-* [ ] Deine Seite ist unter Port 8080 abrufbar.
-* [ ] Aus dem Service `werkzeug` heraus erreichst Du die Datenbank über den Namen
-  `datenbank` – ohne dass Du ein Netzwerk angelegt hast.
-* [ ] Nach `docker compose down` und erneutem `up -d` sind Deine Tabellendaten noch
-  da.
+* [ ] Eine Datei `compose.yaml` beschreibt zwei Services: `datenbank` und
+  `webapp`.
+* [ ] `docker compose up -d` startet beide, `docker compose ps` zeigt sie.
+* [ ] Deine Anwendung antwortet unter Port 8080 mit den Daten aus der Datenbank.
+* [ ] Die Anwendung erreicht die Datenbank über den Namen `datenbank` – ohne dass
+  Du ein Netzwerk angelegt hast.
+* [ ] Nach `docker compose down` und erneutem `up -d` sind Deine Tabellendaten
+  noch da.
 * [ ] Du hast die Reflexionsfragen schriftlich beantwortet.
 
 ## Arbeitsschritte
 
 ### Aufräumen und ein Projektverzeichnis anlegen
 
-Die Container von heute Vormittag belegen Namen und Ports.
+Die Container aus den vorigen Übungen belegen Namen und Ports.
 
 ```bash
-docker container stop meine-db
-```
-
-```bash
-docker container rm meine-db
+docker container rm -f meine-db
 ```
 
 ```bash
@@ -458,59 +421,53 @@ mkdir ~/meine-landschaft
 cd ~/meine-landschaft
 ```
 
-```bash
-mkdir html
-```
+### Die Vorlage übernehmen und anpassen
 
-```bash
-echo &quot;&lt;h1&gt;Meine Landschaft&lt;/h1&gt;&quot; &gt; html/index.html
-```
+Du bekommst die Beschreibung als **Vorlage**. Deine Aufgabe ist nicht, sie zu
+tippen, sondern sie zu verstehen und an Deine Landschaft anzupassen.
 
-### Die Beschreibung schreiben
-
-```bash
-nano compose.yaml
-```
-
-Schreib diese Beschreibung hinein:
+Leg `compose.yaml` mit diesem Inhalt an:
 
 ```yaml
 services:
 
   datenbank:
-    image: postgres:18
+    image: postgres:16
     environment:
-      POSTGRES_DB: helloworld
       POSTGRES_USER: kurs
       POSTGRES_PASSWORD: geheim
+      POSTGRES_DB: helloworld
     volumes:
-      - db-daten:/var/lib/postgresql/data
+      - kurs-daten:/var/lib/postgresql/data
 
-  website:
-    image: nginx:1.27.5
-    ports:
-      - &quot;8080:80&quot;
-    volumes:
-      - ./html:/usr/share/nginx/html:ro
-
-  werkzeug:
-    image: postgres:18
-    command: [&quot;sleep&quot;, &quot;infinity&quot;]
+  webapp:
+    image: MEIN-IMAGE:MEINE-VERSION
     environment:
-      PGPASSWORD: geheim
+      DATABASE_URL: postgresql://kurs:geheim@datenbank:5432/helloworld
+    ports:
+      - &quot;8080:8080&quot;
     depends_on:
       - datenbank
 
 volumes:
-  db-daten:
+  kurs-daten:
 ```
 
-&gt; **Hinweis:** YAML kennt **keine Tabulatoren**, nur Leerzeichen. Wenn Dein
-&gt; Editor beim Tippen Tabulatoren einfügt, bricht die Datei – und die Meldung
-&gt; nennt nur die Zeilennummer, nicht die Ursache.
+Pass drei Dinge an:
 
-Bevor Du startest: Geh die Datei mit Deiner Partnerin durch und ordne jeder Zeile
-den `docker`-Parameter von heute Vormittag zu, der ihr entspricht.
+1. **Das Image Deiner Webanwendung** – der Name, den Du beim Bauen vergeben hast.
+2. **Den Hostnamen in `DATABASE_URL`** – vergleiche ihn mit dem Namen, unter dem
+   die Datenbank in den vorigen Übungen lief. Was fällt Dir auf?
+3. **Den Port**, falls 8080 bei Dir belegt ist.
+
+&gt; **Hinweis:** Ein Netzwerk steht **nicht** in der Datei. Compose legt für jedes
+&gt; Projekt eines an und hängt alle Services hinein – sie erreichen einander über
+&gt; ihren **Servicenamen**. Genau deshalb steht dort `datenbank` und nicht
+&gt; `meine-db`.
+
+&gt; **Hinweis:** Das Volume steht zweimal in der Datei: einmal beim Service, der es
+&gt; benutzt, und einmal unten in der Liste der Volumes. Das untere ist die
+&gt; Anmeldung, das obere die Verwendung.
 
 ### Die Landschaft starten
 
@@ -520,10 +477,6 @@ docker compose up -d
 
 ```bash
 docker compose ps
-```
-
-```bash
-curl http://localhost:8080
 ```
 
 ### Nachsehen, was Compose angelegt hat
@@ -539,29 +492,25 @@ docker volume ls
 &gt; **Hinweis:** Du hast weder ein Netzwerk noch ein Volume von Hand angelegt.
 &gt; Trotzdem sind beide da. Merk Dir die Namen – woraus sind sie gebildet?
 
-### Die Datenbank über ihren Servicenamen erreichen
+### Die Tabelle anlegen und Daten hineinschreiben
+
+Das Volume ist neu, die Tabelle gibt es also noch nicht.
 
 ```bash
-docker compose exec werkzeug psql -h datenbank -U kurs -d helloworld -c &quot;SELECT 1&quot;
+docker compose exec datenbank psql -U kurs -d helloworld -c &quot;CREATE TABLE gruss (id SERIAL PRIMARY KEY, text TEXT NOT NULL)&quot;
+```
+
+```bash
+docker compose exec datenbank psql -U kurs -d helloworld -c &quot;INSERT INTO gruss (text) VALUES (&apos;Hallo aus Compose&apos;)&quot;
+```
+
+```bash
+curl http://localhost:8080
 ```
 
 &gt; **Hinweis:** Beachte, was hier **nicht** steht: kein `docker network create`,
-&gt; keine IP-Adresse, kein veröffentlichter Port an der Datenbank. Woher kennt
-&gt; `werkzeug` die Adresse von `datenbank`?
-
-### Daten anlegen
-
-```bash
-docker compose exec werkzeug psql -h datenbank -U kurs -d helloworld -c &quot;CREATE TABLE gruss (id SERIAL PRIMARY KEY, text TEXT NOT NULL)&quot;
-```
-
-```bash
-docker compose exec werkzeug psql -h datenbank -U kurs -d helloworld -c &quot;INSERT INTO gruss (text) VALUES (&apos;Hallo aus Compose&apos;)&quot;
-```
-
-```bash
-docker compose exec werkzeug psql -h datenbank -U kurs -d helloworld -c &quot;SELECT * FROM gruss&quot;
-```
+&gt; keine IP-Adresse, kein veröffentlichter Port an der Datenbank. Woher kennt die
+&gt; Anwendung die Adresse der Datenbank?
 
 ### Alles wegräumen und wieder aufbauen
 
@@ -578,11 +527,12 @@ docker compose up -d
 ```
 
 ```bash
-docker compose exec werkzeug psql -h datenbank -U kurs -d helloworld -c &quot;SELECT * FROM gruss&quot;
+curl http://localhost:8080
 ```
 
 &gt; **Hinweis:** Die Container waren weg und sind neu. Die Daten sind da. Erklär
-&gt; Dir selbst, warum – Du hast die Antwort heute Vormittag erarbeitet.
+&gt; Dir selbst, warum – Du hast die Antwort in der Übung zu Konfiguration und
+&gt; Zustand erarbeitet.
 
 ### In die Log-Ausgaben sehen
 
@@ -594,59 +544,33 @@ docker compose logs datenbank
 &gt; annimmt. Wie lange hat es vom Start bis dahin gedauert? Was hieße das für einen
 &gt; Service, der sich sofort verbinden will?
 
-### Bonus (freiwillig): eine Anwendung dazwischensetzen
+### Bonus (freiwillig): wirklich warten statt nur starten
 
-Nur, wenn Du früh fertig bist. Leg eine kleine Anwendung an, die aus der Datenbank
-liest:
+Nur, wenn Du früh fertig bist. `depends_on` wartet bloß auf den **Start** der
+Datenbank, nicht auf ihre **Bereitschaft**. Bring Compose dazu, wirklich zu
+warten.
 
-```bash
-mkdir app
-```
-
-```bash
-nano app/server.py
-```
-
-```python
-import os
-from flask import Flask, jsonify
-import psycopg2
-
-app = Flask(__name__)
-
-@app.route(&quot;/gruesse&quot;)
-def gruesse():
-    verbindung = psycopg2.connect(
-        host=os.getenv(&quot;DB_HOST&quot;, &quot;datenbank&quot;),
-        dbname=os.getenv(&quot;DB_NAME&quot;, &quot;helloworld&quot;),
-        user=os.getenv(&quot;DB_USER&quot;, &quot;kurs&quot;),
-        password=os.getenv(&quot;DB_PASSWORD&quot;, &quot;geheim&quot;),
-    )
-    zeiger = verbindung.cursor()
-    zeiger.execute(&quot;SELECT text FROM gruss&quot;)
-    ergebnis = [zeile[0] for zeile in zeiger.fetchall()]
-    verbindung.close()
-    return jsonify(ergebnis)
-
-app.run(host=&quot;0.0.0.0&quot;, port=5000)
-```
-
-Ergänze in `compose.yaml` einen vierten Service (auf derselben Ebene wie die
-anderen):
+Ergänze beim Service `datenbank` eine Prüfung:
 
 ```yaml
-  anwendung:
-    image: python:3.12-slim
-    working_dir: /app
-    command: sh -c &quot;pip install --no-cache-dir flask psycopg2-binary &amp;&amp; python server.py&quot;
-    environment:
-      DB_HOST: datenbank
-    ports:
-      - &quot;8081:5000&quot;
-    volumes:
-      - ./app:/app
+    healthcheck:
+      test: [&quot;CMD-SHELL&quot;, &quot;pg_isready -U kurs -d helloworld&quot;]
+      interval: 5s
+      retries: 10
+```
+
+Und schreib beim Service `webapp` die Abhängigkeit in der ausführlichen Form:
+
+```yaml
     depends_on:
-      - datenbank
+      datenbank:
+        condition: service_healthy
+```
+
+Dann von vorn, mit leerem Volume:
+
+```bash
+docker compose down -v
 ```
 
 ```bash
@@ -654,12 +578,11 @@ docker compose up -d
 ```
 
 ```bash
-curl http://localhost:8081/gruesse
+docker compose ps
 ```
 
-&gt; **Hinweis:** Beim allerersten Start kann der Aufruf scheitern – die Anwendung
-&gt; installiert erst ihre Abhängigkeiten. Sieh mit `docker compose logs anwendung`
-&gt; nach, was gerade passiert.
+&gt; **Achtung:** `down -v` löscht das Volume – und damit Deine Tabelle. Genau
+&gt; deshalb steht dieser Befehl erst hier und nicht weiter oben.
 
 ## Reflexionsfragen
 
@@ -670,7 +593,7 @@ curl http://localhost:8081/gruesse
   Fehler erzeugt diese Verwechslung, und wann fällt er auf?
 - Was ist der Unterschied zwischen `docker compose down` und
   `docker compose down -v`?
-- Was hat sich gegenüber den Einzelbefehlen von heute Vormittag inhaltlich
+- Was hat sich gegenüber den Einzelbefehlen der vorigen Übungen inhaltlich
   geändert – und was nicht?
 - Würdest Du eine solche Datei für den Produktionsbetrieb verwenden? Woran würdest
   Du merken, dass sie nicht mehr reicht?

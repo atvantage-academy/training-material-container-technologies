@@ -59,18 +59,18 @@
 --><html lang="de">
 <head>
   <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"><title>Eine Datenbank über Umgebungsvariablen konfigurieren · Containertechnologien (Academy)</title><meta name="description" content="Eine PostgreSQL-Datenbank allein über Umgebungsvariablen einrichten – und am Ende zwei Container aus demselben Image mit verschiedenen Datenbanken betreiben."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Eine Datenbank über Umgebungsvariablen konfigurieren · Containertechnologien (Academy)</title><meta name="description" content="Eine PostgreSQL-Datenbank allein über Umgebungsvariablen einrichten, zwei Container aus demselben Image betreiben – und die Daten in ein Volume retten."><meta property="og:site_name" content="Containertechnologien (Academy)">
 <meta property="og:title" content="Eine Datenbank über Umgebungsvariablen konfigurieren">
-<meta property="og:description" content="Eine PostgreSQL-Datenbank allein über Umgebungsvariablen einrichten – und am Ende zwei Container aus demselben Image mit verschiedenen Datenbanken betreiben.">
+<meta property="og:description" content="Eine PostgreSQL-Datenbank allein über Umgebungsvariablen einrichten, zwei Container aus demselben Image betreiben – und die Daten in ein Volume retten.">
 <meta property="og:type" content="article"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790321818"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790321818">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790321818">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790321818">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790321818"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790321818">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790321818" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790321818" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790321818">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790327546"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790327546">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790327546">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790327546">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790327546"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790327546">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790327546" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790327546" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790327546">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -113,8 +113,8 @@
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
 
-  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790321818">
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790321818"></head><body class="avd-academy-guide">
+  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790327546">
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790327546"></head><body class="avd-academy-guide">
   <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><div class="avd-academy-metanav"><span>ATVANTAGE Academy</span>
   </div>
 
@@ -137,7 +137,7 @@
 </header>
 <section class="avd-academy-guide-hero"
            aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a><span>/</span><span aria-current="page">Eine Datenbank über Umgebungsvariablen konfigurieren</span></nav><div class="avd-academy-guide-hero__meta">
-      <div class="avd-academy-guide-hero__tags"><span class="avd-academy-tag avd-academy-tag--time">ca. 35 Minuten</span><span class="avd-academy-tag">Umgebungsvariablen</span><span class="avd-academy-tag">12-Factor-App</span><span class="avd-academy-tag">Zustandslosigkeit</span>
+      <div class="avd-academy-guide-hero__tags"><span class="avd-academy-tag avd-academy-tag--time">ca. 45 Minuten</span><span class="avd-academy-tag">Umgebungsvariablen</span><span class="avd-academy-tag">Volumes</span><span class="avd-academy-tag">12-Factor-App</span><span class="avd-academy-tag">Zustandslosigkeit</span>
       </div>
       <div class="avd-academy-guide-hero__actions">
         <button type="button" class="avd-academy-btn avd-academy-btn--ghost avd-academy-copy-md"
@@ -165,6 +165,8 @@ ohne Konfigurationsdatei.</li>
 fehlgeschlagen ist.</li>
   <li>betreibst zwei Container aus <strong>demselben</strong> Image mit verschiedenen Datenbanken
 und begründest, warum das ohne Neubau möglich ist.</li>
+  <li>legst ein <strong>Volume</strong> an und weist nach, dass Daten darin das Löschen des
+Containers überleben.</li>
 </ul>
 
 <h2 id="definition-of-done">Definition of Done</h2>
@@ -179,6 +181,9 @@ gefunden, woran er lag.</li>
 <strong>anderen</strong> Datenbank und einem anderen Port.</li>
   <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast den ersten Container gestoppt, neu gestartet und geprüft, ob Deine
 Daten noch da sind.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast den Container <strong>gelöscht</strong> und nachgewiesen, dass die Daten weg sind.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Eine zweite Datenbank liegt auf einem <strong>Volume</strong>; nach <code>rm</code> und neuem
+Container sind ihre Daten noch da.</li>
   <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast die Reflexionsfragen schriftlich beantwortet.</li>
 </ul>
 
@@ -188,7 +193,7 @@ Daten noch da sind.</li>
 
 <p>Fang mit dem Fehler an – er erklärt Dir gleich, wie Du künftig Fehler findest.</p>
 
-<pre><code class="language-bash">docker container create --name db-versuch postgres:18
+<pre><code class="language-bash">docker container create --name db-versuch postgres:16
 </code></pre>
 
 <pre><code class="language-bash">docker container start db-versuch
@@ -213,7 +218,7 @@ ab jetzt Dein erster Griff, wenn etwas nicht tut.</p>
 
 <p>Jede Angabe kommt mit einem eigenen <code>-e</code> von außen dazu.</p>
 
-<pre><code class="language-bash">docker container create --name meine-db -p 5432:5432 -e POSTGRES_DB=helloworld -e POSTGRES_USER=kurs -e POSTGRES_PASSWORD=geheim postgres:18
+<pre><code class="language-bash">docker container create --name meine-db -p 5432:5432 -e POSTGRES_DB=helloworld -e POSTGRES_USER=kurs -e POSTGRES_PASSWORD=geheim postgres:16
 </code></pre>
 
 <pre><code class="language-bash">docker container start meine-db
@@ -252,7 +257,7 @@ vorigen Übung.</p>
 <p>Lege einen weiteren Container an – diesmal mit einem falsch geschriebenen
 Variablennamen.</p>
 
-<pre><code class="language-bash">docker container create --name db-tippfehler -p 5433:5432 -e POSTGRES_DATABASE=helloworld -e POSTGRES_USER=kurs -e POSTGRES_PASSWORD=geheim postgres:18
+<pre><code class="language-bash">docker container create --name db-tippfehler -p 5433:5432 -e POSTGRES_DATABASE=helloworld -e POSTGRES_USER=kurs -e POSTGRES_PASSWORD=geheim postgres:16
 </code></pre>
 
 <pre><code class="language-bash">docker container start db-tippfehler
@@ -276,7 +281,7 @@ welche Datenbank stattdessen entstanden ist und warum niemand Dich gewarnt hat.<
 
 <p>Das ist der Kern der Übung. Kein Neubau, kein zweites Image – nur andere Werte.</p>
 
-<pre><code class="language-bash">docker container create --name meine-db-test -p 5433:5432 -e POSTGRES_DB=testdaten -e POSTGRES_USER=tester -e POSTGRES_PASSWORD=auchgeheim postgres:18
+<pre><code class="language-bash">docker container create --name meine-db-test -p 5433:5432 -e POSTGRES_DB=testdaten -e POSTGRES_USER=tester -e POSTGRES_PASSWORD=auchgeheim postgres:16
 </code></pre>
 
 <pre><code class="language-bash">docker container start meine-db-test
@@ -293,6 +298,15 @@ welche Datenbank stattdessen entstanden ist und warum niemand Dich gewarnt hat.<
 Dir? Und wie viele verschieden konfigurierte Datenbanken betreibst Du gerade?</p>
 </blockquote>
 
+<p>Räum die Testdatenbank wieder weg – sie hat ihren Zweck erfüllt und belegt sonst
+weiter Port 5433.</p>
+
+<pre><code class="language-bash">docker container stop meine-db-test
+</code></pre>
+
+<pre><code class="language-bash">docker container rm meine-db-test
+</code></pre>
+
 <h3 id="stoppen-neu-starten-und-nachsehen">Stoppen, neu starten und nachsehen</h3>
 
 <pre><code class="language-bash">docker container stop meine-db
@@ -305,8 +319,87 @@ Dir? Und wie viele verschieden konfigurierte Datenbanken betreibst Du gerade?</p
 </code></pre>
 
 <blockquote>
-  <p><strong>Hinweis:</strong> Notiere das Ergebnis. Was wäre nach einem <code>docker container rm</code>
-passiert? Probier es <strong>nicht</strong> aus – wir brauchen die Datenbank morgen noch.</p>
+  <p><strong>Hinweis:</strong> Notiere das Ergebnis, bevor Du weitermachst.</p>
+</blockquote>
+
+<h3 id="löschen--und-vorher-eine-vorhersage-aufschreiben">Löschen – und vorher eine Vorhersage aufschreiben</h3>
+
+<p>Schreib auf, was Du erwartest. <strong>Dann</strong> probier es aus.</p>
+
+<pre><code class="language-bash">docker container stop meine-db
+</code></pre>
+
+<pre><code class="language-bash">docker container rm meine-db
+</code></pre>
+
+<p>Erzeuge die Datenbank neu, genau wie beim ersten Mal:</p>
+
+<pre><code class="language-bash">docker container run -d --name meine-db -e POSTGRES_PASSWORD=geheim -e POSTGRES_USER=kurs -e POSTGRES_DB=helloworld -p 5432:5432 postgres:16
+</code></pre>
+
+<pre><code class="language-bash">docker container exec meine-db psql -U kurs -d helloworld -c "SELECT * FROM gruss"
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Wenn Dich das Ergebnis ärgert, ist es richtig angekommen.</p>
+</blockquote>
+
+<h3 id="ein-volume-anlegen">Ein Volume anlegen</h3>
+
+<p>Ein <strong>Volume</strong> ist ein Ablageort, den Docker verwaltet und der nicht zum Container
+gehört.</p>
+
+<pre><code class="language-bash">docker volume create kurs-daten
+</code></pre>
+
+<pre><code class="language-bash">docker volume ls
+</code></pre>
+
+<h3 id="die-datenbank-mit-volume-starten">Die Datenbank mit Volume starten</h3>
+
+<p>Räum den Container von eben weg und erzeuge ihn neu – diesmal mit Volume:</p>
+
+<pre><code class="language-bash">docker container stop meine-db
+</code></pre>
+
+<pre><code class="language-bash">docker container rm meine-db
+</code></pre>
+
+<pre><code class="language-bash"># on Windows Git Bash, put MSYS_NO_PATHCONV=1 before ("MSYS_NO_PATHCONV=1 docker run ...")
+docker container run -d --name meine-db -e POSTGRES_PASSWORD=geheim -e POSTGRES_USER=kurs -e POSTGRES_DB=helloworld -p 5432:5432 -v kurs-daten:/var/lib/postgresql/data postgres:16
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> <code>-v kurs-daten:/var/lib/postgresql/data</code> liest sich wie <code>-p</code>: erst
+außen, dann innen. Welches Verzeichnis innen gemeint ist, steht im Datenblatt
+des Images auf Docker Hub – <strong>nicht raten, nachsehen.</strong></p>
+</blockquote>
+
+<h3 id="daten-anlegen-container-löschen-nachsehen">Daten anlegen, Container löschen, nachsehen</h3>
+
+<pre><code class="language-bash">docker container exec meine-db psql -U kurs -d helloworld -c "CREATE TABLE gruss (id SERIAL PRIMARY KEY, text TEXT NOT NULL)"
+</code></pre>
+
+<pre><code class="language-bash">docker container exec meine-db psql -U kurs -d helloworld -c "INSERT INTO gruss (text) VALUES ('Hallo aus dem Volume')"
+</code></pre>
+
+<p>Jetzt dasselbe Spiel wie eben – löschen und neu erzeugen:</p>
+
+<pre><code class="language-bash">docker container stop meine-db
+</code></pre>
+
+<pre><code class="language-bash">docker container rm meine-db
+</code></pre>
+
+<pre><code class="language-bash"># on Windows Git Bash, put MSYS_NO_PATHCONV=1 before ("MSYS_NO_PATHCONV=1 docker run ...")
+docker container run -d --name meine-db -e POSTGRES_PASSWORD=geheim -e POSTGRES_USER=kurs -e POSTGRES_DB=helloworld -p 5432:5432 -v kurs-daten:/var/lib/postgresql/data postgres:16
+</code></pre>
+
+<pre><code class="language-bash">docker container exec meine-db psql -U kurs -d helloworld -c "SELECT * FROM gruss"
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Lass diesen Container stehen – die nächste Übung spricht mit ihm.</p>
 </blockquote>
 
 <h2 id="reflexionsfragen">Reflexionsfragen</h2>
@@ -317,8 +410,12 @@ passiert, wenn Du einen Namen falsch schreibst?</li>
   <li>Was wäre nötig gewesen, um die Datenbank stattdessen über eine
 Konfigurationsdatei <strong>im Image</strong> einzurichten? Wie viele Images hättest Du für
 Entwicklung, Test und Produktion?</li>
-  <li>Deine Daten haben <code>stop</code> und <code>start</code> überlebt. Was erwartest Du nach einem
-<code>docker container rm</code>, und woran liegt das?</li>
+  <li>Deine Daten haben <code>stop</code> und <code>start</code> überlebt, das Löschen aber nicht. Woran
+liegt der Unterschied?</li>
+  <li>Mit Volume überleben sie auch das Löschen. <strong>Wo liegen die Daten jetzt
+eigentlich</strong>, und wem gehören sie?</li>
+  <li>Du hast den Container zweimal mit genau denselben Umgebungsvariablen erzeugt.
+Beim zweiten Mal war die Datenbank trotzdem nicht leer. <strong>Warum nicht?</strong></li>
   <li>Wo landen die Log-Ausgaben der Datenbank, und warum ist das für eine
 Betriebsplattform praktischer als eine Logdatei im Container?</li>
   <li>Was spricht dagegen, ein echtes Datenbank-Passwort so zu setzen, wie Du es hier
@@ -344,6 +441,8 @@ Du…
   fehlgeschlagen ist.
 - betreibst zwei Container aus **demselben** Image mit verschiedenen Datenbanken
   und begründest, warum das ohne Neubau möglich ist.
+- legst ein **Volume** an und weist nach, dass Daten darin das Löschen des
+  Containers überleben.
 
 ## Definition of Done
 
@@ -356,6 +455,9 @@ Du…
   **anderen** Datenbank und einem anderen Port.
 * [ ] Du hast den ersten Container gestoppt, neu gestartet und geprüft, ob Deine
   Daten noch da sind.
+* [ ] Du hast den Container **gelöscht** und nachgewiesen, dass die Daten weg sind.
+* [ ] Eine zweite Datenbank liegt auf einem **Volume**; nach `rm` und neuem
+  Container sind ihre Daten noch da.
 * [ ] Du hast die Reflexionsfragen schriftlich beantwortet.
 
 ## Arbeitsschritte
@@ -365,7 +467,7 @@ Du…
 Fang mit dem Fehler an – er erklärt Dir gleich, wie Du künftig Fehler findest.
 
 ```bash
-docker container create --name db-versuch postgres:18
+docker container create --name db-versuch postgres:16
 ```
 
 ```bash
@@ -392,7 +494,7 @@ docker container rm db-versuch
 Jede Angabe kommt mit einem eigenen `-e` von außen dazu.
 
 ```bash
-docker container create --name meine-db -p 5432:5432 -e POSTGRES_DB=helloworld -e POSTGRES_USER=kurs -e POSTGRES_PASSWORD=geheim postgres:18
+docker container create --name meine-db -p 5432:5432 -e POSTGRES_DB=helloworld -e POSTGRES_USER=kurs -e POSTGRES_PASSWORD=geheim postgres:16
 ```
 
 ```bash
@@ -435,7 +537,7 @@ Lege einen weiteren Container an – diesmal mit einem falsch geschriebenen
 Variablennamen.
 
 ```bash
-docker container create --name db-tippfehler -p 5433:5432 -e POSTGRES_DATABASE=helloworld -e POSTGRES_USER=kurs -e POSTGRES_PASSWORD=geheim postgres:18
+docker container create --name db-tippfehler -p 5433:5432 -e POSTGRES_DATABASE=helloworld -e POSTGRES_USER=kurs -e POSTGRES_PASSWORD=geheim postgres:16
 ```
 
 ```bash
@@ -462,7 +564,7 @@ docker container rm db-tippfehler
 Das ist der Kern der Übung. Kein Neubau, kein zweites Image – nur andere Werte.
 
 ```bash
-docker container create --name meine-db-test -p 5433:5432 -e POSTGRES_DB=testdaten -e POSTGRES_USER=tester -e POSTGRES_PASSWORD=auchgeheim postgres:18
+docker container create --name meine-db-test -p 5433:5432 -e POSTGRES_DB=testdaten -e POSTGRES_USER=tester -e POSTGRES_PASSWORD=auchgeheim postgres:16
 ```
 
 ```bash
@@ -480,6 +582,17 @@ docker images
 &gt; **Hinweis:** Sieh Dir die Image-Liste an. Wie viele PostgreSQL-Images liegen bei
 &gt; Dir? Und wie viele verschieden konfigurierte Datenbanken betreibst Du gerade?
 
+Räum die Testdatenbank wieder weg – sie hat ihren Zweck erfüllt und belegt sonst
+weiter Port 5433.
+
+```bash
+docker container stop meine-db-test
+```
+
+```bash
+docker container rm meine-db-test
+```
+
 ### Stoppen, neu starten und nachsehen
 
 ```bash
@@ -494,8 +607,96 @@ docker container start meine-db
 docker container exec meine-db psql -U kurs -d helloworld -c &quot;SELECT * FROM gruss&quot;
 ```
 
-&gt; **Hinweis:** Notiere das Ergebnis. Was wäre nach einem `docker container rm`
-&gt; passiert? Probier es **nicht** aus – wir brauchen die Datenbank morgen noch.
+&gt; **Hinweis:** Notiere das Ergebnis, bevor Du weitermachst.
+
+### Löschen – und vorher eine Vorhersage aufschreiben
+
+Schreib auf, was Du erwartest. **Dann** probier es aus.
+
+```bash
+docker container stop meine-db
+```
+
+```bash
+docker container rm meine-db
+```
+
+Erzeuge die Datenbank neu, genau wie beim ersten Mal:
+
+```bash
+docker container run -d --name meine-db -e POSTGRES_PASSWORD=geheim -e POSTGRES_USER=kurs -e POSTGRES_DB=helloworld -p 5432:5432 postgres:16
+```
+
+```bash
+docker container exec meine-db psql -U kurs -d helloworld -c &quot;SELECT * FROM gruss&quot;
+```
+
+&gt; **Hinweis:** Wenn Dich das Ergebnis ärgert, ist es richtig angekommen.
+
+### Ein Volume anlegen
+
+Ein **Volume** ist ein Ablageort, den Docker verwaltet und der nicht zum Container
+gehört.
+
+```bash
+docker volume create kurs-daten
+```
+
+```bash
+docker volume ls
+```
+
+### Die Datenbank mit Volume starten
+
+Räum den Container von eben weg und erzeuge ihn neu – diesmal mit Volume:
+
+```bash
+docker container stop meine-db
+```
+
+```bash
+docker container rm meine-db
+```
+
+```bash
+# on Windows Git Bash, put MSYS_NO_PATHCONV=1 before (&quot;MSYS_NO_PATHCONV=1 docker run ...&quot;)
+docker container run -d --name meine-db -e POSTGRES_PASSWORD=geheim -e POSTGRES_USER=kurs -e POSTGRES_DB=helloworld -p 5432:5432 -v kurs-daten:/var/lib/postgresql/data postgres:16
+```
+
+&gt; **Hinweis:** `-v kurs-daten:/var/lib/postgresql/data` liest sich wie `-p`: erst
+&gt; außen, dann innen. Welches Verzeichnis innen gemeint ist, steht im Datenblatt
+&gt; des Images auf Docker Hub – **nicht raten, nachsehen.**
+
+### Daten anlegen, Container löschen, nachsehen
+
+```bash
+docker container exec meine-db psql -U kurs -d helloworld -c &quot;CREATE TABLE gruss (id SERIAL PRIMARY KEY, text TEXT NOT NULL)&quot;
+```
+
+```bash
+docker container exec meine-db psql -U kurs -d helloworld -c &quot;INSERT INTO gruss (text) VALUES (&apos;Hallo aus dem Volume&apos;)&quot;
+```
+
+Jetzt dasselbe Spiel wie eben – löschen und neu erzeugen:
+
+```bash
+docker container stop meine-db
+```
+
+```bash
+docker container rm meine-db
+```
+
+```bash
+# on Windows Git Bash, put MSYS_NO_PATHCONV=1 before (&quot;MSYS_NO_PATHCONV=1 docker run ...&quot;)
+docker container run -d --name meine-db -e POSTGRES_PASSWORD=geheim -e POSTGRES_USER=kurs -e POSTGRES_DB=helloworld -p 5432:5432 -v kurs-daten:/var/lib/postgresql/data postgres:16
+```
+
+```bash
+docker container exec meine-db psql -U kurs -d helloworld -c &quot;SELECT * FROM gruss&quot;
+```
+
+&gt; **Hinweis:** Lass diesen Container stehen – die nächste Übung spricht mit ihm.
 
 ## Reflexionsfragen
 
@@ -504,8 +705,12 @@ docker container exec meine-db psql -U kurs -d helloworld -c &quot;SELECT * FROM
 - Was wäre nötig gewesen, um die Datenbank stattdessen über eine
   Konfigurationsdatei **im Image** einzurichten? Wie viele Images hättest Du für
   Entwicklung, Test und Produktion?
-- Deine Daten haben `stop` und `start` überlebt. Was erwartest Du nach einem
-  `docker container rm`, und woran liegt das?
+- Deine Daten haben `stop` und `start` überlebt, das Löschen aber nicht. Woran
+  liegt der Unterschied?
+- Mit Volume überleben sie auch das Löschen. **Wo liegen die Daten jetzt
+  eigentlich**, und wem gehören sie?
+- Du hast den Container zweimal mit genau denselben Umgebungsvariablen erzeugt.
+  Beim zweiten Mal war die Datenbank trotzdem nicht leer. **Warum nicht?**
 - Wo landen die Log-Ausgaben der Datenbank, und warum ist das für eine
   Betriebsplattform praktischer als eine Logdatei im Container?
 - Was spricht dagegen, ein echtes Datenbank-Passwort so zu setzen, wie Du es hier

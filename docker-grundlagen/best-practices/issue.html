@@ -59,9 +59,9 @@
 --><html lang="de">
 <head>
   <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"><title>Ein eigenes Image aus einem Dockerfile bauen · Containertechnologien (Academy)</title><meta name="description" content="Aus einem Dockerfile ein eigenes Webserver-Image bauen, es starten und am Build-Cache beobachten, warum die Reihenfolge der Zeilen zählt."><meta property="og:site_name" content="Containertechnologien (Academy)">
-<meta property="og:title" content="Ein eigenes Image aus einem Dockerfile bauen">
-<meta property="og:description" content="Aus einem Dockerfile ein eigenes Webserver-Image bauen, es starten und am Build-Cache beobachten, warum die Reihenfolge der Zeilen zählt.">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Die Reihenfolge umbauen und messen · Containertechnologien (Academy)</title><meta name="description" content="Das eigene Dockerfile umordnen und den Unterschied in Sekunden messen – und sehen, warum Löschen ein Image nicht kleiner macht."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta property="og:title" content="Die Reihenfolge umbauen und messen">
+<meta property="og:description" content="Das eigene Dockerfile umordnen und den Unterschied in Sekunden messen – und sehen, warum Löschen ein Image nicht kleiner macht.">
 <meta property="og:type" content="article"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790327546"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790327546">
@@ -136,357 +136,327 @@
               aria-label="Farbschema umschalten">◐</button></div>
 </header>
 <section class="avd-academy-guide-hero"
-           aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a><span>/</span><span aria-current="page">Ein eigenes Image aus einem Dockerfile bauen</span></nav><div class="avd-academy-guide-hero__meta">
-      <div class="avd-academy-guide-hero__tags"><span class="avd-academy-tag avd-academy-tag--time">ca. 35 Minuten</span><span class="avd-academy-tag">Dockerfile</span><span class="avd-academy-tag">Image-Build</span><span class="avd-academy-tag">Build-Cache</span>
+           aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a><span>/</span><span aria-current="page">Die Reihenfolge umbauen und messen</span></nav><div class="avd-academy-guide-hero__meta">
+      <div class="avd-academy-guide-hero__tags"><span class="avd-academy-tag avd-academy-tag--time">ca. 30 Minuten</span><span class="avd-academy-tag">Layer</span><span class="avd-academy-tag">Build-Cache</span><span class="avd-academy-tag">Dockerfile</span>
       </div>
       <div class="avd-academy-guide-hero__actions">
         <button type="button" class="avd-academy-btn avd-academy-btn--ghost avd-academy-copy-md"
                 data-avd-academy-copy-md="#avd-academy-md-source"
                 title="Markdown kopieren" aria-label="Markdown kopieren"></button>
       </div>
-    </div><h1 id="avd-academy-page-title">Ein eigenes Image aus einem Dockerfile bauen</h1>
+    </div><h1 id="avd-academy-page-title">Die Reihenfolge umbauen und messen</h1>
   </section><div class="avd-academy-guide-layout">
     <main class="avd-academy-guide-main avd-academy-guide-main--numbered" id="avd-academy-content">
 
-<p><strong>Als</strong> Entwicklerin <strong>möchte ich</strong> meine eigenen Inhalte in ein Image bringen,
-<strong>damit</strong> ich sie weitergeben kann, ohne zu erklären, wie man sie installiert.</p>
+<p><strong>Als</strong> Entwicklerin <strong>möchte ich</strong> wissen, was mein Build jedes Mal kostet,
+<strong>damit</strong> ich ihn nicht aus Gewohnheit teuer lasse.</p>
 
 <h2 id="lernziele">Lernziele</h2>
 
 <p>Du…</p>
 
 <ul>
-  <li>schreibst ein Dockerfile, das auf einem fremden Image aufsetzt und eigene
-Dateien hineinkopiert.</li>
-  <li>baust daraus ein Image mit einem Namen und einer Version und erklärst, was ohne
-<code>-t</code> passiert.</li>
-  <li>unterscheidest an Deinem eigenen Dockerfile, welche Anweisungen beim <strong>Bauen</strong>
-und welche beim <strong>Starten</strong> laufen.</li>
-  <li>ordnest die Anweisungen so, dass der Build-Cache trägt, und weist den Effekt
-nach.</li>
+  <li>liest aus der Bau-Ausgabe, welche Schritte aus dem Cache kamen und welche nicht.</li>
+  <li>ordnest ein Dockerfile so, dass sich selten Änderndes vorn steht.</li>
+  <li>misst den Unterschied in Sekunden statt ihn zu glauben.</li>
+  <li>erklärst, warum ein Layer, in dem eine Datei gelöscht wird, das Image nicht
+kleiner macht.</li>
 </ul>
 
 <h2 id="definition-of-done">Definition of Done</h2>
 
 <ul class="task-list">
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />In Deinem Arbeitsverzeichnis liegt ein <code>Dockerfile</code> und eine eigene
-HTML-Datei.</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast einmal <strong>ohne</strong> und einmal <strong>mit</strong> <code>-t</code> gebaut und den Unterschied in
-<code>docker images</code> gesehen.</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Ein Container aus Deinem Image <code>meine-website:1.0.0</code> läuft und liefert Deine
-Seite aus.</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Die zweite Seite, die beim Bauen per <code>RUN</code> entsteht, ist ebenfalls abrufbar.</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast Deine HTML-Datei geändert, neu gebaut und in der Bau-Ausgabe
-gefunden, welche Schritte aus dem Cache kamen.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast die Bauzeit <strong>vor</strong> dem Umbau nach einer Codeänderung gemessen.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Dein Dockerfile kopiert die Abhängigkeitsliste <strong>vor</strong> dem übrigen Code.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast die Bauzeit <strong>nach</strong> dem Umbau nach derselben Codeänderung gemessen.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Beide Zahlen stehen in Deiner <code>befehle.md</code>.</li>
   <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast die Reflexionsfragen schriftlich beantwortet.</li>
 </ul>
 
 <h2 id="arbeitsschritte">Arbeitsschritte</h2>
 
-<h3 id="ein-arbeitsverzeichnis-mit-einer-eigenen-seite-anlegen">Ein Arbeitsverzeichnis mit einer eigenen Seite anlegen</h3>
+<h3 id="zuerst-messen-dann-ändern">Zuerst messen, dann ändern</h3>
 
-<pre><code class="language-bash">mkdir meine-website
-</code></pre>
+<p>Nimm Dein Dockerfile der Webanwendung aus dem vorigen Block. Ändere eine Zeile
+in <code>app.py</code> – zum Beispiel den Text, den die Anwendung ausgibt.</p>
 
-<pre><code class="language-bash">cd meine-website
-</code></pre>
+<p>Bau das Image und <strong>stoppe die Zeit</strong>:</p>
 
-<pre><code class="language-bash">echo "&lt;h1&gt;Meine Seite&lt;/h1&gt;" &gt; index.html
-</code></pre>
-
-<blockquote>
-  <p><strong>Hinweis:</strong> Alles, was in diesem Verzeichnis liegt, wird beim Bauen an den
-Docker-Dienst geschickt. Leg hier nichts ab, was nicht ins Image soll.</p>
-</blockquote>
-
-<h3 id="das-dockerfile-schreiben">Das Dockerfile schreiben</h3>
-
-<p>Lege die Datei an:</p>
-
-<pre><code class="language-bash">nano Dockerfile
-</code></pre>
-
-<p>Schreib diese fünf Zeilen hinein:</p>
-
-<pre><code class="language-dockerfile">FROM nginx:1.27.5
-COPY index.html /usr/share/nginx/html/index.html
-RUN echo "&lt;h1&gt;Beim Bauen entstanden&lt;/h1&gt;" &gt; /usr/share/nginx/html/gebaut.html
-ENV MEIN_HINWEIS="Standardwert aus dem Image"
-EXPOSE 80
+<pre><code class="language-bash">time docker image build -t meine-webapp:mess-1 .
 </code></pre>
 
 <blockquote>
-  <p><strong>Hinweis:</strong> Speichern in <code>nano</code> mit <code>Strg</code>+<code>O</code> und <code>Enter</code>, beenden mit
-<code>Strg</code>+<code>X</code>. Die Datei heißt genau <code>Dockerfile</code> – ohne Endung.</p>
+  <p><strong>Hinweis:</strong> Lies die Bau-Ausgabe Zeile für Zeile. Welche Schritte sind als
+<code>CACHED</code> markiert – und welche nicht? Schreib die Zeit auf.</p>
 </blockquote>
 
-<p>Überleg Dir, bevor Du weitermachst: Welche der fünf Zeilen läuft beim <strong>Bauen</strong>,
-welche beim <strong>Starten</strong>?</p>
+<h3 id="die-reihenfolge-umbauen">Die Reihenfolge umbauen</h3>
 
-<h3 id="ohne-namen-bauen-und-nachsehen">Ohne Namen bauen und nachsehen</h3>
+<p>Ordne das Dockerfile so um, dass die Abhängigkeitsliste <strong>vor</strong> dem übrigen Code
+kopiert und installiert wird. Der Rest der Anwendung kommt danach.</p>
 
-<pre><code class="language-bash">docker image build .
+<blockquote>
+  <p><strong>Hinweis:</strong> Die Datei heißt <code>requirements.txt</code>. Überleg Dir, welche Zeile sich
+häufiger ändert – diese Datei oder Dein Anwendungscode.</p>
+</blockquote>
+
+<p>Bau einmal, damit der Cache den neuen Aufbau kennt:</p>
+
+<pre><code class="language-bash">docker image build -t meine-webapp:mess-2 .
 </code></pre>
+
+<h3 id="noch-einmal-messen">Noch einmal messen</h3>
+
+<p>Ändere wieder eine Zeile in <code>app.py</code> – dieselbe Art von Änderung wie vorhin.</p>
+
+<pre><code class="language-bash">time docker image build -t meine-webapp:mess-3 .
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Vergleiche die beiden Zeiten. Und sieh in der Ausgabe nach, welcher
+Schritt jetzt <code>CACHED</code> ist, der es vorher nicht war.</p>
+</blockquote>
+
+<h3 id="löschen-macht-nicht-kleiner">Löschen macht nicht kleiner</h3>
+
+<p>Leg ein kleines Dockerfile daneben an, in einer eigenen Datei <code>Dockerfile.ballast</code>:</p>
+
+<pre><code class="language-dockerfile">FROM debian:12-slim
+RUN apt-get update &amp;&amp; apt-get install -y curl
+RUN rm -rf /var/lib/apt/lists/*
+</code></pre>
+
+<pre><code class="language-bash">docker image build -f Dockerfile.ballast -t ballast:zwei-zeilen .
+</code></pre>
+
+<p>Und jetzt dasselbe in <strong>einer</strong> Anweisung – ändere <code>Dockerfile.ballast</code> so, dass
+Installation und Aufräumen in einer <code>RUN</code>-Zeile stehen, verbunden mit <code>&amp;&amp;</code>.</p>
+
+<pre><code class="language-bash">docker image build -f Dockerfile.ballast -t ballast:eine-zeile .
+</code></pre>
+
+<p>Vergleiche die Größen:</p>
 
 <pre><code class="language-bash">docker images
 </code></pre>
 
 <blockquote>
-  <p><strong>Hinweis:</strong> Findest Du Dein Image in der Liste? Sieh in den Spalten
-<code>REPOSITORY</code> und <code>TAG</code> nach. Genau das ist der Grund, warum der nächste Schritt
-anders aussieht.</p>
+  <p><strong>Hinweis:</strong> Wenn der Unterschied kleiner ausfällt, als Du erwartet hast: Sieh
+Dir an, wie viel die Paketlisten überhaupt ausmachen. Der Mechanismus ist
+derselbe, egal ob es um Megabyte oder Gigabyte geht.</p>
 </blockquote>
 
-<h3 id="mit-namen-und-version-bauen">Mit Namen und Version bauen</h3>
+<h3 id="bonus-freiwillig-zwei-stufen-statt-einer">Bonus (freiwillig): zwei Stufen statt einer</h3>
 
-<pre><code class="language-bash">docker image build -t meine-website:1.0.0 .
+<p>Nur, wenn Du früh fertig bist. Ein Layer wird nie wieder kleiner – also bleibt
+auch jedes Werkzeug im Image, mit dem gebaut wurde. Ein Dockerfile darf deshalb
+<strong>mehrere <code>FROM</code></strong> haben: In der ersten Stufe wird gebaut, in der letzten liegt
+nur noch das Ergebnis.</p>
+
+<p>Leg <code>Dockerfile.multistage</code> an:</p>
+
+<pre><code class="language-dockerfile">FROM python:3.12-slim AS bau
+WORKDIR /bau
+RUN pip install --no-cache-dir pyinstaller
+COPY app.py .
+RUN pyinstaller --onefile app.py
+
+FROM debian:12-slim
+COPY --from=bau /bau/dist/app /usr/local/bin/app
+CMD ["app"]
 </code></pre>
+
+<pre><code class="language-bash">docker image build -f Dockerfile.multistage -t meine-webapp:zwei-stufen .
+</code></pre>
+
+<p>Vergleiche die Größen:</p>
 
 <pre><code class="language-bash">docker images
 </code></pre>
 
-<h3 id="einen-container-starten-und-beide-seiten-abrufen">Einen Container starten und beide Seiten abrufen</h3>
-
-<pre><code class="language-bash">docker container create --name website -p 8080:80 meine-website:1.0.0
-</code></pre>
-
-<pre><code class="language-bash">docker container start website
-</code></pre>
-
-<pre><code class="language-bash">curl http://localhost:8080
-</code></pre>
-
-<pre><code class="language-bash">curl http://localhost:8080/gebaut.html
-</code></pre>
-
-<h3 id="prüfen-was-expose-bewirkt">Prüfen, was EXPOSE bewirkt</h3>
-
-<p>Starte denselben Container ohne Port-Veröffentlichung:</p>
-
-<pre><code class="language-bash">docker container create --name website-ohne-port meine-website:1.0.0
-</code></pre>
-
-<pre><code class="language-bash">docker container start website-ohne-port
-</code></pre>
-
-<pre><code class="language-bash">curl http://localhost:8081
-</code></pre>
-
 <blockquote>
-  <p><strong>Hinweis:</strong> Im Dockerfile steht <code>EXPOSE 80</code>. Trotzdem kommst Du nicht heran.
-Was macht <code>EXPOSE</code> also – und was nicht?</p>
+  <p><strong>Hinweis:</strong> <code>COPY --from=bau</code> holt eine Datei aus der ersten Stufe in die
+letzte. Alles andere aus der ersten Stufe – Python, <code>pip</code>, <code>pyinstaller</code>, die
+Zwischenergebnisse – landet <strong>nicht</strong> im fertigen Image. Es ist derselbe
+Mechanismus wie beim Aufräumen in einer <code>RUN</code>-Zeile, nur konsequenter: Was in
+der letzten Stufe nie entstanden ist, muss auch nicht gelöscht werden.</p>
 </blockquote>
 
-<pre><code class="language-bash">docker container stop website-ohne-port
-</code></pre>
-
-<pre><code class="language-bash">docker container rm website-ohne-port
-</code></pre>
-
-<h3 id="zum-schluss-aufräumen">Zum Schluss aufräumen</h3>
-
-<pre><code class="language-bash">docker container stop website
-</code></pre>
-
-<pre><code class="language-bash">docker container rm website
-</code></pre>
-
 <blockquote>
-  <p><strong>Hinweis:</strong> Das Arbeitsverzeichnis mit <code>Dockerfile</code> und <code>index.html</code> <strong>bleibt
-stehen</strong> – Du brauchst es in den nächsten beiden Übungen wieder.</p>
+  <p><strong>Hinweis:</strong> Der Bau dauert hier länger als sonst – <code>pyinstaller</code> packt einen
+Python-Interpreter mit ein. Das ist der Handel: längere Bauzeit gegen ein
+kleineres Ergebnis.</p>
 </blockquote>
 
 <h2 id="reflexionsfragen">Reflexionsfragen</h2>
 
 <ul>
-  <li>Was passiert, wenn Du beim Bauen des Images den Parameter <code>-t</code> weglässt? Wie
-findest Du so ein Image später wieder?</li>
-  <li>Wofür wird <code>EXPOSE</code> im Dockerfile verwendet – und wofür nicht?</li>
-  <li>Wie setzt man Umgebungsvariablen im Image? Wenn Konfiguration doch von außen
-kommen soll: Wozu dann <code>ENV</code>?</li>
-  <li>Was ist der Unterschied zwischen <code>ENTRYPOINT</code>, <code>CMD</code> und <code>RUN</code>? Welche davon
-laufen beim Bauen, welche beim Starten?</li>
-  <li>Wofür kann man <code>HEALTHCHECK</code> verwenden? Warum reicht „der Prozess läuft“ nicht
-als Aussage?</li>
-  <li>Warum war der Build nach der Änderung an <code>index.html</code> schneller als der erste –
-und welche Schritte mussten trotzdem neu laufen?</li>
+  <li>Wie viel Zeit hat der Umbau gespart, und <strong>wobei genau</strong>?</li>
+  <li>Welche Änderung macht jetzt noch den ganzen Build ungültig – und warum ist das
+richtig so?</li>
+  <li>Warum ist das Image mit zwei <code>RUN</code>-Zeilen größer, obwohl am Ende dieselben
+Dateien fehlen?</li>
+  <li>Was ändert sich an Deinem Image, wenn Du <strong>nur</strong> den Startbefehl (<code>CMD</code>)
+anfasst? Wird dabei eine Schicht neu gebaut?</li>
+  <li>Falls Du den Bonus gemacht hast: Was liegt im Image mit zwei Stufen <strong>nicht</strong>
+mehr drin – und warum hättest Du das mit einer einzelnen <code>RUN</code>-Zeile nicht
+wegbekommen?</li>
 </ul>
 
 
-<textarea id="avd-academy-md-source" hidden aria-hidden="true"># Ein eigenes Image aus einem Dockerfile bauen
+<textarea id="avd-academy-md-source" hidden aria-hidden="true"># Die Reihenfolge umbauen und messen
 
-**Als** Entwicklerin **möchte ich** meine eigenen Inhalte in ein Image bringen,
-**damit** ich sie weitergeben kann, ohne zu erklären, wie man sie installiert.
+**Als** Entwicklerin **möchte ich** wissen, was mein Build jedes Mal kostet,
+**damit** ich ihn nicht aus Gewohnheit teuer lasse.
 
 ## Lernziele
 
 Du…
 
-- schreibst ein Dockerfile, das auf einem fremden Image aufsetzt und eigene
-  Dateien hineinkopiert.
-- baust daraus ein Image mit einem Namen und einer Version und erklärst, was ohne
-  `-t` passiert.
-- unterscheidest an Deinem eigenen Dockerfile, welche Anweisungen beim **Bauen**
-  und welche beim **Starten** laufen.
-- ordnest die Anweisungen so, dass der Build-Cache trägt, und weist den Effekt
-  nach.
+- liest aus der Bau-Ausgabe, welche Schritte aus dem Cache kamen und welche nicht.
+- ordnest ein Dockerfile so, dass sich selten Änderndes vorn steht.
+- misst den Unterschied in Sekunden statt ihn zu glauben.
+- erklärst, warum ein Layer, in dem eine Datei gelöscht wird, das Image nicht
+  kleiner macht.
 
 ## Definition of Done
 
-* [ ] In Deinem Arbeitsverzeichnis liegt ein `Dockerfile` und eine eigene
-  HTML-Datei.
-* [ ] Du hast einmal **ohne** und einmal **mit** `-t` gebaut und den Unterschied in
-  `docker images` gesehen.
-* [ ] Ein Container aus Deinem Image `meine-website:1.0.0` läuft und liefert Deine
-  Seite aus.
-* [ ] Die zweite Seite, die beim Bauen per `RUN` entsteht, ist ebenfalls abrufbar.
-* [ ] Du hast Deine HTML-Datei geändert, neu gebaut und in der Bau-Ausgabe
-  gefunden, welche Schritte aus dem Cache kamen.
+* [ ] Du hast die Bauzeit **vor** dem Umbau nach einer Codeänderung gemessen.
+* [ ] Dein Dockerfile kopiert die Abhängigkeitsliste **vor** dem übrigen Code.
+* [ ] Du hast die Bauzeit **nach** dem Umbau nach derselben Codeänderung gemessen.
+* [ ] Beide Zahlen stehen in Deiner `befehle.md`.
 * [ ] Du hast die Reflexionsfragen schriftlich beantwortet.
 
 ## Arbeitsschritte
 
-### Ein Arbeitsverzeichnis mit einer eigenen Seite anlegen
+### Zuerst messen, dann ändern
+
+Nimm Dein Dockerfile der Webanwendung aus dem vorigen Block. Ändere eine Zeile
+in `app.py` – zum Beispiel den Text, den die Anwendung ausgibt.
+
+Bau das Image und **stoppe die Zeit**:
 
 ```bash
-mkdir meine-website
+time docker image build -t meine-webapp:mess-1 .
 ```
+
+&gt; **Hinweis:** Lies die Bau-Ausgabe Zeile für Zeile. Welche Schritte sind als
+&gt; `CACHED` markiert – und welche nicht? Schreib die Zeit auf.
+
+### Die Reihenfolge umbauen
+
+Ordne das Dockerfile so um, dass die Abhängigkeitsliste **vor** dem übrigen Code
+kopiert und installiert wird. Der Rest der Anwendung kommt danach.
+
+&gt; **Hinweis:** Die Datei heißt `requirements.txt`. Überleg Dir, welche Zeile sich
+&gt; häufiger ändert – diese Datei oder Dein Anwendungscode.
+
+Bau einmal, damit der Cache den neuen Aufbau kennt:
 
 ```bash
-cd meine-website
+docker image build -t meine-webapp:mess-2 .
 ```
+
+### Noch einmal messen
+
+Ändere wieder eine Zeile in `app.py` – dieselbe Art von Änderung wie vorhin.
 
 ```bash
-echo &quot;&lt;h1&gt;Meine Seite&lt;/h1&gt;&quot; &gt; index.html
+time docker image build -t meine-webapp:mess-3 .
 ```
 
-&gt; **Hinweis:** Alles, was in diesem Verzeichnis liegt, wird beim Bauen an den
-&gt; Docker-Dienst geschickt. Leg hier nichts ab, was nicht ins Image soll.
+&gt; **Hinweis:** Vergleiche die beiden Zeiten. Und sieh in der Ausgabe nach, welcher
+&gt; Schritt jetzt `CACHED` ist, der es vorher nicht war.
 
-### Das Dockerfile schreiben
+### Löschen macht nicht kleiner
 
-Lege die Datei an:
-
-```bash
-nano Dockerfile
-```
-
-Schreib diese fünf Zeilen hinein:
+Leg ein kleines Dockerfile daneben an, in einer eigenen Datei `Dockerfile.ballast`:
 
 ```dockerfile
-FROM nginx:1.27.5
-COPY index.html /usr/share/nginx/html/index.html
-RUN echo &quot;&lt;h1&gt;Beim Bauen entstanden&lt;/h1&gt;&quot; &gt; /usr/share/nginx/html/gebaut.html
-ENV MEIN_HINWEIS=&quot;Standardwert aus dem Image&quot;
-EXPOSE 80
-```
-
-&gt; **Hinweis:** Speichern in `nano` mit `Strg`+`O` und `Enter`, beenden mit
-&gt; `Strg`+`X`. Die Datei heißt genau `Dockerfile` – ohne Endung.
-
-Überleg Dir, bevor Du weitermachst: Welche der fünf Zeilen läuft beim **Bauen**,
-welche beim **Starten**?
-
-### Ohne Namen bauen und nachsehen
-
-```bash
-docker image build .
+FROM debian:12-slim
+RUN apt-get update &amp;&amp; apt-get install -y curl
+RUN rm -rf /var/lib/apt/lists/*
 ```
 
 ```bash
-docker images
+docker image build -f Dockerfile.ballast -t ballast:zwei-zeilen .
 ```
 
-&gt; **Hinweis:** Findest Du Dein Image in der Liste? Sieh in den Spalten
-&gt; `REPOSITORY` und `TAG` nach. Genau das ist der Grund, warum der nächste Schritt
-&gt; anders aussieht.
-
-### Mit Namen und Version bauen
+Und jetzt dasselbe in **einer** Anweisung – ändere `Dockerfile.ballast` so, dass
+Installation und Aufräumen in einer `RUN`-Zeile stehen, verbunden mit `&amp;&amp;`.
 
 ```bash
-docker image build -t meine-website:1.0.0 .
+docker image build -f Dockerfile.ballast -t ballast:eine-zeile .
 ```
+
+Vergleiche die Größen:
 
 ```bash
 docker images
 ```
 
-### Einen Container starten und beide Seiten abrufen
+&gt; **Hinweis:** Wenn der Unterschied kleiner ausfällt, als Du erwartet hast: Sieh
+&gt; Dir an, wie viel die Paketlisten überhaupt ausmachen. Der Mechanismus ist
+&gt; derselbe, egal ob es um Megabyte oder Gigabyte geht.
 
-```bash
-docker container create --name website -p 8080:80 meine-website:1.0.0
+### Bonus (freiwillig): zwei Stufen statt einer
+
+Nur, wenn Du früh fertig bist. Ein Layer wird nie wieder kleiner – also bleibt
+auch jedes Werkzeug im Image, mit dem gebaut wurde. Ein Dockerfile darf deshalb
+**mehrere `FROM`** haben: In der ersten Stufe wird gebaut, in der letzten liegt
+nur noch das Ergebnis.
+
+Leg `Dockerfile.multistage` an:
+
+```dockerfile
+FROM python:3.12-slim AS bau
+WORKDIR /bau
+RUN pip install --no-cache-dir pyinstaller
+COPY app.py .
+RUN pyinstaller --onefile app.py
+
+FROM debian:12-slim
+COPY --from=bau /bau/dist/app /usr/local/bin/app
+CMD [&quot;app&quot;]
 ```
 
 ```bash
-docker container start website
+docker image build -f Dockerfile.multistage -t meine-webapp:zwei-stufen .
 ```
+
+Vergleiche die Größen:
 
 ```bash
-curl http://localhost:8080
+docker images
 ```
 
-```bash
-curl http://localhost:8080/gebaut.html
-```
+&gt; **Hinweis:** `COPY --from=bau` holt eine Datei aus der ersten Stufe in die
+&gt; letzte. Alles andere aus der ersten Stufe – Python, `pip`, `pyinstaller`, die
+&gt; Zwischenergebnisse – landet **nicht** im fertigen Image. Es ist derselbe
+&gt; Mechanismus wie beim Aufräumen in einer `RUN`-Zeile, nur konsequenter: Was in
+&gt; der letzten Stufe nie entstanden ist, muss auch nicht gelöscht werden.
 
-### Prüfen, was EXPOSE bewirkt
-
-Starte denselben Container ohne Port-Veröffentlichung:
-
-```bash
-docker container create --name website-ohne-port meine-website:1.0.0
-```
-
-```bash
-docker container start website-ohne-port
-```
-
-```bash
-curl http://localhost:8081
-```
-
-&gt; **Hinweis:** Im Dockerfile steht `EXPOSE 80`. Trotzdem kommst Du nicht heran.
-&gt; Was macht `EXPOSE` also – und was nicht?
-
-```bash
-docker container stop website-ohne-port
-```
-
-```bash
-docker container rm website-ohne-port
-```
-
-### Zum Schluss aufräumen
-
-```bash
-docker container stop website
-```
-
-```bash
-docker container rm website
-```
-
-&gt; **Hinweis:** Das Arbeitsverzeichnis mit `Dockerfile` und `index.html` **bleibt
-&gt; stehen** – Du brauchst es in den nächsten beiden Übungen wieder.
+&gt; **Hinweis:** Der Bau dauert hier länger als sonst – `pyinstaller` packt einen
+&gt; Python-Interpreter mit ein. Das ist der Handel: längere Bauzeit gegen ein
+&gt; kleineres Ergebnis.
 
 ## Reflexionsfragen
 
-- Was passiert, wenn Du beim Bauen des Images den Parameter `-t` weglässt? Wie
-  findest Du so ein Image später wieder?
-- Wofür wird `EXPOSE` im Dockerfile verwendet – und wofür nicht?
-- Wie setzt man Umgebungsvariablen im Image? Wenn Konfiguration doch von außen
-  kommen soll: Wozu dann `ENV`?
-- Was ist der Unterschied zwischen `ENTRYPOINT`, `CMD` und `RUN`? Welche davon
-  laufen beim Bauen, welche beim Starten?
-- Wofür kann man `HEALTHCHECK` verwenden? Warum reicht „der Prozess läuft“ nicht
-  als Aussage?
-- Warum war der Build nach der Änderung an `index.html` schneller als der erste –
-  und welche Schritte mussten trotzdem neu laufen?
+- Wie viel Zeit hat der Umbau gespart, und **wobei genau**?
+- Welche Änderung macht jetzt noch den ganzen Build ungültig – und warum ist das
+  richtig so?
+- Warum ist das Image mit zwei `RUN`-Zeilen größer, obwohl am Ende dieselben
+  Dateien fehlen?
+- Was ändert sich an Deinem Image, wenn Du **nur** den Startbefehl (`CMD`)
+  anfasst? Wird dabei eine Schicht neu gebaut?
+- Falls Du den Bonus gemacht hast: Was liegt im Image mit zwei Stufen **nicht**
+  mehr drin – und warum hättest Du das mit einer einzelnen `RUN`-Zeile nicht
+  wegbekommen?
 
 ## Weiterführende Informationen
 
-- [Dockerfile Reference](https://docs.docker.com/reference/dockerfile/)
-- [Das Dockerfile von NGINX (GitHub)](https://github.com/nginx/docker-nginx/blob/master/mainline/debian/Dockerfile)
+- [Dockerfile-Referenz](https://docs.docker.com/reference/dockerfile/)
+- [Best practices for Dockerfiles](https://docs.docker.com/build/building/best-practices/)
 </textarea>
     </main><aside class="avd-academy-guide-sidebar"><details class="avd-academy-guide-side avd-academy-guide-side--toc avd-academy-fold" data-avd-academy-toc-box
                data-avd-academy-toc-grenze="12" open hidden>
@@ -498,7 +468,7 @@ docker container rm website
       </div>
       <div class="avd-academy-guide-side avd-academy-guide-side--bordered">
         <div class="avd-academy-guide-side__label">Weiterführende Informationen</div>
-        <div class="avd-academy-guide-side__links"><a href="https://docs.docker.com/reference/dockerfile/" target="_blank" rel="noopener"><span>Dockerfile Reference</span></a><a href="https://github.com/nginx/docker-nginx/blob/master/mainline/debian/Dockerfile" target="_blank" rel="noopener"><span>Das Dockerfile von NGINX (GitHub)</span></a>
+        <div class="avd-academy-guide-side__links"><a href="https://docs.docker.com/reference/dockerfile/" target="_blank" rel="noopener"><span>Dockerfile-Referenz</span></a><a href="https://docs.docker.com/build/building/best-practices/" target="_blank" rel="noopener"><span>Best practices for Dockerfiles</span></a>
         </div></div>
     </aside>
   </div><div class="avd-academy-print-contact" aria-hidden="true">

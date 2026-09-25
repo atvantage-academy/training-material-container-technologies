@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<!--
+  ATVANTAGE-Academy – Layout „presentation“ (Jekyll)
+  --------------------------------------------------
+  Folienbasierter Vortrag aus GEWÖHNLICHEM MARKDOWN. Die Seite läuft im Vollbild,
+  das Academy-Theme tritt zurück: keine Meta-Leiste, keine TopNav, keine
+  Brotkrumen, kein Footer, keine Sidebar – nur eine schmale Kopfleiste mit dem
+  Präsentationstitel und die Folienfläche darunter.
+
+  Übersetzung Markdown → Folien (macht presentation.js zur Laufzeit):
+    #  (bzw. Front-Matter `title`)  → Titel der Präsentation: klein in der
+                                      Kopfleiste UND groß auf der Titelfolie
+    ## (h2)                         → Titel einer Folie; JEDES h2 beginnt eine
+                                      neue Folie
+    alles vor dem ersten h2         → Titelfolie (Untertitel, Trainer:in, Datum)
+
+  Bedienung: ← → (auch Leertaste, Bild ↑/↓, Pos1/Ende), die Schaltflächen unten
+  rechts oder Wischen auf dem Touchscreen. Beim Wechsel schiebt sich die Folie
+  nach links aus dem Bild. Die aktuelle Folie steht im URL-Hash (#/3) und ist
+  damit verlinkbar und reload-fest.
+
+  Drucken: Jede Präsentation hat ein Drucklayout – im Ausdruck steht jede Folie
+  auf einer eigenen Seite (Schaltflächen und Fortschritt entfallen). Der Knopf in
+  der Kopfleiste löst es aus. Der QR-Code neben dem Knopf bleibt im Ausdruck
+  stehen und führt vom Blatt zurück zur Online-Fassung.
+
+  QR-Code: links vom Farbschema-Umschalter (dieselbe Reihenfolge wie in der
+  Kopfzeile der übrigen Seiten), gleich groß, Tooltip „Diese Seite auf Deinem
+  Smartphone öffnen“; vergrößert sich bei Hover/Tippen auf Scan-Größe. Er zeigt
+  auf die AKTUELLE Folie (Fragment #/3) und wird beim Blättern neu berechnet.
+
+  Front Matter (alles optional):
+    title:       "…"              → sonst die erste #-Überschrift
+    description: "…"              → Meta-Description
+
+  OHNE JavaScript bleibt die Seite lesbar: Sie rendert dann als eine lange,
+  scrollbare Markdown-Seite (die Folien-Aufteilung ist eine Zutat, keine
+  Voraussetzung).
+
+  Das eigenständige Deck (templates/presentations/, reines HTML mit Fragmenten
+  und Speaker-Notes) bleibt daneben bestehen – siehe docs/theme/academy.md.
+--><html lang="de">
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Warum Container? · Containertechnologien (Academy)</title><meta name="description" content="Von der Agilität über die Wall of Confusion zum Container als Paket – und von dort zu den Begriffen Image und Container."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta property="og:title" content="Warum Container?">
+<meta property="og:description" content="Von der Agilität über die Wall of Confusion zum Container als Paket – und von dort zu den Begriffen Image und Container.">
+<meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790327546"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790327546">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790327546">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790327546">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790327546"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790327546">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790327546" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790327546" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790327546">
+<script type="module">
+  const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
+  const _hlsprachen = ["java", "http", "json", "xml"];
+  Promise.all([import(_hlbase + "core.min.js"), ..._hlsprachen.map((s) => import(_hlbase + s + ".min.js"))])
+    .then(([core, ...grammatiken]) => {
+      const hljs = core.default;
+      _hlsprachen.forEach((s, i) => hljs.registerLanguage(s, grammatiken[i].default));
+      const _auswahl = _hlsprachen.map((s) => "pre code.language-" + s).join(",");
+      const _faerben = (wurzel) => (wurzel || document)
+        .querySelectorAll(_auswahl)
+        .forEach((el) => { if (!el.dataset.highlighted) { hljs.highlightElement(el); } });
+      _faerben(document);
+
+      /* NACHTRAEGLICH EINGEFUEGTER CODE. Die Hervorhebung laeuft einmal beim Laden.
+         Eine Seite, die ihre Codebloecke per Skript einsetzt - eine Visualisierung,
+         die rohe Nachrichten durchschaltet -, bekam deshalb gar keine Farben und
+         baute sich einen eigenen Hervorheber. Genau die Kopie, die das Theme
+         verhindern soll.
+
+         `AvdHighlight.apply(knoten)` faerbt, was seither dazugekommen ist; `hljs`
+         liegt daneben fuer Faelle, die mehr brauchen. Das Ereignis sagt Seiten, die
+         frueh zeichnen, wann der Haken da ist - die Module laden asynchron. */
+      window.AvdHighlight = { hljs, apply: _faerben, languages: _hlsprachen.slice() };
+      document.dispatchEvent(new CustomEvent("avd-academy-highlight-ready"));
+
+      /* Statuszeile nach Klasse einfaerben. highlight.js gibt jedem dreistelligen
+         Code dieselbe Klasse `hljs-number` - in einem Mitschnitt ist aber genau das
+         die Stelle, auf die man zuerst sieht: 2xx ist etwas anderes als 4xx.
+         Deshalb hier die einzige eigene Zutat, und bewusst nur diese: Die
+         Statusklassen von HTTP aendern sich nicht, das bleibt stabil. */
+      document.querySelectorAll("pre code.language-http .hljs-number").forEach((el) => {
+        const code = parseInt(el.textContent, 10);
+        if (code >= 100 && code <= 599) {
+          el.classList.add("avd-academy-http-status--" + Math.floor(code / 100) + "xx");
+        }
+      });
+    });
+</script>
+<link rel="apple-touch-icon" sizes="180x180" href="/training-material-container-technologies/theme/atvantage/assets/icon-180.png">
+<link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
+<link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/presentation.css?v=1790327546">
+  <script src="/training-material-container-technologies/theme/jekyll/presentation.js?v=1790327546" defer></script>
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790327546"></head>
+<body class="avd-academy-present" data-avd-academy-present data-avd-academy-present-title="Warum Container?">
+  <a class="avd-academy-skip-link" href="#avd-academy-deck">Zum Inhalt springen</a>
+
+  <header class="avd-academy-present__bar">
+    <img class="avd-academy-present__logo" src="/training-material-container-technologies/assets/logo-schulung.svg" alt="ATVANTAGE Academy"><span class="avd-academy-present__logo-mask" role="img" aria-label="ATVANTAGE Academy"
+          style="--avd-academy-logo-src: url('/training-material-container-technologies/assets/logo-schulung.svg'); --avd-academy-logo-ratio: 260 / 24;"></span><span class="avd-academy-present__title">Warum Container?</span>
+    <span class="avd-academy-present__counter" data-avd-academy-present-counter aria-live="off"></span>
+    <div class="avd-academy-present__tools"><button type="button" class="avd-academy-present__back" data-avd-academy-back hidden
+              title="Zurück" aria-label="Zurück">← Zurück</button><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
+                title="Diese Seite auf Deinem Smartphone öffnen"
+                aria-label="Diese Seite auf Deinem Smartphone öffnen"></button><button type="button" class="avd-academy-tool avd-academy-tool--theme avd-academy-theme-toggle" data-avd-academy-theme-toggle
+              title="Farbschema umschalten (hell/dunkel)"
+              aria-label="Farbschema umschalten">◐</button><button type="button" class="avd-academy-tool avd-academy-tool--print avd-academy-print-btn"
+                data-avd-academy-present-print
+                title="Drucken (alle Folien)" aria-label="Drucken (alle Folien)"></button><button type="button" class="avd-academy-tool avd-academy-tool--full"
+              data-avd-academy-present-full
+              title="Vollbild (Taste F)" aria-label="Vollbild">⛶</button></div>
+  </header><main class="avd-academy-deck" id="avd-academy-deck" data-avd-academy-deck>
+    
+<h1 id="warum-container">Warum Container?</h1>
+
+<p>Was sie lösen – und warum die Frage vor der Technik kommt.</p>
+
+<style>
+  /* =========================================================================
+     EINFUEHRUNG – Bilder zur Herleitung
+     Alle Farben aus den Academy-Tokens.
+     ========================================================================= */
+  .wc__kette {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    gap: var(--avd-academy-space-4);
+    max-width: 52rem;
+    margin: var(--avd-academy-space-8) auto;
+    text-align: left;
+  }
+  .wc__glied {
+    padding: var(--avd-academy-space-4);
+    border: 2px solid var(--avd-academy-color-border);
+    border-radius: var(--avd-academy-radius);
+    background: var(--avd-academy-color-bg);
+  }
+  .wc__glied--ziel { border-color: var(--avd-academy-color-accent); }
+  .wc__glied p { margin: 0; }
+  .wc__glied strong { display: block; margin-bottom: var(--avd-academy-space-2);
+    color: var(--avd-academy-color-headline); }
+
+  /* Die Mauer: zwei Seiten, dazwischen eine Wand. */
+  .wc__mauer {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: var(--avd-academy-space-4);
+    align-items: stretch;
+    max-width: 52rem;
+    margin: var(--avd-academy-space-8) auto;
+    text-align: left;
+  }
+  .wc__seite {
+    padding: var(--avd-academy-space-4);
+    border: 2px solid var(--avd-academy-color-border);
+    border-radius: var(--avd-academy-radius);
+  }
+  .wc__seite p { margin: var(--avd-academy-space-2) 0 0; }
+  .wc__wand {
+    width: 0.8rem;
+    background: repeating-linear-gradient(
+      0deg,
+      var(--avd-academy-color-border) 0 0.5rem,
+      transparent 0.5rem 0.65rem);
+    border-radius: var(--avd-academy-radius);
+  }
+
+  /* Die Liste mit dem Rahmen darum - das Bild der Einheit. */
+  .wc__rahmen {
+    max-width: 44rem;
+    margin: var(--avd-academy-space-6) auto;
+    padding: var(--avd-academy-space-4);
+    border: 3px solid var(--avd-academy-color-accent);
+    border-radius: var(--avd-academy-radius-lg);
+    text-align: left;
+  }
+  .wc__rahmen-kopf {
+    margin: 0 0 var(--avd-academy-space-3);
+    font-weight: var(--avd-academy-fw-bold);
+    color: var(--avd-academy-color-accent-ink);
+  }
+  ul.wc__braucht {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: var(--avd-academy-space-2);
+    list-style: none; margin: 0; padding: 0;
+  }
+  .wc__braucht li {
+    margin: 0;
+    padding: var(--avd-academy-space-2) var(--avd-academy-space-3);
+    border: 1px solid var(--avd-academy-color-border);
+    border-radius: var(--avd-academy-radius);
+    background: var(--avd-academy-color-bg-subtle);
+    font-size: var(--avd-academy-fs-sm);
+  }
+  .wc__aussen {
+    max-width: 44rem; margin: var(--avd-academy-space-3) auto 0;
+    font-size: var(--avd-academy-fs-sm);
+    color: var(--avd-academy-color-ink-muted);
+    text-align: left;
+  }
+
+  /* Bauplan und Ausprägung. */
+  .wc__paar {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: var(--avd-academy-space-6);
+    max-width: 48rem; margin: var(--avd-academy-space-8) auto;
+    text-align: left;
+  }
+  .wc__karte {
+    padding: var(--avd-academy-space-4);
+    border: 2px solid var(--avd-academy-color-border);
+    border-radius: var(--avd-academy-radius);
+  }
+  .wc__karte h3 { margin: 0 0 var(--avd-academy-space-2); color: var(--avd-academy-color-headline); }
+  .wc__karte p { margin: 0 0 var(--avd-academy-space-2); }
+  .wc__karte p:last-child { margin-bottom: 0; }
+  .wc__karte code { font-size: 0.9em; }
+
+  .avd-academy-slide__inner { max-width: 52rem; margin-block: auto; }
+  .avd-academy-slide h2 { margin-bottom: var(--avd-academy-space-8); text-wrap: normal; }
+  .avd-academy-slide__inner > p { margin-bottom: var(--avd-academy-space-6); }
+</style>
+
+<h2 id="agilität-will-häufig-liefern">Agilität will häufig liefern</h2>
+
+<div class="wc__kette">
+  <div class="wc__glied">
+    <p><strong>Agilität</strong>In kurzen Abständen etwas Fertiges abliefern.</p>
+  </div>
+  <div class="wc__glied">
+    <p><strong>Häufig liefern</strong>Heißt: den Übergabepunkt zum Betrieb oft passieren.</p>
+  </div>
+  <div class="wc__glied wc__glied--ziel">
+    <p><strong>Also selbst ausliefern</strong>Wer ihn oft passiert, will ihn nicht jedes Mal verhandeln.</p>
+  </div>
+</div>
+
+<p><strong>DevOps</strong> ist hier genau das – und nicht mehr: Entwicklung und Betrieb teilen
+sich Werkzeuge und Verantwortung.</p>
+
+<h2 id="früher-eine-mauer-dazwischen">Früher: eine Mauer dazwischen</h2>
+
+<div class="wc__mauer">
+  <div class="wc__seite">
+    <strong>Entwicklung</strong>
+    <p>„Bei mir läuft es.“</p>
+  </div>
+  <div class="wc__wand" aria-hidden="true"></div>
+  <div class="wc__seite">
+    <strong>Betrieb</strong>
+    <p>„Dann hast Du es falsch gebaut.“</p>
+  </div>
+</div>
+
+<p>Darüber flog ein Paket – ein <code>JAR</code>, ein NPM-Paket, ein ZIP mit Skripten.</p>
+
+<h2 id="und-dabei-immer-die-anleitung">Und dabei immer: die Anleitung</h2>
+
+<blockquote>
+  <p>Java 17 installieren. <code>APP_ENV</code> setzen. Port 8080 freigeben.
+Verzeichnis <code>/var/data</code> anlegen, Schreibrecht für den Dienstbenutzer.</p>
+</blockquote>
+
+<p>Sie ist Prosa. Sie veraltet. Und sie wird von Menschen ausgeführt.</p>
+
+<p><strong>Das Paket enthielt die Anwendung – aber nicht das, was sie zum Laufen braucht.</strong></p>
+
+<h2 id="was-braucht-eine-anwendung-zum-laufen">Was braucht eine Anwendung zum Laufen?</h2>
+
+<div class="wc__rahmen">
+  <p class="wc__rahmen-kopf">Das alles steckt ab jetzt im Paket:</p>
+  <ul class="wc__braucht">
+    <li>Laufzeit und Bibliotheken</li>
+    <li>Dateisystem, Verzeichnisse</li>
+    <li>Startbefehl</li>
+    <li>Ports</li>
+    <li>Umgebungsvariablen</li>
+    <li>Benutzer und Rechte</li>
+  </ul>
+</div>
+
+<p class="wc__aussen">Außerhalb des Rahmens bleibt, was die Umgebung beisteuert:
+Adressen der Nachbardienste, Zugangsdaten, Speicher und CPU.</p>
+
+<h2 id="das-paket-heißt-container">Das Paket heißt Container</h2>
+
+<p>Früher: <strong>Paket + Anleitung</strong>, ausgeführt von Menschen.</p>
+
+<p>Jetzt: <strong>ein Artefakt</strong>, das seine Umgebung mitbringt – und überall gleich startet.</p>
+
+<h2 id="container-ist-nicht-virtuelle-maschine">Container ist nicht virtuelle Maschine</h2>
+
+<div class="wc__paar">
+  <div class="wc__karte">
+    <h3>Virtuelle Maschine</h3>
+    <p>Bringt ein <strong>ganzes Betriebssystem</strong> mit.</p>
+    <p>Startet in Minuten. Eine Handvoll pro Maschine.</p>
+  </div>
+  <div class="wc__karte">
+    <h3>Container</h3>
+    <p>Teilt sich den <strong>Kernel</strong> des Wirts.</p>
+    <p>Startet in Sekunden. Dutzende pro Maschine.</p>
+  </div>
+</div>
+
+<h2 id="image-und-container">Image und Container</h2>
+
+<div class="wc__paar">
+  <div class="wc__karte">
+    <h3>Image</h3>
+    <p>Der <strong>Bauplan</strong>. Unveränderlich.</p>
+    <p>Wie eine <code>Klasse</code>.</p>
+  </div>
+  <div class="wc__karte">
+    <h3>Container</h3>
+    <p>Eine <strong>laufende Ausprägung</strong>. Es kann viele geben.</p>
+    <p>Wie ein <code>Objekt</code>.</p>
+  </div>
+</div>
+
+<h2 id="der-weg-eines-containers">Der Weg eines Containers</h2>
+
+<p><strong>erzeugt → gestartet → gestoppt → gelöscht</strong></p>
+
+<p>Und davor: das Image aus der <strong>Registry</strong> geholt.</p>
+
+<p>Beim Löschen ist alles weg, was im Container entstanden ist. <em>Merkt Euch die Frage.</em></p>
+
+  </main>
+
+  <nav class="avd-academy-present__controls" aria-label="Foliennavigation" hidden data-avd-academy-present-controls>
+    <button type="button" class="avd-academy-present__nav" data-avd-academy-present-prev
+            title="Vorherige Folie (←)" aria-label="Vorherige Folie">‹</button>
+    <button type="button" class="avd-academy-present__nav" data-avd-academy-present-next
+            title="Nächste Folie (→)" aria-label="Nächste Folie">›</button>
+  </nav>
+
+  <div class="avd-academy-present__progress" aria-hidden="true">
+    <div class="avd-academy-present__progress-fill" data-avd-academy-present-progress></div>
+  </div><div class="avd-academy-print-contact" aria-hidden="true">
+    <span>Kontakt: https://academy.atvantage-academy.workers.dev/</span>
+    <span>academy@atvantage.com</span>
+  </div>
+</body>
+</html>

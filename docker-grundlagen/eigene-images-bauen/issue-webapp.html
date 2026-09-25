@@ -59,10 +59,10 @@
 --><html lang="de">
 <head>
   <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"><title>Kursbeschreibung · Containertechnologien (Academy)</title><meta name="description" content="Docker-Grundlagen – zwei Tage vom ersten Container bis zum eigenen, veröffentlichten Image."><meta property="og:site_name" content="Containertechnologien (Academy)">
-<meta property="og:title" content="Kursbeschreibung">
-<meta property="og:description" content="Docker-Grundlagen – zwei Tage vom ersten Container bis zum eigenen, veröffentlichten Image.">
-<meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Die Webanwendung als eigenes Image · Containertechnologien (Academy)</title><meta name="description" content="Aus der Webanwendung ein eigenes Image machen – und dabei entscheiden, was hineingehört und was beim Start bleibt."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta property="og:title" content="Die Webanwendung als eigenes Image">
+<meta property="og:description" content="Aus der Webanwendung ein eigenes Image machen – und dabei entscheiden, was hineingehört und was beim Start bleibt.">
+<meta property="og:type" content="article"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790327546"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790327546">
 <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790327546">
@@ -136,184 +136,174 @@
               aria-label="Farbschema umschalten">◐</button></div>
 </header>
 <section class="avd-academy-guide-hero"
-           aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/">Home</a><span>/</span><a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a><span>/</span><span aria-current="page">Kursbeschreibung</span></nav><div class="avd-academy-guide-hero__meta">
-      <div class="avd-academy-guide-hero__tags">
+           aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a><span>/</span><span aria-current="page">Die Webanwendung als eigenes Image</span></nav><div class="avd-academy-guide-hero__meta">
+      <div class="avd-academy-guide-hero__tags"><span class="avd-academy-tag avd-academy-tag--time">ca. 35 Minuten</span><span class="avd-academy-tag">Dockerfile</span><span class="avd-academy-tag">Images</span><span class="avd-academy-tag">Umgebungsvariablen</span>
       </div>
       <div class="avd-academy-guide-hero__actions">
+        <button type="button" class="avd-academy-btn avd-academy-btn--ghost avd-academy-copy-md"
+                data-avd-academy-copy-md="#avd-academy-md-source"
+                title="Markdown kopieren" aria-label="Markdown kopieren"></button>
       </div>
-    </div><h1 id="avd-academy-page-title">Kursbeschreibung</h1>
+    </div><h1 id="avd-academy-page-title">Die Webanwendung als eigenes Image</h1>
   </section><div class="avd-academy-guide-layout">
-    <main class="avd-academy-guide-main" id="avd-academy-content">
+    <main class="avd-academy-guide-main avd-academy-guide-main--numbered" id="avd-academy-content">
 
-<h2 id="zielgruppe">Zielgruppe</h2>
-
-<p><strong>IT-Beschäftigte, die künftig mit Containern arbeiten</strong> – unabhängig von Sprache,
-Framework und Rolle. Das sind in erster Linie <strong>Softwareentwickler:innen</strong>, die ihre
-Anwendungen in Containern bauen und betreiben sollen; ebenso richtet sich der Kurs
-an <strong>Test-, Build- und betriebsnahe Rollen</strong>, an <strong>Systemintegration</strong> und an
-<strong>technische Projektleitung</strong>, die mitreden können muss, wenn über Images
-entschieden wird.</p>
-
-<p>Mitzubringen ist <strong>Erfahrung mit Software, die irgendwo laufen muss</strong> – ein Gefühl
-dafür, was Konfiguration von Programmcode unterscheidet und woran es liegt, wenn
-etwas auf einem Rechner läuft und auf dem nächsten nicht. Eine Anwendung selbst
-geschrieben zu haben ist hilfreich, aber nicht erforderlich.</p>
-
-<p><strong>Kommandozeilenerfahrung wird ausdrücklich nicht vorausgesetzt.</strong> Alle Übungen
-laufen zwar auf der Kommandozeile – das ist bei Containern die einzige Umgebung,
-die überall gleich funktioniert –, aber sie kommen mit einer Handvoll Befehle aus,
-die zu Kursbeginn gemeinsam durchgegangen werden. Wer <code>cd</code> und <code>ls</code> kennt, ist
-bereit.</p>
-
-<p>Ebenso wenig sind <strong>Git-Kenntnisse</strong> nötig: In den Übungen wird nichts geklont und
-nichts gepusht.</p>
-
-<p>Der Kurs ist <strong>kein Administrationskurs</strong>: Es geht nicht darum, eine
-Container-Plattform zu betreiben, sondern darum, Anwendungen so zu bauen, dass eine
-Plattform sie betreiben kann.</p>
-
-<h2 id="überblick">Überblick</h2>
-
-<p>„Bei mir läuft es“ ist der teuerste Satz in der Softwareentwicklung. Zwischen dem
-Rechner, auf dem eine Anwendung entstanden ist, und dem Server, auf dem sie laufen
-soll, liegen Bibliotheksversionen, Umgebungsvariablen, Pfade und Annahmen, die
-niemand aufgeschrieben hat – und die erst auffallen, wenn es zu spät ist.</p>
-
-<p>Ein Container beendet dieses Rätselraten, indem er die Frage umdreht: Statt eine
-Umgebung zu beschreiben, in der die Anwendung laufen soll, wird die Umgebung
-mitgeliefert. Was dabei entsteht, ist kein Installationspaket, sondern ein
-<strong>Bauplan, aus dem sich jederzeit dasselbe Ergebnis herstellen lässt</strong>.</p>
-
-<p>Dieser Kurs führt in zwei Tagen durch diesen Wechsel – nicht als Befehlssammlung,
-sondern entlang der Konzepte, an denen sich in der Praxis entscheidet, ob ein Image
-trägt: Was gehört ins Image und was gehört an den Start? Wo bleiben die Daten, wenn
-der Container verschwindet? Und warum ist ein Container, der seinen Zustand
-vergisst, ein Gewinn und kein Mangel?</p>
+<p><strong>Als</strong> Entwickler <strong>möchte ich</strong> meine Anwendung als ein Artefakt weitergeben,
+<strong>damit</strong> niemand mehr eine Anleitung braucht, um sie zu starten.</p>
 
 <h2 id="lernziele">Lernziele</h2>
 
-<p>Die Lernenden…</p>
+<p>Du…</p>
 
 <ul>
-  <li>erklären, welches Problem Container lösen, und grenzen sie gegen virtuelle
-Maschinen ab.</li>
-  <li>unterscheiden Image, Container, Registry, Repository und Tag und beschreiben den
-Lebenszyklus eines Containers.</li>
-  <li>konfigurieren Anwendungen im Container über Umgebungsvariablen und begründen
-diese Trennung mit den Prinzipien der 12-Factor-App.</li>
-  <li>erstellen eigene Container Images mit einem Dockerfile und veröffentlichen sie
-versioniert in einer Registry.</li>
-  <li>betreiben mehrere Container gemeinsam, indem sie Daten über Volumes auslagern
-und Verbindungen über Netzwerke herstellen.</li>
+  <li>schreibst ein Dockerfile für eine Anwendung mit Abhängigkeiten.</li>
+  <li>entscheidest begründet, was ins Image gehört und was beim Start dazukommt.</li>
+  <li>startest Deine Anwendung aus dem selbst gebauten Image gegen die Datenbank.</li>
+  <li>benennst, was Du jetzt noch weitergeben müsstest – und was nicht mehr.</li>
 </ul>
 
-<h2 id="agenda-2-tage">Agenda (2 Tage)</h2>
+<h2 id="definition-of-done">Definition of Done</h2>
 
-<h3 id="warum-container">Warum Container?</h3>
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Ein Image <code>meine-webapp:1.0.0</code> existiert und enthält Anwendung <strong>und</strong>
+Abhängigkeiten.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Ein Container daraus antwortet auf <code>curl http://localhost:8080</code> mit den
+Daten aus der Datenbank.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Im Dockerfile steht <strong>keine</strong> Datenbankadresse.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Der Startbefehl steht in Deiner <code>befehle.md</code> – er ist jetzt <strong>eine</strong> Zeile.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast die Reflexionsfragen schriftlich beantwortet.</li>
+</ul>
+
+<h2 id="dein-auftrag">Dein Auftrag</h2>
+
+<p>Du hast in Block 3 aufgeschrieben, was Du weitergeben müsstest, damit eine
+Kollegin Deine Anwendung startet. <strong>Diese Liste wird jetzt zum Dockerfile.</strong></p>
+
+<p>Schreib ein <code>Dockerfile</code> neben <code>app.py</code> und <code>requirements.txt</code>. Es soll:</p>
 
 <ul>
-  <li>Wie aus dem Wunsch, häufig zu liefern, die Frage nach dem Übergabepunkt wird</li>
-  <li>Was früher über die Mauer flog – ein Paket und eine Anleitung, die niemand
-gelesen hat</li>
-  <li>Was eine Anwendung zum Laufen braucht, und warum das heute mitgeliefert wird</li>
-  <li>Womit man es zu tun hat: Image und Container, Registry, Tag, Lebenszyklus</li>
+  <li>von einem Image ausgehen, das Python mitbringt,</li>
+  <li>die Abhängigkeiten installieren,</li>
+  <li>die Anwendung hineinlegen,</li>
+  <li>den Port bekanntgeben, auf dem die Anwendung lauscht,</li>
+  <li>die Anwendung beim Start ausführen.</li>
 </ul>
 
-<h3 id="container-verwalten">Container verwalten</h3>
-
-<ul>
-  <li>Sich einen Überblick verschaffen: Was liegt lokal, was läuft gerade?</li>
-  <li>Einen Container erzeugen, starten, hineinsehen, stoppen, löschen</li>
-  <li>Warum ein laufender Container nicht nachträglich eine Tür nach außen bekommt</li>
-  <li>Was verloren geht, wenn ein Container verschwindet</li>
-</ul>
-
-<h3 id="eigene-anwendungen-im-container">Eigene Anwendungen im Container</h3>
-
-<ul>
-  <li>Eine vorgegebene Anwendung in einem fremden Image zum Laufen bringen</li>
-  <li>Was passiert, wenn die Anwendung etwas braucht, das im Image fehlt</li>
-  <li>Warum eine Anwendung im Container auf allen Adressen lauschen muss</li>
-  <li>Was man weitergeben müsste, damit jemand anders dasselbe Ergebnis bekommt</li>
-</ul>
-
-<h3 id="konfiguration-und-zustand">Konfiguration und Zustand</h3>
-
-<ul>
-  <li>Wie dieselbe Anwendung in Entwicklung, Test und Produktion unterschiedlich
-arbeitet, ohne dass jemand sie neu baut (<em>Umgebungsvariablen</em>)</li>
-  <li>Woran man erkennt, dass eine Anwendung ihre Umgebung zu gut kennt
-(<em>12-Factor-App</em>)</li>
-  <li>Wo Daten liegen, die einen Container überleben sollen (<em>Volume</em>)</li>
-  <li>Wohin eine Anwendung protokollieren sollte, wenn niemand mehr in die Logdatei
-sieht</li>
-</ul>
-
-<h3 id="anwendung-und-datenbank">Anwendung und Datenbank</h3>
-
-<ul>
-  <li>Wie zwei Container voneinander erfahren, ohne dass jemand IP-Adressen verteilt
-(<em>Netzwerk, DNS</em>)</li>
-  <li>Warum die Adresse der Datenbank von außen kommt und nicht im Quelltext steht</li>
-  <li>Was passiert, wenn die Datenbank beim Start der Anwendung noch nicht bereit ist</li>
-</ul>
-
-<h3 id="eigene-images-bauen-und-veröffentlichen">Eigene Images bauen und veröffentlichen</h3>
-
-<ul>
-  <li>Wie aus einer Anwendung ein Bauplan wird, den auch ein anderer ausführen kann
-(<em>Dockerfile</em>)</li>
-  <li>Was beim Start passieren soll – und was schon beim Bauen passiert sein muss
-(<code>ENTRYPOINT</code>, <code>CMD</code>, <code>RUN</code>)</li>
-  <li>Was ins Image gehört und was beim Start dazukommt</li>
-  <li>Wie ein Image den Rechner verlässt, und warum „die neueste Version“ keine
-Version ist (<em>Tagging, <code>latest</code></em>)</li>
-</ul>
-
-<h3 id="best-practices">Best Practices</h3>
-
-<ul>
-  <li>Woraus ein Image besteht: Schichten, Prüfsummen und was daraus folgt</li>
-  <li>Warum die Reihenfolge der Zeilen über die Bauzeit entscheidet
-(<em>Layer, Build-Cache</em>)</li>
-  <li>Warum ein Layer, in dem eine Datei gelöscht wird, das Image nicht kleiner macht</li>
-</ul>
-
-<h3 id="mehrere-container-gemeinsam-betreiben">Mehrere Container gemeinsam betreiben</h3>
-
-<ul>
-  <li>Wie aus einer Reihe einzelner Startbefehle eine beschriebene Umgebung wird
-(<em>Compose</em>)</li>
-  <li>Was „hängt ab von“ garantiert – und was nicht</li>
-  <li>Wie man dieselbe Umgebung morgen wieder herstellt, ohne sich an gestern zu
-erinnern</li>
-</ul>
-
-<h2 id="technische-voraussetzungen">Technische Voraussetzungen</h2>
-
-<ul>
-  <li><strong>Eine Container-Laufzeitumgebung</strong> – entweder lokal installiert (unter Windows
-Docker Desktop, bedient aus der Git Bash) oder als bereitgestellte Umgebung, in
-der über eine Shell im Browser gearbeitet wird. Welcher Weg gilt, wird vor dem
-Kurs abgestimmt; die Übungen sind in beiden Fällen identisch. Einzelheiten:
-<a href="../shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a>.</li>
-  <li><strong>Ein Konto bei einer Container-Registry</strong> mit Schreibrecht auf ein eigenes
-Repository – wird für das Veröffentlichen eigener Images gebraucht.</li>
-  <li><strong>Internetzugang im Browser</strong> für Dokumentation und Registry.</li>
-</ul>
+<p>Bau daraus <code>meine-webapp:1.0.0</code> und starte einen Container, der die Datenbank aus
+der vorigen Übung erreicht.</p>
 
 <blockquote>
-  <p><strong>Hinweis:</strong> Eine grafische Oberfläche ist nicht erforderlich. Alle Anleitungen
-bleiben auf der Kommandozeile, damit sie lokal und in der bereitgestellten
-Umgebung gleichermaßen funktionieren.</p>
+  <p><strong>Hinweis:</strong> Die Anweisungen, die Du brauchst, stehen in der
+<a href="https://docs.docker.com/reference/dockerfile/">Dockerfile-Referenz</a>: <code>FROM</code>,
+<code>WORKDIR</code>, <code>COPY</code>, <code>RUN</code>, <code>EXPOSE</code>, <code>CMD</code>. Mehr sind es nicht.</p>
 </blockquote>
 
+<blockquote>
+  <p><strong>Die eigentliche Frage dieser Übung:</strong> Die Anwendung braucht die Adresse der
+Datenbank. <strong>Gehört sie ins Dockerfile?</strong> Entscheide Dich bewusst und schreib
+Deine Begründung auf – Du wirst danach gefragt.</p>
+</blockquote>
 
+<blockquote>
+  <p><strong>Hinweis:</strong> <code>CMD</code> erwartet eine Liste, keine Zeichenkette:
+<code>CMD ["python", "app.py"]</code>.</p>
+</blockquote>
+
+<h2 id="reflexionsfragen">Reflexionsfragen</h2>
+
+<ul>
+  <li>Was aus Deiner Liste steht jetzt im Dockerfile, und was gibst Du weiter beim
+<code>docker run</code>? Wo verläuft die Grenze?</li>
+  <li>Du hast Dich bei der Datenbankadresse entschieden. <strong>Was wäre der Preis der
+anderen Entscheidung</strong> – wie viele Images bräuchtest Du für Entwicklung, Test
+und Produktion?</li>
+  <li>Der Build hat die Abhängigkeiten geladen. Was passiert beim nächsten Build,
+wenn Du nur eine Zeile in <code>app.py</code> änderst? Stört Dich das?</li>
+  <li>Was müsstest Du einer Kollegin jetzt noch geben, damit sie die Anwendung
+startet? Vergleiche mit Deiner Antwort aus Block 3.</li>
+</ul>
+
+
+<textarea id="avd-academy-md-source" hidden aria-hidden="true"># Die Webanwendung als eigenes Image
+
+**Als** Entwickler **möchte ich** meine Anwendung als ein Artefakt weitergeben,
+**damit** niemand mehr eine Anleitung braucht, um sie zu starten.
+
+## Lernziele
+
+Du…
+
+- schreibst ein Dockerfile für eine Anwendung mit Abhängigkeiten.
+- entscheidest begründet, was ins Image gehört und was beim Start dazukommt.
+- startest Deine Anwendung aus dem selbst gebauten Image gegen die Datenbank.
+- benennst, was Du jetzt noch weitergeben müsstest – und was nicht mehr.
+
+## Definition of Done
+
+* [ ] Ein Image `meine-webapp:1.0.0` existiert und enthält Anwendung **und**
+  Abhängigkeiten.
+* [ ] Ein Container daraus antwortet auf `curl http://localhost:8080` mit den
+  Daten aus der Datenbank.
+* [ ] Im Dockerfile steht **keine** Datenbankadresse.
+* [ ] Der Startbefehl steht in Deiner `befehle.md` – er ist jetzt **eine** Zeile.
+* [ ] Du hast die Reflexionsfragen schriftlich beantwortet.
+
+## Dein Auftrag
+
+Du hast in Block 3 aufgeschrieben, was Du weitergeben müsstest, damit eine
+Kollegin Deine Anwendung startet. **Diese Liste wird jetzt zum Dockerfile.**
+
+Schreib ein `Dockerfile` neben `app.py` und `requirements.txt`. Es soll:
+
+- von einem Image ausgehen, das Python mitbringt,
+- die Abhängigkeiten installieren,
+- die Anwendung hineinlegen,
+- den Port bekanntgeben, auf dem die Anwendung lauscht,
+- die Anwendung beim Start ausführen.
+
+Bau daraus `meine-webapp:1.0.0` und starte einen Container, der die Datenbank aus
+der vorigen Übung erreicht.
+
+&gt; **Hinweis:** Die Anweisungen, die Du brauchst, stehen in der
+&gt; [Dockerfile-Referenz](https://docs.docker.com/reference/dockerfile/): `FROM`,
+&gt; `WORKDIR`, `COPY`, `RUN`, `EXPOSE`, `CMD`. Mehr sind es nicht.
+
+&gt; **Die eigentliche Frage dieser Übung:** Die Anwendung braucht die Adresse der
+&gt; Datenbank. **Gehört sie ins Dockerfile?** Entscheide Dich bewusst und schreib
+&gt; Deine Begründung auf – Du wirst danach gefragt.
+
+&gt; **Hinweis:** `CMD` erwartet eine Liste, keine Zeichenkette:
+&gt; `CMD [&quot;python&quot;, &quot;app.py&quot;]`.
+
+## Reflexionsfragen
+
+- Was aus Deiner Liste steht jetzt im Dockerfile, und was gibst Du weiter beim
+  `docker run`? Wo verläuft die Grenze?
+- Du hast Dich bei der Datenbankadresse entschieden. **Was wäre der Preis der
+  anderen Entscheidung** – wie viele Images bräuchtest Du für Entwicklung, Test
+  und Produktion?
+- Der Build hat die Abhängigkeiten geladen. Was passiert beim nächsten Build,
+  wenn Du nur eine Zeile in `app.py` änderst? Stört Dich das?
+- Was müsstest Du einer Kollegin jetzt noch geben, damit sie die Anwendung
+  startet? Vergleiche mit Deiner Antwort aus Block 3.
+
+## Weiterführende Informationen
+
+- [Dockerfile-Referenz](https://docs.docker.com/reference/dockerfile/)
+- [Das Python-Image auf Docker Hub](https://hub.docker.com/_/python)
+</textarea>
     </main><aside class="avd-academy-guide-sidebar"><details class="avd-academy-guide-side avd-academy-guide-side--toc avd-academy-fold" data-avd-academy-toc-box
                data-avd-academy-toc-grenze="12" open hidden>
         <summary class="avd-academy-guide-side__label">Auf dieser Seite</summary>
         <nav class="avd-academy-toc avd-academy-fold__body" data-avd-academy-toc aria-label="Inhaltsverzeichnis"></nav>
       </details>
+      <div class="avd-academy-guide-side avd-academy-guide-side--bordered" data-avd-academy-progress hidden><div class="avd-academy-guide-side__label" id="avd-academy-progress-label">Fortschritt</div><div class="avd-academy-progress__bar" aria-labelledby="avd-academy-progress-label"><div class="avd-academy-progress__fill"></div></div>
+        <div class="avd-academy-progress__text"></div>
+      </div>
+      <div class="avd-academy-guide-side avd-academy-guide-side--bordered">
+        <div class="avd-academy-guide-side__label">Weiterführende Informationen</div>
+        <div class="avd-academy-guide-side__links"><a href="https://docs.docker.com/reference/dockerfile/" target="_blank" rel="noopener"><span>Dockerfile-Referenz</span></a><a href="https://hub.docker.com/_/python" target="_blank" rel="noopener"><span>Das Python-Image auf Docker Hub</span></a>
+        </div></div>
     </aside>
   </div><div class="avd-academy-print-contact" aria-hidden="true">
     <span>Kontakt: https://academy.atvantage-academy.workers.dev/</span>
