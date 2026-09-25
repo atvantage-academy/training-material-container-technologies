@@ -1,0 +1,156 @@
+# Zugesagte Kontrast-Paare des ATVANTAGE Academy Theme
+#
+# Jede Zeile:  «Stufe» «Vordergrund-Token» «Hintergrund-Token»
+#
+# Stufen (WCAG 2.2):
+#   text   4,5:1  Fließtext (1.4.3)
+#   gross  3,0:1  große Schrift ab 24 px bzw. 18,66 px fett (1.4.3)
+#   ui     3,0:1  Bedienelement, Bedeutungsträger (1.4.11)
+#
+# DIE ZUSAGE GILT IN JEDEM MODUS, den das Theme ausliefert: hell, dunkel und
+# Druck – und hell/dunkel jeweils über `prefers-color-scheme` UND über
+# `data-avd-academy-theme`. Nachgerechnet vor jedem Release mit
+# `bin/contrast-pairs.sh --check`.
+#
+# Sie gilt für den AUSLIEFERUNGSZUSTAND. Wer ein Token überschreibt, übernimmt
+# die Zusage für dieses Token. Für die Schulungsfarbe ist genau das der Grund,
+# warum `--avd-academy-accent-base` nur den FARBTON entgegennimmt: Die Helligkeit
+# rechnet das Theme, damit der Kontrast nicht am Zufall hängt.
+#
+# Ein Paar hier zu entfernen oder abzuschwächen ist ein BRUCH – wie ein
+# weggefallener Name im Markup Contract.
+
+# --- Fließtext auf jeder Fläche, die das Theme ausliefert -------------------
+text --avd-academy-color-ink --avd-academy-color-accent-soft
+text --avd-academy-color-ink --avd-academy-color-bg
+text --avd-academy-color-ink --avd-academy-color-bg-subtle
+text --avd-academy-color-ink --avd-academy-code-bg
+text --avd-academy-color-ink --avd-academy-fill-1-bg
+text --avd-academy-color-ink --avd-academy-fill-2-bg
+text --avd-academy-color-ink --avd-academy-fill-3-bg
+text --avd-academy-color-ink --avd-academy-fill-4-bg
+text --avd-academy-color-ink --avd-academy-hero-bg
+text --avd-academy-color-ink --avd-academy-topbar-bg
+
+# --- Sekundärtext. NICHT auf `--avd-academy-hero-bg`: Das Hero-Band folgt der
+#     Schulungsfarbe (`--avd-academy-accent-base`), es ist also kein Token, das
+#     im Auslieferungszustand stehen bleibt. Gemessen trägt es dort 4,84:1 –
+#     knapp über AA, aber eben nur, solange niemand die Farbe setzt.
+text --avd-academy-color-ink-muted --avd-academy-color-accent-soft
+text --avd-academy-color-ink-muted --avd-academy-color-bg
+text --avd-academy-color-ink-muted --avd-academy-color-bg-subtle
+text --avd-academy-color-ink-muted --avd-academy-code-bg
+text --avd-academy-color-ink-muted --avd-academy-fill-1-bg
+text --avd-academy-color-ink-muted --avd-academy-fill-2-bg
+text --avd-academy-color-ink-muted --avd-academy-fill-3-bg
+text --avd-academy-color-ink-muted --avd-academy-fill-4-bg
+text --avd-academy-color-ink-muted --avd-academy-topbar-bg
+
+# --- Überschriften ----------------------------------------------------------
+text --avd-academy-color-headline --avd-academy-color-accent-soft
+text --avd-academy-color-headline --avd-academy-color-bg
+text --avd-academy-color-headline --avd-academy-color-bg-subtle
+text --avd-academy-color-headline --avd-academy-code-bg
+text --avd-academy-color-headline --avd-academy-fill-1-bg
+text --avd-academy-color-headline --avd-academy-fill-2-bg
+text --avd-academy-color-headline --avd-academy-fill-3-bg
+text --avd-academy-color-headline --avd-academy-fill-4-bg
+text --avd-academy-color-headline --avd-academy-hero-bg
+text --avd-academy-color-headline --avd-academy-topbar-bg
+
+# --- Meta-Navigation --------------------------------------------------------
+text --avd-academy-metanav-text --avd-academy-metanav-bg
+
+# --- Schrift auf dunkler Marken- und auf Akzentfläche -----------------------
+text --avd-academy-color-accent-contrast --avd-academy-color-accent
+text --avd-academy-color-primary-contrast --avd-academy-color-primary
+text --avd-academy-color-primary-contrast --avd-academy-color-primary-dark
+
+# --- Die Vordergrundfassungen: eine Palettenfarbe ALS SCHRIFT ---------------
+#     Sie tragen, wo die rohe Farbe es nicht tut – genau dafür gibt es sie.
+text --avd-academy-color-accent-ink --avd-academy-color-bg
+text --avd-academy-color-accent-ink --avd-academy-color-bg-subtle
+text --avd-academy-color-danger-ink --avd-academy-color-bg
+text --avd-academy-color-danger-ink --avd-academy-color-bg-subtle
+text --avd-academy-color-success-ink --avd-academy-color-bg
+text --avd-academy-color-success-ink --avd-academy-color-bg-subtle
+text --avd-academy-color-warning-ink --avd-academy-color-bg
+text --avd-academy-color-warning-ink --avd-academy-color-bg-subtle
+text --avd-academy-tone-1-ink --avd-academy-color-bg
+text --avd-academy-tone-1-ink --avd-academy-color-bg-subtle
+text --avd-academy-tone-2-ink --avd-academy-color-bg
+text --avd-academy-tone-2-ink --avd-academy-color-bg-subtle
+text --avd-academy-tone-3-ink --avd-academy-color-bg
+text --avd-academy-tone-3-ink --avd-academy-color-bg-subtle
+text --avd-academy-tone-4-ink --avd-academy-color-bg
+text --avd-academy-tone-4-ink --avd-academy-color-bg-subtle
+text --avd-academy-tone-alert-ink --avd-academy-color-bg
+text --avd-academy-tone-alert-ink --avd-academy-color-bg-subtle
+
+# --- Die Verweisfarbe ist die Marke -----------------------------------------
+#     Als GROSSE Schrift und als Bedienelement trägt sie (3,22:1 hell,
+#     5,19:1 dunkel). Als Fließtext erreicht sie 3,22:1 und damit NICHT die
+#     4,5:1 von 1.4.3 – eine bewusste Abweichung, getragen von der
+#     Unterstreichung im Fließtext. Begründung und Datum stehen in
+#     `docs/theme/barrierefreiheit.md`. Deshalb steht hier `gross` und nicht
+#     `text`: Die Zusage sagt genau das, was sie hält.
+gross --avd-academy-color-accent --avd-academy-color-bg
+
+# --- Statusfarben als Rahmen und Bedeutungsträger ---------------------------
+ui --avd-academy-color-danger --avd-academy-color-bg
+ui --avd-academy-color-danger --avd-academy-color-bg-subtle
+ui --avd-academy-color-success --avd-academy-color-bg
+ui --avd-academy-color-success --avd-academy-color-bg-subtle
+
+# --- Gruppen-Töne als Strich ------------------------------------------------
+#     Zugesagt sind die TÖNE, nicht die Füllpalette `--avd-academy-fill-*`:
+#     Die Töne sind die modusrichtige Fassung (im Dark-Theme aufgehellt), die
+#     Füllungen sind auf helle Flächen gerechnet. Ton 1 (Slate) trägt als
+#     Füllung auf dunklem Grund nur 1,53:1 – als Ton 6,98:1.
+ui --avd-academy-tone-1 --avd-academy-color-bg
+ui --avd-academy-tone-1 --avd-academy-color-bg-subtle
+ui --avd-academy-tone-2 --avd-academy-color-bg
+ui --avd-academy-tone-4 --avd-academy-color-bg
+ui --avd-academy-tone-4 --avd-academy-color-bg-subtle
+ui --avd-academy-tone-alert --avd-academy-color-bg
+ui --avd-academy-tone-alert --avd-academy-color-bg-subtle
+
+# =============================================================================
+# AUSDRÜCKLICH NICHT ZUGESAGT – gemessen, nicht vergessen
+# -----------------------------------------------------------------------------
+# Diese Paarungen stehen hier, damit niemand sie für übersehen hält. Wer eine
+# davon braucht, nimmt das genannte Ersatz-Token.
+#
+#   --avd-academy-color-border / --avd-academy-border-soft auf jeder Fläche
+#       1,05–1,82:1. Haarlinien zwischen Zeilen und Karten sind SCHMUCK, kein
+#       Bedeutungsträger: Was sie trennen, trennt auch der Abstand. 1.4.11
+#       verlangt für sie nichts. Ein Rahmen, der einen ZUSTAND anzeigt, nimmt
+#       eine Statusfarbe.
+#
+#   --avd-academy-color-warning und --avd-academy-fill-3 (Gold) auf heller
+#   Fläche: 2,42:1 auf `-bg`, 2,07:1 auf `-bg-subtle`.
+#       Gold trägt auf Weiß nicht. Als SCHRIFT gibt es dafür
+#       `--avd-academy-color-warning-ink` (5,33:1); als Strich `-tone-3` – der
+#       aber auf heller Fläche denselben Wert hat und deshalb ebenfalls nicht
+#       zugesagt ist (siehe unten).
+#
+#   --avd-academy-tone-3 auf heller Fläche: 2,42:1 bzw. 2,07:1.
+#       Der einzige Ton, der als Strich nicht in beiden Modi trägt (dunkel:
+#       10,03:1). Ihn aufzuwerten hieße, einen Token-WERT zu ändern – das ist
+#       eine eigene Entscheidung und nicht Teil dieser Zusage.
+#
+#   --avd-academy-tone-2 auf --avd-academy-color-bg-subtle: 2,75:1 hell.
+#       Orange trägt auf der Seitenfläche (3,22:1), auf der abgesetzten nicht.
+#
+#   --avd-academy-color-primary / -info / --avd-academy-fill-1 auf dunkler
+#   Fläche: 1,53:1.
+#       Slate auf dunklem Grund verschwindet. Dafür gibt es `-tone-1`.
+#
+#   --avd-academy-color-primary-light: 3,19:1 hell auf `-bg`, 2,73:1 auf
+#   `-bg-subtle`.
+#       Führt laut Token-Kommentar „Rahmen/neutrale Linien“ – dieselbe
+#       Schmuck-Begründung wie bei den Haarlinien.
+#
+#   --avd-academy-color-ink-muted auf --avd-academy-hero-bg: 4,84:1.
+#       Siehe oben – das Hero-Band folgt der Schulungsfarbe.
+# =============================================================================

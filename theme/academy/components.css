@@ -55,7 +55,7 @@
    die der Doku-Seiten; präsentation.css/simulation.css schrauben sie um.
 
    ALIASSE: `avd-academy-theme-toggle` und `avd-academy-print-btn` sind ÖFFENTLICHE
-   Namen (theme/markup-contract.txt) – fremde Repos selektieren sie in ihrer
+   Namen (theme/contract/markup-contract.txt) – fremde Repos selektieren sie in ihrer
    assets/custom.css, und print.css blendet sie darüber aus. Sie bleiben deshalb
    auf den Knöpfen UND hier im Selektor, damit auch ein handgeschriebener Knopf mit
    dem alten Namen richtig aussieht. */

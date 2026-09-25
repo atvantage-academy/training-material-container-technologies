@@ -18,10 +18,8 @@
    Aufruf:  node theme/jekyll/a11y.mjs --site _site --chrome «pfad» [--tags …]
    ============================================================================= */
 import { createServer } from "node:http";
-import { readFile, readdir, stat, mkdtemp, writeFile } from "node:fs/promises";
+import { readFile, readdir, stat, writeFile } from "node:fs/promises";
 import { readFileSync } from "node:fs";
-import { spawn } from "node:child_process";
-import { tmpdir } from "node:os";
 import path from "node:path";
 
 /* --- Aufrufparameter ------------------------------------------------------ */
@@ -232,96 +230,10 @@ function serverStarten(wurzel) {
   });
 }
 
-/* --- Chrome über das DevTools-Protokoll ----------------------------------- */
-class Browser {
-  constructor(ws) { this.ws = ws; this.id = 0; this.warten = new Map(); this.horcher = new Map(); }
-
-  static async starten(chromePfad) {
-    const profil = await mkdtemp(path.join(tmpdir(), "avd-a11y-"));
-    const proc = spawn(chromePfad, [
-      "--headless=new", "--remote-debugging-port=0", "--user-data-dir=" + profil,
-      "--no-first-run", "--no-default-browser-check", "--disable-gpu", "--hide-scrollbars",
-      "--disable-extensions", "--disable-dev-shm-usage", "--no-sandbox",
-      "--force-device-scale-factor=1", "--disable-lcd-text", "about:blank"
-    ], { stdio: ["ignore", "ignore", "pipe"] });
-
-    /* Chrome schreibt die Adresse des Sockets auf stderr - mit Port 0 ist das
-       der einzige Weg, den zufällig gewählten Port zu erfahren. */
-    const url = await new Promise((fertig, fehler) => {
-      let puffer = "";
-      const zeit = setTimeout(() => fehler(new Error("Chrome meldet sich nicht (20 s)")), 20000);
-      proc.stderr.on("data", (d) => {
-        puffer += d.toString();
-        const m = puffer.match(/ws:\/\/[^\s]+/);
-        if (m) { clearTimeout(zeit); fertig(m[0]); }
-      });
-      proc.on("exit", (c) => { clearTimeout(zeit); fehler(new Error("Chrome beendet sich sofort (Code " + c + ")\n" + puffer.slice(0, 400))); });
-    });
-
-    const ws = new WebSocket(url);
-    await new Promise((f, x) => { ws.onopen = f; ws.onerror = () => x(new Error("Kein Anschluss an " + url)); });
-    const b = new Browser(ws);
-    b.proc = proc;
-    ws.onmessage = (e) => b.empfangen(JSON.parse(e.data));
-    return b;
-  }
-
-  empfangen(n) {
-    if (n.id && this.warten.has(n.id)) {
-      const { fertig, fehler } = this.warten.get(n.id);
-      this.warten.delete(n.id);
-      n.error ? fehler(new Error(n.error.message)) : fertig(n.result);
-      return;
-    }
-    const schluessel = (n.sessionId || "") + "|" + n.method;
-    const h = this.horcher.get(schluessel);
-    if (h) { this.horcher.delete(schluessel); h(n.params); }
-  }
-
-  /* JEDER AUFRUF HAT EINE FRIST. Ohne sie haengt der ganze Lauf, wenn eine
-     einzige Seite den Browser beschaeftigt - und zwar ohne Ausgabe, weil der
-     Bericht erst am Ende entsteht. Eine Pipeline, die stumm in ihr Zeitlimit
-     laeuft, ist schlimmer als eine, die eine Seite nicht messen konnte. */
-  ruf(methode, params = {}, sessionId, msFrist = 45000) {
-    const id = ++this.id;
-    this.ws.send(JSON.stringify({ id, method: methode, params, ...(sessionId ? { sessionId } : {}) }));
-    return new Promise((fertig, fehler) => {
-      const uhr = setTimeout(() => {
-        this.warten.delete(id);
-        fehler(new Error(methode + " antwortet nicht (" + Math.round(msFrist / 1000) + " s)"));
-      }, msFrist);
-      this.warten.set(id, {
-        fertig: (r) => { clearTimeout(uhr); fertig(r); },
-        fehler: (e) => { clearTimeout(uhr); fehler(e); }
-      });
-    });
-  }
-
-  ereignis(methode, sessionId, msFrist) {
-    return new Promise((fertig) => {
-      const schluessel = (sessionId || "") + "|" + methode;
-      this.horcher.set(schluessel, fertig);
-      setTimeout(() => { if (this.horcher.get(schluessel)) { this.horcher.delete(schluessel); fertig(null); } }, msFrist);
-    });
-  }
-
-  async seiteOeffnen() {
-    const { targetId } = await this.ruf("Target.createTarget", { url: "about:blank" });
-    const { sessionId } = await this.ruf("Target.attachToTarget", { targetId, flatten: true });
-    await this.ruf("Page.enable", {}, sessionId);
-    await this.ruf("Runtime.enable", {}, sessionId);
-    return { targetId, sessionId };
-  }
-
-  async seiteSchliessen(targetId) {
-    try { await this.ruf("Target.closeTarget", { targetId }, undefined, 5000); } catch { /* egal */ }
-  }
-
-  async schliessen() {
-    try { this.ws.close(); } catch { /* egal */ }
-    try { this.proc.kill(); } catch { /* egal */ }
-  }
-}
+/* --- Chrome über das DevTools-Protokoll -----------------------------------
+   Die Mechanik steht in `browser.mjs` daneben; sie wird von der
+   Kontrastprüfung der Token-Paare (`bin/contrast-pairs.mjs`) mitbenutzt. */
+import { Browser } from "./browser.mjs";
 
 /* --- Eine Seite messen ---------------------------------------------------- */
 async function seiteMessen(b, sitzung, url, axeQuelle, breite, schema) {

@@ -15,6 +15,183 @@ Abschnitt „Theme-Version“.
 
 ---
 
+## 2.50.0
+
+### `jekyll/version.txt` – das Theme nennt seine Fassung dort, wo sie gelesen wird
+
+Die Prüf-Bausteine (`academy-theme-actions`) werden **unabhängig** vom Theme gepinnt. Ob
+beides zusammenpasst, konnten sie bisher nicht feststellen: `package.json` liegt zwar im
+npm-Paket, die Site schließt `theme/package.json` aber vom Jekyll-Output aus – im **gebauten
+Bundle**, dem ersten Fundort der Bausteine, war die Version nicht lesbar. Dieselbe Falle wie
+bei axe-core.
+
+**Neu:** `jekyll/version.txt` trägt die Paketversion und liegt neben den Werkzeugen, reist
+also in jedes Bundle mit. `npm-validate` erzwingt den Gleichstand mit `package.json` – zwei
+Stellen für dieselbe Zahl driften sonst.
+
+Ab Actions 1.6.0 bricht ein Lauf gegen eine unverträgliche Theme-Reihe damit ab, statt
+unbemerkt gegen Werkzeuge zu laufen, die den Stand nicht kennen.
+
+## 2.49.0
+
+### `liquid.rb` — steht in den Quellen etwas, das nie ausgewertet wird?
+
+Ein neues Werkzeug im Paket, neben `links.rb`, `contrast.rb` und `a11y.mjs`. Es beantwortet
+eine Frage, die erst entsteht, wenn eine Unterlage an einen Verbraucher geht, der **ohne
+Liquid** rendert: Wo verlässt sie sich noch darauf?
+
+Ohne Liquid wird jede Anweisung gedruckt statt ausgewertet. Aus einer Verzweigung wird
+sichtbarer Text; und ein {% raw %}`{% comment %}`{% endraw %}-Block, der sonst **nichts** anzeigt, stellt seine
+internen Notizen in die Öffentlichkeit.
+
+**Die Prüfung läuft nur, wenn Liquid aus ist** — und das sagt nicht sie, sondern die Site,
+über Jekylls eigenen Schalter:
+
+```yaml
+defaults:
+  - scope: { path: "" }
+    values:
+      render_with_liquid: false
+```
+
+Solange Liquid läuft, ist eine Liquid-Anweisung Absicht. Eine Prüfung, die sie dann meldet,
+wäre reiner Lärm und würde abgeschaltet statt gelesen.
+
+**Als einziges der vier Werkzeuge misst es an den Quellen**, nicht am gebauten `_site`. Zu
+beheben ist die Quelle, und nur sie kennt Datei und Zeile.
+
+Gelesen wird Markdown ohne Front Matter, ohne umzäunte Codeblöcke und ohne Code-Spans,
+dazu HTML mit Front Matter. Ein `{{ name }}` in einem Vue-Beispiel ist kein Befund.
+
+Die Mustererkennung ist die von ATLAS (Regel 35), Zeichen für Zeichen — nur mit `/m`: Ein
+Tag darf sich über beliebig viele Zeilen ziehen. Liquid erlaubt das, ein mehrzeiliges
+`include` mit Parametern ist der häufigste Fall, und ein übersehener Befund wiegt schwerer
+als einer zu viel — er geht ungesehen auf die Seite. Was syntaktisch ein Tag ist, wird
+gefunden.
+
+**Liquid ist kein Plugin**, sondern Jekylls Kern; die Frage ist nur, welche Dateien
+hindurchlaufen. `jekyll-optional-front-matter` befördert Markdown **ohne** Front Matter zu
+einer Seite – dann läuft auch die durch Liquid. Ob es wirkt, wird aus der Konfiguration
+gelesen statt angenommen: Setzt ein Projekt `plugins` selbst, ersetzt das die Theme-Vorgabe
+vollständig. Fehlt das Plugin, bleibt Markdown ohne Front Matter ungelesen – es ist dann
+keine Seite, sondern eine kopierte Datei.
+
+Aufrufbar aus jeder Pipeline über `academy-theme-actions@v1` mit `checks: liquid`.
+
+## 2.48.0
+
+### Der Token-Satz sagt Kontrast zu – und rechnet es vor jedem Release nach
+
+Das Theme hat seinen Farbsatz mehrfach umgebaut: Dark-Theme, Füllflächen, abgeleiteter
+Akzent, Vordergrundfassungen. Jedes Mal fiel erst im Nachhinein auf, dass eine Paarung
+darunter gelitten hatte – die Messwerte stehen bis heute in den Kommentaren von
+`tokens.css`, aber **nichts rechnete sie nach**. Und nach außen war gar nichts davon
+lesbar: Ein Schulungspaket, das seine Farben aus den Tokens nimmt, konnte nicht erfahren,
+welche Paarung trägt.
+
+**Neu im Paket: zwei weitere Zusagen unter `contract/`.**
+
+| Datei | Inhalt |
+| ----- | ------ |
+| `contract/contrast-pairs.txt` | 63 zugesagte Paare mit ihrer WCAG-Stufe |
+| `contract/contrast-pairs.version.txt` | die Fassung der Zusage, hier `1` |
+| `contract/color-tokens.txt` | die 63 Variablen, die eine Farbe tragen |
+| `contract/color-tokens.version.txt` | die Fassung der Liste, hier `1` |
+
+Dieselbe Form wie Markup Contract und Schemas: Datei plus Fassungsnummer daneben.
+
+**Drei Stufen, keine erfundene vierte:** `text` (4,5:1, WCAG 1.4.3), `gross` (3:1, große
+Schrift) und `ui` (3:1, WCAG 1.4.11).
+
+**Gemessen in fünf Modi, nicht in zweien.** Hell und Dunkel jeweils über
+`prefers-color-scheme` **und** über `data-avd-academy-theme`, dazu der Druck. Die
+doppelte Messung von Hell und Dunkel ist Absicht: Die Dark-Werte stehen zweimal in
+`tokens.css`, und eine Prüfung über nur einen Weg sähe es nicht, wenn die Blöcke
+auseinanderliefen. Der Druck hat eigene, fest geschriebene Werte – eine gedruckte
+Unterlage ist kein Nebenschauplatz dieser Akademie.
+
+**Im Browser gemessen, nicht aus dem CSS gelesen.** Die Werte entstehen erst beim Rechnen:
+`color-mix(in srgb …)`, `color-mix(in oklab …)`, `oklch(from … calc(c * 3) h)` und
+`var()`-Ketten über drei Ebenen. Sie nachzubilden hieße, eine zweite Farb-Engine zu
+pflegen, die gerade dort abweicht, wo am meisten gerechnet wird. 315 Messungen, alle über
+der Zusage; der Engpass liegt bei **4,56:1** (Ton 3 als Schrift auf abgesetzter Fläche im
+Light-Theme) – exakt die Zahl, die seit 2.7.0 im Kommentar von `tokens.css` steht.
+
+**Was NICHT zugesagt ist, steht mit Messwert dabei.** Am Ende der Datei: Haarlinien
+(1,05–1,82:1, Schmuck statt Bedeutungsträger), Gold auf heller Fläche (2,42:1), Slate auf
+dunkler (1,53:1), Orange auf der abgesetzten Fläche (2,75:1) – jeweils mit dem Token, das
+stattdessen trägt. Ohne diesen Teil läse man das Fehlen einer Paarung als „geht schon“.
+
+**Die Farb-Token-Liste ist erzeugt, nicht geführt.** Welche Variable eine Farbe trägt,
+entscheidet die Messung: 63 von 104 geführten Variablen. Eine Ermessensfrage bleibt,
+kuratiert und begründet – `--avd-academy-accent-base` ist die EINGABE der Schulungsfarbe,
+das Theme setzt sie bewusst nicht, und ohne den Eintrag hielte ein Konsument genau den
+sanktionierten Weg für eine fest geschriebene Farbe.
+
+**Kein Release mehr ohne Selbstprüfung.** `npm-publish` veröffentlicht erst, wenn auf
+**demselben Checkout** beides durch ist: die Kontrast-Zusage und die Barrierefreiheit der
+Komponenten und des Chromes (`a11y.sh`, WCAG 2.2 A/AA). Beide Berichte liegen dem
+GitHub-Release bei. Bisher veröffentlichte die Pipeline bei jedem Push auf `theme/**`,
+unabhängig davon, was gemessen worden war – ein Release sagte nichts darüber, ob es die
+Selbstprüfung bestanden hatte.
+
+**Ein Paar zu entfernen oder abzuschwächen ist ab jetzt ein Bruch**, wie ein weggefallener
+Name im Markup Contract.
+
+**Für Konsumenten ändert sich nichts** außer vier zusätzlichen Dateien. Kein Token wurde
+hinzugefügt, umbenannt oder in seinem Wert geändert.
+
+Nebenbei: Die Ansteuerung des Browsers liegt jetzt einmal statt zweimal im Repo
+(`jekyll/browser.mjs`); `a11y.sh` und die neue Prüfung teilen sie.
+
+Behebt #226.
+
+---
+
+## 2.47.0
+
+### Die Zusage lag nur im Theme-Repo – jetzt wandert sie mit
+
+`markup-contract.txt` führt seit 1.14.1 die Namen, die dieses Theme stabil hält: 170
+Klassen, 104 Variablen-Definitionen, vier `data`-Attribute der Autorenfläche. Ein PR-Check
+lässt die CI scheitern, sobald einer davon verschwindet. **Lesbar war die Liste aber nur
+hier.** Die beiden JSON-Schemas wandern längst mit dem Paket, die Namensliste fehlte im
+`files`-Feld – und damit war die Zusage von außen nicht nachschlagbar.
+
+Das fällt jetzt auf, weil Trainingspakete künftig **Quellen** einreichen und ATLAS sie mit
+**seiner** Theme-Fassung baut. Damit ist das Content-Design dieses Themes die Fläche, an
+der beide Seiten sich treffen. Nach ATLAS-ADR 0018 ist die Liste dabei eine **Zusage,
+keine Grenze**: Ein Stand darf auch eigenes Markup schreiben, es trägt nur kein
+Stabilitätsversprechen. Genau deshalb muss er die Liste lesen können – sonst weiß er
+nicht, was davon welches ist.
+
+**Neu im Paket: `contract/`.**
+
+| Datei | Inhalt |
+| ----- | ------ |
+| `contract/markup-contract.txt` | die 278 geführten Namen, eine Zeile je Name |
+| `contract/markup-contract.version.txt` | die Fassung der Liste, hier `1` |
+
+Dieselbe Form wie bei den Schemas unter `jekyll/schema/`: Datei plus Fassungsnummer
+daneben. Ein eigener Ordner und nicht die Paketwurzel, weil die Kontrast-Zusagen aus #226
+dort dazukommen – Zusagen gehören an einen Ort.
+
+**Die Fassungsnummer steigt bei jeder Änderung der Liste**, auch wenn nur ein Name
+dazukommt: Ein Konsument soll daran erkennen, ob sein Stand noch der aktuelle ist. Die
+Pflicht dazu steht in `AGENTS.md` neben der Pflicht, das Artefakt selbst nachzuziehen, und
+der Hinweis erscheint bei jedem Lauf von `bin/markup-contract.sh --check`.
+
+**Ein entfernter Name ist ab jetzt immer ein Bruch.** Bisher galt das „wenn Projekte etwas
+tun müssen“ – wer die ausgelieferte Zusage nur liest, ist von hier aus aber nicht sichtbar.
+
+**Für Konsumenten ändert sich nichts**, außer dass eine Datei dazukommt. Keine Namen
+wurden ergänzt, geändert oder entfernt; nachgemessen mit `npm pack` gegen ein frisch
+ausgepacktes Paket. Wie man die Liste liest, steht jetzt in der `README.md`.
+
+Behebt #213.
+
+---
+
 ## 2.46.1
 
 ### Ein Baustein, der sich spät anmeldet, bekam seinen Zustand nie

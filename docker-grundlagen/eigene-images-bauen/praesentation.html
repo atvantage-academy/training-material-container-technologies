@@ -47,13 +47,13 @@
 <meta property="og:description" content="Wie aus einem Dockerfile ein Stapel wird, warum jeder Layer einen Hash aus sich und allem darunter trägt – und was daraus für Cache, geteilte Basis-Images und die Reihenfolge der Zeilen folgt.">
 <meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790253681"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790253681">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790253681">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790253681">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790253681"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790253681">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790253681" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790253681" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790253681">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790321818"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790321818">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790321818">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790321818">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790321818"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790321818">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790321818" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790321818" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790321818">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -95,9 +95,9 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/training-material-container-technologies/theme/atvantage/assets/icon-180.png">
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/presentation.css?v=1790253681">
-  <script src="/training-material-container-technologies/theme/jekyll/presentation.js?v=1790253681" defer></script>
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790253681"></head>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/presentation.css?v=1790321818">
+  <script src="/training-material-container-technologies/theme/jekyll/presentation.js?v=1790321818" defer></script>
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790321818"></head>
 <body class="avd-academy-present" data-avd-academy-present data-avd-academy-present-title="Layer und Build-Cache">
   <a class="avd-academy-skip-link" href="#avd-academy-deck">Zum Inhalt springen</a>
 
@@ -126,10 +126,49 @@ Wer das versteht, versteht den Rest von selbst.</p>
   .lc {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
-    gap: var(--avd-academy-space-8);
-    margin: var(--avd-academy-space-8) 0;
+    gap: var(--avd-academy-space-4);
+    margin: var(--avd-academy-space-4) 0 0;
   }
   .lc__spalte { min-width: 0; }
+  /* JEDE LOESUNG EIN KASTEN - aber nur Ueberschrift, Untertitel und Schichten.
+     Das Fazit steht DARUNTER und ausserhalb: Es beurteilt den Kasten, es
+     gehoert nicht hinein. Klasse statt `#lc-vergleich >`, damit die Fassungen
+     fuer den Druck ihn mitnehmen: Die Kopien verlieren ihre Kennungen, ihre
+     Klassen aber nicht. */
+  .lc__loesung {
+    padding: var(--avd-academy-space-3);
+    border: 1px solid var(--avd-academy-color-border);
+    border-radius: var(--avd-academy-radius);
+  }
+  /* GLEICHE ZEILEN IN BEIDEN SPALTEN: Ohne das beginnen die Stapel auf
+     verschiedener Hoehe, sobald ein Untertitel umbricht - und dann steht
+     `FROM` nicht mehr neben `FROM`. `subgrid` reicht die Zeilen des Vergleichs
+     an die Spalten durch; wo es fehlt, bleibt es beim bisherigen Fluss. */
+  @supports (grid-template-rows: subgrid) {
+    /* Dieselbe Mechanik fuer die Loeschen-Folie, nur drei Zeilen: Titel,
+       Stapel, Fazit - dort gibt es keinen Untertitel. */
+    #lc-loeschen { grid-template-rows: auto auto auto; }
+    #lc-loeschen > .lc__spalte {
+      display: grid; grid-row: span 3; grid-template-rows: subgrid;
+    }
+    #lc-loeschen .lc__loesung {
+      display: grid; grid-row: span 2; grid-template-rows: subgrid;
+    }
+    #lc-vergleich { grid-template-rows: auto auto auto auto; }
+    #lc-vergleich > .lc__spalte {
+      display: grid;
+      grid-row: span 4;
+      grid-template-rows: subgrid;
+    }
+    /* Der Rahmen reicht die Zeilen WEITER durch (verschachteltes `subgrid`):
+       So bleiben Titel, Untertitel und Stapel ueber beide Spalten auf gleicher
+       Hoehe, obwohl der Kasten nur drei der vier Zeilen umfasst. */
+    #lc-vergleich .lc__loesung {
+      display: grid;
+      grid-row: span 3;
+      grid-template-rows: subgrid;
+    }
+  }
   .lc__titel {
     font-weight: var(--avd-academy-fw-bold);
     font-size: var(--avd-academy-fs-lg);
@@ -176,14 +215,43 @@ Wer das versteht, versteht den Rest von selbst.</p>
     border-color: var(--avd-academy-color-warning);
     background: var(--avd-academy-color-bg);
   }
+  /* EINHEITLICH IN ALLEN BILDERN: Das Schluesselwort farbig und fett, der
+     Rest der Zeile normal, der Hash grau und kleiner. So sieht eine Schicht
+     ueberall gleich aus - egal auf welcher Folie. */
+  .lc__layer code b { color: var(--avd-academy-color-accent-ink); }
   .lc__marke {
     flex: 0 0 auto;
+    /* Rechts in der Schicht, wie der Hash: Ohne das klebt der Befund am Namen,
+       weil die mittlere Spanne den freien Platz bekommt. */
+    margin-left: auto;
+    text-align: right;
     font-family: var(--avd-academy-font-sans);
     font-size: var(--avd-academy-fs-sm);
     font-weight: var(--avd-academy-fw-medium);
     color: var(--avd-academy-color-ink-muted);
   }
   .lc__layer--neu .lc__marke { color: var(--avd-academy-color-warning-ink); }
+
+  /* DAS URTEIL GEHOERT INS BILD. Welche Reihenfolge besser ist, soll man
+     sehen, nicht aus zwei Bilanzsaetzen erschliessen muessen. Gruen mit Haken,
+     wo es richtig laeuft; ein skeptisches Gesicht, wo Aufwand ohne Gegenwert
+     entsteht. Beides haengt am selben Schalter wie die Schichten. */
+  /* Das Fazit ist ein Callout des Themes - gruen, wo es laeuft, gelb, wo
+     Aufwand ohne Gegenwert entsteht. Der Baustein bringt Grund und Kante mit;
+     hier kommt nur die Zeile mit dem Sinnbild dazu. */
+  .lc__fazit { margin-top: var(--avd-academy-space-2); }
+  .lc__loesung + .lc__fazit { margin-top: var(--avd-academy-space-2); }
+  .lc__panel[hidden] { display: none; }
+  .avd-academy-slide .lc__panel { margin: 0; }
+  .lc__panel .lc__urteil {
+    display: flex; align-items: center; gap: var(--avd-academy-space-2);
+    margin: 0 0 var(--avd-academy-space-1);
+    font-weight: var(--avd-academy-fw-bold);
+  }
+  .lc__panel .lc__grund { margin: 0; font-size: var(--avd-academy-fs-sm); }
+  .lc__urteil-bild { flex: 0 0 auto; width: 1.3em; height: 1.3em; }
+  .avd-academy-callout--success .lc__urteil { color: var(--avd-academy-color-success-ink); }
+  .avd-academy-callout--warning .lc__urteil { color: var(--avd-academy-color-warning-ink); }
 
   .lc__bilanz {
     margin-top: var(--avd-academy-space-4);
@@ -192,6 +260,10 @@ Wer das versteht, versteht den Rest von selbst.</p>
     background: var(--avd-academy-color-bg-subtle);
     font-size: var(--avd-academy-fs-sm);
   }
+  /* Bildunterschrift: sagt, was man sieht. Die Leserichtung ist etwas anderes
+     und behaelt ihre eigene Klasse - sonst stuende unter jedem Bild wieder ein
+     Satz ueber oben und unten. */
+  .lc__bildtext,
   .lc__leserichtung {
     font-size: var(--avd-academy-fs-sm);
     color: var(--avd-academy-color-ink-muted);
@@ -203,19 +275,374 @@ Wer das versteht, versteht den Rest von selbst.</p>
     font-size: var(--avd-academy-fs-sm);
     color: var(--avd-academy-color-ink-muted);
   }
-  /* --- Der Stapel mit der Achse daneben -----------------------------------
+  /* --- Das Dockerfile als DATEI -------------------------------------------
+     Ein Codeblock sieht aus wie Code; hier soll man eine DATEI sehen, auf die
+     sich die Schichten daneben Zeile fuer Zeile beziehen. Dafuer braucht es
+     zweierlei: den Dateinamen ueber dem Rahmen und die Zeilennummern, denn
+     ueber sie laeuft die Zuordnung zur rechten Spalte. */
+  .lc__datei {
+    border: 1px solid var(--avd-academy-color-border);
+    border-radius: var(--avd-academy-radius);
+    background: var(--avd-academy-code-bg, var(--avd-academy-color-bg-subtle));
+    overflow: hidden;
+    text-align: left;
+    max-width: 30rem;
+    margin: var(--avd-academy-space-6) auto;
+  }
+  .lc__datei-name {
+    margin: 0;
+    padding: var(--avd-academy-space-2) var(--avd-academy-space-4);
+    border-bottom: 1px solid var(--avd-academy-color-border);
+    background: var(--avd-academy-color-bg-subtle);
+    font-family: var(--avd-academy-font-mono);
+    font-size: var(--avd-academy-fs-sm);
+    color: var(--avd-academy-color-ink-muted);
+  }
+  /* `ol.lc__datei-zeilen`: Das Theme setzt `ol` auf Flex mit eigenem Einzug. */
+  ol.lc__datei-zeilen {
+    list-style: none;
+    counter-reset: zeile;
+    display: block;
+    /* Dicht unter dem Dateinamen anfangen: Mit dem Polster des Themes stand
+       ueber der ersten Zeile eine Luecke, die wie eine leere Zeile aussah. */
+    margin: 0;
+    padding: var(--avd-academy-space-2) 0;
+    font-family: var(--avd-academy-font-mono);
+    font-size: var(--avd-academy-fs-sm);
+    line-height: 1.6;
+  }
+  .lc__datei-zeilen li {
+    counter-increment: zeile;
+    display: flex; gap: var(--avd-academy-space-4);
+    margin: 0;
+    padding: 0 var(--avd-academy-space-4) 0 0;
+  }
+  /* Die Nummer steht in einer eigenen Spalte mit Trennlinie - wie im Editor. */
+  .lc__datei-zeilen li::before {
+    content: counter(zeile);
+    flex: 0 0 2.2rem;
+    padding-right: var(--avd-academy-space-2);
+    border-right: 1px solid var(--avd-academy-color-border);
+    text-align: right;
+    color: var(--avd-academy-color-ink-muted);
+  }
+  .lc__datei-zeilen b { color: var(--avd-academy-color-accent-ink); }
+
+  /* --- Zeile fuer Zeile: Datei links, was daraus entsteht rechts ----------
+     EIN Gitter fuer beide Spalten, damit jede Dockerfile-Zeile GENAU neben
+     ihrer Schicht steht. Zwei getrennte Listen nebeneinander verrutschen,
+     sobald eine Zeile umbricht - und dann stimmt die Zuordnung nicht mehr,
+     die das ganze Bild ausmacht.
+
+     `display: contents` an Liste und Eintrag: Die Listen-Semantik bleibt fuer
+     Bildschirmleser erhalten, die Zellen werden trotzdem direkte Kinder des
+     Gitters und richten sich aneinander aus. */
+  /* DIE ACHSE STEHT NEBEN DEM GITTER, NICHT DARIN. Sie war einmal die dritte
+     Spalte mit `grid-row: 1 / -1`. Das greift nicht: Ohne explizite Zeilen
+     zeigt `-1` auf die einzige Zeilenlinie des Gitters, die Achse belegte nur
+     die erste Zeile - und in die freien Zellen der dritten Spalte lief alles
+     Weitere hinein. Statt Zeilen fest zu verdrahten (und sie beim naechsten
+     Zeile-mehr wieder nachzuziehen), steht die Achse jetzt als Nachbar. */
+  .lc__zuordnung {
+    display: flex;
+    align-items: stretch;
+    gap: var(--avd-academy-space-5, 1.25rem);
+    text-align: left;
+    margin: var(--avd-academy-space-8) auto;
+  }
+  /* Das Gitter ist die Liste selbst: zwei Spalten, eine Reihe je Zeile. */
+  ol.lc__zu-liste {
+    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    gap: var(--avd-academy-space-2) var(--avd-academy-space-4);
+    align-items: center;
+    list-style: none;
+    margin: 0; padding: 0;
+  }
+  .lc__zu-liste > li { display: contents; }
+  .lc__zu-liste code {
+    padding: var(--avd-academy-space-2) var(--avd-academy-space-3);
+    border-radius: var(--avd-academy-radius);
+    background: var(--avd-academy-code-bg, var(--avd-academy-color-bg-subtle));
+    font-size: var(--avd-academy-fs-sm);
+    white-space: nowrap;
+  }
+  .lc__zeilennr {
+    display: inline-block;
+    width: 1.6rem; margin-right: var(--avd-academy-space-3);
+    padding-right: var(--avd-academy-space-2);
+    border-right: 1px solid var(--avd-academy-color-border);
+    text-align: right;
+    color: var(--avd-academy-color-ink-muted);
+  }
+  .lc__zu-liste b { color: var(--avd-academy-color-accent-ink); }
+
+  /* Rechts steht nur noch, WAS entsteht - die Zeile selbst steht ja daneben. */
+  .lc__typ {
+    display: flex; align-items: center; gap: var(--avd-academy-space-3);
+    padding: var(--avd-academy-space-2) var(--avd-academy-space-3);
+    border: 1px solid var(--avd-academy-color-border);
+    border-radius: var(--avd-academy-radius);
+    font-size: var(--avd-academy-fs-sm);
+  }
+  .lc__sinnbild { flex: 0 0 auto; width: 1.1em; height: 1.1em; fill: currentColor; }
+
+  /* --- Der Cache entscheidet je Schicht -----------------------------------
+     NICHT "schon da" an jeder Zeile - das war eine Behauptung, kein Bild. Hier
+     stehen beide Seiten der Entscheidung nebeneinander: links, was lokal liegt
+     (darunter zwei Schichten aus einem FREMDEN Image - genau das ist der
+     Gewinn), rechts die Kette des gewuenschten Images mit dem Befund je Zeile.
+     Verglichen wird der Hash, nicht der Name. */
+  .lc__cache { max-width: 46rem; margin: var(--avd-academy-space-6) auto; text-align: left; }
+  /* EIN Gitter fuer alle drei Spalten: Schicht, Pfeil, Cache-Eintrag. Nur so
+     steht der Eintrag GENAU neben seiner Schicht - und der Hash steht auf
+     beiden Seiten am selben Rand, weil er in der Schicht rechts sitzt. */
+  ol.lc__cache-liste {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 2px var(--avd-academy-space-3);
+    align-items: center;
+    list-style: none; margin: 0; padding: 0;
+  }
+  .lc__cache-liste > li { display: contents; }
+  .lc__cache-kopf .lc__titel { font-size: var(--avd-academy-fs-sm); }
+
+  /* DIE RICHTUNG IST DIE AUSSAGE, deshalb keine Beschriftung: Was im Cache
+     liegt, kommt VON DORT (Pfeil nach links). Was fehlt, wandert nach dem Holen
+     DORTHIN (Pfeil nach rechts, in der Farbe des Fehlenden). */
+  .lc__pfeil {
+    position: relative; display: block;
+    width: 2.6rem; height: 2px;
+    background: var(--avd-academy-color-border);
+  }
+  .lc__pfeil::after {
+    content: ""; position: absolute; top: 50%;
+    width: 0.5rem; height: 0.5rem;
+    border-top: 2px solid var(--avd-academy-color-border);
+    border-right: 2px solid var(--avd-academy-color-border);
+  }
+  .lc__pfeil--links::after  { left: 0;  transform: translate(0, -50%) rotate(-135deg); }
+  .lc__pfeil--rechts::after { right: 0; transform: translate(0, -50%) rotate(45deg); }
+  .lc__pfeil--holen { background: var(--avd-academy-color-warning); }
+  .lc__pfeil--holen::after {
+    border-top-color: var(--avd-academy-color-warning);
+    border-right-color: var(--avd-academy-color-warning);
+  }
+
+  ul.lc__chips { list-style: none; margin: 0; padding: 0;
+    display: flex; flex-direction: column; gap: 2px; }
+  .lc__chip {
+    display: flex; flex-direction: column;
+    padding: var(--avd-academy-space-2) var(--avd-academy-space-3);
+    border: 1px dashed var(--avd-academy-color-border);
+    border-radius: var(--avd-academy-radius);
+    font-size: var(--avd-academy-fs-sm);
+    color: var(--avd-academy-color-ink-muted);
+  }
+  .lc__chip.is-treffer {
+    border-style: solid;
+    border-color: var(--avd-academy-color-accent);
+    color: var(--avd-academy-color-ink);
+  }
+  /* Der leere Platz sagt: hier ist noch nichts - der Pfeil sagt, dass sich das
+     gleich aendert. Er braucht eine Hoehe, sonst faellt die Zeile zusammen. */
+  .lc__chip--leer { min-height: 2.1rem; border-color: var(--avd-academy-color-warning); }
+
+  .lc__cache .lc__titel { margin-bottom: var(--avd-academy-space-2); }
+
+  /* --- Wie aus drei Zeilen vier Schichten werden --------------------------
+     EINE `FROM`-Zeile bringt MEHRERE Schichten mit. Zwei Listen nebeneinander
+     legten nahe, dass Zeile 1 zu Schicht 1 gehoert - und genau das stimmt hier
+     nicht. Deshalb ein Gitter, in dem die `FROM`-Zeile ueber ZWEI Zeilen geht,
+     und eine Klammer, die diese beiden zusammenfasst.
+
+     Die Spalten stehen ausdruecklich (`grid-column`), die Zeilen nicht: So
+     rutscht nichts, wenn eine Schicht dazukommt - und `grid-row: 1 / -1`, das
+     ohne feste Zeilen nicht traegt, wird gar nicht erst gebraucht. */
+  /* MEHR BREITE, NUR WO SIE GEBRAUCHT WIRD. Das Theme deckelt die
+     Inhaltsspalte einer Folie auf 1100px; hier steht sie auf 46rem, damit Text
+     und Bild auf einer Spalte liegen. Fuer dieses eine Diagramm ist das zu eng
+     - vier Spalten mit Code darin. `:has()` weitet genau die Folie, auf der es
+     steht, statt alle Folien fuer ein Bild zu verbreitern. */
+  .avd-academy-slide:has(.lc__ableitung) .avd-academy-slide__inner { max-width: 58rem; }
+  .lc__ableitung {
+    display: grid;
+    /* Alle Spalten so breit wie ihr Inhalt: Eine `1fr`-Spalte machte die
+       Schichten kuenstlich breit, und in der Mitte stand nichts. */
+    grid-template-columns: auto auto auto auto;
+    justify-content: center;
+    /* KEIN Zeilenabstand: Die Dateispalte soll als DATEI durchlaufen; die
+       Schichten bekommen ihren Abstand selbst. */
+    gap: 0 var(--avd-academy-space-4);
+    align-items: center;
+    margin: var(--avd-academy-space-6) auto;
+    text-align: left;
+  }
+  .lc__ab-kopf { grid-column: 1; font-size: var(--avd-academy-fs-sm); }
+  .lc__ab-kopf--rechts { grid-column: 3; }
+  /* Die linke Spalte ist eine Datei: Zeilennummer, durchlaufender Grund,
+     aussen gerundet. Sie muss trotzdem Zelle bleiben - nur so stehen COPY und
+     CMD auf derselben Hoehe wie ihre Schicht. */
+  .lc__ab-datei {
+    grid-column: 1;
+    padding: var(--avd-academy-space-2) var(--avd-academy-space-3);
+    background: var(--avd-academy-code-bg, var(--avd-academy-color-bg-subtle));
+    font-size: var(--avd-academy-fs-sm);
+    white-space: nowrap;
+    align-self: stretch;
+    display: flex; align-items: center;
+  }
+  .lc__ab-datei:last-of-type { border-radius: 0 0 var(--avd-academy-radius) var(--avd-academy-radius); }
+  /* FALLE: In einem Flex-Kasten faellt der Leerraum ZWISCHEN den Kindern weg -
+     aus `<b>FROM</b> meine-basis` wurde "FROMmeine-basis". Deshalb steht der
+     Rest der Zeile in einer eigenen Spanne und ist damit EIN Kind. */
+  .lc__ab-datei > span:last-child { white-space: pre; }
+  .lc__ab-datei b { color: var(--avd-academy-color-accent-ink); }
+  .lc__ab-kopf:not(.lc__ab-kopf--rechts) {
+    margin: 0;
+    padding: var(--avd-academy-space-2) var(--avd-academy-space-3);
+    background: var(--avd-academy-color-bg-subtle);
+    border-bottom: 1px solid var(--avd-academy-color-border);
+    border-radius: var(--avd-academy-radius) var(--avd-academy-radius) 0 0;
+    font-family: var(--avd-academy-font-mono);
+    color: var(--avd-academy-color-ink-muted);
+  }
+  /* Die Verbinderspalte rueckt nach rechts: Datei und Schichten sollen sich
+     nicht beruehren, und der Abstand gehoert zwischen die beiden Spalten. */
+  .lc__ab-klammer, .lc__ab-strich { grid-column: 2; margin-left: var(--avd-academy-space-6); }
+  .lc__ab-schicht { grid-column: 3; margin: 1px 0; }
+  /* Schmal halten: Ohne diese Regel dehnt die mittlere Spanne die Schicht und
+     zwischen Anweisung und Hash klafft eine Luecke. */
+  .lc__ableitung .lc__layer > span { flex: 0 0 auto; }
+  .lc__ableitung .lc__hash { margin-left: var(--avd-academy-space-4); }
+  .lc__ab-name { grid-column: 4; }
+  /* Die Zeile, die zwei Schichten mitbringt, steht ueber beiden. */
+  .lc__ab-hoch, .lc__ab-klammer { grid-row: span 2; }
+  /* Die Klammer fasst zusammen: nach rechts offen, damit sie die Schichten
+     umarmt statt sie abzugrenzen. */
+  .lc__ab-klammer {
+    width: 0.55rem; align-self: stretch;
+    border: 2px solid var(--avd-academy-color-accent);
+    border-right: 0;
+    border-radius: var(--avd-academy-radius) 0 0 var(--avd-academy-radius);
+  }
+  .lc__ab-strich { width: 0.55rem; height: 2px; background: var(--avd-academy-color-border); }
+  /* Kurze Beschriftungen halten die Schichten flach - deshalb `RUN apk add …`
+     statt der ganzen Zeile. */
+  .lc__ableitung .lc__layer code { white-space: nowrap; }
+
+  /* --- Der Name zeigt auf eine Schicht -----------------------------------
+     DIE UMDEFINITION ALS BILD: Zwei Namen, zwei Schichten, EINE Kette. Wie bei
+     der Zuordnung ein Gitter mit `display: contents`, damit der Name genau
+     neben seiner Schicht steht - eine frei positionierte Beschriftung
+     verrutschte, sobald eine Zeile umbricht. */
+  .lc__zeigt { max-width: 42rem; margin: var(--avd-academy-space-8) auto; text-align: left; }
+  ol.lc__zeigt-liste {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 2px var(--avd-academy-space-3);
+    align-items: center;
+    list-style: none; margin: 0; padding: 0;
+  }
+  .lc__zeigt-liste > li { display: contents; }
+  /* Der Strich fuehrt vom Namen zur Schicht - gezeichnet, nicht getippt: Ein
+     Pfeil als Zeichen wuerde vorgelesen. */
+  .lc__zeiger { display: flex; align-items: center; gap: var(--avd-academy-space-2);
+    font-size: var(--avd-academy-fs-sm); }
+  .lc__zeiger::before {
+    content: ""; flex: 0 0 1.4rem; height: 2px;
+    background: var(--avd-academy-color-accent);
+  }
+  .lc__zeiger code {
+    padding: 0.1rem 0.45rem;
+    border: 1px solid var(--avd-academy-color-accent);
+    border-radius: var(--avd-academy-radius);
+    color: var(--avd-academy-color-accent-ink);
+  }
+
+  /* --- Zum Mitnehmen: ein kleines Manifest -------------------------------
+     Die fuenf Saetze sind nummeriert, weil sie aufeinander aufbauen: Aus den
+     ersten dreien (wie es funktioniert) folgen die letzten beiden (was man
+     deshalb tut). Eine Aufzaehlung mit Punkten stellte sie nebeneinander. */
+  /* FALLE, ZWEIMAL ZUGESCHLAGEN: Ein Eintrag enthaelt FLIESSTEXT mit
+     `<strong>` darin - also gemischte Inline-Inhalte. Weder `display: contents`
+     noch `display: flex` duerfen an ihn.
+
+     `contents` machte jedes Textstueck zu einer eigenen Gitterzelle (die Saetze
+     rissen auseinander, der Zaehler stand auf 0). `flex` machte jedes
+     Textstueck und jedes `<strong>` zu einem eigenen Flex-Element - mit `gap`
+     DAZWISCHEN: grosse Luecken zwischen den Woertern und falsche Umbrueche.
+
+     Der Text muss im normalen Fluss bleiben. Die Nummer haengt deshalb
+     absolut daneben, der Eintrag macht nur Platz dafuer. */
+  ol.lc__manifest {
+    display: flex; flex-direction: column;
+    gap: var(--avd-academy-space-4);
+    list-style: none;
+    counter-reset: satz;
+    margin: var(--avd-academy-space-6) auto 0;
+    padding: 0;
+    max-width: 46rem;
+    text-align: left;
+  }
+  .lc__manifest > li {
+    counter-increment: satz;
+    position: relative;
+    margin: 0;
+    padding-left: 3rem;
+  }
+  .lc__manifest > li::before {
+    content: counter(satz);
+    position: absolute;
+    left: 0; top: 0;
+    width: 2rem;
+    text-align: right;
+    font-family: var(--avd-academy-font-mono);
+    font-size: 1.4em; font-weight: var(--avd-academy-fw-bold);
+    line-height: inherit;
+    color: var(--avd-academy-color-accent);
+  }
+
+  /* Die Fussnote erlaeutert das Bild, sie gehoert nicht hinein - deshalb
+     kleiner, leiser und dicht darunter. */
+  .lc__fussnote {
+    max-width: 44rem;
+    margin: 0 auto var(--avd-academy-space-6);
+    font-size: var(--avd-academy-fs-sm);
+    color: var(--avd-academy-color-ink-muted);
+  }
+  .lc__typ--fs   { color: var(--avd-academy-color-accent-ink); }
+  .lc__typ--meta { color: var(--avd-academy-color-ink-muted); border-style: dashed; }
+
+  /* DIE BASIS IST SELBST EIN STAPEL. `FROM` holt kein einzelnes Blatt, sondern
+     ein Image - und das bringt seine eigenen Schichten mit. Als Miniatur aus
+     flachen Kaesten gezeichnet: Sie zeigt "mehrere", ohne eine Zahl zu
+     behaupten, und bleibt flach genug, um neben eine Zeile zu passen. */
+  /* OHNE RAHMEN: Die Basis ist keine Schicht, die dieses Dockerfile anlegt -
+     sie ist der Grund, auf dem es aufsetzt. Ein Kasten stellte sie in eine
+     Reihe mit den anderen. Die Andeutung der Schichtchen genuegt, und der Text
+     dazu spricht mit derselben Stimme wie die Beschriftung der Achse: eine
+     Erlaeuterung am Bild, keine Beschriftung eines Kastens. */
+  .lc__typ--basis {
+    align-items: center;
+    border: 0;
+    padding-left: 0; padding-right: 0;
+    color: var(--avd-academy-color-ink-muted);
+  }
+  .lc__mini { flex: 0 0 auto; display: flex; flex-direction: column; gap: 2px; width: 2.4rem; }
+  .lc__mini i {
+    display: block; height: 4px;
+    border: 1px solid var(--avd-academy-color-border);
+    border-radius: 2px;
+    background: var(--avd-academy-color-bg);
+  }
+
+  /* Die Achse steht neben ALLEN Zeilen, nicht in einer davon. */
+  /* --- Die Achse -----------------------------------------------------------
      DIE ZEICHNUNG ERKLAERT SICH NICHT SELBST, DIE ACHSE TUT ES. Das Bild folgt
      der Datei; dass frueher Gebautes IM IMAGE weiter unten liegt, steht als
      Pfeil daneben - einmal, an dieser Stelle, statt als Satz unter jedem Bild. */
-  .lc__mit-achse {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: var(--avd-academy-space-6);
-    align-items: stretch;
-    max-width: 42rem;
-    /* Mittig: Auf einer Folie steht das Bild in der Mitte, nicht am linken Rand. */
-    margin: var(--avd-academy-space-6) auto;
-  }
   .lc__achse { display: flex; flex-direction: column; }
   .lc__achse-teil {
     flex: 1 1 50%;
@@ -248,7 +675,10 @@ Wer das versteht, versteht den Rest von selbst.</p>
     color: var(--avd-academy-color-accent-ink);
     background: var(--avd-academy-color-accent-soft);
   }
+  /* Die BESCHRIFTUNG dehnt sich, nicht der Hash: Sonst waechst die letzte
+     Spalte und ihr Text klebt am Namen statt am rechten Rand. */
   .lc__layer > span:nth-child(2) { flex: 1 1 auto; }
+  .lc__hash { margin-left: auto; text-align: right; }
 
   /* Metadaten sind keine Schicht - das muss man sehen. */
   .lc__layer--meta {
@@ -297,11 +727,25 @@ Wer das versteht, versteht den Rest von selbst.</p>
   }
 
   /* --- Die Wahl: was hat sich geaendert? ---------------------------------- */
+  /* Die Zeile soll nach EINGABE aussehen, nicht nach Fliesstext: eigener
+     Grund, Rahmen, Kante in der Akzentfarbe - wie ein Infobalken. */
   .lc__wahl {
     display: flex; flex-wrap: wrap; gap: var(--avd-academy-space-2);
     justify-content: center;
+    align-items: center;
+    padding: var(--avd-academy-space-3) var(--avd-academy-space-4);
+    background: var(--avd-academy-color-bg-subtle);
+    border: 1px solid var(--avd-academy-color-border);
+    border-left: 4px solid var(--avd-academy-color-accent);
+    border-radius: 0 var(--avd-academy-radius) var(--avd-academy-radius) 0;
     margin: var(--avd-academy-space-6) 0;
     align-items: center;
+  }
+  /* Die Frage steht vor den Knoepfen, nicht darueber: So liest sich die Zeile
+     als ein Satz - "Entwickler aendert: nichts / Anwendungscode / ...". */
+  .lc__wahl-frage {
+    font-weight: var(--avd-academy-fw-bold);
+    color: var(--avd-academy-color-headline);
   }
   .lc__knopf {
     padding: 0.45rem 0.9rem;
@@ -346,28 +790,78 @@ Wer das versteht, versteht den Rest von selbst.</p>
      19rem plus 2rem Abstand. Wer sie aendert, rechnet dort nach. */
   .avd-academy-slide__inner {
     max-width: 46rem;
-    /* MITTIG BIS IN DIE ZEILE. Auf einer projizierten Folie steht wenig Text,
-       und der steht in der Mitte. Ausgenommen ist alles, dessen Ausrichtung
-       Bedeutung traegt: Code wird links gelesen, und in einer Schicht steht
-       der Name links und die Marke rechts (das macht Flex, nicht die
-       Textausrichtung). */
-    text-align: center;
+    /* SENKRECHT IN DIE MITTE - eine bewusste Abweichung vom Theme (A-008).
+       Das Theme laesst Inhaltsfolien oben beginnen, damit der Titel dort steht,
+       wo das Auge ihn sucht. Hier ist gewuenscht, dass eine kurze Folie in der
+       Mitte steht statt oben zu kleben.
+
+       `margin-block: auto` und NICHT `justify-content: center` an der Folie:
+       Beide zentrieren, aber `justify-content` schneidet bei einer zu hohen
+       Folie den oberen Rand ab, und man kommt nicht mehr hin. Automatische
+       Aussenabstaende loesen sich bei fehlendem Platz zu Null auf - die hohe
+       Folie beginnt dann oben und laesst sich vollstaendig rollen. */
+    margin-block: auto;
+    /* KEINE eigene Textausrichtung: Es gilt der Standard des Themes
+       (linksbuendig). Zentrierte Zeilen waren einmal gesetzt und wieder
+       verworfen - Fliesstext liest sich linksbuendig besser, und diese Folien
+       tragen mehr als eine Zeile. Mittig steht nur, was zu einem Bild gehoert:
+       Bildtitel, Bilanz, Quellenzeile. NICHT erneut `text-align: center` hier
+       setzen. */
   }
-  .avd-academy-slide pre,
-  .avd-academy-slide pre code,
-  .lc__formel { text-align: left; }
 
   /* LUFT, WO PLATZ IST. Eine Folie traegt EINE Aussage; die Abstaende duerfen
      das zeigen. Das Theme rechnet fuer Doku-Seiten enger. */
-  .avd-academy-slide h2 { margin-bottom: var(--avd-academy-space-8); }
-  .avd-academy-slide p { margin-bottom: var(--avd-academy-space-6); }
+  .avd-academy-slide h2 {
+    margin-bottom: var(--avd-academy-space-8);
+    /* Das Theme setzt `text-wrap: balance` fuer alle Ueberschriften. Auf einer
+       Doku-Seite ist das schoen; hier steht unter der Ueberschrift ein Strich
+       ueber die volle Breite, und eine ausgewogen umgebrochene Zeile darueber
+       sieht aus wie ein Fehler. Also normal umbrechen - erst am Rand. */
+    text-wrap: normal;
+  }
+  /* NUR DIE ABSAETZE DER FOLIE SELBST. `.avd-academy-slide p` traefe auch
+     jeden Absatz INNERHALB eines Bausteins - und weil das Theme dafuer
+     ohnehin schon `margin: 0 0 space-4` setzt (Klasse plus Element, 0-1-1),
+     verlieren die Bausteinregeln mit ihrer einen Klasse. Genau daran stand
+     ueber der ersten Dockerfile-Zeile eine Luecke. */
+  .avd-academy-slide__inner > p { margin-bottom: var(--avd-academy-space-6); }
+
+  /* DIE ABSAETZE IN DEN BAUSTEINEN BRINGEN IHRE ABSTAENDE SELBST MIT - und
+     brauchen dafuer zwei Klassen, um die Regel des Themes zu ueberbieten. */
+  .lc__datei .lc__datei-name,
+  .lc__achse .lc__achse-teil,
+  .lc__spalte .lc__titel,
+  .lc__cache .lc__titel,
+  .lc__spalte .lc__unter,
+  .lc__spalte .lc__bildtext,
+  .lc__teilen .lc__kopf,
+  .lc__teilen .lc__zweig-name,
+  .lc__spalte .lc__leserichtung,
+  .lc__spalte .lc__bilanz,
+  .lc__druck .lc__druck-fall { margin: 0; }
+  /* ENG HALTEN: Titel, Untertitel und Stapel gehoeren zusammen - hier kostet
+     jeder Abstand Folienhoehe, und die Folie ist ohnehin die vollste. */
+  .lc__spalte .lc__titel { margin-bottom: var(--avd-academy-space-1); }
+  .lc__spalte .lc__unter { margin-bottom: var(--avd-academy-space-2); }
+  .lc__teilen .lc__kopf { margin-bottom: var(--avd-academy-space-2); }
+  .lc__teilen .lc__zweig-name { margin-top: var(--avd-academy-space-2); }
+  .lc__spalte .lc__leserichtung,
+  .lc__spalte .lc__bildtext { margin-top: var(--avd-academy-space-2); }
+  .lc__spalte .lc__bilanz { margin-top: var(--avd-academy-space-4); }
+  /* Diese beiden stehen frei auf der Folie und sollen mittig bleiben - das
+     Theme setzt die Kurzform `margin` und nimmt ihnen sonst das `auto`. */
+  .avd-academy-slide .lc__fussnote { margin: 0 auto var(--avd-academy-space-6); }
+  .avd-academy-slide .lc__bildtext { max-width: 46rem; margin: 0 auto; }
+  /* Der Callout ist ein Baustein des Themes - hier nur in die Mitte gerueckt. */
+  .avd-academy-slide .avd-academy-callout { max-width: 46rem; margin: var(--avd-academy-space-6) auto 0; }
+  .avd-academy-slide .lc__formel { margin: var(--avd-academy-space-6) auto; }
   .avd-academy-slide__inner > :last-child { margin-bottom: 0; }
   .lc__mit-achse, .lc__teilen, .lc__spalte--einzeln {
     margin-top: var(--avd-academy-space-8);
     margin-bottom: var(--avd-academy-space-8);
   }
   .lc { margin-top: var(--avd-academy-space-8); }
-  .lc__wahl { margin: var(--avd-academy-space-8) 0; }
+  .lc__wahl { margin: var(--avd-academy-space-6) 0 0; }
   /* Der Vergleich ist so breit wie die Spalte - sonst steht er wieder eingerueckt. */
   .lc { margin-left: auto; margin-right: auto; }
   /* Ueberschrift und Kernsatz stehen mittig ueber dem Bild, das sie beschreiben. */
@@ -398,17 +892,21 @@ Wer das versteht, versteht den Rest von selbst.</p>
   }
 </style>
 
-<h2 id="ein-dockerfile-ist-eine-liste-von-schritten">Ein Dockerfile ist eine Liste von Schritten</h2>
+<h2 id="dockerfile--liste-von-schritten">Dockerfile – Liste von Schritten</h2>
 
 <p>Jeder Schritt geht vom Ergebnis des vorherigen aus:</p>
 
-<pre><code class="language-dockerfile">FROM node:20-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-CMD ["node", "server.js"]
-</code></pre>
+<div class="lc__datei">
+  <p class="lc__datei-name">Dockerfile</p>
+  <ol class="lc__datei-zeilen">
+    <li><code><b>FROM</b> node:20-alpine</code></li>
+    <li><code><b>WORKDIR</b> /app</code></li>
+    <li><code><b>COPY</b> package*.json ./</code></li>
+    <li><code><b>RUN</b> npm install</code></li>
+    <li><code><b>COPY</b> . .</code></li>
+    <li><code><b>CMD</b> ["node", "server.js"]</code></li>
+  </ol>
+</div>
 
 <p class="lc__quelle">Alle Anweisungen und ihre Feinheiten stehen in der
 <a href="https://docs.docker.com/reference/dockerfile/" target="_blank" rel="noopener">offiziellen Dockerfile-Referenz</a>.
@@ -416,18 +914,36 @@ Für diese Seite genügen die sechs oben.</p>
 
 <h2 id="jede-zeile-legt-eine-schicht-an">Jede Zeile legt eine Schicht an</h2>
 
-<p>Das Bild folgt der Datei – Zeile 1 zuerst, Zeile 6 zuletzt:</p>
+<p>Links die Datei, rechts was daraus entsteht – Zeile für Zeile:</p>
 
-<div class="lc__mit-achse">
+<div class="lc__zuordnung">
 
-  <ul class="lc__stapel">
-    <li class="lc__layer"><span class="lc__nr">1</span><span>node:20-alpine</span><span class="lc__marke">Grund</span></li>
-    <li class="lc__layer lc__layer--meta"><span class="lc__nr">2</span><span>WORKDIR /app</span><span class="lc__marke">nur Metadaten</span></li>
-    <li class="lc__layer"><span class="lc__nr">3</span><span>package*.json</span><span class="lc__marke">Schicht</span></li>
-    <li class="lc__layer"><span class="lc__nr">4</span><span>node_modules</span><span class="lc__marke">Schicht</span></li>
-    <li class="lc__layer"><span class="lc__nr">5</span><span>Anwendungsdateien</span><span class="lc__marke">Schicht</span></li>
-    <li class="lc__layer lc__layer--meta"><span class="lc__nr">6</span><span>CMD …</span><span class="lc__marke">nur Metadaten</span></li>
-  </ul>
+<ol class="lc__zu-liste">
+  <li>
+    <code><span class="lc__zeilennr">1</span><b>FROM</b> node:20-alpine</code>
+    <span class="lc__typ lc__typ--basis"><span class="lc__mini" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>(Basis: mehrere Schichten)</span></span>
+  </li>
+  <li>
+    <code><span class="lc__zeilennr">2</span><b>WORKDIR</b> /app</code>
+    <span class="lc__typ lc__typ--meta"><svg class="lc__sinnbild" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="3" width="12" height="1.8" rx="0.9" /><rect x="2" y="7.1" width="12" height="1.8" rx="0.9" /><rect x="2" y="11.2" width="7" height="1.8" rx="0.9" /></svg><span>Metadaten</span></span>
+  </li>
+  <li>
+    <code><span class="lc__zeilennr">3</span><b>COPY</b> package*.json ./</code>
+    <span class="lc__typ lc__typ--fs"><svg class="lc__sinnbild" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="6" width="13" height="4" rx="1.3" /></svg><span>Dateisystem</span></span>
+  </li>
+  <li>
+    <code><span class="lc__zeilennr">4</span><b>RUN</b> npm install</code>
+    <span class="lc__typ lc__typ--fs"><svg class="lc__sinnbild" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="6" width="13" height="4" rx="1.3" /></svg><span>Dateisystem</span></span>
+  </li>
+  <li>
+    <code><span class="lc__zeilennr">5</span><b>COPY</b> . .</code>
+    <span class="lc__typ lc__typ--fs"><svg class="lc__sinnbild" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="6" width="13" height="4" rx="1.3" /></svg><span>Dateisystem</span></span>
+  </li>
+  <li>
+    <code><span class="lc__zeilennr">6</span><b>CMD</b> ["node", "server.js"]</code>
+    <span class="lc__typ lc__typ--meta"><svg class="lc__sinnbild" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="3" width="12" height="1.8" rx="0.9" /><rect x="2" y="7.1" width="12" height="1.8" rx="0.9" /><rect x="2" y="11.2" width="7" height="1.8" rx="0.9" /></svg><span>Metadaten</span></span>
+  </li>
+</ol>
 
   <div class="lc__achse">
     <p class="lc__achse-teil lc__achse-teil--hoch">untere Schichten</p>
@@ -436,16 +952,14 @@ Für diese Seite genügen die sechs oben.</p>
 
 </div>
 
+<p class="lc__fussnote">Eine Dateisystem-Schicht legen nur <code>RUN</code>,
+<code>COPY</code> und <code>ADD</code> an; alles andere schreibt Metadaten.
+<code>WORKDIR</code> ist dabei der Grenzfall: Es schreibt Metadaten, legt das
+Verzeichnis aber an, wenn es fehlt – und es bestimmt, worauf sich die folgenden
+<code>COPY</code>- und <code>RUN</code>-Zeilen beziehen.</p>
+
 <p><strong>Die Pfeile geben die Sprache vor:</strong> <code>FROM</code> ist die <strong>unterste</strong> Schicht, die
 letzte Zeile die <strong>oberste</strong> – gemeint ist die frühere und die spätere Zeile.</p>
-
-<h2 id="nicht-jede-zeile-wird-zu-einer-schicht">Nicht jede Zeile wird zu einer Schicht</h2>
-
-<p><strong>Eine Schicht legen nur <code>RUN</code>, <code>COPY</code> und <code>ADD</code> an</strong> – sie verändern das
-Dateisystem.</p>
-
-<p><code>FROM</code> setzt den Grund. <code>WORKDIR</code>, <code>ENV</code>, <code>EXPOSE</code>, <code>CMD</code> und <code>ENTRYPOINT</code>
-schreiben nur Angaben ins Image: kein Platz, aber Teil des Images.</p>
 
 <h2 id="jeder-layer-trägt-einen-hash">Jeder Layer trägt einen Hash</h2>
 
@@ -453,65 +967,104 @@ schreiben nur Angaben ins Image: kein Platz, aber Teil des Images.</p>
 <strong>zwei</strong> Dingen: aus dem Inhalt der Schicht selbst <strong>und</strong> aus dem Hash der
 Schicht, auf der sie liegt.</p>
 
-<p class="lc__formel">Hash(Layer) = f( Inhalt des Layers, Hash des Layers darunter )</p>
+<p class="lc__formel">Hash(Schicht) = ƒ( Inhalt der Schicht, Hash der Schicht darunter )</p>
 
-<p>Damit benennt ein Hash nie nur eine Schicht, sondern <strong>die ganze Kette unter
-ihr</strong>. Zwei Bauläufe, bei denen dieselben Schritte auf demselben Grund landen,
-ergeben denselben Hash:</p>
+<p>Zwei Bauläufe, bei denen dieselben Schritte auf demselben Grund landen, ergeben
+denselben Hash:</p>
 
-<div class="lc__spalte lc__spalte--einzeln">
+<div class="lc__spalte lc__spalte--einzeln lc__spalte--hash">
   <ul class="lc__stapel">
-    <li class="lc__layer"><span>node:20-alpine</span><span class="lc__hash">sha256:1f4c…</span></li>
-    <li class="lc__layer"><span>package*.json</span><span class="lc__hash">sha256:9a02…</span></li>
-    <li class="lc__layer"><span>node_modules</span><span class="lc__hash">sha256:c771…</span></li>
-    <li class="lc__layer"><span>Anwendungsdateien</span><span class="lc__hash">sha256:3e8b…</span></li>
+    <li class="lc__layer"><span class="lc__nr">1</span><span><code><b>FROM</b> node:20-alpine</code></span><span class="lc__hash">sha256:1f4c…</span></li>
+    <li class="lc__layer"><span class="lc__nr">2</span><span><code>WORKDIR /app</code></span><span class="lc__hash">sha256:5b8d…</span></li>
+    <li class="lc__layer"><span class="lc__nr">3</span><span><code>COPY package*.json ./</code></span><span class="lc__hash">sha256:9a02…</span></li>
+    <li class="lc__layer"><span class="lc__nr">4</span><span><code>RUN npm install</code></span><span class="lc__hash">sha256:c771…</span></li>
+    <li class="lc__layer"><span class="lc__nr">5</span><span><code><b>COPY</b> . .</code></span><span class="lc__hash">sha256:3e8b…</span></li>
+    <li class="lc__layer"><span class="lc__nr">6</span><span><code>CMD ["node", "server.js"]</code></span><span class="lc__hash">sha256:7d14…</span></li>
   </ul>
   <p class="lc__leserichtung">Jeder Hash steckt in den Hashes darunter mit drin.</p>
 </div>
 
-<h2 id="daraus-folgt-beides">Daraus folgt beides</h2>
+<h2 id="geänderter-hash--alles-spätere-neu">Geänderter Hash – alles Spätere neu</h2>
 
-<p><strong>Der Cache.</strong> Kennt Docker einen Hash bereits, baut es die Schicht nicht
-erneut und lädt sie nicht erneut herunter.</p>
+<p>Ändert sich eine Schicht, ändert sich ihr Hash – und damit der Hash <strong>jeder
+darüberliegenden</strong>, auch wenn deren Anweisung Wort für Wort dieselbe ist. Sie
+steht ja auf einem anderen Grund.</p>
 
-<p><strong>Die Ungültigkeit nach oben.</strong> Ändert sich eine Schicht, ändert sich ihr Hash –
-und damit der Hash <strong>jeder darüberliegenden</strong>, auch wenn deren Anweisung Wort
-für Wort dieselbe ist. Sie steht ja auf einem anderen Grund.</p>
+<div class="lc__spalte lc__spalte--einzeln lc__spalte--bruch">
+  <ul class="lc__stapel">
+    <li class="lc__layer"><span class="lc__nr">1</span><span><code><b>FROM</b> node:20-alpine</code></span><span class="lc__hash">sha256:1f4c…</span><span class="lc__marke">unverändert</span></li>
+    <li class="lc__layer"><span class="lc__nr">2</span><span><code>WORKDIR /app</code></span><span class="lc__hash">sha256:5b8d…</span><span class="lc__marke">unverändert</span></li>
+    <li class="lc__layer"><span class="lc__nr">3</span><span><code>COPY package*.json ./</code></span><span class="lc__hash">sha256:9a02…</span><span class="lc__marke">unverändert</span></li>
+    <li class="lc__layer"><span class="lc__nr">4</span><span><code>RUN npm install</code></span><span class="lc__hash">sha256:c771…</span><span class="lc__marke">unverändert</span></li>
+    <li class="lc__layer lc__layer--neu"><span class="lc__nr">5</span><span><code><b>COPY</b> . .</code></span><span class="lc__hash">sha256:b0f2…</span><span class="lc__marke">neuer Hash</span></li>
+    <li class="lc__layer lc__layer--neu"><span class="lc__nr">6</span><span><code>CMD ["node", "server.js"]</code></span><span class="lc__hash">sha256:44a9…</span><span class="lc__marke">neuer Hash</span></li>
+  </ul>
+  <p class="lc__bildtext">Eine Zeile geändert – ab dort bekommt jede Schicht einen neuen Hash.</p>
+</div>
 
-<h2 id="ein-image-ist-ein-layer-und-alles-darunter">Ein Image ist ein Layer und alles darunter</h2>
+<h2 id="caching-bekannter-hash-nichts-zu-tun">Caching: Bekannter Hash, nichts zu tun</h2>
 
-<p>Damit lässt sich sagen, was ein Image eigentlich ist:</p>
+<p>Vor dem Holen vergleicht Docker <strong>Hashes, keine Namen</strong>. Was schon auf der
+Platte liegt, wird nicht noch einmal geladen:</p>
 
-<blockquote>
-  <p>Ein <strong>Image</strong> ist nichts anderes als ein Layer <strong>samt allem, was unter ihm
-liegt</strong>. Der Name <code>meine-app:1.0</code> zeigt auf das oberste Glied einer Kette –
-die Kette selbst ist das Image.</p>
-</blockquote>
+<div class="lc__cache">
+  <ol class="lc__cache-liste">
+    <li class="lc__cache-kopf"><span class="lc__titel"><code>meine-app:2.0</code> soll her</span><span></span><span class="lc__titel">Cache</span></li>
+    <li><span class="lc__layer"><span class="lc__nr">1</span><span><code><b>FROM</b> node:20-alpine</code></span><span class="lc__hash">sha256:1f4c…</span></span><span class="lc__pfeil lc__pfeil--links" aria-hidden="true"></span><span class="lc__chip is-treffer"><code>sha256:1f4c…</code></span></li>
+    <li><span class="lc__layer"><span class="lc__nr">2</span><span><code>WORKDIR /app</code></span><span class="lc__hash">sha256:5b8d…</span></span><span class="lc__pfeil lc__pfeil--links" aria-hidden="true"></span><span class="lc__chip is-treffer"><code>sha256:5b8d…</code></span></li>
+    <li><span class="lc__layer"><span class="lc__nr">3</span><span><code>COPY package*.json ./</code></span><span class="lc__hash">sha256:9a02…</span></span><span class="lc__pfeil lc__pfeil--links" aria-hidden="true"></span><span class="lc__chip is-treffer"><code>sha256:9a02…</code></span></li>
+    <li><span class="lc__layer"><span class="lc__nr">4</span><span><code>RUN npm install</code></span><span class="lc__hash">sha256:c771…</span></span><span class="lc__pfeil lc__pfeil--links" aria-hidden="true"></span><span class="lc__chip is-treffer"><code>sha256:c771…</code></span></li>
+    <li><span class="lc__layer lc__layer--neu"><span class="lc__nr">5</span><span><code><b>COPY</b> . .</code></span><span class="lc__hash">sha256:b0f2…</span></span><span class="lc__pfeil lc__pfeil--rechts lc__pfeil--holen" aria-hidden="true"></span><span class="lc__chip lc__chip--leer"></span></li>
+    <li><span class="lc__layer lc__layer--neu"><span class="lc__nr">6</span><span><code>CMD ["node", "server.js"]</code></span><span class="lc__hash">sha256:44a9…</span></span><span class="lc__pfeil lc__pfeil--rechts lc__pfeil--holen" aria-hidden="true"></span><span class="lc__chip lc__chip--leer"></span></li>
+  </ol>
+</div>
 
-<p>Das klingt nach Wortklauberei und hat zwei sehr praktische Folgen.</p>
+<p class="lc__bildtext">Vier Schichten liegen schon da. Die beiden fehlenden
+werden geholt – und landen danach ebenfalls im Cache.</p>
+
+<h2 id="was-ein-image-wirklich-ist">Was ein Image wirklich ist</h2>
+
+<p>Ein Image ist kein Klotz, sondern <strong>ein Name auf einer Schicht – samt allem,
+was unter ihr liegt</strong>.</p>
+
+<div class="lc__zeigt">
+  <ol class="lc__zeigt-liste">
+    <li><span class="lc__layer"><span class="lc__nr">1</span><span><code><b>FROM</b> node:20-alpine</code></span></span><span class="lc__zeiger"><code>node:20-alpine</code></span></li>
+    <li><span class="lc__layer"><span class="lc__nr">2</span><span><code>WORKDIR /app</code></span></span><span></span></li>
+    <li><span class="lc__layer"><span class="lc__nr">3</span><span><code>COPY package*.json ./</code></span></span><span></span></li>
+    <li><span class="lc__layer"><span class="lc__nr">4</span><span><code>RUN npm install</code></span></span><span></span></li>
+    <li><span class="lc__layer"><span class="lc__nr">5</span><span><code><b>COPY</b> . .</code></span></span><span></span></li>
+    <li><span class="lc__layer"><span class="lc__nr">6</span><span><code>CMD ["node", "server.js"]</code></span></span><span class="lc__zeiger"><code>meine-app:2.0</code></span></li>
+  </ol>
+</div>
+
+<p>Deshalb zeigen zwei Namen auf dieselbe Kette, nur an verschiedenen Stellen – und
+deshalb entsteht ein <strong>neues Image</strong> auch dann, wenn sich nur der Startbefehl
+ändert.</p>
 
 <h2 id="zwei-images-ein-gemeinsamer-grund">Zwei Images, ein gemeinsamer Grund</h2>
 
 <p>Zwei Images, die auf demselben Grund aufsetzen, <strong>teilen</strong> sich dessen Schichten
-– dieselben Hashes, dieselben Daten, einmal auf der Platte:</p>
+– derselbe Hash, dieselben Daten, einmal auf der Platte. Darüber hat jedes seine
+eigenen Zeilen und damit eigene Hashes:</p>
 
 <div class="lc__teilen">
   <p class="lc__kopf">Gemeinsamer Grund – einmal vorhanden, von beiden benutzt:</p>
   <ul class="lc__stapel lc__stapel--basis">
-    <li class="lc__layer"><span>node:20-alpine</span><span class="lc__hash">sha256:1f4c…</span></li>
+    <li class="lc__layer"><span><code><b>FROM</b> node:20-alpine</code></span><span class="lc__hash">sha256:1f4c…</span></li>
   </ul>
   <div class="lc__zweige">
     <div class="lc__zweig">
       <ul class="lc__stapel">
-        <li class="lc__layer lc__layer--eigen"><span>node_modules</span></li>
-        <li class="lc__layer lc__layer--eigen"><span>Bestell-Anwendung</span></li>
+        <li class="lc__layer lc__layer--eigen"><span><code>COPY bestellung/ ./</code></span><span class="lc__hash">sha256:2c90…</span></li>
+        <li class="lc__layer lc__layer--eigen"><span><code>RUN npm install</code></span><span class="lc__hash">sha256:6ea1…</span></li>
       </ul>
       <p class="lc__zweig-name"><code>bestellung:2.1</code></p>
     </div>
     <div class="lc__zweig">
       <ul class="lc__stapel">
-        <li class="lc__layer lc__layer--eigen"><span>node_modules</span></li>
-        <li class="lc__layer lc__layer--eigen"><span>Versand-Anwendung</span></li>
+        <li class="lc__layer lc__layer--eigen"><span><code>COPY versand/ ./</code></span><span class="lc__hash">sha256:d47b…</span></li>
+        <li class="lc__layer lc__layer--eigen"><span><code>RUN npm install</code></span><span class="lc__hash">sha256:0f55…</span></li>
       </ul>
       <p class="lc__zweig-name"><code>versand:1.4</code></p>
     </div>
@@ -526,90 +1079,92 @@ ersten: Was schon liegt, wird nicht noch einmal geholt.</p>
 <p>Und weil ein Image nur eine Kette ist, kann ein Dockerfile auch auf einem
 <strong>eigenen</strong> Image aufsetzen statt auf einem fremden:</p>
 
-<pre><code class="language-dockerfile">FROM meine-basis:1.0
-COPY . .
-CMD ["node", "server.js"]
-</code></pre>
+<div class="lc__ableitung">
 
-<div class="lc__teilen">
-  <p class="lc__kopf"><code>meine-basis:1.0</code> – ein vollständiges Image, das hier nur der Grund ist:</p>
-  <ul class="lc__stapel lc__stapel--basis">
-    <li class="lc__layer"><span>node:20-alpine</span><span class="lc__marke">von der Basis geerbt</span></li>
-    <li class="lc__layer"><span>Werkzeuge, Zertifikate, Benutzer</span><span class="lc__marke">von der Basis geerbt</span></li>
-  </ul>
-  <div class="lc__zweige lc__zweige--eins">
-    <div class="lc__zweig">
-      <ul class="lc__stapel">
-        <li class="lc__layer lc__layer--eigen"><span>Anwendungsdateien</span></li>
-      </ul>
-      <p class="lc__zweig-name"><code>meine-app:2.0</code></p>
-    </div>
-  </div>
+  <p class="lc__ab-kopf lc__titel">Dockerfile</p>
+  <p class="lc__ab-kopf lc__ab-kopf--rechts lc__titel">Schichten des Images</p>
+
+  <code class="lc__ab-datei lc__ab-hoch"><span class="lc__zeilennr">1</span><span><b>FROM</b> meine-basis:1.0</span></code>
+  <span class="lc__ab-klammer" aria-hidden="true"></span>
+  <span class="lc__ab-schicht lc__layer"><span><code><b>FROM</b> node:20-alpine</code></span><span class="lc__hash">sha256:1f4c…</span></span>
+  <span class="lc__ab-schicht lc__layer"><span><code><b>RUN</b> apk add …</code></span><span class="lc__hash">sha256:8b3f…</span></span>
+  <span class="lc__ab-name lc__zeiger"><code>meine-basis:1.0</code></span>
+
+  <code class="lc__ab-datei"><span class="lc__zeilennr">2</span><span><b>COPY</b> . .</span></code>
+  <span class="lc__ab-strich" aria-hidden="true"></span>
+  <span class="lc__ab-schicht lc__layer lc__layer--eigen"><span><code><b>COPY</b> . .</code></span><span class="lc__hash">sha256:3e8b…</span></span>
+
+  <code class="lc__ab-datei"><span class="lc__zeilennr">3</span><span><b>CMD</b> ["node", …]</span></code>
+  <span class="lc__ab-strich" aria-hidden="true"></span>
+  <span class="lc__ab-schicht lc__layer lc__layer--eigen"><span><code><b>CMD</b> […]</code></span><span class="lc__hash">sha256:44a9…</span></span>
+  <span class="lc__ab-name lc__zeiger"><code>meine-app:2.0</code></span>
+
 </div>
 
-<p>So arbeiten Häuser mit vielen Anwendungen: <strong>ein</strong> gepflegtes Basis-Image, darauf
-viele dünne Anwendungs-Images. Wird die Basis erneuert, erben es alle – und alle
-müssen neu gebaut werden, denn ihr Grund hat einen neuen Hash bekommen.</p>
+<p>So arbeiten Häuser mit vielen Anwendungen:</p>
 
-<h2 id="was-der-cache-daraus-macht">Was der Cache daraus macht</h2>
+<div class="avd-academy-callout avd-academy-callout--warning">
+  <p><strong>Ein</strong> gepflegtes Basis-Image, darauf viele dünne Anwendungs-Images. Wird die
+Basis erneuert, erben es alle – und <strong>alle müssen neu gebaut werden!</strong></p>
+</div>
 
-<p>Jetzt lohnt sich der Blick auf die Reihenfolge der Zeilen. Unten stehen zweimal
-dieselben Anweisungen – links in der naheliegenden Reihenfolge, rechts in der,
-die den Cache trägt.</p>
+<h2 id="die-reihenfolge-entscheidet">Die Reihenfolge entscheidet!</h2>
 
-<p><strong>Wähle, was sich geändert hat.</strong> Beide Seiten rechnen dieselbe Regel: Die erste
-betroffene Schicht wird neu gebaut, und mit ihr alles, was darauf steht.</p>
+<p><strong>Wähle das Szenario.</strong></p>
 
-<div class="lc__wahl" role="group" aria-label="Was hat sich seit dem letzten Build geändert?">
-  <button type="button" class="lc__knopf" data-lc-wahl="nichts" aria-pressed="false">nichts</button>
-  <button type="button" class="lc__knopf" data-lc-wahl="code" aria-pressed="true">eine Quelldatei</button>
-  <button type="button" class="lc__knopf" data-lc-wahl="deps" aria-pressed="false">die Abhängigkeitsliste</button>
+<div class="lc__wahl" role="group" aria-label="Was hat der Entwickler seit dem letzten Build geändert?">
+  <span class="lc__wahl-frage">Entwickler ändert:</span>
+  <button type="button" class="lc__knopf" data-lc-wahl="nichts" aria-pressed="true">nichts</button>
+  <button type="button" class="lc__knopf" data-lc-wahl="code" aria-pressed="false">Anwendungscode</button>
+  <button type="button" class="lc__knopf" data-lc-wahl="deps" aria-pressed="false">die Abhängigkeiten (package.json)</button>
 </div>
 
 <div class="lc" id="lc-vergleich">
 
   <div class="lc__spalte">
+    <div class="lc__loesung">
     <p class="lc__titel">Naheliegend – und teuer</p>
     <p class="lc__unter">Erst alles kopieren, dann installieren.</p>
 
     <ul class="lc__stapel" data-lc-stapel="teuer">
-      <li class="lc__layer" data-lc-enthaelt=""><span>FROM node:20-alpine</span><span class="lc__marke">aus dem Cache</span></li>
-      <li class="lc__layer lc__layer--neu" data-lc-enthaelt="code deps"><span>COPY . .</span><span class="lc__marke">neu gebaut</span></li>
-      <li class="lc__layer lc__layer--neu" data-lc-enthaelt=""><span>RUN npm install</span><span class="lc__marke">neu gebaut</span></li>
-      <li class="lc__layer lc__layer--meta"><span>CMD ["node", "server.js"]</span><span class="lc__marke">nur Metadaten</span></li>
+      <li class="lc__layer" data-lc-enthaelt=""><span><code><b>FROM</b> node:20-alpine</code></span><span class="lc__marke">aus dem Cache</span></li>
+      <li class="lc__layer" data-lc-enthaelt="code deps"><span><code><b>COPY</b> . .</code></span><span class="lc__marke">aus dem Cache</span></li>
+      <li class="lc__layer" data-lc-enthaelt=""><span><code><b>RUN</b> npm install</code></span><span class="lc__marke">aus dem Cache</span></li>
     </ul>
+    </div>
 
-    <p class="lc__bilanz">
-      <span data-lc-fall="nichts" hidden="">Nichts geändert – der ganze Stapel kommt aus dem Cache. Der Build dauert Sekunden.</span>
-      <span data-lc-fall="code"><strong>Eine Zeile Code geändert</strong> – und die Abhängigkeiten werden erneut heruntergeladen und installiert. Bei jedem Build. Jeden Tag.</span>
-      <span data-lc-fall="deps" hidden=""><strong>Die Abhängigkeitsliste geändert</strong> – dasselbe Bild. Diese Reihenfolge kennt den Unterschied gar nicht.</span>
-    </p>
+    <div class="lc__fazit">
+      <div class="avd-academy-callout avd-academy-callout--success lc__panel" data-lc-fall="nichts"><p class="lc__urteil"><svg class="lc__urteil-bild" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg><span>läuft optimal</span></p><p class="lc__grund">Der ganze Stapel kommt aus dem Cache. Der Build dauert Sekunden.</p></div>
+      <div class="avd-academy-callout avd-academy-callout--warning lc__panel" data-lc-fall="code" hidden=""><p class="lc__urteil"><svg class="lc__urteil-bild" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6.4" /><path d="M5.6 6.2h.01M10.4 6.2h.01" stroke-width="2" /><path d="M5.6 11c1.3-1 3.4-1.4 5-.4" /></svg><span>installiert ohne Grund</span></p><p class="lc__grund">Eine Zeile Code geändert – und die Abhängigkeiten werden erneut heruntergeladen und installiert. Bei jedem Build. Jeden Tag.</p></div>
+      <div class="avd-academy-callout avd-academy-callout--warning lc__panel" data-lc-fall="deps" hidden=""><p class="lc__urteil"><svg class="lc__urteil-bild" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6.4" /><path d="M5.6 6.2h.01M10.4 6.2h.01" stroke-width="2" /><path d="M5.6 11c1.3-1 3.4-1.4 5-.4" /></svg><span>kein Unterschied</span></p><p class="lc__grund">Hier wie dort dasselbe Bild: Diese Reihenfolge kann die beiden Fälle gar nicht unterscheiden.</p></div>
+    </div>
   </div>
 
   <div class="lc__spalte">
+    <div class="lc__loesung">
     <p class="lc__titel">Stabiles zuerst</p>
     <p class="lc__unter">Erst die Abhängigkeitsliste, dann installieren, dann der Rest.</p>
 
     <ul class="lc__stapel" data-lc-stapel="stabil">
-      <li class="lc__layer" data-lc-enthaelt=""><span>FROM node:20-alpine</span><span class="lc__marke">aus dem Cache</span></li>
-      <li class="lc__layer" data-lc-enthaelt="deps"><span>COPY package*.json ./</span><span class="lc__marke">aus dem Cache</span></li>
-      <li class="lc__layer" data-lc-enthaelt=""><span>RUN npm install</span><span class="lc__marke">aus dem Cache</span></li>
-      <li class="lc__layer lc__layer--neu" data-lc-enthaelt="code deps"><span>COPY . .</span><span class="lc__marke">neu gebaut</span></li>
-      <li class="lc__layer lc__layer--meta"><span>CMD ["node", "server.js"]</span><span class="lc__marke">nur Metadaten</span></li>
+      <li class="lc__layer" data-lc-enthaelt=""><span><code><b>FROM</b> node:20-alpine</code></span><span class="lc__marke">aus dem Cache</span></li>
+      <li class="lc__layer" data-lc-enthaelt="deps"><span><code><b>COPY</b> package*.json ./</code></span><span class="lc__marke">aus dem Cache</span></li>
+      <li class="lc__layer" data-lc-enthaelt=""><span><code><b>RUN</b> npm install</code></span><span class="lc__marke">aus dem Cache</span></li>
+      <li class="lc__layer" data-lc-enthaelt="code deps"><span><code><b>COPY</b> . .</code></span><span class="lc__marke">aus dem Cache</span></li>
     </ul>
+    </div>
 
-    <p class="lc__bilanz">
-      <span data-lc-fall="nichts" hidden="">Nichts geändert – alles aus dem Cache, wie nebenan.</span>
-      <span data-lc-fall="code"><strong>Dieselbe Änderung</strong> – der teure Schritt bleibt liegen, weil die Abhängigkeitsliste unberührt ist. Nur die Anwendungsdateien werden neu kopiert.</span>
-      <span data-lc-fall="deps" hidden=""><strong>Jetzt wird installiert</strong> – und das ist richtig so: Die Liste hat sich geändert, also muss sie neu aufgelöst werden. Der Preis fällt nur an, wenn er anfällt.</span>
-    </p>
+    <div class="lc__fazit">
+      <div class="avd-academy-callout avd-academy-callout--success lc__panel" data-lc-fall="nichts"><p class="lc__urteil"><svg class="lc__urteil-bild" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg><span>läuft optimal</span></p><p class="lc__grund">Alles aus dem Cache, wie nebenan.</p></div>
+      <div class="avd-academy-callout avd-academy-callout--success lc__panel" data-lc-fall="code" hidden=""><p class="lc__urteil"><svg class="lc__urteil-bild" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg><span>nur die Dateien</span></p><p class="lc__grund">Der teure Schritt bleibt liegen, weil die Abhängigkeitsliste unberührt ist.</p></div>
+      <div class="avd-academy-callout avd-academy-callout--success lc__panel" data-lc-fall="deps" hidden=""><p class="lc__urteil"><svg class="lc__urteil-bild" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg><span>zu Recht installiert</span></p><p class="lc__grund">Die Liste hat sich geändert, also muss sie neu aufgelöst werden. Der Preis fällt nur an, wenn er anfällt.</p></div>
+    </div>
   </div>
 
 </div>
 
 <noscript>
-<p class="lc__quelle">Ohne JavaScript steht oben der Fall „eine Quelldatei geändert“ –
-der häufigste.</p>
+<p class="lc__quelle">Ohne JavaScript steht oben der Ausgangsfall: Es hat sich
+nichts geändert.</p>
 </noscript>
 
 <div class="lc__druck" id="lc-druck" aria-hidden="true"></div>
@@ -680,7 +1235,7 @@ der häufigste.</p>
     });
   }
 
-  var wahl = "code";                 /* der Stand, in dem das Markup ausgeliefert wird */
+  var wahl = "nichts";               /* der Stand, in dem das Markup ausgeliefert wird */
   function umschalten(neuerFall) {
     wahl = neuerFall;
     knoepfe.forEach(function (k) {
@@ -707,35 +1262,52 @@ der häufigste.</p>
 Datei steckt weiterhin im Layer darunter – der obere merkt sich nur, dass sie
 nicht mehr zu sehen ist.</p>
 
-<div class="lc">
+<div class="lc" id="lc-loeschen">
 
   <div class="lc__spalte">
-    <p class="lc__titel">Zwei Anweisungen – Ballast bleibt</p>
-    <ul class="lc__stapel">
-      <li class="lc__layer"><span>FROM debian:12-slim</span><span class="lc__marke">Basis</span></li>
-      <li class="lc__layer lc__layer--neu"><span>RUN apt-get update &amp;&amp; apt-get install -y curl</span><span class="lc__marke">+ Paketlisten</span></li>
-      <li class="lc__layer"><span>RUN rm -rf /var/lib/apt/lists/*</span><span class="lc__marke">nur unsichtbar</span></li>
-    </ul>
+    <div class="lc__loesung">
+      <p class="lc__titel">2 Layer</p>
+      <ul class="lc__stapel">
+        <li class="lc__layer"><span><code><b>FROM</b> debian:12-slim</code></span><span class="lc__hash">sha256:5d1a…</span></li>
+        <li class="lc__layer lc__layer--neu"><span><code><b>RUN</b> apt-get install …</code></span><span class="lc__hash">sha256:9f3c…</span></li>
+        <li class="lc__layer"><span><code><b>RUN</b> rm -rf …</code></span><span class="lc__hash">sha256:c0b8…</span></li>
+      </ul>
+    </div>
+    <div class="lc__fazit">
+      <div class="avd-academy-callout avd-academy-callout--warning lc__panel">
+        <p class="lc__urteil"><svg class="lc__urteil-bild" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6.4" /><path d="M5.6 6.2h.01M10.4 6.2h.01" stroke-width="2" /><path d="M5.6 11c1.3-1 3.4-1.4 5-.4" /></svg><span>Ballast bleibt</span></p>
+        <p class="lc__grund">Die Paketlisten stecken weiter im Layer darunter – der obere merkt sich nur, dass sie nicht mehr zu sehen sind.</p>
+      </div>
+    </div>
   </div>
 
   <div class="lc__spalte">
-    <p class="lc__titel">Eine Anweisung – Ballast weg</p>
-    <ul class="lc__stapel">
-      <li class="lc__layer"><span>FROM debian:12-slim</span><span class="lc__marke">Basis</span></li>
-      <li class="lc__layer"><span>RUN apt-get update &amp;&amp; apt-get install -y curl \<br />&nbsp;&nbsp;&amp;&amp; rm -rf /var/lib/apt/lists/*</span><span class="lc__marke">sauber</span></li>
-    </ul>
+    <div class="lc__loesung">
+      <p class="lc__titel">1 Layer</p>
+      <ul class="lc__stapel">
+        <li class="lc__layer"><span><code><b>FROM</b> debian:12-slim</code></span><span class="lc__hash">sha256:5d1a…</span></li>
+        <li class="lc__layer"><span><code><b>RUN</b> apt-get install … &amp;&amp; rm -rf …</code></span><span class="lc__hash">sha256:7a44…</span></li>
+      </ul>
+    </div>
+    <div class="lc__fazit">
+      <div class="avd-academy-callout avd-academy-callout--success lc__panel">
+        <p class="lc__urteil"><svg class="lc__urteil-bild" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg><span>Ballast weg</span></p>
+        <p class="lc__grund">Aufgeräumt wird im selben Layer, in dem der Ballast entstanden ist – dann taucht er gar nicht erst auf.</p>
+      </div>
+    </div>
   </div>
 
 </div>
 
 <h2 id="zum-mitnehmen">Zum Mitnehmen</h2>
 
-<blockquote>
-  <p>Was sich <strong>selten ändert</strong>, gehört nach <strong>unten</strong>.</p>
-
-  <p>Was <strong>aufgeräumt</strong> werden soll, muss im <strong>selben Layer</strong> aufgeräumt werden, in
-dem es entstanden ist.</p>
-</blockquote>
+<ol class="lc__manifest">
+  <li>Ein <strong>Image</strong> ist ein Name auf einer Schicht – samt allem, was unter ihr liegt.</li>
+  <li>Jede Schicht trägt einen <strong>Hash</strong> aus ihrem Inhalt und dem Hash der Schicht darunter.</li>
+  <li><strong>Bekannter Hash:</strong> nichts zu tun. <strong>Geänderter Hash:</strong> alles Spätere neu.</li>
+  <li>Was sich <strong>selten ändert</strong>, kommt in Basis-Layer. Was sich <strong>oft ändert</strong>, möglichst spät.</li>
+  <li>Was <strong>aufgeräumt</strong> werden soll, muss im <strong>selben Layer</strong> aufgeräumt werden, in dem es entstanden ist.</li>
+</ol>
 
   </main>
 

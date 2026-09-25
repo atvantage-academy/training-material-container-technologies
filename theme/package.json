@@ -1,6 +1,6 @@
 {
   "name": "@avd-academy-tools/academy-theme",
-  "version": "2.46.1",
+  "version": "2.50.0",
   "description": "ATVANTAGE Academy – Design-Fundament (Theme): Farben, Schriften, Logos, Header/Footer, Basiskomponenten. Reines CSS/JS, abhängigkeitsfrei.",
   "style": "academy/atvantage.css",
   "main": "academy/atvantage.js",
@@ -29,6 +29,17 @@
     "daraus in JEDEM Consumer eine Seite rendern. npm nimmt README-Dateien sonst",
     "ungefragt mit - auch tief im Baum und ohne Treffer in dieser Liste.",
     "",
+    "AUSNAHME VON 'nur was eine Site zur Laufzeit braucht': contract/. Die Namensliste",
+    "wird von keiner Seite geladen - sie ist eine ZUSAGE zum Nachlesen. Ein Stand, der",
+    "gegen dieses Theme gebaut wird, muss wissen koennen, auf welche Klassen, Variablen",
+    "und data-Attribute er sich verlassen darf, OHNE Zugriff auf dieses Repository zu",
+    "haben. Bisher lag die Liste nur hier, und die Zusage war von aussen nicht lesbar",
+    "(#213). Die Schemas unter jekyll/schema/ wandern aus demselben Grund mit; contract/",
+    "hat deshalb dieselbe Form - Datei plus Fassungsnummer daneben. Seit #226 liegen",
+    "dort auch die zugesagten Kontrast-Paare und die Liste der Farb-Tokens: Ein Stand",
+    "nimmt seine Farben aus den Tokens statt sie fest zu schreiben, und dafuer muss er",
+    "lesen koennen, WELCHE Variablen Farben sind und welche Paarungen tragen.",
+    "",
     "Wer hier erweitert, zieht theme/package-contents.txt nach (bin/package-contents.sh) und",
     "begruendet im Commit, warum die Dateien ins Paket gehoeren. Der PR-Check",
     "npm-validate vergleicht den tatsaechlichen Paketinhalt gegen diese Liste - die",
@@ -36,6 +47,7 @@
     "Siehe Issue #67."
   ],
   "files": [
+    "contract",
     "jekyll",
     "academy/*.css",
     "academy/icons",
