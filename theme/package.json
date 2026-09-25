@@ -1,6 +1,6 @@
 {
   "name": "@avd-academy-tools/academy-theme",
-  "version": "2.50.1",
+  "version": "2.50.2",
   "description": "ATVANTAGE Academy – Design-Fundament (Theme): Farben, Schriften, Logos, Header/Footer, Basiskomponenten. Reines CSS/JS, abhängigkeitsfrei.",
   "style": "academy/atvantage.css",
   "main": "academy/atvantage.js",
@@ -75,7 +75,7 @@
     "url": "git+https://timetoact.ghe.com/AVD-Academy-Tools/academy-theme.git"
   },
   "scripts": {
-    "prepack": "echo \"Packe @avd-academy-tools/academy-theme@$npm_package_version\"",
+    "prepack": "echo \"Packe @avd-academy-tools/academy-theme@$npm_package_version\" && printf '%s\\n' \"$npm_package_version\" > jekyll/version.txt",
     "prepublishOnly": "bash ../bin/publish-guard.sh"
   }
 }
