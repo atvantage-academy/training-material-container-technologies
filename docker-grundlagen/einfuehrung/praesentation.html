@@ -47,13 +47,13 @@
 <meta property="og:description" content="Von der Agilität über die Wall of Confusion zum Container als Paket – und von dort zu den Begriffen Image und Container.">
 <meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790334185"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790334185">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790334185">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790334185">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790334185"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790334185">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790334185" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790334185" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790334185">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790741874">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790741874">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790741874">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790741874">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790741874" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790741874" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790741874">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -95,9 +95,9 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/training-material-container-technologies/theme/atvantage/assets/icon-180.png">
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/presentation.css?v=1790334185">
-  <script src="/training-material-container-technologies/theme/jekyll/presentation.js?v=1790334185" defer></script>
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790334185"></head>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/presentation.css?v=1790741874">
+  <script src="/training-material-container-technologies/theme/jekyll/presentation.js?v=1790741874" defer></script>
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790741874"></head>
 <body class="avd-academy-present" data-avd-academy-present data-avd-academy-present-title="Warum Container?">
   <a class="avd-academy-skip-link" href="#avd-academy-deck">Zum Inhalt springen</a>
 
@@ -108,15 +108,36 @@
     <div class="avd-academy-present__tools"><button type="button" class="avd-academy-present__back" data-avd-academy-back hidden
               title="Zurück" aria-label="Zurück">← Zurück</button><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
                 title="Diese Seite auf Deinem Smartphone öffnen"
-                aria-label="Diese Seite auf Deinem Smartphone öffnen"></button><button type="button" class="avd-academy-tool avd-academy-tool--theme avd-academy-theme-toggle" data-avd-academy-theme-toggle
+                aria-label="Diese Seite auf Deinem Smartphone öffnen"></button><button type="button" class="avd-academy-tool avd-academy-tool--theme" data-avd-academy-theme-toggle
               title="Farbschema umschalten (hell/dunkel)"
-              aria-label="Farbschema umschalten">◐</button><button type="button" class="avd-academy-tool avd-academy-tool--print avd-academy-print-btn"
+              aria-label="Farbschema umschalten">◐</button><button type="button" class="avd-academy-tool avd-academy-tool--print"
                 data-avd-academy-present-print
                 title="Drucken (alle Folien)" aria-label="Drucken (alle Folien)"></button><button type="button" class="avd-academy-tool avd-academy-tool--full"
               data-avd-academy-present-full
               title="Vollbild (Taste F)" aria-label="Vollbild">⛶</button></div>
   </header><main class="avd-academy-deck" id="avd-academy-deck" data-avd-academy-deck>
-    
+    <!--
+===============================================================================
+ANFORDERUNGEN AN DIESE UNTERLAGE
+-------------------------------------------------------------------------------
+Steht hier und nicht in der AGENTS.md, weil eine Anforderung dort niemand
+findet, der diese Datei bearbeitet.
+
+FORM
+- `layout: presentation`, eine Datei. Jedes `##` beginnt eine Folie.
+- Farben AUSSCHLIESSLICH aus den `--avd-academy-*`-Token.
+
+DIE FOLIEN STUETZEN, SIE FUEHREN NICHT
+- Die Einheit lebt am BOARD: Die Liste "Was braucht eine Anwendung?" entsteht
+  mit der Gruppe, und der Rahmen darum wird dort gezogen. Diese Folien zeigen
+  nur, was sich schlecht an die Tafel malen laesst.
+- Folie "Was braucht eine Anwendung?" deshalb ERST ZEIGEN, WENN DIE GRUPPE
+  gesammelt hat - vorher nimmt sie die Antwort vorweg.
+- KEINE Namensherkunft-Folie: Der Trainer zeigt dafuer seine eigenen Folien
+  (alte vs. moderne Schifffahrt). Nicht nachbauen.
+===============================================================================
+-->
+
 <h1 id="warum-container">Warum Container?</h1>
 
 <p>Was sie lösen – und warum die Frage vor der Technik kommt.</p>

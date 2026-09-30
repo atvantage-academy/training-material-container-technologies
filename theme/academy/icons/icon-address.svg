@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Adressen">
+  <!-- Farben aus dem ATVANTAGE-Fundament: Anthrazit #343E3F, Orange #FF5401. -->
+  <rect width="32" height="32" fill="#343E3F"/>
+  <!-- Ein Pfad aus zwei Abschnitten, getrennt durch Schraegstriche: /ordner/seite.
+       Der letzte Abschnitt ist orange - das ist der Slug, um den es geht. -->
+  <g fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round">
+    <path d="M7 21l3-11M17 21l3-11"/>
+    <path d="M11 16h4"/>
+  </g>
+  <path d="M23 16h3" fill="none" stroke="#FF5401" stroke-width="2.2" stroke-linecap="round"/>
+</svg>

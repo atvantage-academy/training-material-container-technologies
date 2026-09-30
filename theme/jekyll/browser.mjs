@@ -29,13 +29,13 @@ import path from "node:path";
    Pfad über `AVD_CHROME` setzt, erwartet ihn hier auch. `a11y.sh` sucht weiter
    selbst, weil es VOR dem Node-Start entscheiden muss, ob der Lauf übersprungen
    wird; diese Fassung ist für Aufrufer, die direkt in Node beginnen. */
-export function chromeSuchen() {
+export function findChrome() {
   if (process.env.AVD_CHROME && existsSync(process.env.AVD_CHROME)) return process.env.AVD_CHROME;
-  const pfade = (process.env.PATH || "").split(path.delimiter);
+  const paths = (process.env.PATH || "").split(path.delimiter);
   for (const k of ["google-chrome", "google-chrome-stable", "chromium", "chromium-browser"]) {
-    for (const p of pfade) {
-      const kandidat = path.join(p, k);
-      if (existsSync(kandidat)) return kandidat;
+    for (const p of paths) {
+      const candidate = path.join(p, k);
+      if (existsSync(candidate)) return candidate;
     }
   }
   const mac = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
@@ -45,12 +45,12 @@ export function chromeSuchen() {
 
 /* --- Chrome über das DevTools-Protokoll ----------------------------------- */
 export class Browser {
-  constructor(ws) { this.ws = ws; this.id = 0; this.warten = new Map(); this.horcher = new Map(); }
+  constructor(ws) { this.ws = ws; this.id = 0; this.pending = new Map(); this.listeners = new Map(); }
 
-  static async starten(chromePfad) {
-    const profil = await mkdtemp(path.join(tmpdir(), "avd-a11y-"));
-    const proc = spawn(chromePfad, [
-      "--headless=new", "--remote-debugging-port=0", "--user-data-dir=" + profil,
+  static async start(chromePath) {
+    const profile = await mkdtemp(path.join(tmpdir(), "avd-a11y-"));
+    const proc = spawn(chromePath, [
+      "--headless=new", "--remote-debugging-port=0", "--user-data-dir=" + profile,
       "--no-first-run", "--no-default-browser-check", "--disable-gpu", "--hide-scrollbars",
       "--disable-extensions", "--disable-dev-shm-usage", "--no-sandbox",
       "--force-device-scale-factor=1", "--disable-lcd-text", "about:blank"
@@ -58,77 +58,84 @@ export class Browser {
 
     /* Chrome schreibt die Adresse des Sockets auf stderr - mit Port 0 ist das
        der einzige Weg, den zufällig gewählten Port zu erfahren. */
-    const url = await new Promise((fertig, fehler) => {
-      let puffer = "";
-      const zeit = setTimeout(() => fehler(new Error("Chrome meldet sich nicht (20 s)")), 20000);
+    /* 60 SEKUNDEN, NICHT 20. Ein kalter Runner braucht fuer den ersten Start
+       laenger als ein warmer Rechner - gemessen an einem Lauf, in dem DREI Jobs
+       gleichzeitig scheiterten, darunter einer, an dem niemand etwas geaendert
+       hatte. Eine Zeitschranke, die von der Tagesform der Infrastruktur abhaengt,
+       meldet keinen Defekt, sondern Rauschen; und Rauschen wird weggeklickt.
+       Ueber `AVD_CHROME_TIMEOUT` (Sekunden) einstellbar. */
+    const deadline = Number(process.env.AVD_CHROME_TIMEOUT || 60);
+    const url = await new Promise((done, fail) => {
+      let buffer = "";
+      const timer = setTimeout(() => fail(new Error(`Chrome meldet sich nicht (${deadline} s)`)), deadline * 1000);
       proc.stderr.on("data", (d) => {
-        puffer += d.toString();
-        const m = puffer.match(/ws:\/\/[^\s]+/);
-        if (m) { clearTimeout(zeit); fertig(m[0]); }
+        buffer += d.toString();
+        const m = buffer.match(/ws:\/\/[^\s]+/);
+        if (m) { clearTimeout(timer); done(m[0]); }
       });
-      proc.on("exit", (c) => { clearTimeout(zeit); fehler(new Error("Chrome beendet sich sofort (Code " + c + ")\n" + puffer.slice(0, 400))); });
+      proc.on("exit", (c) => { clearTimeout(timer); fail(new Error("Chrome beendet sich sofort (Code " + c + ")\n" + buffer.slice(0, 400))); });
     });
 
     const ws = new WebSocket(url);
     await new Promise((f, x) => { ws.onopen = f; ws.onerror = () => x(new Error("Kein Anschluss an " + url)); });
     const b = new Browser(ws);
     b.proc = proc;
-    ws.onmessage = (e) => b.empfangen(JSON.parse(e.data));
+    ws.onmessage = (e) => b.receive(JSON.parse(e.data));
     return b;
   }
 
-  empfangen(n) {
-    if (n.id && this.warten.has(n.id)) {
-      const { fertig, fehler } = this.warten.get(n.id);
-      this.warten.delete(n.id);
-      n.error ? fehler(new Error(n.error.message)) : fertig(n.result);
+  receive(n) {
+    if (n.id && this.pending.has(n.id)) {
+      const { done, fail } = this.pending.get(n.id);
+      this.pending.delete(n.id);
+      n.error ? fail(new Error(n.error.message)) : done(n.result);
       return;
     }
-    const schluessel = (n.sessionId || "") + "|" + n.method;
-    const h = this.horcher.get(schluessel);
-    if (h) { this.horcher.delete(schluessel); h(n.params); }
+    const key = (n.sessionId || "") + "|" + n.method;
+    const h = this.listeners.get(key);
+    if (h) { this.listeners.delete(key); h(n.params); }
   }
 
   /* JEDER AUFRUF HAT EINE FRIST. Ohne sie haengt der ganze Lauf, wenn eine
      einzige Seite den Browser beschaeftigt - und zwar ohne Ausgabe, weil der
      Bericht erst am Ende entsteht. Eine Pipeline, die stumm in ihr Zeitlimit
      laeuft, ist schlimmer als eine, die eine Seite nicht messen konnte. */
-  ruf(methode, params = {}, sessionId, msFrist = 45000) {
+  call(method, params = {}, sessionId, msDeadline = 45000) {
     const id = ++this.id;
-    this.ws.send(JSON.stringify({ id, method: methode, params, ...(sessionId ? { sessionId } : {}) }));
-    return new Promise((fertig, fehler) => {
-      const uhr = setTimeout(() => {
-        this.warten.delete(id);
-        fehler(new Error(methode + " antwortet nicht (" + Math.round(msFrist / 1000) + " s)"));
-      }, msFrist);
-      this.warten.set(id, {
-        fertig: (r) => { clearTimeout(uhr); fertig(r); },
-        fehler: (e) => { clearTimeout(uhr); fehler(e); }
+    this.ws.send(JSON.stringify({ id, method: method, params, ...(sessionId ? { sessionId } : {}) }));
+    return new Promise((done, fail) => {
+      const clock = setTimeout(() => {
+        this.pending.delete(id);
+        fail(new Error(method + " antwortet nicht (" + Math.round(msDeadline / 1000) + " s)"));
+      }, msDeadline);
+      this.pending.set(id, {
+        done: (r) => { clearTimeout(clock); done(r); },
+        fail: (e) => { clearTimeout(clock); fail(e); }
       });
     });
   }
 
-  ereignis(methode, sessionId, msFrist) {
-    return new Promise((fertig) => {
-      const schluessel = (sessionId || "") + "|" + methode;
-      this.horcher.set(schluessel, fertig);
-      setTimeout(() => { if (this.horcher.get(schluessel)) { this.horcher.delete(schluessel); fertig(null); } }, msFrist);
+  event(method, sessionId, msDeadline) {
+    return new Promise((done) => {
+      const key = (sessionId || "") + "|" + method;
+      this.listeners.set(key, done);
+      setTimeout(() => { if (this.listeners.get(key)) { this.listeners.delete(key); done(null); } }, msDeadline);
     });
   }
 
-  async seiteOeffnen() {
-    const { targetId } = await this.ruf("Target.createTarget", { url: "about:blank" });
-    const { sessionId } = await this.ruf("Target.attachToTarget", { targetId, flatten: true });
-    await this.ruf("Page.enable", {}, sessionId);
-    await this.ruf("Runtime.enable", {}, sessionId);
+  async openPage() {
+    const { targetId } = await this.call("Target.createTarget", { url: "about:blank" });
+    const { sessionId } = await this.call("Target.attachToTarget", { targetId, flatten: true });
+    await this.call("Page.enable", {}, sessionId);
+    await this.call("Runtime.enable", {}, sessionId);
     return { targetId, sessionId };
   }
 
-  async seiteSchliessen(targetId) {
-    try { await this.ruf("Target.closeTarget", { targetId }, undefined, 5000); } catch { /* egal */ }
+  async closePage(targetId) {
+    try { await this.call("Target.closeTarget", { targetId }, undefined, 5000); } catch { /* egal */ }
   }
 
-  async schliessen() {
+  async close() {
     try { this.ws.close(); } catch { /* egal */ }
     try { this.proc.kill(); } catch { /* egal */ }
   }

@@ -55,35 +55,6 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
 .avd-academy-container > h3 { margin-top: var(--avd-academy-space-8);  margin-bottom: var(--avd-academy-space-3); }
 .avd-academy-container > h4 { margin-top: var(--avd-academy-space-6);  margin-bottom: var(--avd-academy-space-2); }
 
-/* --- Kachel-Raster als Flow-Layout ---------------------------------------
-   Kacheln brechen wie Wörter im Fließtext auf die nächste Zeile um (Flexbox
-   statt starrem Grid). Basisbreite 320px; die Kacheln einer Zeile wachsen
-   gleichmäßig auf die verfügbare Breite (z. B. drei Kacheln füllen eine Zeile). */
-.avd-academy-grid {
-  margin-top: var(--avd-academy-space-8);
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--avd-academy-space-6);
-}
-.avd-academy-grid > * { flex: 1 1 320px; }   /* min. 320px, wachsen zum Füllen der Zeile */
-
-/* Kachel-Variante: feste Breite, annähernd quadratisch (Verhältnis max. 3:2).
-   Anders als das Standard-Raster wachsen die Kacheln NICHT auf die Zeilenbreite –
-   sie behalten ihre Breite und stehen linksbündig nebeneinander. */
-.avd-academy-grid--tiles { justify-content: flex-start; }
-.avd-academy-grid--tiles > * {
-  flex: 0 0 300px;      /* feste Breite */
-  max-width: 300px;
-  min-height: 200px;    /* 300×200 = 3:2 (flachster Fall); mehr Inhalt → quadratischer */
-}
-
-/* Smartphone: einspaltig mit voller Breite. Breakpoint 600px (gängige Grenze
-   zwischen Smartphone-Hochformat und größer). */
-@media (max-width: 600px) {
-  .avd-academy-grid > * { flex-basis: 100%; }
-  .avd-academy-grid--tiles > * { flex-basis: 100%; max-width: none; min-height: 0; }
-}
-
 /* --- Skip-Link (Zugänglichkeit) ------------------------------------------- */
 .avd-academy-skip-link {
   position: absolute; left: var(--avd-academy-space-2); top: -3rem;

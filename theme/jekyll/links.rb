@@ -5,6 +5,7 @@
 #   ruby theme/jekyll/links.rb                       # Befunde ausgeben
 #   ruby theme/jekyll/links.rb --site _site --baseurl /mein-repo
 #   ruby theme/jekyll/links.rb --ignore /schemas/    # von der Anwendung bedient
+#   ruby theme/jekyll/links.rb --label learner       # Lauf beschriften (mehrere Bündel)
 #   ruby theme/jekyll/links.rb --require-site        # ohne _site/ scheitern
 #   ruby theme/jekyll/links.rb --self-test           # nur die Prüfung selbst prüfen
 #
@@ -109,43 +110,43 @@ require 'fileutils'
 
 # `<script>`/`<style>` samt Inhalt entfernen – auch einen unabgeschlossenen Block am
 # Dateiende, sonst bliebe Programmtext stehen und würde als Markup gelesen.
-def ohne_programmtext(text)
+def without_code(text)
   text = text.gsub(%r{<(script|style)\b[^>]*>.*?</\1\s*>}mi, ' ')
   text.sub(%r{<(script|style)\b[^>]*>.*\z}mi, ' ')
 end
 
 # Nur `%XX` auflösen. NICHT CGI.unescape: Das macht aus `+` ein Leerzeichen, und ein
 # `+` in einem Anker (`#c++`) wäre danach ein anderer Anker.
-def prozent_aufloesen(text)
-  text.gsub(/(?:%[0-9A-Fa-f]{2})+/) do |folge|
-    folge.scan(/%(..)/).flatten.map(&:hex).pack('C*').force_encoding('UTF-8')
+def decode_percent(text)
+  text.gsub(/(?:%[0-9A-Fa-f]{2})+/) do |sequence|
+    sequence.scan(/%(..)/).flatten.map(&:hex).pack('C*').force_encoding('UTF-8')
   end
 end
 
-ENTITAETEN = { 'amp' => '&', 'lt' => '<', 'gt' => '>', 'quot' => '"', '#39' => "'" }.freeze
+ENTITIES = { 'amp' => '&', 'lt' => '<', 'gt' => '>', 'quot' => '"', '#39' => "'" }.freeze
 
-def entitaeten_aufloesen(text)
-  text.gsub(/&(#?\w+);/) { ENTITAETEN[Regexp.last_match(1)] || Regexp.last_match(0) }
+def resolve_entities(text)
+  text.gsub(/&(#?\w+);/) { ENTITIES[Regexp.last_match(1)] || Regexp.last_match(0) }
 end
 
 # `/a/./b/../c/` -> `/a/c/`. Von Hand und nicht per File.expand_path: Das schneidet den
 # abschließenden Schrägstrich weg – und genau der entscheidet, ob `_site/a/index.html`
 # oder `_site/a` gemeint ist. Außerdem deutet expand_path ein führendes `~`.
-def normalisieren(pfad)
-  schluss = pfad.end_with?('/')
-  teile = []
-  pfad.split('/').each do |t|
+def normalise(path)
+  suffix = path.end_with?('/')
+  parts = []
+  path.split('/').each do |t|
     next if t.empty? || t == '.'
 
-    t == '..' ? teile.pop : teile << t
+    t == '..' ? parts.pop : parts << t
   end
-  '/' + teile.join('/') + (schluss && !teile.empty? ? '/' : '')
+  '/' + parts.join('/') + (suffix && !parts.empty? ? '/' : '')
 end
 
 # ---------------------------------------------------------------------------
 # Eine gebaute Seite
 # ---------------------------------------------------------------------------
-Seite = Struct.new(:datei, :pfad, :lang, :fassungen, :anker, :verweise, :routing)
+Page = Struct.new(:file, :path, :lang, :versions, :anchor, :links, :routing)
 
 # Zwei Layouts nummerieren ihre Abschnitte ZUR LAUFZEIT und führen den Stand im
 # Fragment: `presentation.js` liest `#/5` und springt zur fünften Folie,
@@ -168,93 +169,171 @@ Seite = Struct.new(:datei, :pfad, :lang, :fassungen, :anker, :verweise, :routing
 #
 # Die Quelle dieser Formen sind die `ausHash()`-Funktionen der beiden Skripte.
 # Wer sie dort ändert, ändert sie hier mit.
-LAUFZEIT_ANKER = {
+RUNTIME_ANCHORS = {
   present: [%r{\A/\d+\z}],
   sim: [%r{\A/\d+\z}, %r{\A/[A-Za-z0-9_-]+/\d+\z}, %r{\A/uebersicht/?\z}]
 }.freeze
 
-LAUFZEIT_NAME = { present: 'Präsentation', sim: 'Simulation' }.freeze
+RUNTIME_NAMES = { present: 'Präsentation', sim: 'Simulation' }.freeze
 
 # Der Wurzel-Haken des Layouts steht am `<body>` – dieselbe Kennung, an der auch
 # `bin/js-hooks.sh` die Seiten eines Layouts auswählt.
-def routing_lesen(roh)
-  koerper = roh[/<body\b[^>]*>/mi].to_s
-  return :present if koerper.match?(/\sdata-avd-academy-present[\s=>]/mi)
-  return :sim if koerper.match?(/\sdata-avd-academy-sim[\s=>]/mi)
+def read_routing(raw)
+  body = raw[/<body\b[^>]*>/mi].to_s
+  return :present if body.match?(/\sdata-avd-academy-present[\s=>]/mi)
+  return :sim if body.match?(/\sdata-avd-academy-sim[\s=>]/mi)
 
   nil
 end
 
 # `<a …>`-Tags einer Seite: [href, hat_hreflang].
-def verweise_lesen(rumpf)
-  rumpf.scan(/<a\b[^>]*>/mi).map do |tag|
-    treffer = tag.match(/\shref\s*=\s*"([^"]*)"/mi) || tag.match(/\shref\s*=\s*'([^']*)'/mi)
-    next nil unless treffer
+def read_links(body)
+  body.scan(/<a\b[^>]*>/mi).map do |tag|
+    hits = tag.match(/\shref\s*=\s*"([^"]*)"/mi) || tag.match(/\shref\s*=\s*'([^']*)'/mi)
+    next nil unless hits
 
-    [entitaeten_aufloesen(treffer[1].strip), !tag.match(/\shreflang\s*=/mi).nil?]
+    [resolve_entities(hits[1].strip), !tag.match(/\shreflang\s*=/mi).nil?]
+  end.compact
+end
+
+# WEITERLEITUNGEN ZÄHLEN ALS VERWEISE. Eine Seite, die nur aus
+# `<meta http-equiv="refresh" content="0; url=…">` besteht, ist der Regelfall
+# für eine kurze Adresse (`permaid`) und für jede von Hand gelegte Umleitung.
+# Zeigt ihr Ziel ins Leere, ist der Verweis tot wie jeder andere – nur schlimmer,
+# weil der Leser eine leere Seite bekommt, ohne je etwas angeklickt zu haben.
+#
+# GELESEN WIRD AUS DEM ROHEN DOKUMENT, nicht aus `without_code`: In einer
+# Weiterleitungsseite steht kein Code, und ein `<meta>` im Kopf soll auch dann
+# zählen, wenn die Seite sonst nichts enthält.
+#
+# `content` HAT ZWEI TEILE: Wartezeit und Adresse, getrennt durch ein Semikolon.
+# Die Adresse darf in Anführungszeichen stehen und `url=` in beliebiger
+# Schreibweise – so liest es der Browser auch.
+def read_redirects(raw)
+  raw.scan(/<meta\b[^>]*>/mi).map do |tag|
+    next nil unless tag.match?(/\shttp-equiv\s*=\s*["']?refresh["']?/mi)
+
+    inhalt = tag[/\scontent\s*=\s*"([^"]*)"/mi, 1] || tag[/\scontent\s*=\s*'([^']*)'/mi, 1]
+    next nil if inhalt.nil?
+
+    ziel = inhalt[/;\s*url\s*=\s*(.+)\z/mi, 1]
+    next nil if ziel.nil?
+
+    ziel = resolve_entities(ziel.strip.sub(/\A["']/, '').sub(/["']\z/, ''))
+    next nil if ziel.empty?
+
+    [ziel, false]
   end.compact
 end
 
 # Alle Sprungziele einer Seite: `id="…"` überall, dazu das alte `name="…"` an `<a>`.
-def anker_lesen(rumpf)
-  menge = Set.new
-  rumpf.scan(/\sid\s*=\s*"([^"]*)"/mi) { |t| menge << entitaeten_aufloesen(t[0]) }
-  rumpf.scan(/<a\b[^>]*\sname\s*=\s*"([^"]*)"/mi) { |t| menge << entitaeten_aufloesen(t[0]) }
-  menge
+def read_anchors(body)
+  set = Set.new
+  body.scan(/\sid\s*=\s*"([^"]*)"/mi) { |t| set << resolve_entities(t[0]) }
+  body.scan(/<a\b[^>]*\sname\s*=\s*"([^"]*)"/mi) { |t| set << resolve_entities(t[0]) }
+  set
 end
 
 # Die Sprachfassungen dieser Seite aus dem Kopf: { 'en' => '/en/a.html', … }.
 # `x-default` bleibt draußen – das ist eine Wiederholung, keine eigene Sprache.
-def fassungen_lesen(rumpf, baseurl)
-  gefunden = {}
-  rumpf.scan(/<link\b[^>]*>/mi) do |tag|
+def read_versions(body, baseurl)
+  found = {}
+  body.scan(/<link\b[^>]*>/mi) do |tag|
     next unless tag =~ /\srel\s*=\s*"alternate"/mi
 
     code = tag[/\shreflang\s*=\s*"([^"]*)"/mi, 1]
-    ziel = tag[/\shref\s*=\s*"([^"]*)"/mi, 1]
-    next if code.nil? || ziel.nil? || code == 'x-default'
+    target = tag[/\shref\s*=\s*"([^"]*)"/mi, 1]
+    next if code.nil? || target.nil? || code == 'x-default'
 
-    gefunden[code] = normalisieren(baseurl_abschneiden(entitaeten_aufloesen(ziel), baseurl))
+    found[code] = normalise(strip_baseurl(resolve_entities(target), baseurl))
   end
-  gefunden
+  found
 end
 
-def baseurl_abschneiden(pfad, baseurl)
-  return pfad if baseurl.empty?
-  return '/' if pfad == baseurl
+def strip_baseurl(path, baseurl)
+  return path if baseurl.empty?
+  return '/' if path == baseurl
 
-  pfad.start_with?(baseurl + '/') ? pfad[baseurl.size..] : pfad
+  path.start_with?(baseurl + '/') ? path[baseurl.size..] : path
 end
 
 # Die Adresse, unter der eine Datei ausgeliefert wird – ohne `baseurl`, denn den tragen
 # die gebauten Adressen, die Dateien im `_site` aber nicht. `…/index.html` ist `…/`.
-def seitenpfad(datei, site)
-  pfad = datei[site.size..].to_s
-  pfad = '/' + pfad unless pfad.start_with?('/')
-  pfad.sub(%r{/index\.html\z}, '/')
+def page_path(file, site)
+  path = file[site.size..].to_s
+  path = '/' + path unless path.start_with?('/')
+  path.sub(%r{/index\.html\z}, '/')
 end
 
 # ---------------------------------------------------------------------------
 # Einlesen
 # ---------------------------------------------------------------------------
-def seiten_einlesen(site, baseurl, ignorieren)
-  Dir.glob(File.join(site, '**', '*.html')).sort.map do |datei|
-    roh = File.read(datei, encoding: 'UTF-8')
+def read_pages(site, baseurl, scope)
+  Dir.glob(File.join(site, '**', '*.html')).sort.map do |file|
+    raw = File.read(file, encoding: 'UTF-8')
     # Kein vollständiges Dokument = keine Seite, sondern ein Partial. Siehe Kopf.
-    next nil unless roh =~ /<html[\s>]/i
+    next nil unless raw =~ /<html[\s>]/i
 
-    pfad = seitenpfad(datei, site)
-    next nil if ignoriert?(pfad, ignorieren)
+    path = page_path(file, site)
+    next nil if scope.skips?(path)
 
-    rumpf = ohne_programmtext(roh)
-    Seite.new(datei, pfad, roh[/<html\b[^>]*\slang\s*=\s*"([^"]*)"/i, 1],
-              fassungen_lesen(roh, baseurl), anker_lesen(rumpf), verweise_lesen(rumpf),
-              routing_lesen(roh))
+    body = without_code(raw)
+    Page.new(file, path, raw[/<html\b[^>]*\slang\s*=\s*"([^"]*)"/i, 1],
+              read_versions(raw, baseurl), read_anchors(body),
+              read_links(body) + read_redirects(raw),
+              read_routing(raw))
   end.compact
 end
 
-def ignoriert?(pfad, ignorieren)
-  ignorieren.any? { |p| pfad == p || pfad.start_with?(p) }
+# --- Eine Schreibweise für Ausschlussmuster ----------------------------------
+#
+# DERSELBE BLOCK STEHT IN `contrast.rb` UND `components.rb`. Drei Werkzeuge, die
+# über dieselbe Angabe verschieden urteilen, sind schlimmer als eines – wer hier
+# etwas ändert, ändert es dort mit.
+#
+# `theme`, `/theme`, `theme/`, `/theme/` und `/theme/**` meinen DASSELBE. Wer
+# `links` und `contrast` nebeneinander aufruft, soll nicht zweimal nachdenken
+# müssen, und wer ein Muster hinschreibt, soll nicht raten, ob der Schrägstrich
+# zählt.
+#
+# VERGLICHEN WIRD SEGMENTWEISE, nicht als roher Präfix. Der Unterschied ist kein
+# Feinschliff: `path.start_with?("/theme")` trifft auch `/themes-overview/` –
+# eine Seite, die niemand ausnehmen wollte, und sie fiele still aus der Prüfung.
+# Gleichzeitig muss eine Adresse, die GENAU `/theme` ist, getroffen werden.
+# Deshalb: Gleichheit ODER Präfix samt trennendem Schrägstrich.
+#
+# LEERE ANGABEN FALLEN WEG. Ein leeres Muster wurde sonst zu `/`, und weil jeder
+# Pfad damit anfängt, war anschliessend alles ausgenommen – der Lauf meldete
+# „keine einzige gebaute Seite“ und sah aus wie ein kaputtes Bundle.
+def normalize_patterns(patterns)
+  Array(patterns).compact.map { |p| p.to_s.strip }.reject(&:empty?).map do |p|
+    p = p.sub(%r{/\*\*\z}, '')
+    p = p.sub(%r{/+\z}, '')
+    p = "/#{p}" unless p.start_with?('/')
+    p
+  end.reject { |p| p == '/' }.uniq
+end
+
+def ignored?(path, ignore)
+  ignore.any? { |p| path == p || path.start_with?("#{p}/") }
+end
+
+# WAS EINE PRÜFUNG ANSIEHT – zwei Listen, eine Regel, an genau dieser Stelle.
+#
+# `only` leer: alles ist erfasst, wie bisher. `only` gesetzt: erfasst ist nur,
+# was darauf passt. `ignore` nimmt in BEIDEN Fällen danach noch heraus.
+#
+# WARUM DER AUSSCHLUSS DEN EINSCHLUSS SCHLÄGT: Anders herum liesse sich ein
+# einmal ausgenommener Zweig durch ein weiteres Einschlussmuster wieder
+# hereinholen – welche der beiden Angaben dann gilt, entschiede die Reihenfolge,
+# und die steht in einer Eingabe nirgends verlässlich fest. So gilt: Was
+# ausgenommen ist, bleibt ausgenommen.
+Scope = Struct.new(:only, :ignore) do
+  def skips?(path)
+    return true unless only.empty? || ignored?(path, only)
+
+    ignored?(path, ignore)
+  end
 end
 
 # Adressen, die nicht auf diese Site zeigen – nichts davon ist hier prüfbar. Dazu
@@ -262,7 +341,7 @@ end
 # (`href="«WEBSITE-URL»"`, `«https://…»`). Das ist keine Adresse, sondern eine Lücke,
 # die der Anwender füllt – sie als toten Verweis zu melden hieße, jede Vorlage zu
 # melden, und zwar genau dafür, dass sie eine Vorlage ist.
-def extern?(href)
+def external?(href)
   href.empty? || href.start_with?('#', '//') ||
     href.include?('«') || href.include?('»') ||
     href.match?(%r{\A[a-zA-Z][a-zA-Z0-9+.-]*:})
@@ -271,91 +350,91 @@ end
 # ---------------------------------------------------------------------------
 # Prüfen
 # ---------------------------------------------------------------------------
-Befund = Struct.new(:seite, :href, :art, :text)
+Finding = Struct.new(:page, :href, :kind, :text)
 
-def pruefen(site, seiten, baseurl, ignorieren)
-  nach_pfad = seiten.to_h { |s| [s.pfad, s] }
-  befunde = []
-  geprueft = 0
-  wurzelabsolut = 0
-  wurzelabsolut_tot = 0
+def check(site, pages, baseurl, scope)
+  by_path = pages.to_h { |s| [s.path, s] }
+  findings = []
+  checked = 0
+  root_absolute = 0
+  root_absolute_dead = 0
 
-  seiten.each do |seite|
-    seite.verweise.each do |href, hat_hreflang|
-      next if extern?(href)
+  pages.each do |page|
+    page.links.each do |href, has_hreflang|
+      next if external?(href)
 
-      adresse = href.split('#', 2)
-      fragment = adresse[1]
-      pfad = adresse[0].to_s.split('?').first.to_s
-      next if pfad.empty?
+      address = href.split('#', 2)
+      fragment = address[1]
+      path = address[0].to_s.split('?').first.to_s
+      next if path.empty?
 
-      pfad = prozent_aufloesen(pfad)
-      absolut = if pfad.start_with?('/')
-                  baseurl_abschneiden(normalisieren(pfad), baseurl)
+      path = decode_percent(path)
+      absolute = if path.start_with?('/')
+                  strip_baseurl(normalise(path), baseurl)
                 else
-                  ordner = seite.pfad.end_with?('/') ? seite.pfad : File.dirname(seite.pfad)
-                  normalisieren(File.join(ordner, pfad))
+                  folder = page.path.end_with?('/') ? page.path : File.dirname(page.path)
+                  normalise(File.join(folder, path))
                 end
-      next if ignoriert?(absolut, ignorieren)
+      next if scope.skips?(absolute)
 
-      geprueft += 1
-      wurzelabsolut += 1 if pfad.start_with?('/')
+      checked += 1
+      root_absolute += 1 if path.start_with?('/')
 
-      ziel = zieldatei(site, absolut)
-      unless File.file?(ziel)
-        wurzelabsolut_tot += 1 if pfad.start_with?('/')
-        befunde << Befund.new(seite, href, 'Ziel fehlt', "im _site gibt es #{ziel[site.size..]} nicht")
+      target = target_file(site, absolute)
+      unless File.file?(target)
+        root_absolute_dead += 1 if path.start_with?('/')
+        findings << Finding.new(page, href, 'Ziel fehlt', "im _site gibt es #{target[site.size..]} nicht")
         next
       end
 
-      zielseite = nach_pfad[seitenpfad(ziel, site)]
-      befunde << anker_befund(seite, href, fragment, zielseite, ziel, site) if fragment && !fragment.empty?
-      befunde << sprach_befund(seite, href, zielseite, nach_pfad) unless hat_hreflang
+      target_page = by_path[page_path(target, site)]
+      findings << anchor_finding(page, href, fragment, target_page, target, site) if fragment && !fragment.empty?
+      findings << language_finding(page, href, target_page, by_path) unless has_hreflang
     end
   end
 
   # Derselbe Verweis kommt auf einer Seite oft mehrfach vor (Kopfzeile, Fließtext,
   # Fußbereich). Gemeldet wird er einmal – eine Liste, in der eine Zeile dreißigmal
   # steht, liest niemand zu Ende.
-  eindeutig = befunde.compact.uniq { |b| [b.seite.pfad, b.href, b.art] }
-  [eindeutig, geprueft, wurzelabsolut, wurzelabsolut_tot]
+  unique = findings.compact.uniq { |b| [b.page.path, b.href, b.kind] }
+  [unique, checked, root_absolute, root_absolute_dead]
 end
 
 # `/a/b.html` -> `_site/a/b.html`; `/a/` -> `_site/a/index.html`. Ein Ordner ohne
 # `index.html` bleibt damit ein Befund – auf GitHub Pages ist er ein 404.
-def zieldatei(site, pfad)
-  voll = File.join(site, pfad)
-  return File.join(voll, 'index.html') if pfad.end_with?('/') || File.directory?(voll)
+def target_file(site, path)
+  full = File.join(site, path)
+  return File.join(full, 'index.html') if path.end_with?('/') || File.directory?(full)
 
-  voll
+  full
 end
 
-def anker_befund(seite, href, fragment, zielseite, ziel, site)
+def anchor_finding(page, href, fragment, target_page, target, site)
   # `#top` bringt jeder Browser von sich aus an den Seitenanfang, auch ohne Element.
   return nil if fragment.casecmp('top').zero?
   # Eine Datei, die keine Seite ist (JSON, PDF, Bild), hat keine Anker zum Prüfen.
-  return nil if zielseite.nil?
+  return nil if target_page.nil?
 
-  roh = prozent_aufloesen(fragment)
-  return nil if zielseite.anker.include?(roh) || zielseite.anker.include?(fragment)
+  raw = decode_percent(fragment)
+  return nil if target_page.anchor.include?(raw) || target_page.anchor.include?(fragment)
 
   # Laufzeit-Anker (`#/5`) – siehe LAUFZEIT_ANKER.
-  if roh.start_with?('/')
-    formen = LAUFZEIT_ANKER[zielseite.routing]
-    if formen.nil?
-      return Befund.new(seite, href, 'Anker fehlt',
-                        "#{ziel[site.size..]} ist weder Präsentation noch Simulation – " \
+  if raw.start_with?('/')
+    forms = RUNTIME_ANCHORS[target_page.routing]
+    if forms.nil?
+      return Finding.new(page, href, 'Anker fehlt',
+                        "#{target[site.size..]} ist weder Präsentation noch Simulation – " \
                         'dort schaltet nichts auf `#/…`')
     end
-    return nil if formen.any? { |f| roh.match?(f) }
+    return nil if forms.any? { |f| raw.match?(f) }
 
-    return Befund.new(seite, href, 'Anker fehlt',
-                      "#{LAUFZEIT_NAME[zielseite.routing]}: `##{roh}` ist keine Form, " \
+    return Finding.new(page, href, 'Anker fehlt',
+                      "#{RUNTIME_NAMES[target_page.routing]}: `##{raw}` ist keine Form, " \
                       'die das Layout kennt')
   end
 
-  Befund.new(seite, href, 'Anker fehlt',
-             "#{ziel[site.size..]} hat keine id=\"#{roh}\"")
+  Finding.new(page, href, 'Anker fehlt',
+             "#{target[site.size..]} hat keine id=\"#{raw}\"")
 end
 
 # Siehe Kopf, Befund 3: nur wenn es die Zielseite in der Sprache DIESER Seite gibt.
@@ -365,19 +444,19 @@ end
 # Umschalter etwas anzubieten hat. Wer das für ein Gegenstück hält, empfiehlt als
 # Lösung `/en/` für jede unübersetzte Seite: ein Vorschlag, der die Prüfung sofort
 # unglaubwürdig macht. Ein echtes Paar nennt sich gegenseitig.
-def sprach_befund(seite, href, zielseite, nach_pfad)
-  return nil if zielseite.nil? || seite.lang.nil? || zielseite.lang.nil?
-  return nil if zielseite.lang == seite.lang
+def language_finding(page, href, target_page, by_path)
+  return nil if target_page.nil? || page.lang.nil? || target_page.lang.nil?
+  return nil if target_page.lang == page.lang
 
-  passend = zielseite.fassungen[seite.lang]
-  return nil if passend.nil? || passend == zielseite.pfad
+  matching = target_page.versions[page.lang]
+  return nil if matching.nil? || matching == target_page.path
 
-  gegenstueck = nach_pfad[passend]
-  return nil if gegenstueck.nil? || gegenstueck.fassungen[zielseite.lang] != zielseite.pfad
+  counterpart = by_path[matching]
+  return nil if counterpart.nil? || counterpart.versions[target_page.lang] != target_page.path
 
-  Befund.new(seite, href, 'Sprachbaum gewechselt',
-             "Ziel ist #{zielseite.lang}, die Seite #{seite.lang} – " \
-             "in #{seite.lang} liegt es unter #{passend}")
+  Finding.new(page, href, 'Sprachbaum gewechselt',
+             "Ziel ist #{target_page.lang}, die Seite #{page.lang} – " \
+             "in #{page.lang} liegt es unter #{matching}")
 end
 
 # ---------------------------------------------------------------------------
@@ -388,7 +467,14 @@ end
 # grün durchlaufen lassen. Hier steht deshalb eine kleine Site, in der jeder Befund
 # einmal vorkommt – und ebenso jeder Fall, der KEIN Befund sein darf.
 # ---------------------------------------------------------------------------
-SELBSTTEST_DATEIEN = {
+SELF_TEST_FILES = {
+  # WEITERLEITUNGEN – eine gültige und eine tote. Ohne die zweite bliebe
+  # unbemerkt, wenn read_redirects nichts mehr findet: Der Lauf wäre grün, und
+  # eine kurze Adresse führte ins Leere.
+  'umleitung-gut.html' =>
+    %(<html lang="de"><head><meta http-equiv="refresh" content="0; url=gibt-es.html"></head><body></body></html>),
+  'umleitung-tot.html' =>
+    %(<html lang="de"><head><meta http-equiv="refresh" content="0; url=gibt-es-auch-nicht.html"></head><body></body></html>),
   # Standardsprache in der Wurzel, Englisch unter /en/.
   'index.html' => <<~HTML,
     <html lang="de"><head>
@@ -481,45 +567,80 @@ SELBSTTEST_DATEIEN = {
 }.freeze
 
 # Erwartet: [Seitenpfad, Art] – genau diese Befunde, nicht mehr und nicht weniger.
-SELBSTTEST_ERWARTET = [
+SELF_TEST_EXPECTED = [
   ['/', 'Ziel fehlt'],          # /leerer-ordner/ – Ordner ohne index.html
   ['/', 'Ziel fehlt'],          # /gibt-es-nicht.html
   ['/', 'Anker fehlt'],         # #gibt-es-nicht
   # Laufzeit-Anker: geprueft wird die FORM und das Layout der Zielseite.
   ['/', 'Anker fehlt'],         # praesentation.html#/kapitel – Form unbekannt
   ['/', 'Anker fehlt'],         # gibt-es.html#/3 – Ziel schaltet gar nicht
-  ['/en/', 'Sprachbaum gewechselt']
+  ['/en/', 'Sprachbaum gewechselt'],
+  ['/umleitung-tot.html', 'Ziel fehlt']   # <meta refresh> auf eine Seite, die es nicht gibt
 ].freeze
 
-def selbsttest(baseurl)
+def self_test(baseurl)
   require 'tmpdir'
-  fehler = []
+  errors = []
   Dir.mktmpdir('academy-links') do |tmp|
     site = File.join(tmp, '_site')
-    SELBSTTEST_DATEIEN.each do |name, inhalt|
-      ziel = File.join(site, name)
-      FileUtils.mkdir_p(File.dirname(ziel))
-      File.write(ziel, inhalt.gsub('/BASE/', baseurl.empty? ? '/' : "#{baseurl}/"), encoding: 'UTF-8')
+    SELF_TEST_FILES.each do |name, content|
+      target = File.join(site, name)
+      FileUtils.mkdir_p(File.dirname(target))
+      File.write(target, content.gsub('/BASE/', baseurl.empty? ? '/' : "#{baseurl}/"), encoding: 'UTF-8')
     end
 
-    seiten = seiten_einlesen(site, baseurl, ['/ausgenommen/'])
-    befunde, = pruefen(site, seiten, baseurl, ['/ausgenommen/'])
-
-    gelesen = seiten.map(&:pfad).sort
-    unless gelesen.include?('/') && !gelesen.include?('/partial.html')
-      fehler << "Auswahl der Quellseiten falsch: #{gelesen.join(', ')}"
+    # DURCH DEN NORMALISIERER, wie im echten Lauf. Ohne ihn prüfte der Selbsttest
+    # eine Aufrufform, die es nicht gibt – und merkte nicht, dass `ignored?` seit
+    # dem segmentweisen Vergleich normalisierte Muster erwartet.
+    #
+    # DREI SCHREIBWEISEN, ABSICHTLICH: Sie müssen dasselbe bedeuten, sonst ist die
+    # Zusage „`theme` ≡ `/theme` ≡ `/theme/**`“ nur behauptet.
+    %w[/ausgenommen/ ausgenommen /ausgenommen/**].each do |schreibweise|
+      muster = normalize_patterns([schreibweise])
+      pages_x = read_pages(site, baseurl, Scope.new([], muster))
+      if pages_x.any? { |p| p[:path].start_with?('/ausgenommen/') }
+        errors << "#{label}: Schreibweise `#{schreibweise}` nimmt die Seite nicht aus."
+      end
     end
-    fehler << 'Die ausgenommene Seite wurde gelesen.' if gelesen.include?('/ausgenommen/seite.html')
+    # UND DIE GEGENPROBE: `/ausgenommen` darf `/ausgenommenes/` NICHT treffen.
+    # Ein roher Präfixvergleich täte es, und die Seite fiele still aus der Prüfung.
+    unless ignored?('/ausgenommenes/seite.html', normalize_patterns(['/ausgenommen']))
+      # erwartet – nichts zu melden
+    else
+      errors << "#{label}: `/ausgenommen` trifft fälschlich `/ausgenommenes/`."
+    end
 
-    ist = befunde.map { |b| [b.seite.pfad, b.art] }.sort
-    soll = SELBSTTEST_ERWARTET.sort
-    if ist != soll
-      fehler << "erwartet: #{soll.inspect}"
-      fehler << "gefunden: #{ist.inspect}"
-      befunde.each { |b| fehler << "  #{b.seite.pfad}  #{b.href}  -> #{b.art}: #{b.text}" }
+    # DER EINSCHLUSS – und dass der Ausschluss ihn schlägt. Vier Aussagen, die
+    # zusammen die ganze Regel ergeben; fällt eine, ist der Umfang einer Prüfung
+    # ein anderer als der angegebene, und das fiele sonst niemandem auf.
+    muster = normalize_patterns(['/ausgenommen'])
+    nur = Scope.new(muster, [])
+    errors << "#{label}: `--include` nimmt die benannte Seite aus." if nur.skips?('/ausgenommen/seite.html')
+    errors << "#{label}: `--include` lässt eine nicht benannte Seite durch." unless nur.skips?('/')
+    errors << "#{label}: Ohne Angabe fällt eine Seite heraus." if Scope.new([], []).skips?('/')
+    unless Scope.new(muster, muster).skips?('/ausgenommen/seite.html')
+      errors << "#{label}: Ein Ausschluss schlägt den Einschluss nicht."
+    end
+
+    scope = Scope.new([], normalize_patterns(['/ausgenommen/']))
+    pages = read_pages(site, baseurl, scope)
+    findings, = check(site, pages, baseurl, scope)
+
+    read_count = pages.map(&:path).sort
+    unless read_count.include?('/') && !read_count.include?('/partial.html')
+      errors << "Auswahl der Quellseiten falsch: #{read_count.join(', ')}"
+    end
+    errors << 'Die ausgenommene Seite wurde gelesen.' if read_count.include?('/ausgenommen/seite.html')
+
+    actual = findings.map { |b| [b.page.path, b.kind] }.sort
+    expected = SELF_TEST_EXPECTED.sort
+    if actual != expected
+      errors << "erwartet: #{expected.inspect}"
+      errors << "gefunden: #{actual.inspect}"
+      findings.each { |b| errors << "  #{b.page.path}  #{b.href}  -> #{b.kind}: #{b.text}" }
     end
   end
-  fehler
+  errors
 end
 
 # ---------------------------------------------------------------------------
@@ -528,9 +649,15 @@ end
 site = nil
 baseurl = nil
 configs = []
-ignorieren = []
+ignore = []
+only = []
 require_site = false
-selbsttest_nur = false
+self_test_only = false
+# BESCHRIFTUNG, WENN DIESELBE SITE MEHRFACH GEPRÜFT WIRD. Seit Theme 3 filtert
+# JEDER Build nach Zielgruppe, es gibt also regelmäßig mehr als einen – und zwei
+# Ergebniszeilen „Verweise in Ordnung" nebeneinander sagen nicht, welcher Lauf
+# welcher war. Genau dafür gibt es `--label` bei der Barrierefreiheitsmessung.
+label = ''
 
 argv = ARGV.dup
 until argv.empty?
@@ -538,9 +665,11 @@ until argv.empty?
   when '--site'         then site = argv.shift
   when '--baseurl'      then baseurl = argv.shift
   when '--config'       then configs << argv.shift
-  when '--ignore'       then ignorieren << argv.shift
+  when '--ignore'       then ignore << argv.shift
+  when '--include'      then only << argv.shift
+  when '--label'        then label = argv.shift.to_s
   when '--require-site' then require_site = true
-  when '--self-test'    then selbsttest_nur = true
+  when '--self-test'    then self_test_only = true
   when '--help', '-h'
     puts File.read(__FILE__).lines[2..8].map { |z| z.sub(/\A# ?/, '') }.join
     exit 0
@@ -550,18 +679,18 @@ until argv.empty?
   end
 end
 
-if selbsttest_nur
+if self_test_only
   # Zweimal: einmal ohne und einmal mit `baseurl`. Das Abschneiden des Präfixes ist die
   # Stelle, an der eine Projektseite anders läuft als eine Benutzerseite – und die
   # einzige, die ein Lauf im eigenen Repo (baseurl leer) nie berührt.
-  fehler = ['', '/projekt'].flat_map { |b| selbsttest(b).map { |f| "baseurl #{b.empty? ? '(leer)' : b}: #{f}" } }
-  if fehler.empty?
-    puts "Selbsttest der Verweisprüfung bestanden (#{SELBSTTEST_DATEIEN.size} Dateien, " \
-         "#{SELBSTTEST_ERWARTET.size} erwartete Befunde, mit und ohne baseurl)."
+  errors = ['', '/projekt'].flat_map { |b| self_test(b).map { |f| "baseurl #{b.empty? ? '(leer)' : b}: #{f}" } }
+  if errors.empty?
+    puts "Selbsttest der Verweisprüfung bestanden (#{SELF_TEST_FILES.size} Dateien, " \
+         "#{SELF_TEST_EXPECTED.size} erwartete Befunde, mit und ohne baseurl)."
     exit 0
   end
   warn "FEHLER: Die Verweisprüfung selbst arbeitet nicht wie beschrieben:\n\n"
-  fehler.each { |f| warn "  #{f}" }
+  errors.each { |f| warn "  #{f}" }
   exit 1
 end
 
@@ -590,49 +719,47 @@ if baseurl.nil?
       exit 2
     end
     begin
-      daten = YAML.safe_load(File.read(cfg), permitted_classes: [Date, Time], aliases: true) || {}
+      data = YAML.safe_load(File.read(cfg), permitted_classes: [Date, Time], aliases: true) || {}
     rescue Psych::SyntaxError => e
       warn "FEHLER: #{cfg} ist kein gültiges YAML – #{e.message}"
       exit 2
     end
-    baseurl = daten['baseurl'] if daten.key?('baseurl')
+    baseurl = data['baseurl'] if data.key?('baseurl')
   end
 end
 baseurl = (baseurl || '').to_s.chomp('/')
 baseurl = '/' + baseurl unless baseurl.empty? || baseurl.start_with?('/')
 
-ignorieren = ignorieren.compact.map do |p|
-  p = '/' + p unless p.start_with?('/')
-  p
-end
+scope = Scope.new(normalize_patterns(only), normalize_patterns(ignore))
 
-seiten = seiten_einlesen(site, baseurl, ignorieren)
-if seiten.empty?
+pages = read_pages(site, baseurl, scope)
+if pages.empty?
   warn "FEHLER: Unter #{site}/ liegt keine einzige gebaute Seite."
   warn '       Eine Prüfung über die leere Menge ist kein Erfolg – sie ist ein Befund.'
   exit 2
 end
 
-befunde, geprueft, wurzelabsolut, wurzelabsolut_tot = pruefen(site, seiten, baseurl, ignorieren)
+findings, checked, root_absolute, root_absolute_dead = check(site, pages, baseurl, scope)
 
-if befunde.empty?
-  puts "Verweise in Ordnung (#{seiten.size} Seiten, #{geprueft} interne Verweise" \
+if findings.empty?
+  puts "Verweise in Ordnung (#{pages.size} Seiten, #{checked} interne Verweise" \
        "#{baseurl.empty? ? '' : ", baseurl #{baseurl}"})."
   exit 0
 end
 
-befunde.group_by { |b| b.seite.pfad }.sort.each do |pfad, liste|
-  puts "  #{pfad}"
-  liste.each { |b| puts "    #{b.href}\n      #{b.art}: #{b.text}" }
+findings.group_by { |b| b.page.path }.sort.each do |path, entries|
+  puts "  #{path}"
+  entries.each { |b| puts "    #{b.href}\n      #{b.kind}: #{b.text}" }
 end
 puts ''
-puts "#{befunde.size} Befund(e) auf #{befunde.map { |b| b.seite.pfad }.uniq.size} Seite(n)."
+puts "#{findings.size} Befund(e) auf #{findings.map { |b| b.page.path }.uniq.size} Seite(n)" \
+     "#{label.empty? ? '' : " – #{label}"}."
 
 # Ein falscher `baseurl` sieht sonst aus wie eine kaputte Site: JEDER wurzel-absolute
 # Verweis schlägt fehl. Lieber einmal zu viel darauf hinweisen als die Liste abarbeiten.
-if wurzelabsolut.positive? && wurzelabsolut_tot * 2 > wurzelabsolut
+if root_absolute.positive? && root_absolute_dead * 2 > root_absolute
   warn ''
-  warn "HINWEIS: #{wurzelabsolut_tot} von #{wurzelabsolut} wurzel-absoluten Verweisen zeigen ins Leere."
+  warn "HINWEIS: #{root_absolute_dead} von #{root_absolute} wurzel-absoluten Verweisen zeigen ins Leere."
   warn "         Das ist selten die Site und meist der baseurl (hier: #{baseurl.empty? ? '(leer)' : baseurl})."
   warn '         Wer beim Bauen `--baseurl` setzt, gibt hier denselben Wert mit.'
 end

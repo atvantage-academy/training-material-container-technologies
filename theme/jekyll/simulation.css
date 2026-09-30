@@ -249,7 +249,7 @@
   background: var(--avd-academy-color-accent);
   color: var(--avd-academy-color-accent-contrast);
 }
-.avd-academy-sim__tab--uebersicht { margin-right: var(--avd-academy-space-2); }
+.avd-academy-sim__tab--overview { margin-right: var(--avd-academy-space-2); }
 
 /* Die Übersicht liegt in derselben Rasterzelle wie die Bühne – nie beide
    gleichzeitig sichtbar, und kein Sprung beim Wechsel. */
@@ -261,8 +261,8 @@
 .avd-academy-sim__intro[hidden] { display: none; }
 /* Auf der Übersicht gibt es keinen Schritt – die Erklärspalte hätte nichts zu
    sagen und stünde als leerer Streifen mit Trennlinie daneben. */
-.avd-academy-sim[data-uebersicht] .avd-academy-sim__main { grid-template-columns: minmax(0, 1fr); }
-.avd-academy-sim[data-uebersicht] .avd-academy-sim__aside { display: none; }
+.avd-academy-sim[data-overview] .avd-academy-sim__main { grid-template-columns: minmax(0, 1fr); }
+.avd-academy-sim[data-overview] .avd-academy-sim__aside { display: none; }
 .avd-academy-sim__intro-kopf { max-width: 46rem; margin-bottom: var(--avd-academy-space-8); }
 .avd-academy-sim__intro-title {
   margin: 0 0 var(--avd-academy-space-3) 0;
@@ -820,14 +820,14 @@
 /* Ist die Einblendung an, hält die Bühne unten Platz für sie frei – sonst
    verdeckte sie genau das, worüber sie spricht. Die Höhe misst simulation.js,
    weil sie am Text hängt. */
-.avd-academy-sim[data-capture][data-ost] .avd-academy-sim__stage {
-  padding-bottom: calc(var(--avd-academy-sim-ost-h, 0px) + clamp(2.5rem, 2rem + 2.5vw, 4.5rem));
+.avd-academy-sim[data-capture][data-caption] .avd-academy-sim__stage {
+  padding-bottom: calc(var(--avd-academy-sim-caption-h, 0px) + clamp(2.5rem, 2rem + 2.5vw, 4.5rem));
 }
 
 /* Die Einblendung liegt ÜBER der Bühne statt neben ihr: Ein eigener Streifen
    nähme dem Bild Höhe, und beim Ein-/Ausblenden sprängen alle Maße darin. */
 .avd-academy-sim__main { position: relative; }
-.avd-academy-sim__ost {
+.avd-academy-sim__caption {
   position: absolute;
   left: clamp(1.5rem, 1rem + 2.5vw, 3.5rem);
   right: clamp(1.5rem, 1rem + 2.5vw, 3.5rem);
@@ -844,17 +844,17 @@
   font-size: clamp(1rem, 0.85rem + 0.5vw, 1.35rem);
   line-height: var(--avd-academy-lh-body);
 }
-.avd-academy-sim__ost[hidden] { display: none; }
-.avd-academy-sim__ost-title {
+.avd-academy-sim__caption[hidden] { display: none; }
+.avd-academy-sim__caption-title {
   margin: 0 0 var(--avd-academy-space-2) 0;
   font-weight: var(--avd-academy-fw-bold);
   color: var(--avd-academy-color-headline);
 }
-.avd-academy-sim__ost-title:empty { display: none; }
-.avd-academy-sim__ost-text > :first-child { margin-top: 0; }
-.avd-academy-sim__ost-text > :last-child { margin-bottom: 0; }
-.avd-academy-sim__ost-text p { margin: 0 0 var(--avd-academy-space-2) 0; }
-.avd-academy-sim__ost-text code {
+.avd-academy-sim__caption-title:empty { display: none; }
+.avd-academy-sim__caption-text > :first-child { margin-top: 0; }
+.avd-academy-sim__caption-text > :last-child { margin-bottom: 0; }
+.avd-academy-sim__caption-text p { margin: 0 0 var(--avd-academy-space-2) 0; }
+.avd-academy-sim__caption-text code {
   font-family: var(--avd-academy-font-mono);
   background: var(--avd-academy-code-bg);
   border-radius: var(--avd-academy-radius-sm);
@@ -909,7 +909,7 @@
   .avd-academy-sim__progress,
   .avd-academy-sim__controls,
   .avd-academy-sim__speed-menu,
-  .avd-academy-sim__ost,
+  .avd-academy-sim__caption,
   .avd-academy-sim__tabs,
   .avd-academy-sim__capture-hint { display: none !important; }
   .avd-academy-sim__print-hint {

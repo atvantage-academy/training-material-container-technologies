@@ -149,6 +149,12 @@
         "modul-tcp-ip"
       ]
     },
+    "permaid": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "PERMALINK DIESER SEITE – eine kurze Adresse, die NIE wechselt: für den Beamer, einen QR-Code auf Papier, einen Link im Ticket. Die Zeile IST der Schalter; ohne sie bekommt die Seite keinen. EINE ID IST EIN VERSPRECHEN, dass die Adresse bleibt – sie wird nicht geändert, auch nicht, wenn der Titel sich ändert, sonst ist jeder ausgegebene Link tot. Erlaubt sind Kleinbuchstaben, Ziffern und Bindestriche. EINDEUTIG JE SPRACHBAUM: Dieselbe ID in der deutschen und der englischen Fassung ist in Ordnung – der Pfad hält sie auseinander. NICHT `slug`: Der benennt ein Segment an Ort und Stelle um, der Baum überlebt; ein Permalink ist eine globale Adresse. UND NICHT `permalink`: Das gehört Jekyll und setzt schlicht die Adresse DIESER Seite – ohne Kollisionsprüfung, ohne Weiterleitung, ohne Eintrag in `avd-permalinks.json`. Stehen beide auf einer Seite, gewinnt in `full` das `permaid`. Wirkt nur bei `permalinks.mode: full` oder `light`.",
+      "examples": ["http-grundlagen", "k7f3q"]
+    },
     "permalink": {
       "type": "string",
       "description": "Jekyll-Standard: abweichende Ziel-URL dieser Seite. STANDARD: der Pfad der Datei."
@@ -157,6 +163,10 @@
       "type": "boolean",
       "default": true,
       "description": "Jekyll-Standard: `false` schließt die Seite vom Build aus."
+    },
+    "render_with_liquid": {
+      "type": "boolean",
+      "description": "Jekyll-Schalter: `false` rendert OHNE Liquid. EINEN GLOBALEN SCHLÜSSEL GIBT ES NICHT – site-weit setzt man ihn über `defaults` in der `_config.yml`, und das ist auch der richtige Ort: Eine Unterlage soll ohne Liquid gerendert werden können, so nimmt ATLAS eingereichte Quellen an. Die Zielgruppen-Weiche `{% audience … %}` braucht Liquid NICHT – sie wird vom Filter aufgelöst, bevor Jekyll die Datei sieht. STANDARD: true (Jekyll)."
     },
     "quiz": {
       "type": "object",

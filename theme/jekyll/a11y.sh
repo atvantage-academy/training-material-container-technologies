@@ -32,7 +32,7 @@
 # Inhalt eines Bildes wirklich wiedergibt, ob die Reihenfolge der Überschriften
 # den Text abbildet, ob eine Simulation ohne Maus zu Ende zu bedienen ist:
 # dafür gibt es kein Werkzeug. Grün heißt „kein bekannter Fehler“, nicht
-# „barrierefrei“. Siehe docs/theme/barrierefreiheit.md.
+# „barrierefrei“. Siehe docs/funktionen/barrierefreiheit.md.
 #
 # BROWSER: gesucht wird in dieser Reihenfolge – $AVD_CHROME, google-chrome,
 # google-chrome-stable, chromium, chromium-browser, Chrome unter macOS. Ohne

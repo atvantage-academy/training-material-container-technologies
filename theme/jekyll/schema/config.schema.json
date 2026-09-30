@@ -108,7 +108,73 @@
     },
     "permalink": {
       "type": "string",
-      "description": "JEKYLL-STANDARD – URL-Muster der Seiten."
+      "description": "JEKYLL-STANDARD – URL-Muster der Seiten, ein TEXT (`pretty`, `date`, `/:categories/:title/`). NICHT ZU VERWECHSELN MIT `permalinks` (Mehrzahl): Das sind die kurzen Adressen dieses Themes. Wer hier versehentlich einen Abschnitt schreibt, bekommt einen Abbruch aus Jekylls Konfiguration heraus – `undefined method 'to_sym' for an instance of Hash` –, und der nennt weder Datei noch Schlüssel. Abfangen lässt er sich nicht: Er fällt, bevor ein Plugin geladen ist."
+    },
+    "permalinks": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "PERMALINKS – eine kurze Adresse je Seite, die nie wechselt. Sie entsteht NUR für Seiten mit einem `permaid` im Front Matter; ohne eine einzige solche Zeile passiert nichts. NICHT ZU VERWECHSELN MIT `permalink` (Einzahl, darüber): Das ist Jekylls URL-Muster für ALLE Seiten.",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "full",
+            "light",
+            "disabled"
+          ],
+          "default": "full",
+          "description": "OB UND WIE – ein Schlüssel für beides, damit sich nichts widersprechen kann. `full`: Die Seite liegt NUR unter dem Permalink; die kurze Adresse steht in der Adresszeile, ein Lesezeichen merkt sich sie. `light`: Die Seite bleibt, wo sie ist, und unter dem Permalink entsteht eine Weiterleitung – nichts kann brechen, dafür bietet die Werkzeugleiste die kurze Adresse zum Kopieren an. `disabled`: Jedes `permaid` wird übergangen, und der Vorsatz ist für gewöhnliche Seiten frei."
+        },
+        "base": {
+          "type": "string",
+          "default": "/p",
+          "description": "VORSATZ DER KURZEN ADRESSEN – und der RÜCKFALL: Er gilt für jede Seite, auf die kein Eintrag aus `entries` passt, und ohne `entries` für alle. Er gehört den Permalinks GANZ: Liegt eine gewöhnliche Seite darunter, bricht der Bau ab – sie würde sonst still überschrieben. Die Sprachbasis kommt davor (`/p/…` auf Deutsch, `/en/p/…` auf Englisch), denn alles, was die Sprache am Pfad abliest, hielte die Seite sonst für die der Standardsprache."
+        },
+        "overrides": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "strategy",
+            "entries"
+          ],
+          "description": "ABWEICHUNGEN VOM VORSATZ – wenn nicht alles unter denselben gehört. `base` bleibt der Regelfall und gilt für jede Seite, auf die kein Eintrag passt; hier steht, wovon abgewichen wird. BEIDE SCHLÜSSEL GEHÖREN ZUSAMMEN: Eine Strategie ohne Einträge wirkt nicht, Einträge ohne Strategie sind nicht zu lesen.",
+          "properties": {
+            "strategy": {
+              "type": "string",
+              "enum": [
+                "layout",
+                "path"
+              ],
+              "description": "WORAN SICH DIE ABWEICHUNG ENTSCHEIDET. `layout`: am Layout der Seite – es sagt ohnehin, WAS sie ist, und ändert sich nicht, wenn jemand Dateien umsortiert. `path`: am QUELLPFAD, mit Mustern – der Weg, wenn die ABLAGE die Zugehörigkeit bestimmt, etwa ein Ordner je Schulung, dessen Inhalt unter einen eigenen Vorsatz gehört, gleich welches Layout die einzelne Seite trägt."
+            },
+            "entries": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "DIE EINTRÄGE ZUR GEWÄHLTEN STRATEGIE, GEORDNET – bei mehreren Treffern gewinnt der ERSTE. Bei `layout` ist der Schlüssel ein Layoutname (freier Text, damit eigene Layouts dazukommen können). Bei `path` ein Pfadmuster, VERANKERT AN DER WURZEL DES QUELLBAUMS: `*` steht für EIN Segment, `**` für beliebig viele, ein Schrägstrich am Ende meint „dieses Verzeichnis und alles darunter\". `/funktionen/**` trifft also NICHT `docs/funktionen/…` – dafür `/docs/funktionen/**`. Ein Muster ohne Treffer nennt der Lauf, und `.avd-permalinks` zählt je Eintrag mit. IM WERT SIND PLATZHALTER ERLAUBT: `{0}`, `{1}`, … stehen für die Stellen HINTER dem festen Teil des Musters, von null an gezählt. EINGESETZT WIRD, WAS ÖFFENTLICH HEISST – ein Ordner `03-http` mit `folder_slug: http-grundlagen` ergibt `http-grundlagen`, nicht `03-http`; sonst stünde die Nummerierung aus dem Editor in der Adresse. PLATZHALTER ZEIGEN NUR AUF VERZEICHNISSE, nie auf die Seite selbst: Ihr Name steht ohnehin als `permaid` dahinter, und ihn davor zu wiederholen ergäbe eine Dopplung. Zeigt ein Platzhalter dorthin, bricht der Bau ab. Das MUSTER trifft dagegen den Quellpfad: Es beschreibt die Ablage, und gegen die öffentliche Adresse zu mustern hiesse, die Sprachwurzel mitzumustern. Ein Platzhalter ohne Entsprechung bricht den Bau ab, ebenso ein `{}` oder `{x}` – stillschweigend etwas Falsches zu bauen wäre schlimmer."
+            }
+          },
+          "oneOf": [
+            {
+              "description": "`strategy: layout` – Einträge je Layoutname",
+              "properties": {
+                "strategy": {
+                  "const": "layout"
+                }
+              }
+            },
+            {
+              "description": "`strategy: path` – Einträge je Pfadmuster",
+              "properties": {
+                "strategy": {
+                  "const": "path"
+                }
+              }
+            }
+          ]
+        }
+      }
     },
     "timezone": {
       "type": "string",
@@ -239,28 +305,11 @@
       "items": {
         "type": "string"
       },
-      "description": "Die Zielgruppen, die diese Site kennt – die Deklaration, gegen die alle `audiences`-Angaben geprüft werden (Seiten, `resources`, `nav.items`, `footer.links.items`) sowie `audience` des Builds. Das Theme legt die Werte NICHT fest: Welche Zielgruppen es gibt und wie sie heißen, ist eine Festlegung des Werkzeugs, das die Site baut. STANDARD: keine – dann ist jede Zielgruppen-Angabe ein Fehler, weil nicht prüfbar."
+      "description": "Die Zielgruppen, die diese Site kennt – die Deklaration, gegen die alle `audiences`-Angaben geprüft werden (Seiten, `resources`, `nav.items`, `footer.links.items`) sowie `audience` des Builds. Das Theme legt die Werte NICHT fest: Welche Zielgruppen es gibt und wie sie heißen, ist eine Festlegung des Werkzeugs, das die Site baut. JEDER BUILD FILTERT, sobald hier etwas steht – eine Ausnahmeliste, wer gefiltert wird, gibt es seit Theme 3 nicht mehr. STANDARD: keine – dann hat die Site keine Zielgruppen, jede Angabe im Front Matter ist ein Fehler, und es wird nicht gefiltert."
     },
     "audience": {
       "type": "string",
-      "description": "Die Zielgruppe DIESES Builds. Wird nicht von Hand gesetzt, sondern vom Build als Overlay (`_config.audience.yml`); Seiten und Einträge fremder Zielgruppe entfallen dann. STANDARD: keine – dann ist alles sichtbar (die lokale Vorschau). Der Wert muss in `audiences` deklariert sein."
-    },
-    "audience_filter": {
-      "type": "object",
-      "description": "Welche Zielgruppen eine GEFILTERTE Ausgabe bekommen – gelesen von der Baukomponente `theme/jekyll/_bin/build.sh`. Ein Schlüssel ist eine Zielgruppe aus `audiences`; wer hier steht, bekommt nur Seiten, die ihn in ihrem `audiences` nennen oder gar keine Angabe tragen. Wer hier NICHT steht, bekommt alles Publizierbare. DIE ASYMMETRIE IST ABSICHT UND GEHÖRT DER SITE: „Material der einen Gruppe nicht an die andere“ gilt oft nur in eine Richtung. Das Theme legt die Werte NICHT fest – wie bei `audiences` ist das eine Festlegung des Werkzeugs, das die Site baut. STANDARD: keiner – dann ist jede Ausgabe ungefiltert.",
-      "additionalProperties": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "exclude_names": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Zusätzlich entfallen Dateien, deren DATEINAME auf eines dieser Glob-Muster passt (z. B. `intern-*`) – die Namenskonvention als Rückfall für Seiten ohne `audiences` im Front Matter. EIN AUSDRÜCKLICHES `audiences` STICHT: Eine Seite, die diese Zielgruppe nennt, bleibt auch dann, wenn ihr Name auf ein Muster passt. STANDARD: keine – dann entscheidet allein das Front Matter."
-          }
-        }
-      }
+      "description": "Die Zielgruppe DIESES Builds. Wird nicht von Hand gesetzt, sondern vom Build als Overlay (`_config.audience.yml`); Seiten und Einträge fremder Zielgruppe entfallen dann. PFLICHT, SOBALD `audiences` DEKLARIERT IST: Ohne die Angabe filtert nichts, und der Build bricht ab. Bis Theme 2.x war der Standard „alles sichtbar“ – das war der Fallback, mit dem eine Vorschau Trainermaterial zeigte, ohne dass es auffiel. Eine Vorgabe gibt es bewusst nicht: Sie wäre eine Annahme darüber, wer was sehen darf. Der Wert muss in `audiences` deklariert sein."
     },
     "i18n": {
       "type": "object",
@@ -363,10 +412,6 @@
         "tagline": {
           "$ref": "frontmatter.schema.json#/definitions/sprachtext",
           "description": "Eine Zeile Markentext in der Metaleiste über der Kopfzeile. MEHRSPRACHIG: auch als Sprachkarte."
-        },
-        "website": {
-          "type": "string",
-          "description": "VERALTET seit 2.1.0 – die Angabe heißt jetzt `contact.website` und steht bei den übrigen Kontaktangaben. Wird nur noch gelesen, wenn `contact.website` fehlt, und entfällt mit Theme 3.0 (Register „Kompatibilitätsschichten“ im CHANGELOG des Themes)."
         },
         "icon": {
           "type": "object",

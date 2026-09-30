@@ -47,13 +47,13 @@
 <meta property="og:description" content="Wie aus einem Dockerfile ein Stapel wird, warum jeder Layer einen Hash aus sich und allem darunter trägt – und was daraus für Cache, geteilte Basis-Images und die Reihenfolge der Zeilen folgt.">
 <meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790334185"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790334185">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790334185">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790334185">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790334185"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790334185">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790334185" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790334185" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790334185">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790741874">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790741874">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790741874">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790741874">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790741874" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790741874" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790741874">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -95,9 +95,9 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/training-material-container-technologies/theme/atvantage/assets/icon-180.png">
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/presentation.css?v=1790334185">
-  <script src="/training-material-container-technologies/theme/jekyll/presentation.js?v=1790334185" defer></script>
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790334185"></head>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/presentation.css?v=1790741874">
+  <script src="/training-material-container-technologies/theme/jekyll/presentation.js?v=1790741874" defer></script>
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790741874"></head>
 <body class="avd-academy-present" data-avd-academy-present data-avd-academy-present-title="Layer und Build-Cache">
   <a class="avd-academy-skip-link" href="#avd-academy-deck">Zum Inhalt springen</a>
 
@@ -108,15 +108,231 @@
     <div class="avd-academy-present__tools"><button type="button" class="avd-academy-present__back" data-avd-academy-back hidden
               title="Zurück" aria-label="Zurück">← Zurück</button><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
                 title="Diese Seite auf Deinem Smartphone öffnen"
-                aria-label="Diese Seite auf Deinem Smartphone öffnen"></button><button type="button" class="avd-academy-tool avd-academy-tool--theme avd-academy-theme-toggle" data-avd-academy-theme-toggle
+                aria-label="Diese Seite auf Deinem Smartphone öffnen"></button><button type="button" class="avd-academy-tool avd-academy-tool--theme" data-avd-academy-theme-toggle
               title="Farbschema umschalten (hell/dunkel)"
-              aria-label="Farbschema umschalten">◐</button><button type="button" class="avd-academy-tool avd-academy-tool--print avd-academy-print-btn"
+              aria-label="Farbschema umschalten">◐</button><button type="button" class="avd-academy-tool avd-academy-tool--print"
                 data-avd-academy-present-print
                 title="Drucken (alle Folien)" aria-label="Drucken (alle Folien)"></button><button type="button" class="avd-academy-tool avd-academy-tool--full"
               data-avd-academy-present-full
               title="Vollbild (Taste F)" aria-label="Vollbild">⛶</button></div>
   </header><main class="avd-academy-deck" id="avd-academy-deck" data-avd-academy-deck>
-    
+    <!--
+===============================================================================
+ANFORDERUNGEN AN DIESE UNTERLAGE
+-------------------------------------------------------------------------------
+Steht hier und nicht in der AGENTS.md, weil eine Anforderung dort niemand
+findet, der diese Datei bearbeitet. Die AGENTS.md verweist nur hierher.
+
+Als LIQUID-Kommentar und nicht als HTML-Kommentar: Liquid entfernt ihn beim
+Bauen, ein HTML-Kommentar wanderte in jede ausgelieferte Seite.
+(Den Tag hier nicht ausschreiben - Liquid laese ihn als zweiten Kommentaranfang
+und der Bau braeche ab.)
+
+FORM
+- `layout: presentation`, eine Datei, keine Nebendateien, keine Bibliothek.
+  JEDES `##` beginnt eine Folie; alles vor dem ersten `##` ist die Titelfolie.
+  Eine Folie traegt EINE Aussage und passt auf EINEN Bildschirm - wer Text
+  ergaenzt, schneidet stattdessen eine neue Folie.
+- Kein `audiences:`, kein `duration` (die Zeit steht in der Kapitel-Dauer des
+  Moduls), keine Verortung im Ablauf ("Tag 1", "nach der Pause").
+- Farben AUSSCHLIESSLICH aus den `--avd-academy-*`-Token. Kein Hex, kein rgb().
+- FALLE: Das Theme setzt fuer diese Seite
+  `.avd-academy-guide-main ul, .avd-academy-guide-main ol { display: flex;
+  flex-direction: column; gap: 8px; padding-left: 22px }` - SPEZIFISCHER als
+  eine einzelne Klasse. Regeln fuer eine Liste deshalb als `ul.lc__stapel`
+  schreiben, sonst greifen weder Abstand noch Einzug.
+
+REIHENFOLGE DER ABSCHNITTE - DIE IST DER INHALT
+1. AUFBAU: Erst das Dockerfile (mit Verweis auf die offizielle Referenz), dann
+   das Bild vom Stapel.
+
+   DIE BASIS STEHT OBEN - IN JEDEM BILD DIESER SEITE, ausnahmslos. Die
+   Zeichnung folgt damit der Datei: erste Zeile oben, letzte unten, wie im
+   Editor; die "darueberliegenden" Schichten stehen im Bild DARUNTER. Kein
+   Stapel wird gedreht, und es wird auch nicht erklaert, warum er gedreht
+   waere: Zwei Leserichtungen nebeneinander waren genau das, was hier
+   verwirrt hat.
+
+   Die Begriffe "untere/obere Schicht" traegt die ACHSE neben dem ersten Bild -
+   ein Pfeil nach oben "untere Schichten", einer nach unten "obere Schichten".
+   Einmal, an dieser Stelle. Keine Fussnote unter jedem weiteren Bild.
+2. HASH: Jeder Layer traegt eine Pruefsumme aus seinem Inhalt UND dem Hash des
+   Layers darunter. Daraus folgt beides - der Cache UND die Ungueltigkeit nach
+   oben. Die Regel wird hier hergeleitet, nicht behauptet.
+3. IMAGE: Ein Image ist ein Layer samt allem darunter. Daraus folgen geteilte
+   Basis-Layer und Images, die ganz auf anderen aufbauen.
+4. Erst DANACH die Best Practice (Reihenfolge im Dockerfile) und der
+   Nebenbefund zum Loeschen.
+
+INTERAKTION - DER GRUND, WARUM DAS EINE VISUALISIERUNG IST
+- Im Cache-Abschnitt waehlt man, WAS sich geaendert hat (nichts / Quelldatei /
+  Abhaengigkeitsliste). BEIDE Spalten rechnen daraufhin dieselbe Regel: Die
+  erste Schicht, die das Geaenderte enthaelt, wird neu gebaut, und mit ihr
+  alles darunter im Bild. Man sieht dadurch nicht zwei Bilder, sondern
+  dieselbe Regel auf zwei Anordnungen - das ist der Lerngewinn gegenueber
+  zwei festen Bildern.
+- `COPY . .` traegt `data-lc-enthaelt="code deps"`: Es kopiert die
+  Abhaengigkeitsliste mit. Ohne diese Feinheit saehe die linke Spalte bei einer
+  geaenderten Liste faelschlich gut aus.
+- VOREINSTELLUNG IST "nichts": der Ausgangszustand, von dem aus man die
+  Aenderungen durchspielt. Das Markup wird in genau diesem Stand ausgeliefert.
+- DIE KNOPFZEILE SIEHT NACH EINGABE AUS (Grund, Rahmen, Akzentkante wie ein
+  Infobalken) - sonst liest sie sich als Fliesstext und niemand klickt.
+- BEIDE SPALTEN TEILEN SICH DIE ZEILEN DES VERGLEICHS (`subgrid`). Ohne das
+  beginnen die Stapel auf verschiedener Hoehe, sobald ein Untertitel umbricht -
+  und dann steht `FROM` nicht mehr neben `FROM`. Wo `subgrid` fehlt, bleibt es
+  beim bisherigen Fluss; das Bild ist dann versetzt, aber nicht falsch.
+- FALLE BEI `display: contents`: Es taugt nur, wenn JEDES Kind des Eintrags ein
+  ELEMENT ist (so wie in der Zuordnung auf Folie 3: zwei Zellen, sonst nichts).
+  Steht im Eintrag Text mit `<strong>` dazwischen, wird jedes Textstueck zu
+  einer eigenen Gitterzelle - der Satz reisst auseinander, und der Zaehler
+  zeigt 0. Genau das ist beim Manifest passiert.
+- DIE LETZTE FOLIE IST EIN KLEINES MANIFEST: fuenf NUMMERIERTE Aussagen, die
+  aufeinander aufbauen - erst drei zur Funktionsweise (Image, Hash, Cache),
+  dann zwei Folgen daraus (Reihenfolge, Aufraeumen). Eine Aufzaehlung mit
+  Punkten stellte sie nebeneinander, als waeren es fuenf gleichrangige Tipps.
+- OHNE "OBEN" UND "UNTEN", wo kein Bild danebensteht. Auf der letzten Folie
+  heisst es "kommt in Basis-Layer" und "moeglichst spaet" - die Achse, die
+  "unten" erklaert, ist dort laengst nicht mehr zu sehen.
+- EINE SCHICHT SIEHT UEBERALL GLEICH AUS: Schluesselwort fett und in der
+  Akzentfarbe, der Rest der Zeile normal, der Hash grau und kleiner. Das gilt
+  fuer JEDE Folie - sonst sieht dieselbe Sache dreimal anders aus.
+- MARKEN IN DEN SCHICHTEN NUR, WENN SIE ETWAS SAGEN, das man nicht sieht ("aus
+  dem Cache", "neu gebaut"). "Basis", "sauber" oder "nur unsichtbar" wiederholten
+  bloss die Anweisung daneben - sie sind entfallen.
+- DAS FAZIT IST EIN CALLOUT DES THEMES - gruen, wo es laeuft, gelb, wo Aufwand
+  ohne Gegenwert entsteht. Urteil und Begruendung stehen zusammen in EINEM
+  Kasten; getrennt las sich das eine als Ueberschrift des anderen.
+- DAS URTEIL GEHOERT INS BILD: Welche Reihenfolge besser ist, soll man sehen,
+  nicht aus zwei Bilanzsaetzen erschliessen. Gruener Haken, wo es richtig
+  laeuft; skeptisches Gesicht, wo Aufwand ohne Gegenwert entsteht. Beides haengt
+  am selben Schalter wie die Schichten. OHNE AENDERUNG bekommen BEIDE den Haken
+  - ein Urteil aus Prinzip waere unehrlich, dort ist nichts zu tun.
+- DIE KNOEPFE SIND AUSFUEHRLICH BESCHRIFTET und stehen hinter der Frage
+  ("Entwickler aendert: nichts / Anwendungscode / die Abhaengigkeiten
+  (package.json)") - die Zeile liest sich als ein Satz. "eine Quelldatei" sagte
+  nicht, wer da was tut.
+- DIE CMD-ZEILE STEHT NICHT im Vergleich: Sie traegt zur Aussage ueber die
+  Reihenfolge nichts bei und kostet nur Hoehe.
+- OHNE JAVASCRIPT bleibt der Fall "Quelldatei geaendert" stehen - der
+  haeufigste. Deshalb wird das Markup in genau diesem Zustand ausgeliefert und
+  die Bilanzsaetze stehen als Text im Dokument (`hidden`), nicht im Skript.
+- AUF PAPIER STEHEN ALLE DREI FAELLE. Sie entstehen BEIM LADEN aus demselben
+  Markup (Klon + `zeichne()`), nicht bei `beforeprint`: Bleibt das Ereignis aus,
+  fehlten sonst zwei Drittel. Eine von Hand gepflegte zweite Kopie waere binnen
+  einer Aenderung falsch.
+- KEIN Zustand in der Adresse: Auf einer Praesentation gehoert das Fragment dem
+  Layout (`#/3` ist die Foliennummer), und `AvdAcademyState` haelt dort still.
+
+INHALT
+- NUR RUN, COPY und ADD erzeugen eine DATEISYSTEM-SCHICHT; FROM setzt den
+  Grund, alles andere schreibt METADATEN. Das wird gezeigt
+  (`lc__layer--meta`), nicht verschwiegen - sonst entsteht das falsche Bild
+  "jede Zeile ein Layer".
+- DIE DEFINITION BLEIBT KURZ: "ein Name auf einer Schicht - samt allem, was
+  unter ihr liegt". Die Metadaten werden NICHT eigens angehaengt: Im Bild dieser
+  Folien ist eine Metadaten-Zeile eine Zeile wie jede andere, mit eigenem Hash.
+  Wer sie in der Definition nachtraegt, macht aus dem einen Satz zwei Begriffe.
+  Die genaue Unterscheidung steht dort, wo sie hingehoert - in der Fussnote
+  unter der Zuordnung.
+- DIE DATEI SIEHT WIE EINE DATEI AUS: Dateiname ueber dem Rahmen,
+  Zeilennummern in eigener Spalte (aus einem CSS-Zaehler, nicht im Text). Die
+  Schluesselwoerter stehen DORT - und die Nummern sind die Verbindung zur
+  Schichten-Spalte daneben.
+- FOLIE 3 ordnet ZEILE FUER ZEILE zu: EIN Gitter, links die Dockerfile-Zeile,
+  rechts GENAU daneben, was daraus entsteht. Zwei getrennte Listen verrutschen,
+  sobald eine Zeile umbricht - und dann stimmt die Zuordnung nicht mehr, die das
+  ganze Bild ausmacht. Das Gitter ist die LISTE SELBST (zwei Spalten), der
+  Eintrag ist `display: contents` - so bleibt die Listen-Semantik erhalten und
+  die Zellen liegen trotzdem im Gitter.
+- FALLE, die schon zugeschlagen hat: Die Achse gehoert NEBEN das Gitter, nicht
+  als dritte Spalte hinein. Als Spalte braeuchte sie `grid-row: 1 / -1`, und das
+  greift ohne explizite Zeilen NICHT - `-1` zeigt dann auf die einzige
+  Zeilenlinie. Die Achse belegte die erste Zeile, und in die freien Zellen der
+  dritten Spalte lief alles Weitere hinein: Das Bild war zerschossen.
+- RECHTS STEHT NUR DER TYP (Dateisystem oder Metadaten), je mit Sinnbild - die
+  Anweisung steht ja daneben. Sie dort zu wiederholen war der Fehler davor.
+- `WORKDIR` IST DER GRENZFALL der Zweiteilung und wird als solcher benannt (in
+  der Fussnote unter dem Bild): Es schreibt Metadaten, legt das Verzeichnis aber
+  an, wenn es fehlt, und bestimmt, worauf sich die folgenden COPY/RUN beziehen.
+  Nicht stillschweigend als reine Metadaten-Zeile fuehren - danach wurde
+  gefragt, und die Frage ist berechtigt.
+- `FROM` ist kein einzelnes Blatt: Die Basis bringt eigene Schichten mit. Als
+  MINIATUR aus flachen Kaesten gezeichnet - sie zeigt "mehrere", ohne eine Zahl
+  zu behaupten. KEINE verdeckten Karten (Schatten hinter dem Kasten): Das las
+  sich als Bildfehler, nicht als Stapel.
+- FUER DEN CACHE WIRD NICHT NACH SORTE UNTERSCHIEDEN. Jede geaenderte Zeile
+  entwertet alles darunter - ob sie eine Schicht anlegt oder nur Metadaten
+  schreibt, spielt dort keine Rolle. Eine eigene Folie dafuer gab es einmal;
+  sie ist entfallen, weil sie eine Ausnahme nahelegte, die es nicht gibt.
+  Was von ihr bleibt, steht in der Fussnote unter der Zuordnung.
+- DIE HASH-FOLIE BLEIBT BEIM DURCHGAENGIGEN BEISPIEL: dieselben sechs Zeilen wie
+  auf der Zuordnung, mit Kommando links und Hash rechts. Ein zweites Beispiel
+  nur fuer die Hashes zwaenge dazu, sich neu einzufinden. Das gilt fuer JEDES
+  Bild dieser Folien - auch die beiden Folge-Bilder zeigen dieselben sechs
+  Zeilen, nur anders markiert.
+- JEDE SCHLUSSFOLGERUNG BEKOMMT EINE EIGENE FOLIE UND EIN BILD. "Geaenderter
+  Hash" und "Caching" sind die beiden Kernaussagen der Unterlage; zusammen auf
+  einer Folie waren sie zwei Stichpunkte, die man ueberliest.
+- REIHENFOLGE: "Geaenderter Hash - alles Spaetere neu" steht DIREKT hinter der
+  Hash-Folie, denn es ist deren Zusatzerklaerung. Der Cache kommt danach.
+- DER TITEL NENNT DAS THEMA, nicht nur die Pointe ("Caching: Bekannter Hash,
+  nichts zu tun"). Der Trainer blaettert und muss wissen, wo er ist; eine Folie
+  mit reiner Pointenueberschrift zwingt ihn, den Inhalt zu lesen.
+- DIE DATEI STEHT NEBEN DEN SCHICHTEN, wo es etwas zu vergleichen gibt. Auf der
+  Zuordnung ZEILE FUER ZEILE; bei "Image als Grund" geht die `FROM`-Zeile ueber
+  ZWEI Schichten, und eine KLAMMER fasst sie zusammen - dort ist die
+  Zeilengleichheit nicht nur unnoetig, sondern falsch. Die Namen haengen wie auf
+  der Umdefinitions-Folie als Zeiger an ihrer Schicht.
+- BREITE: Die Inhaltsspalte steht auf 46rem (Theme: 1100px), damit Text und Bild
+  auf einer Spalte liegen. Braucht EIN Bild mehr, bekommt die betreffende Folie
+  sie per `:has()` - nicht alle Folien fuer ein Bild verbreitern. Und die
+  Beschriftungen in den Schichten bleiben KURZ (`RUN apk add …`), sonst brechen
+  sie um und die Kaesten werden hoch.
+- SPALTEN SO BREIT WIE IHR INHALT (`auto`, kein `1fr`): Eine `1fr`-Spalte dehnt
+  die Schicht, und zwischen Anweisung und Hash klafft eine Luecke. Dasselbe gilt
+  INNERHALB der Schicht - dort darf sich keine Spanne dehnen.
+- FALLE IM FLEX-KASTEN: Der Leerraum ZWISCHEN den Kindern faellt weg - aus
+  `<b>FROM</b> meine-basis` wurde "FROMmeine-basis". Der Rest der Zeile steht
+  deshalb in einer eigenen Spanne und ist damit EIN Kind.
+- Die Dateispalte ist eine DATEI: Zeilennummer, durchlaufender Grund, aussen
+  gerundet. Sie bleibt trotzdem Zelle fuer Zelle im Gitter - nur so stehen COPY
+  und CMD auf derselben Hoehe wie ihre Schicht. Ein Kasten drumherum waere
+  einfacher und wuerde genau das aufgeben.
+- JEDE SKIZZE NENNT DIE ANWEISUNG UND DEN HASH - auch die beiden zum Teilen.
+  Ohne die Anweisung fehlt der Bezug zum Dockerfile, ohne den Hash der Bezug zur
+  Hash-Folie; der gemeinsame Grund traegt in beiden Bildern DENSELBEN Hash wie
+  im durchgaengigen Beispiel, sonst ist es nicht derselbe Grund.
+- DAS CACHE-BILD ZEIGT EINE ENTSCHEIDUNG, keine Behauptung: LINKS die Kette des
+  gewuenschten Images, RECHTS der Cache - dort, wo in der Schicht auch der Hash
+  steht. Dazwischen PFEILE, und die tragen die Aussage: nach links, was aus dem
+  Cache kommt; nach rechts (in der Farbe des Fehlenden), was noch geholt wird
+  und danach dort landet. KEIN Text in den Schichten - eine Marke "im Cache" an
+  jeder Zeile behauptete das Ergebnis, statt es herzuleiten.
+- DIE CACHE-SPALTE ZEIGT NUR DIESE KETTE. Eintraege fremder Images standen
+  einmal darunter; sie kosteten Platz und trugen auf dieser Folie nichts bei -
+  dass Images sich Schichten teilen, ist das Thema einer eigenen Folie weiter
+  hinten. Die Hashes beider Seiten muessen zusammenpassen; die Pruefung
+  vergleicht sie wirklich.
+- DIE UMDEFINITION DES IMAGES ist ebenso eine Kernaussage und steht deshalb in
+  derselben Reihe - mit Skizze: zwei NAMEN zeigen auf zwei verschiedene Schichten
+  DERSELBEN Kette. Das ist der ganze Punkt; als Definitionssatz war es Prosa.
+- DIE FORMEL benutzt ein FUNKTIONSZEICHEN (ƒ), kein kleines f, und spricht von
+  der "Schicht darunter" - der Sprache der Achse, nicht der Lage im Bild.
+- KEINE eigene Textausrichtung auf den Folien - es gilt der Theme-Standard
+  (linksbuendig). Zentrierte Zeilen waren gesetzt und wurden verworfen.
+- FALLE BEI ABSTAENDEN: Das Theme setzt `.avd-academy-slide p { margin: 0 0
+  space-4 }` - Klasse plus Element, 0-1-1. Eine Bausteinregel mit EINER Klasse
+  verliert dagegen, auch wenn sie spaeter steht. Absaetze in Bausteinen deshalb
+  mit ZWEI Klassen ansprechen (`.lc__datei .lc__datei-name`), und eine eigene
+  Folienregel nur als `.avd-academy-slide__inner > p` schreiben - sonst trifft
+  sie auch die Bausteine. Genau daran stand ueber der ersten Dockerfile-Zeile
+  eine Luecke, die wie eine leere Zeile aussah.
+- Das Beispiel bleibt ueber alle Abschnitte DASSELBE (node-Anwendung), damit
+  man die Stapel vergleichen kann.
+===============================================================================
+-->
+
 <h1 id="layer-und-build-cache">Layer und Build-Cache</h1>
 
 <p>Ein Image entsteht nicht in einem Stück, sondern Schicht für Schicht.

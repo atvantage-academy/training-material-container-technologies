@@ -65,8 +65,6 @@
   .avd-academy-skip-link,
   .avd-academy-copy-md,
   .avd-academy-copy,
-  .avd-academy-print-btn,
-  .avd-academy-theme-toggle,
   .avd-academy-tool,
   [data-avd-academy-toc-box],
   [data-avd-academy-progress] { display: none !important; }
@@ -204,6 +202,9 @@
   /* Auch das Gitter der seitlichen Fassung: Ohne die Leiste stuende sonst eine
      leere Spalte neben dem Text, und der Text haette nur den Rest der Seite. */
   .avd-academy-tabs--side { display: block !important; }
+  /* Der Rahmen mit - sonst bliebe seine Trennlinie als leerer Strich stehen,
+     nachdem Leiste und Burger verschwunden sind. */
+  .avd-academy-tabs__nav,
   .avd-academy-tabs__bar { display: none !important; }
   .avd-academy-tabs--enhanced > .avd-academy-tabs__panel > summary {
     display: block !important;

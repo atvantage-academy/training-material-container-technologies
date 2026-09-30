@@ -334,9 +334,10 @@
 
   /* --- Beschriftungen, die erst im Browser entstehen -----------------------
      Die meisten Texte des Themes setzt Liquid beim Bauen (siehe
-     theme/jekyll/_includes/avd-i18n.html). Diese drei nicht: Sie gehören zu
+     theme/jekyll/_includes/avd-i18n.html). Diese hier nicht: Sie gehören zu
      Elementen, die dieses Skript SELBST erzeugt – die Kopieren-Knöpfe an
-     Codeblöcken und den Schließen-Knopf eines Reveals.
+     Codeblöcken, den Schließen-Knopf eines Reveals und den Burger des
+     Reiterstreifens.
 
      GELESEN WIRD `<html lang>`. Das Attribut setzt jedes Theme-Layout aus der
      Sprache der Seite; damit gilt hier dieselbe Sprache wie im übrigen Markup.
@@ -346,9 +347,11 @@
      Unbekannte Sprache fällt auf Deutsch zurück, wie im Wörterbuch des Layouts. */
   var TEXTE = {
     de: { kopieren: "Kopieren", kopiert: "Kopiert!", schließen: "Schließen",
-          erledigt: "erledigt", schritt: "Arbeitsschritt" },
+          erledigt: "erledigt", schritt: "Arbeitsschritt",
+          weitereReiter: "Weitere Reiter" },
     en: { kopieren: "Copy",     kopiert: "Copied!",  schließen: "Close",
-          erledigt: "done",     schritt: "Step" }
+          erledigt: "done",     schritt: "Step",
+          weitereReiter: "More tabs" }
   };
   var T = TEXTE[(document.documentElement.getAttribute("lang") || "de").split("-")[0].toLowerCase()] || TEXTE.de;
 
@@ -962,8 +965,14 @@
       var shown = null;
 
       function render() {
-        if (location.href === shown) return;
-        shown = location.href;
+        /* DER QR-CODE ZEIGT DIE ADRESSE, DIE BLEIBT. Hat die Seite einen
+           Permalink, gehoert er auf den Code - er ist der Grund, warum es ihn
+           gibt: Ein Code auf Papier ueberlebt jede Umbenennung. Das Fragment
+           kommt mit, weil die Praesentation ihre Folie darin fuehrt. */
+        var kurz = permalinkHref();
+        var adresse = kurz ? kurz.replace(/#.*$/, "") + location.hash : location.href;
+        if (adresse === shown) return;
+        shown = adresse;
         hosts.forEach(function (host) {
           var box = document.createElement("span");
           box.className = "avd-academy-qr__box";
@@ -1324,14 +1333,96 @@
         knoepfe[ziel].focus();
       });
 
-      box.insertBefore(leiste, box.firstChild);
+      /* DER RAHMEN UM LEISTE UND BURGER. Er traegt die trennende Linie, damit
+         sie ueber die ganze Breite laeuft - die Leiste allein hoerte vor dem
+         Knopf auf. Der Burger steht NEBEN der `tablist`, nicht darin: Ein Knopf
+         zwischen den Reitern verletzt `aria-required-children`. */
+      var rahmen = document.createElement("div");
+      rahmen.className = "avd-academy-tabs__nav";
+      rahmen.appendChild(leiste);
+
+      /* Nur waagerecht. Eine seitliche Leiste steht ohnehin untereinander und
+         hat das Platzproblem nicht. */
+      var mehr = null;
+      if (!seitlich) {
+        mehr = document.createElement("button");
+        mehr.type = "button";
+        mehr.className = "avd-academy-tool avd-academy-tabs__more";
+        mehr.setAttribute("aria-expanded", "false");
+        mehr.setAttribute("aria-controls", leiste.id || (leiste.id = "avd-tabs-bar-" + nr));
+        mehr.setAttribute("aria-label", T.weitereReiter);
+        mehr.textContent = "\u2630";
+        rahmen.appendChild(mehr);
+      }
+
+      box.insertBefore(rahmen, box.firstChild);
       box.classList.add("avd-academy-tabs--enhanced");
+
+      /* --- Zu schmal? Dann nur der gewaehlte Reiter -----------------------
+         GEMESSEN, NICHT GERATEN: Wie viel Platz die Leiste braucht, haengt an
+         Anzahl UND Laenge der Beschriftungen; eine feste Pixelgrenze waere bei
+         zwei kurzen Reitern zu frueh und bei sechs langen zu spaet.
+
+         Gemessen wird im NICHT zusammengeklappten Zustand - sonst misst man das
+         Ergebnis der eigenen Entscheidung und bleibt fuer immer kompakt. */
+      function menueSchliessen() {
+        box.classList.remove("avd-academy-tabs--menu-offen");
+        if (mehr) { mehr.setAttribute("aria-expanded", "false"); }
+      }
+
+      function messen() {
+        if (!mehr) return;
+        var warOffen = box.classList.contains("avd-academy-tabs--menu-offen");
+        box.classList.remove("avd-academy-tabs--compact", "avd-academy-tabs--menu-offen");
+        var zuEng = leiste.scrollWidth > leiste.clientWidth + 1;
+        if (zuEng) {
+          box.classList.add("avd-academy-tabs--compact");
+          if (warOffen) { box.classList.add("avd-academy-tabs--menu-offen"); }
+        } else {
+          menueSchliessen();
+        }
+      }
+
+      if (mehr) {
+        mehr.addEventListener("click", function () {
+          var offen = box.classList.toggle("avd-academy-tabs--menu-offen");
+          mehr.setAttribute("aria-expanded", offen ? "true" : "false");
+          if (offen) {
+            var gewaehlt = knoepfe[panels.findIndex(function (p) { return p.open; })];
+            if (gewaehlt) { gewaehlt.focus(); }
+          }
+        });
+        /* Eine Wahl beendet das Menue - sonst bliebe die Liste ueber dem
+           Inhalt stehen, den sie gerade gewechselt hat. */
+        leiste.addEventListener("click", menueSchliessen);
+        /* Escape schliesst, wie jedes Aufklappmenue. Der Fokus geht zurueck auf
+           den Knopf, der es geoeffnet hat - sonst steht er im Nichts. */
+        box.addEventListener("keydown", function (event) {
+          if (event.key !== "Escape") return;
+          if (!box.classList.contains("avd-academy-tabs--menu-offen")) return;
+          menueSchliessen();
+          mehr.focus();
+        });
+        if (window.ResizeObserver) {
+          var geplant = false;
+          new ResizeObserver(function () {
+            if (geplant) return;
+            geplant = true;
+            requestAnimationFrame(function () { geplant = false; messen(); });
+          }).observe(box);
+        } else {
+          window.addEventListener("resize", messen);
+        }
+      }
 
       /* Keines offen? Dann das erste - sonst stuende die Leiste ueber einer
          leeren Flaeche. Im Akkordeon waere das in Ordnung, als Reiterstreifen
          sieht es kaputt aus. */
       if (!panels.some(function (p) { return p.open; })) { panels[0].open = true; }
       nachfuehren();
+      /* Erst jetzt messen: Vorher steht nicht fest, welcher Reiter gewaehlt ist,
+         und im kompakten Zustand bestimmt genau der die Breite der Leiste. */
+      messen();
 
       /* ANMELDEN, ERST JETZT: Was hier offen steht, ist der Ausgangszustand des
          Dokuments - und der entscheidet, ob ueberhaupt etwas in die Adresse muss.
@@ -1625,6 +1716,105 @@
     }
   }
 
+  /* --- Permalinks ---------------------------------------------------------
+     Die kurze, gleichbleibende Adresse einer Seite. Sie steht nur in der
+     Betriebsart `light` im Kopf der Seite - in `full` IST die Adresszeile
+     bereits der Permalink, und ein zweiter Ort dafuer waere eine zweite
+     Wahrheit.
+
+     ABSOLUT WIRD SIE ERST HIER: Eine Site ohne `site.url` kennt beim Bauen
+     ihren eigenen Ursprung nicht. Der Browser kennt ihn immer. */
+  function permalinkHref() {
+    var meta = document.querySelector('meta[name="avd-academy-permalink"]');
+    if (!meta || !meta.content) return null;
+    try {
+      return new URL(meta.content, location.href).href;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /* MIT `<base>` ZEIGT EINE SPRUNGMARKE INS URSPRUNGSVERZEICHNIS. In der
+     Betriebsart `full` liegt die Seite unter ihrer kurzen Adresse, waehrend
+     `<base>` auf ihr Ursprungsverzeichnis zeigt, damit Bilder und Nachbardateien
+     aufloesen. Ein `href="#kapitel-2"` erbt diese Basis und fuehrt damit von der
+     Seite WEG - auf eine Adresse, unter der sie gar nicht mehr liegt.
+
+     Repariert wird beim Klick und nicht im Markup: So bleibt der Verweis im
+     Quelltext das, was die Autorin geschrieben hat. */
+  function initBaseFragments() {
+    if (!document.querySelector("base[href]")) return;
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest && e.target.closest('a[href^="#"]');
+      if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey) return;
+      var hash = a.getAttribute("href");
+      if (hash === "#") return;
+      e.preventDefault();
+      var ziel = document.querySelector(hash) || document.getElementsByName(hash.slice(1))[0];
+      if (ziel) ziel.scrollIntoView();
+      history.replaceState(null, "", location.pathname + location.search + hash);
+    });
+  }
+
+  /* ADRESSE KOPIEREN - das Kettensymbol in der Werkzeugleiste.
+     Hat die Seite einen Permalink, kopiert er den; sonst die aktuelle Adresse.
+     Ein Knopf, der mal da ist und mal nicht, liesse den Benutzer raten, ob er
+     etwas falsch macht.
+
+     ZWEI WEGE ZUM ABLAGEFACH: `navigator.clipboard` braucht einen sicheren
+     Kontext - eine lokal geoeffnete Datei hat keinen. Der aeltere Weg ueber ein
+     unsichtbares Textfeld funktioniert dort noch. */
+  function initAddressCopy() {
+    var knoepfe = document.querySelectorAll("[data-avd-academy-copy]");
+    if (!knoepfe.length) return;
+
+    function ablegen(text) {
+      if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+      return new Promise(function (ok, fehler) {
+        var feld = document.createElement("textarea");
+        feld.value = text;
+        feld.setAttribute("readonly", "");
+        feld.style.position = "fixed";
+        feld.style.opacity = "0";
+        document.body.appendChild(feld);
+        feld.select();
+        try {
+          document.execCommand("copy") ? ok() : fehler();
+        } catch (e) {
+          fehler(e);
+        } finally {
+          feld.remove();
+        }
+      });
+    }
+
+    knoepfe.forEach(function (knopf) {
+      knopf.addEventListener("click", function () {
+        var eigen = knopf.getAttribute("data-avd-academy-copy");
+        var text = (eigen && new URL(eigen, location.href).href) || permalinkHref() || location.href;
+        ablegen(text).then(function () {
+          /* KURZE RUECKMELDUNG, und zwar auch fuer eine Vorlesehilfe: Ohne
+             `aria-live` bliebe der Vorgang fuer sie stumm - der Knopf saehe
+             aus, als haette er nichts getan. */
+          var vorher = knopf.innerHTML;
+          var titel = knopf.getAttribute("title");
+          var fertig = knopf.getAttribute("data-avd-academy-copy-done") || "";
+          knopf.textContent = "\u2713";
+          knopf.setAttribute("title", fertig);
+          knopf.setAttribute("aria-label", fertig);
+          setTimeout(function () {
+            knopf.innerHTML = vorher;
+            knopf.setAttribute("title", titel);
+            knopf.setAttribute("aria-label", titel);
+          }, 1500);
+        }, function () {
+          /* Nichts vorgaukeln: Schlaegt das Ablegen fehl, bleibt der Knopf, wie
+             er war. Eine falsche Erfolgsmeldung ist schlimmer als keine. */
+        });
+      });
+    });
+  }
+
   function init() {
     initBackButtons();
     initThemeToggle();
@@ -1637,6 +1827,8 @@
     initTabs();
     initAccordion();
     initPageQr();
+    initAddressCopy();
+    initBaseFragments();
     initAufgabenlisten();
     initGuideProgress();
     initScrollbereiche();

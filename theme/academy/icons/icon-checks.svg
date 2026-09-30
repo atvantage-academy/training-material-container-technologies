@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Prüf-Bausteine">
+  <!-- Farben aus dem ATVANTAGE-Fundament: Anthrazit #343E3F, Orange #FF5401. -->
+  <rect width="32" height="32" fill="#343E3F"/>
+  <!-- Eine Liste mit Haken: geprueft, nicht nur gebaut. -->
+  <g fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round">
+    <path d="M14 10h11M14 16h11M14 22h6"/>
+    <path d="M7 10l2 2 3-4"/>
+    <path d="M7 16l2 2 3-4"/>
+  </g>
+  <path d="M7 22l2 2 3-4" fill="none" stroke="#FF5401" stroke-width="2.2" stroke-linecap="round"/>
+</svg>

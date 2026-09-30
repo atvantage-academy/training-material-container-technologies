@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Responsives Layout">
+  <!-- Farben aus dem ATVANTAGE-Fundament: Anthrazit #343E3F, Orange #FF5401. -->
+  <rect width="32" height="32" fill="#343E3F"/>
+  <!-- Grosse Flaeche und kleines Geraet nebeneinander: derselbe Inhalt, zwei Breiten. -->
+  <g fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linejoin="round">
+    <rect x="6" y="9" width="13" height="11" rx="1.5"/>
+    <path d="M9 24h7"/>
+  </g>
+  <rect x="21" y="12" width="6" height="12" rx="1.5" fill="#FF5401"/>
+</svg>

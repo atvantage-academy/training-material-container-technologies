@@ -54,14 +54,11 @@
    Kopfleiste der Präsentation, ohne eine Klasse je Standort. Die Vorgaben sind
    die der Doku-Seiten; präsentation.css/simulation.css schrauben sie um.
 
-   ALIASSE: `avd-academy-theme-toggle` und `avd-academy-print-btn` sind ÖFFENTLICHE
-   Namen (theme/contract/markup-contract.txt) – fremde Repos selektieren sie in ihrer
-   assets/custom.css, und print.css blendet sie darüber aus. Sie bleiben deshalb
-   auf den Knöpfen UND hier im Selektor, damit auch ein handgeschriebener Knopf mit
-   dem alten Namen richtig aussieht. */
-.avd-academy-tool,
-.avd-academy-theme-toggle,
-.avd-academy-print-btn {
+   Bis Theme 2.x trugen die Knöpfe zusätzlich `avd-academy-theme-toggle` und
+   `avd-academy-print-btn`. Beide sind mit 3.0 entfallen; wer sie in seiner
+   assets/custom.css selektiert, schreibt auf `.avd-academy-tool--theme` bzw.
+   `.avd-academy-tool--print` um. */
+.avd-academy-tool {
   display: inline-flex; align-items: center; justify-content: center;
   width: var(--avd-academy-tool-size, 34px);
   height: var(--avd-academy-tool-size, 34px);
@@ -108,8 +105,7 @@
    currentColor, KEIN Emoji. Beschriftung nur als Tooltip und aria-label.
    Verdrahtet von atvantage.js ([data-avd-academy-print]) bzw. presentation.js
    ([data-avd-academy-present-print]); im Ausdruck ausgeblendet (print.css). */
-.avd-academy-tool--print::before,
-.avd-academy-print-btn::before {
+.avd-academy-tool--print::before {
   content: ""; display: block; width: 18px; height: 18px;
   background-color: currentColor;
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 6 2 18 2 18 9'/%3E%3Cpath d='M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2'/%3E%3Crect x='6' y='14' width='12' height='8'/%3E%3C/svg%3E") center / contain no-repeat;
@@ -1349,6 +1345,12 @@ pre > .avd-academy-copy.is-copied { opacity: 1; }
   width: 1%;                 /* so schmal wie moeglich – `nowrap` setzt die Untergrenze */
 }
 .avd-academy-fieldtable td:first-child code { overflow-wrap: normal; }
+/* `--wrap`: Die erste Spalte darf umbrechen – aber nur an Leerzeichen, nie im Namen.
+   Fuer Tabellen, deren erste Zelle NEBEN dem Namen noch etwas traegt (einen Alias
+   etwa). Ohne das stuende die Spalte so breit wie Name PLUS Zusatz, und der Rest der
+   Zeile muesste sich den Rest teilen. `overflow-wrap: normal` oben gilt weiter, die
+   Namen selbst bleiben also ganz. */
+.avd-academy-fieldtable--wrap td:first-child { white-space: normal; }
 .avd-academy-fieldtable th,
 .avd-academy-fieldtable td { vertical-align: top; }
 /* Die Info-Schaltflaeche sitzt am Ende des Textes, nicht in einer eigenen Spalte:
@@ -1556,6 +1558,72 @@ pre > .avd-academy-copy.is-copied { opacity: 1; }
   padding: 0 var(--avd-academy-space-2, 0.5rem);
   /* Die einzige Linie im Inneren: Sie trennt Bedienung von Inhalt. */
   border-bottom: 1px solid var(--avd-academy-color-border);
+}
+
+/* --- Zu schmal fuer alle Reiter: nur der gewaehlte, Rest hinter dem Burger ---
+   AB WANN, ENTSCHEIDET DIE MESSUNG, NICHT EINE PIXELGRENZE. Wie viel Platz die
+   Leiste braucht, haengt an Anzahl UND Laenge der Beschriftungen - eine feste
+   Breakpoint-Zahl waere bei zwei kurzen Reitern zu frueh und bei sechs langen zu
+   spaet. Das Skript vergleicht deshalb die natuerliche Breite mit der
+   verfuegbaren und setzt `--compact`.
+
+   WARUM NICHT WEITER ROLLEN: Die Leiste rollt (siehe oben) und bleibt damit bei
+   jeder Breite ein Streifen. Nur sieht man bei 320px vom dritten Reiter nichts
+   mehr und ahnt auch nicht, dass es ihn gibt - eine waagerechte Rollleiste in
+   einem Kasten wird uebersehen. Sichtbar bleibt deshalb der GEWAEHLTE; dass es
+   weitere gibt, sagt der Burger.
+
+   DER BURGER STEHT NEBEN DER LEISTE, NICHT DARIN. `role="tablist"` erwartet
+   `role="tab"` als Kinder; ein Knopf dazwischen ist ein Verstoss, den axe meldet
+   (`aria-required-children`). Deshalb der Rahmen `__nav` um beide - und die
+   trennende Linie wandert an ihn, damit sie ueber die ganze Breite laeuft. */
+.avd-academy-tabs__nav {
+  display: flex; align-items: stretch;
+  border-bottom: 1px solid var(--avd-academy-color-border);
+}
+.avd-academy-tabs__nav > .avd-academy-tabs__bar { flex: 1 1 auto; min-width: 0; border-bottom: 0; }
+
+/* Ausserhalb von `--compact` gibt es ihn nicht - kein Knopf, der nichts tut. */
+.avd-academy-tabs__more { display: none; }
+.avd-academy-tabs--compact .avd-academy-tabs__more {
+  display: inline-flex; flex: none;
+  align-self: center;
+  /* RECHTS, UND ZWAR IN BEIDEN ZUSTAENDEN. Zugeklappt schiebt ihn die Leiste
+     (`flex: 1 1 auto`) von selbst dorthin. Aufgeklappt wandert die Leiste in die
+     zweite Zeile (`order: 2`), und er stuende allein links - also dort, wo er
+     gerade NICHT war. Ein Knopf, der beim Druck seinen Platz wechselt, verliert
+     den Finger, der ihn gedrueckt hat. `margin-left: auto` haelt ihn fest. */
+  margin: 0 var(--avd-academy-space-2, 0.5rem) 0 auto;
+}
+
+/* ZUGEKLAPPT: nur der gewaehlte Reiter. Die uebrigen sind `display: none` und
+   damit auch fuer Hilfstechnik weg - genau wie bei einer Hauptnavigation hinter
+   dem Burger. Erreichbar bleiben sie ueber den Knopf, der sie einblendet. */
+.avd-academy-tabs--compact .avd-academy-tabs__bar { overflow-x: hidden; }
+.avd-academy-tabs--compact .avd-academy-tabs__tab[aria-selected="false"] { display: none; }
+
+/* AUFGEKLAPPT: alle untereinander. Bei dieser Breite ist eine Spalte die einzige
+   Form, in der fuenf Beschriftungen lesbar nebeneinander stehen - waagerecht
+   waeren sie wieder eine Rollleiste, und dann haette der Burger nichts gebracht. */
+.avd-academy-tabs--compact.avd-academy-tabs--menu-offen .avd-academy-tabs__nav {
+  flex-wrap: wrap;
+}
+.avd-academy-tabs--compact.avd-academy-tabs--menu-offen .avd-academy-tabs__bar {
+  flex-direction: column; flex-basis: 100%; order: 2;
+  padding-bottom: var(--avd-academy-space-2, 0.5rem);
+}
+.avd-academy-tabs--compact.avd-academy-tabs--menu-offen .avd-academy-tabs__tab[aria-selected="false"] {
+  display: block;
+}
+/* In der Spalte trennt die Wahl kein Unterstrich mehr - er liefe ueber die
+   ganze Zeile und saehe aus wie eine Trennlinie. Ein Balken am Anfang der Zeile
+   zeigt dasselbe, ohne sich als Trenner zu lesen. */
+.avd-academy-tabs--compact.avd-academy-tabs--menu-offen .avd-academy-tabs__tab {
+  text-align: left; border-bottom: 0;
+  border-left: 3px solid transparent;
+}
+.avd-academy-tabs--compact.avd-academy-tabs--menu-offen .avd-academy-tabs__tab[aria-selected="true"] {
+  border-left-color: var(--avd-academy-color-accent);
 }
 
 /* DIE WAHL ZEIGT EIN UNTERSTRICH, KEINE FLAECHE. Die Akzentfarbe steckt in
@@ -1773,3 +1841,40 @@ pre > .avd-academy-copy.is-copied { opacity: 1; }
   padding-left: var(--avd-academy-space-4, 1rem);
   border-left: 2px solid var(--avd-academy-border-soft);
 }
+
+/* --- Raster für Karten (`avd-academy-grid`) ---------------------------------
+   HIER UND NICHT IN site.css: Das Raster ist eine AUTORENFLÄCHE – die Doku
+   schickt Autor:innen ausdrücklich dorthin, um Karten zu gruppieren. Der Markup
+   Contract entsteht aber aus `theme/academy/*.css`; solange die Regeln in der
+   Layout-Ebene standen, trug das Raster KEINE Zusage, und ein Release hätte es
+   umbenennen können, ohne dass `bin/markup-contract.sh --check` anschlägt
+   (Issue #240). Am Ergebnis ändert der Umzug nichts: Die Klasse wird nirgends
+   überschrieben, und site.css lädt ohnehin danach.
+
+   Mehrspaltiges Flow-Raster (Flexbox statt starrem Grid). Basisbreite 320px;
+   die Kacheln einer Zeile wachsen gleichmäßig auf die verfügbare Breite. */
+.avd-academy-grid {
+  margin-top: var(--avd-academy-space-8);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--avd-academy-space-6);
+}
+.avd-academy-grid > * { flex: 1 1 320px; }   /* min. 320px, wachsen zum Füllen der Zeile */
+
+/* Kachel-Variante: feste Breite, annähernd quadratisch (Verhältnis max. 3:2).
+   Anders als das Standard-Raster wachsen die Kacheln NICHT auf die Zeilenbreite –
+   sie behalten ihre Breite und stehen linksbündig nebeneinander. */
+.avd-academy-grid--tiles { justify-content: flex-start; }
+.avd-academy-grid--tiles > * {
+  flex: 0 0 300px;      /* feste Breite */
+  max-width: 300px;
+  min-height: 200px;    /* 300×200 = 3:2 (flachster Fall); mehr Inhalt → quadratischer */
+}
+
+/* Smartphone: einspaltig mit voller Breite. Breakpoint 600px (gängige Grenze
+   zwischen Smartphone-Hochformat und größer). */
+@media (max-width: 600px) {
+  .avd-academy-grid > * { flex-basis: 100%; }
+  .avd-academy-grid--tiles > * { flex-basis: 100%; max-width: none; min-height: 0; }
+}
+

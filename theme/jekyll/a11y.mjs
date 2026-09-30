@@ -40,7 +40,46 @@ const SCHEMATA = arg("schemes", "light,dark").split(",");
 const JSONZIEL = arg("json", "");
 const MDZIEL = arg("markdown", "");
 const NICHT_SCHEITERN = process.argv.includes("--no-fail");
-const AUSSCHLUSS = arg("exclude", "theme/atvantage,theme/academy").split(",").filter(Boolean);
+/* --- Eine Schreibweise für Ausschlussmuster --------------------------------
+   DERSELBE BLOCK STEHT IN `readability.mjs`. Zwei Werkzeuge, die über dieselbe Angabe
+   verschieden urteilen, sind schlimmer als eines.
+
+   `theme`, `/theme`, `theme/`, `/theme/` und `/theme/**` meinen DASSELBE -
+   dieselbe Schreibweise wie bei `links.rb`, `contrast.rb` und `components.rb`.
+
+   VERGLICHEN WIRD SEGMENTWEISE: `"/themes-overview".startsWith("/theme")` ist
+   wahr, gemeint ist es nicht. Getroffen wird Gleichheit oder Präfix samt
+   trennendem Schrägstrich - und damit auch die Adresse, die GENAU `/theme` ist. */
+function musterNormalisieren(liste) {
+  return liste
+    .flatMap((x) => String(x).split(","))
+    .map((x) => x.trim().replace(/\/\*\*$/, "").replace(/\/+$/, ""))
+    .filter(Boolean)
+    .map((x) => (x.startsWith("/") ? x : "/" + x))
+    .filter((x) => x !== "/");
+}
+
+function ausgeschlossen(rel, muster) {
+  const pfad = "/" + rel.split(path.sep).join("/");
+  return muster.some((m) => pfad === m || pfad.startsWith(m + "/"));
+}
+
+const AUSSCHLUSS = musterNormalisieren([arg("exclude", "theme/atvantage,theme/academy")]);
+/* WAS DIE MESSUNG ANSIEHT - zwei Listen, eine Regel. Ohne `--include` ist alles
+   erfasst, wie bisher. Mit `--include` zaehlt nur, was darauf passt; `--exclude`
+   nimmt in beiden Faellen danach noch heraus.
+
+   WARUM DER AUSSCHLUSS DEN EINSCHLUSS SCHLAEGT: Anders herum liesse sich ein
+   einmal ausgenommener Zweig durch ein weiteres Einschlussmuster wieder
+   hereinholen - welche Angabe dann gilt, entschiede die Reihenfolge. Dieselbe
+   Regel steht in links.rb, contrast.rb und components.rb. */
+const EINSCHLUSS = musterNormalisieren([arg("include", "")]);
+
+function uebersprungen(rel) {
+  if (EINSCHLUSS.length && !ausgeschlossen(rel, EINSCHLUSS)) return true;
+  return ausgeschlossen(rel, AUSSCHLUSS);
+}
+
 /* DIE BASISADRESSE GEHOERT DAZU. Ein Bundle, das fuer `/mein-repo/` gebaut wurde,
    verweist absolut auf `/mein-repo/theme/…`. Wird es unter `/` ausgeliefert, laeuft
    JEDE Datei ins Leere - und gemessen wird eine Seite ohne Stylesheet und ohne
@@ -196,7 +235,7 @@ async function seitenSammeln(wurzel) {
     for (const eintrag of await readdir(ordner, { withFileTypes: true })) {
       const voll = path.join(ordner, eintrag.name);
       const rel = path.relative(wurzel, voll);
-      if (AUSSCHLUSS.some((a) => rel === a || rel.startsWith(a + path.sep))) continue;
+      if (uebersprungen(rel)) continue;
       if (eintrag.isDirectory()) { await lauf(voll); continue; }
       if (!eintrag.name.endsWith(".html")) continue;
       const kurz = rel.split(path.sep).join("/");
@@ -211,7 +250,7 @@ async function seitenSammeln(wurzel) {
 
 /* --- Statischer Server ---------------------------------------------------- */
 function serverStarten(wurzel) {
-  return new Promise((fertig) => {
+  return new Promise((done) => {
     const s = createServer(async (req, res) => {
       try {
         let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
@@ -226,7 +265,7 @@ function serverStarten(wurzel) {
         res.end(inhalt);
       } catch { res.writeHead(404).end("not found"); }
     });
-    s.listen(0, "127.0.0.1", () => fertig({ server: s, port: s.address().port }));
+    s.listen(0, "127.0.0.1", () => done({ server: s, port: s.address().port }));
   });
 }
 
@@ -237,12 +276,12 @@ import { Browser } from "./browser.mjs";
 
 /* --- Eine Seite messen ---------------------------------------------------- */
 async function seiteMessen(b, sitzung, url, axeQuelle, breite, schema) {
-  await b.ruf("Emulation.setDeviceMetricsOverride",
+  await b.call("Emulation.setDeviceMetricsOverride",
     { width: breite, height: 900, deviceScaleFactor: 1, mobile: breite < 700 }, sitzung);
-  await b.ruf("Emulation.setEmulatedMedia",
+  await b.call("Emulation.setEmulatedMedia",
     { features: [{ name: "prefers-color-scheme", value: schema }] }, sitzung);
-  const geladen = b.ereignis("Page.loadEventFired", sitzung, 30000);
-  await b.ruf("Page.navigate", { url }, sitzung);
+  const geladen = b.event("Page.loadEventFired", sitzung, 30000);
+  await b.call("Page.navigate", { url }, sitzung);
   await geladen;
   /* Kurz atmen lassen: Inhaltsverzeichnis, Fortschritt und Navigation entstehen
      erst im Browser, und genau die sollen mitgemessen werden. */
@@ -256,7 +295,7 @@ async function seiteMessen(b, sitzung, url, axeQuelle, breite, schema) {
      mit Basisadresse unter `/` ausgeliefert wurde. Deshalb wird zuerst geprueft,
      ob das Theme angekommen ist: Ohne seine Tokens gibt es kein Ergebnis, sondern
      eine Fehlmeldung mit Grund. */
-  const { result: probe } = await b.ruf("Runtime.evaluate", {
+  const { result: probe } = await b.call("Runtime.evaluate", {
     expression: `(() => {
       const w = getComputedStyle(document.documentElement)
         .getPropertyValue("--avd-academy-color-bg").trim();
@@ -266,8 +305,8 @@ async function seiteMessen(b, sitzung, url, axeQuelle, breite, schema) {
   }, sitzung);
   if (probe && probe.value) throw new Error(probe.value);
 
-  await b.ruf("Runtime.evaluate", { expression: axeQuelle, returnByValue: false }, sitzung);
-  const { result, exceptionDetails } = await b.ruf("Runtime.evaluate", {
+  await b.call("Runtime.evaluate", { expression: axeQuelle, returnByValue: false }, sitzung);
+  const { result, exceptionDetails } = await b.call("Runtime.evaluate", {
     expression: `(async () => {
       if (document.fonts && document.fonts.ready) { await document.fonts.ready; }
       const r = await window.axe.run(document, {
@@ -302,7 +341,7 @@ const { seiten, vorlagen } = await seitenSammeln(SITE);
 const { server, port } = await serverStarten(SITE);
 
 let b;
-try { b = await Browser.starten(CHROME); }
+try { b = await Browser.start(CHROME); }
 catch (e) { server.close(); console.error("FEHLER beim Start von Chrome: " + e.message); process.exit(2); }
 
 const funde = new Map();   // Regel -> { stellen, seiten:Set, beispiele[] }
@@ -321,7 +360,7 @@ try {
          Reiter kostet etwa 50 ms und raeumt alles davon ab. */
       let ziel = null;
       try {
-        ziel = await b.seiteOeffnen();
+        ziel = await b.openPage();
         const verstoesse = await seiteMessen(b, ziel.sessionId, `http://127.0.0.1:${port}${BASEURL}/${seite}`, axeQuelle, breite, schema);
         gemessen++;
         if (LAUT) console.log(`  ${String(Date.now() - t0).padStart(5)} ms  ${seite} @${breite} ${schema}`);
@@ -344,13 +383,13 @@ try {
       } catch (e) {
         kaputt.push(seite + " @" + breite + " " + schema + ": " + e.message);
       } finally {
-        if (ziel) await b.seiteSchliessen(ziel.targetId);
+        if (ziel) await b.closePage(ziel.targetId);
       }
     }
    }
   }
 } finally {
-  await b.schliessen();
+  await b.close();
   server.close();
 }
 

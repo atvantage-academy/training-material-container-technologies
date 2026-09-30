@@ -15,6 +15,612 @@ Abschnitt „Theme-Version“.
 
 ---
 
+## 3.5.0
+
+### `avd-academy-grid` trägt jetzt eine Zusage
+
+**Minor.** Das Raster, in das die Doku Autor:innen zum Gruppieren von Karten schickt, stand
+**nicht** im Markup Contract – ein Release hätte es umbenennen können, ohne dass
+`bin/markup-contract.sh --check` anschlägt. Vier Seiten der öffentlichen Academy hätten ihr
+Kartenraster verloren, und niemand wäre gewarnt worden (Issue #240).
+
+**Die Ursache war der Ort, nicht die Liste.** Der Contract entsteht **erzeugt** aus
+`theme/academy/*.css`; das Raster stand in `theme/jekyll/site.css`, also in der Layout-Ebene.
+Deshalb ist es dorthin gezogen, wo die Bausteine wohnen – seitdem nimmt der Generator es von
+selbst mit, und dasselbe Versehen kann sich nicht wiederholen.
+
+**Am Ergebnis ändert der Umzug nichts:** Die Klasse wird nirgends überschrieben, und
+`site.css` lädt ohnehin nach `components.css`.
+
+| | |
+| --- | --- |
+| neu im Contract | `avd-academy-grid`, `avd-academy-grid--tiles` |
+| Fassung | 3 → **4** (284 Namen) |
+
+**Was Layout-Inneres ist, bleibt ohne Zusage** – `avd-academy-doc*`, `-site-main`,
+`-container`, `-prose`. Das steht jetzt als Regel in `AGENTS.md`, in beide Richtungen.
+
+**`--tiles` ist dokumentiert**, in beiden Sprachen: Das Standard-Raster lässt Karten auf die
+Zeilenbreite wachsen, die Kachel-Variante hält sie auf fester Breite.
+
+---
+
+## 3.4.0
+
+### Permalinks: eine kurze Adresse je Seite, die nie wechselt
+
+**Minor.** Eine Zeile im Front Matter, und die Seite ist unter `/p/<id>/` erreichbar – für
+den Beamer, einen QR-Code auf Papier, einen Link im Ticket.
+
+```yaml
+---
+title: HTTP-Grundlagen
+permaid: http-grundlagen
+---
+```
+
+**Die Zeile ist der Schalter.** Ohne sie bekommt eine Seite keinen Permalink; ein Projekt
+ohne eine einzige solche Zeile merkt von dieser Fassung nichts.
+
+**Drei Betriebsarten** über `permalinks.mode`:
+
+| | |
+| --- | --- |
+| `full` (Vorgabe) | Die Seite liegt **nur** unter dem Permalink. Die kurze Adresse steht in der Adresszeile, ein Lesezeichen merkt sich sie. An der alten Adresse bleibt eine Weiterleitung |
+| `light` | Die Seite bleibt, wo sie ist; unter dem Permalink entsteht eine Weiterleitung. Die Werkzeugleiste bietet ein Kettensymbol an, das die kurze Adresse kopiert |
+| `disabled` | Jedes `permaid` wird übergangen, der Vorsatz ist frei |
+
+**Der QR-Code zeigt in beiden wirksamen Betriebsarten den Permalink** – er ist der Grund,
+warum es ihn gibt: Ein Code auf Papier überlebt jede Umbenennung.
+
+**Eigene Vorsätze** über `permalinks.overrides` – nach Layout oder nach Quellpfad, mit
+Platzhaltern:
+
+```yaml
+permalinks:
+  base: /p
+  overrides:
+    strategy: path
+    entries:
+      "/trainings/**": "/trainings/{1}"
+```
+
+Eingesetzt wird dabei, was **öffentlich** heißt: Ein Ordner `03-http` mit
+`folder_slug: http-grundlagen` ergibt `http-grundlagen`, nicht `03-http`.
+
+**Was der Bau abbricht**, statt still etwas Falsches zu bauen: zwei Seiten einer Sprache auf
+derselben ID, eine gewöhnliche Seite im Vorsatz, ein Platzhalter ohne Entsprechung, ein
+`{}` oder `{x}`. Ein Eintrag, der auf **nichts** passt, wird laut genannt; `.avd-permalinks`
+zählt je Eintrag mit, und `avd-permalinks.json` trägt die Zuordnung für die Pipeline.
+
+**Statische Dateien werden nie bewegt.** Ein Bild, auf das auch andere Seiten zeigen, bliebe
+sonst hinter ihnen zurück – oder läge zweimal im Bundle, mit zwei Adressen für dieselben
+Bytes.
+
+### `links.rb` liest Weiterleitungen
+
+`<meta http-equiv="refresh">` zählt jetzt als Verweis. Eine Seite, die nur aus einer
+Weiterleitung besteht, ist der Regelfall für eine kurze Adresse; zeigt ihr Ziel ins Leere,
+ist der Verweis tot wie jeder andere – nur schlimmer, weil der Leser eine leere Seite
+bekommt, ohne etwas angeklickt zu haben.
+
+### Schemas
+
+`permaid` im Front Matter (Fassung 4), `permalinks` in der Konfiguration (Fassung 10).
+`validate.rb` kennt jetzt `pattern` und `not`.
+
+### Brotkrume
+
+Eine Seite unter ihrem Permalink zeigt weiter, wo sie **inhaltlich** steht – nicht
+„Home / P / …". Beide Wege des Layouts lesen dafür ihr Ursprungsverzeichnis.
+
+---
+
+## 3.3.0
+
+### `--include`: eine Prüfung auf einen Ausschnitt beschränken
+
+**Minor.** Alle fünf Prüfwerkzeuge kennen jetzt `--include` als Gegenstück zu
+`--ignore` beziehungsweise `--exclude`:
+
+| Angabe | Wirkung |
+| --- | --- |
+| keine | alles wird angesehen – unverändert |
+| `--include /trainings` | angesehen wird **nur**, was darunter liegt |
+| `--include /trainings --ignore /trainings/alt` | erst eingrenzen, dann herausnehmen |
+
+**Ein Ausschluss schlägt einen Einschluss.** Anders herum liesse sich ein einmal
+ausgenommener Zweig durch ein weiteres Einschlussmuster wieder hereinholen –
+welche der beiden Angaben dann gälte, entschiede die Reihenfolge, und die steht
+in einer Eingabe nirgends verlässlich fest.
+
+**Wofür.** Ein Bundle enthält mehr, als ein Lauf beurteilen soll. Der Probebau
+eines eingereichten Trainingsstands baut die ganze Site, meldet aber nur, was
+der Einreichende auch ändern kann. Mit `--ignore` allein liesse sich das nicht
+ausdrücken: Es müsste alles Übrige aufzählen, und diese Menge wächst mit dem
+Bestand.
+
+**Die Schreibweise ist dieselbe wie bei `--ignore`** – `theme`, `/theme`,
+`theme/` und `/theme/**` bedeuten dasselbe, verglichen wird segmentweise. Beide
+Listen gehen durch denselben Normalisierer; zwei Fassungen davon wären zwei
+Wahrheiten darüber, was `theme/` heisst.
+
+Betroffen sind `links.rb`, `contrast.rb`, `components.rb`, `a11y.mjs` und
+`readability.mjs`. Die Regel steht in jedem Werkzeug an genau einer Stelle
+(`Scope` beziehungsweise `uebersprungen`), und die Selbsttests von `links.rb`
+und `components.rb` halten sie fest – mit Gegenprobe.
+
+---
+
+## 3.2.0
+
+### Eine Schreibweise für Ausschlussmuster – in allen fünf Werkzeugen
+
+Bis hierher hatte jedes Werkzeug seine eigene Vorstellung davon, was ein Ausschluss ist:
+
+| Werkzeug | Eingabe | Form |
+| --- | --- | --- |
+| `links.rb`, `contrast.rb`, `components.rb` | `--ignore` | `/theme/` – mit Schrägstrichen, roher Präfix |
+| `a11y.mjs`, `readability.mjs` | `--exclude` | `theme/academy` – ohne Schrägstrich, kommagetrennt |
+
+**Jetzt meinen `theme`, `/theme`, `theme/`, `/theme/` und `/theme/**` überall dasselbe**,
+und jede Eingabe nimmt eine kommagetrennte Liste.
+
+#### Verglichen wird segmentweise
+
+Der bisherige Vergleich war ein **roher Präfix** (`path.start_with?(muster)`). Damit traf
+`/theme` auch **`/themes-overview/`** – eine Seite, die niemand ausnehmen wollte, und sie
+fiel still aus der Prüfung. Umgekehrt musste man den Schrägstrich am Ende selbst
+mitschreiben, sonst griff nichts richtig.
+
+Der neue Vergleich ist **Gleichheit oder Präfix samt trennendem Schrägstrich**. Damit
+trifft `/theme` genau das, was gemeint ist – einschliesslich einer Adresse, die **exakt**
+`/theme` lautet, und ausschliesslich `/themes-overview/`.
+
+#### Umstellen
+
+**Nichts.** Jede bisherige Schreibweise bedeutet weiter dasselbe; dazu kommen die übrigen.
+Wer die Werkzeuge über die Prüf-Bausteine aufruft, bekommt mit deren Fassung **3.0.0** eine
+einzige Eingabe dafür: `exclude-urls`.
+
+### `scope.path` wird jetzt gelesen, wie Jekyll es liest
+
+Davon unberührt ist der Jekyll-Schlüssel `defaults[].scope.path` – eine andere Sache, und
+`liquid.rb` las sie falsch. Die Prüfung beantwortet **eine** Frage: *Rendert Jekyll diese
+Datei ohne Liquid?* Wer dabei anders urteilt als der Renderer, prüft etwas anderes, als
+gebaut wird.
+
+Zwei Abweichungen, beide in die **stille** Richtung – die Prüfung hielt eine Seite für
+„Liquid an" und übersprang sie:
+
+| | Jekyll (`frontmatter_defaults.rb`, `applies_path?`) | `liquid.rb` bisher |
+| --- | --- | --- |
+| ohne `*` | **roher Präfix** – `path_is_subpath?` ist `path.start_with?(parent_path)`. `trainings` erfasst auch `trainingsheft/a.md` | Präfix auf **Verzeichnisgrenze** – erfasste es nicht |
+| mit `*` | `Dir.glob` gegen das **Dateisystem**, Ergebnis wieder als Präfix | gar nicht unterstützt |
+
+Beides ist nachgebaut, samt dem abgeschnittenen führenden Schrägstrich. **Hier wird
+absichtlich nicht „sauberer" verglichen als Jekyll** – die Begründung steht im Quelltext.
+
+`strip_collections_dir` ist nicht nachgebaut: Es greift nur bei gesetztem `collections_dir`,
+und Sammlungen liest diese Prüfung ohnehin nicht.
+
+Der Selbsttest deckt beide Zweige ab; eine Gegenprobe mit wieder eingebauter
+Verzeichnisgrenze lässt ihn scheitern.
+
+---
+
+## 3.1.1
+
+### Keine inhaltliche Änderung
+
+Ausgelöst von einer Änderung an den Auslösern der Pipeline. Ein Workflow löst seit dieser
+Fassung auch bei seiner **eigenen** Datei aus – aus einem YAML-Diff ist nicht zu sehen, ob
+er das fertige Produkt verändert, und eine Patch-Nummer ist der kleinere Preis.
+
+---
+
+## 3.1.0
+
+### Ein Kontrastbefund sagt jetzt, wem er gehört
+
+Die Prüfung misst `body *` über das ganze Bundle: jedes Element mit eigenem Text gegen die
+wirksame Fläche darunter, in beiden Farbschemata. Ein Befund trug bisher Signatur,
+Farbwerte und Verhältnis – **kein Merkmal, das seine Ursache benennt**.
+
+Im Theme-Repo ist das richtig: Dort ist jede gemessene Paarung die eigene. **Beim
+Verbraucher nicht.** Wer kein eigenes CSS und kein Token-Overlay hat, misst ausschließlich
+Paarungen aus dem Token-Satz des Themes – also das, was das Theme vor jedem Release ohnehin
+verbindlich nachrechnet (`bin/contrast-pairs.sh`). Er bekommt einen Befund, dessen Ursache
+er nicht anfassen kann, und eine Prüfung, die das tut, wird abgeschaltet oder überlesen.
+
+Aufgefallen beim Umstellen von ATLAS auf Theme 3: `"tokens": null` im Profil, kein eigenes
+CSS – **jeder** Befund gehörte dem Theme.
+
+#### Wie zugeordnet wird
+
+Über das **Stylesheet**, nicht über Token-Namen. Das Messskript baut einmal je Seite einen
+Index aller Regeln mit ihrer Herkunft und fragt für jeden Befund: Setzt eine Regel
+**außerhalb** von `/theme/` die Schriftfarbe oder eine der Hintergrundschichten? Dann
+gehört der Befund dem Projekt.
+
+| | |
+| --- | --- |
+| beide Farben nur aus `/theme/` | **Warnung** im Bericht, zählt nicht, macht nichts rot |
+| irgendeine Regel aus dem Projekt | Befund wie bisher |
+| Herkunft nicht feststellbar | wie Projekt |
+
+**Absichtlich grob, und absichtlich in diese Richtung.** Gefragt wird nicht nach dem
+Gewinner der Kaskade, sondern ob überhaupt eine Projektregel im Spiel ist. Wer die Kaskade
+nachbaut, baut Spezifität, Ebenen und `!important` nach und liegt irgendwann falsch – still.
+Lieber ein Befund zu viel als eine stille Lücke. Als Projekt zählen dabei jedes `<style>`
+im Dokument, jedes Stylesheet außerhalb von `/theme/` und das `style`-Attribut am Element.
+
+**Jede Hintergrundschicht zählt mit**, nicht nur der deckende Grund: Eine durchscheinende
+Tintung des Projekts über einer Theme-Fläche macht die wirksame Farbe zur Sache des
+Projekts.
+
+**Die Zuordnung läuft nur auf Befunden**, nicht auf jedem Element – bei einer sauberen Site
+kostet sie nichts.
+
+Zwei Dinge daran waren nicht offensichtlich und stehen deshalb hier:
+
+- **Vollständig durchsichtige Elemente zählen nicht mit.** Zwischen einem Text und seiner
+  Fläche liegen typischerweise vier, fünf Elemente ohne jede Hintergrundangabe – `p`,
+  `main`, ein paar `div`. Für sie gibt es keine Regel zu finden, „nicht feststellbar" zählt
+  wie Projekt, und damit wäre **jeder** Befund einer des Projekts geworden.
+- **Die Kurzschreibweise wird mitgefragt.** Steht in einer Regel
+  `background: var(--avd-academy-color-bg-subtle)`, kann CSSOM sie nicht zerlegen:
+  `getPropertyValue("background-color")` gibt den Leerstring zurück. Das Theme schreibt
+  seine Flächen fast durchweg so – ohne diese Abfrage fand die Suche zu **keinem**
+  Hintergrund eine Regel.
+
+- **Vererbung wird verfolgt.** `color` vererbt sich: Ein `<code>` in einem Verweis hat
+  meist gar keine eigene Farbregel, es trägt die des `<a>`. Wer nur das Element fragt,
+  findet nichts. `background-color` vererbt sich nicht – dort wäre Weitersuchen falsch.
+
+Alle drei Fälle stehen im Selbsttest.
+
+#### Kein Schalter
+
+Ein Schalter wäre eine Entscheidung, die jeder Aufrufer treffen müsste, und die Antwort
+wäre überall dieselbe. Im Theme-Repo selbst geht dadurch nichts verloren: Verbindlich ist
+dort `bin/contrast-pairs.sh`, das die zugesagten Token-Paare nachrechnet; der Lauf über die
+Doku-Seiten berichtet ohnehin nur, und die Theme-Paarungen stehen weiter im Bericht.
+
+#### Umstellen
+
+Nichts. Ein Aufrufer bekommt ab dieser Fassung weniger Befunde und eine Warnung mehr – und
+zwar genau die, die er nicht beheben konnte. Die Prüf-Bausteine ändern sich nicht: Das
+Werkzeug liegt im Paket, nicht in der Action.
+
+---
+
+## 3.0.3
+
+### Der Zielgruppenfilter beurteilte Dateien, die nie eine Seite werden
+
+`filter.rb` las **jede** Markdown-Datei unter der Quelle und prüfte ihre Verweise gegen die
+Zielgruppenregel – auch `AGENTS.md`, `CLAUDE.md`, `README.md` und `ABWEICHUNGEN.md`. Die
+stehen im `exclude` der `_config.yml` und kommen nie ins Bundle; ein Verweis darin kann
+nirgends ins Leere zeigen.
+
+Beim Umstellen der fünf Schulungsrepos auf Theme 3 waren das **13 von 19 Meldungen** – und
+jede einzelne davon hätte den Build angehalten (Rückgabewert 5), ohne dass es etwas zu
+beheben gab.
+
+`filter.rb` liest `exclude` jetzt so, wie `liquid.rb` es liest und wie Jekyll es liest:
+Setzt ein Projekt den Schlüssel, ersetzt das die Liste des Themes vollständig.
+
+---
+
+## 3.0.2
+
+### Eine Seite konnte die Liquid-Abschaltung für sich aufheben – unbemerkt
+
+`render_with_liquid` ist **Front Matter**, kein globaler Schalter; einen solchen hat Jekyll
+nicht ([jekyll/jekyll#9018](https://github.com/jekyll/jekyll/issues/9018) ist der offene
+Wunsch danach). Eine Site schaltet Liquid deshalb über `defaults` für alle Seiten ab – und
+genau daraus folgt die Lücke: **Jede einzelne Seite kann die Abschaltung mit
+`render_with_liquid: true` in ihrem eigenen Front Matter wieder aufheben**, ein
+`defaults`-Eintrag sogar für einen ganzen Ordner.
+
+Die Liquid-Prüfung übersprang solche Seiten bis hierher stillschweigend – zu Recht, denn
+dort ist Liquid ja an. Der Lauf blieb grün und meldete „keine Liquid-Syntax“, während sich
+eine Seite ausdrücklich ausgenommen hatte.
+
+**Für die meisten Projekte ist das in Ordnung.** Eine Seite, die Liquid vorführt, braucht
+Liquid. Deshalb bleibt es die Vorgabe.
+
+**Für einen Verbraucher, der ohne Liquid rendert, ist es keine Ausnahme, sondern ein
+Loch.** ATLAS etwa sagt seinen Lesern „ohne Liquid“ zu (Vertragsregel B35, ADR 0025) und
+liest `render_with_liquid` gar nicht erst. Was sich hier ausnimmt, steht dort wörtlich auf
+der Seite.
+
+Neu ist deshalb `--forbid-liquid-optin`: Dann ist die Ausnahme selbst der Befund – für eine
+einzelne Seite wie für einen `defaults`-Eintrag, der einen Ordner wieder anschaltet. In den
+Prüf-Bausteinen heißt der Schalter `liquid-optin: forbid`.
+
+Weil die Prüfung je gefilterter Fassung läuft, lässt sich das **je Zielgruppe** verschieden
+halten: Die Trainerfassung, die im Haus bleibt, darf `allow` bekommen; die
+Teilnehmerfassung, die weitergereicht wird, `forbid`.
+
+### Nichts aus dem Theme wird beim Verbraucher geprüft
+
+Drei Werkzeuge lasen mit, was gar nicht dem Projekt gehört – die Dateien des ausgepackten
+npm-Pakets unter `theme/`. Ein Befund darin ist einer, den kein Projekt beheben kann: Er
+kommt mit jedem Paket wieder.
+
+| Werkzeug | was es las | jetzt |
+| --- | --- | --- |
+| `filter.rb` | jede `.md` unter der Quelle, `theme/CHANGELOG.md` eingeschlossen | übergeht `theme/` und die Baukataloge |
+| `liquid.rb` | dasselbe | dieselbe Liste |
+| `components.rb` | jede `.html` im Bundle, `/theme/…` eingeschlossen | neues `--ignore`, in den Prüf-Bausteinen an `ignore` gehängt |
+
+`links.rb`, `contrast.rb`, `a11y.mjs` und `readability.mjs` taten es längst – über `ignore:
+/theme/` beziehungsweise `exclude: theme`. Jetzt tun es alle.
+
+### Liquid abgeschaltet, aber nichts darunter – das war ein grüner Lauf
+
+Steht `render_with_liquid: false` auf einem `scope.path`, unter dem keine einzige Quelle
+liegt, meldete die Prüfung „keine Liquid-Syntax in 0 Quelle(n)" und ging durch. Von außen
+sieht das aus wie ein sauberer Bestand und ist in Wahrheit ein Bereich, den es nicht gibt –
+ein Pfad mit Tippfehler, oder Inhalt, der noch gar nicht importiert ist.
+
+Jetzt ist es Rückgabewert 2 („die Prüfung konnte nicht laufen"), samt der Liste der Pfade,
+für die abgeschaltet wurde. Dieselbe Regel wie in `links.rb`: Eine Prüfung über die leere
+Menge ist kein Erfolg. Gefunden beim Vorbereiten von ATLAS auf Theme 3, wo der Schalter für
+`/trainings/` gesetzt wird, bevor es diesen Bereich gibt.
+
+### Der Zielgruppenfilter brach am CHANGELOG des Themes ab
+
+`filter.rb` las **jede** Markdown-Datei unter der Quelle – auch die des ausgepackten
+npm-Pakets unter `theme/`. Dessen `CHANGELOG.md` erklärt in Prosa, dass eine
+`audience`-Weiche auf eine eigene Zeile gehört; der Filter las das als Weiche mitten in
+einer Zeile und beendete den Build mit Rückgabewert 5.
+
+Ein Befund, den kein Projekt beheben kann: Er kommt mit jedem Paket wieder.
+
+`filter.rb` und `liquid.rb` übergehen jetzt beide dieselbe Liste – `_site`, `.git`,
+`.jekyll-cache`, `node_modules`, `vendor`, `.github`, jedes Pfadstück mit `_` am Anfang und
+eben `theme/`. Dieselbe Begründung steht hinter `ignore: /theme/` und `exclude: theme` in
+den Prüf-Bausteinen.
+
+### Bezeichner in `jekyll/liquid.rb` jetzt englisch
+
+Die Datei war bei der Umstellung auf englische Bezeichner (3.0.0) übersehen worden. Rein
+intern – kein Aufruf ändert sich.
+
+---
+
+## 3.0.1
+
+### `render_with_liquid` durfte nicht dastehen, obwohl das Theme es verlangt
+
+Das Front-Matter-Schema ist **geschlossen** – und kannte den Jekyll-Schalter nicht. Wer der
+Anleitung folgte und `render_with_liquid: false` in die `defaults` seiner `_config.yml`
+schrieb, bekam:
+
+```
+`defaults.0.values.render_with_liquid` unbekanntes Feld
+```
+
+Also genau dort einen Fehler, wo das Theme den Schlüssel selbst empfiehlt. Gefunden beim
+Umstellen des ersten Schulungsrepos auf Theme 3.
+
+Das Feld ist ergänzt und in beiden Sprachfassungen unter „Aus dem Jekyll-Standard“
+dokumentiert. **Die Schema-Version bleibt bei 2:** Ein erlaubtes Feld mehr ist eine
+Erweiterung, keine Verengung.
+
+**Warum es im FRONT-MATTER-Schema steht und nicht im Konfigurations-Schema:** Jekyll kennt
+keinen globalen Schalter dafür – `render_with_liquid` ist ein Front-Matter-Schlüssel, und
+site-weit setzt man ihn über `defaults` in der `_config.yml`. Der Prüfer liest
+`defaults.*.values` deshalb gegen das Front-Matter-Schema, und genau dort fehlte er.
+
+## 3.0.0
+
+### Zielgruppen entscheidet `audiences` – allein, und jeder Build filtert
+
+**Major.** Eine Ausgabe, die bisher vollständig war, ist es danach nicht mehr – das ist der
+Zweck der Änderung und ihr Bruch zugleich.
+
+#### Was sich ändert
+
+**`audience_filter` und `exclude_names` sind entfallen.** Bis hierher entschied eine Liste
+in der `_config.yml`, *wer überhaupt gefiltert wird*. Wer nicht darin stand, bekam alles.
+Das las sich bequem – „Trainer:innen sehen ohnehin alles“ – und war der Grund, warum eine
+Ausgabe ungefiltert entstand, ohne dass es jemandem auffiel.
+
+Jetzt gilt eine Regel:
+
+| im Front Matter | erscheint |
+| --------------- | --------- |
+| keine Angabe | in **jedem** Build |
+| `audiences: [a]` | nur im Build für `a` |
+
+Ausdrücklich auch gegenüber einer Gruppe, die sonst alles sah. Wer will, dass sie fremdes
+Material bekommt, trägt sie **in `audiences`** mit ein – dort, wo es um die Datei geht, und
+nicht in einer Ausnahmeliste, die niemand liest.
+
+**Eine Zielgruppe ist Pflicht, sobald `audiences` deklariert ist.** Ein `jekyll build` oder
+`jekyll serve` ohne sie bricht ab. Bis 2.x baute so ein Lauf die *ganze* Site, und weil das
+Theme seine Navigationseinträge gegen `site.audience` prüft, erschien ohne die Variable auch
+jeder Eintrag mit `audiences`. Der Fallback war „alles zeigen“, lautlos – genau so zeigte
+die lokale Vorschau eines Schulungsrepos Trainermaterial. Eine Vorgabe-Zielgruppe gibt es
+bewusst nicht: Sie wäre eine Annahme darüber, wer was sehen darf.
+
+**Zwei Fassungen dürfen dieselbe Adresse tragen.** Eine Startseite kann je Zielgruppe anders
+aussehen, ohne eine Verzweigung im Inhalt – die zweite beansprucht ihre Adresse über
+`permalink`. Gefiltert wird vor Jekyll; der Renderer sieht die Doppelbelegung nie.
+Überschneiden sich die `audiences` doch, bleiben beide stehen und der Lauf bricht ab.
+
+**Ein Verweis darf nicht enger zielen, als er steht:** `audiences(Quelle) ⊆ audiences(Ziel)`,
+mit „keine Angabe“ als voller Menge. Geprüft wird strukturell über alle Dateien – ein Lauf
+sieht nur eine Zielgruppe, und wer nur eine Sicht baut, bekäme die übrigen Verstöße nie zu
+sehen.
+
+**Neu als eigenständiges Werkzeug:** `theme/jekyll/filter.rb`. Es filtert auch ohne Bauen –
+für eine Zielgruppensicht, die weitergegeben wird. Über
+`academy-theme-actions/filter@v2` auch als Baustein.
+
+**Die Weiche im Inhalt: `{% raw %}{% audience … %}{% endraw %}`.** Für den Fall, dass nur eine Zeile
+abweicht und eine zweite Seite zu grob wäre. Trifft die gebaute Zielgruppe zu, bleibt der
+Inhalt und die Tags verschwinden; sonst verschwindet beides. Ein Verweis in der Weiche
+zählt mit deren Zielgruppen.
+
+Eine Weiche muss **enger** sein als die Seite: Nennt sie nur, was im Front Matter ohnehin
+steht, grenzt sie nichts ein; haben beide keine Zielgruppe gemeinsam, erschiene ihr Inhalt
+nie. Beides bricht ab – der eine Fall tut nichts, der andere versteckt Inhalt, den niemand
+zu sehen bekommt, und beides sieht im Diff aus wie eine Absicht, die wirkt.
+
+Sie sieht aus wie Liquid und ist keines: `audience` nimmt eine Liste von Zielgruppen, sonst
+nichts. Ein nachgebautes `{% raw %}{% if %}{% endraw %}` wäre eine Zusage auf Liquids ganze
+Ausdrucksgrammatik, und ein Ausdruck, den der Filter anders läse als Liquid, wäre schlimmer
+als gar keine Weiche. Die Klammern bleiben trotzdem – sie sind das Sicherheitsnetz: Bliebe
+eine Weiche stehen, bräche Jekyll mit „Unknown tag“ ab (Liquid an) oder `liquid.rb` meldete
+sie (Liquid aus). Ein HTML-Kommentar hätte die schlechteste Eigenschaft überhaupt: Marker
+unsichtbar, Inhalt sichtbar.
+
+#### Umstellen
+
+1. **`audience_filter` aus der `_config.yml` streichen**, `exclude_names` mit. `audiences`
+   bleibt als Deklaration.
+2. **Jede Seite prüfen, die bisher über `exclude_names` gefiltert wurde** – der Dateiname
+   entscheidet nichts mehr. Was einer Gruppe vorbehalten bleiben soll, bekommt `audiences`.
+3. **Jede Seite prüfen, die eine Gruppe bisher „mitbekam“, weil sie nicht gefiltert wurde.**
+   Soll sie das weiter, gehört die Gruppe in ihr `audiences`. Das ist der Schritt, der
+   Arbeit macht – und der einzige, der etwas sichtbar verändert.
+4. **Verzweigungen im Inhalt auflösen.** `{%- raw -%}{% if site.audience %}{%- endraw -%}`
+   entfällt; zwei Dateien mit `audiences` treten an seine Stelle, notfalls mit `permalink`
+   auf dieselbe Adresse.
+5. **Verweise gegen die Regel prüfen.** Der Filter meldet jeden Verstoß mit Datei, Ziel und
+   den Zielgruppen, für die es fehlt.
+6. **Bauen ohne Zielgruppe ersetzen** – `sh theme/jekyll/_bin/build.sh «zielgruppe»`.
+
+#### Der Reiterstreifen wird bei 320 px brauchbar
+
+Er rollte. Bei 320 px sah man vom dritten Reiter nichts mehr – und ahnte auch nicht, dass es
+ihn gibt: Eine waagerechte Rollleiste in einem Kasten wird übersehen. Sichtbar bleibt jetzt
+nur der **gewählte** Reiter, die übrigen stehen hinter einem **Burger** daneben; ein Druck
+darauf stellt sie untereinander.
+
+**Ab wann, entscheidet die Messung.** Wie viel Platz die Leiste braucht, hängt an Anzahl und
+Länge der Beschriftungen – eine feste Pixelgrenze wäre bei zwei kurzen Reitern zu früh und
+bei sechs langen zu spät. Ein `ResizeObserver` hält es beim Größenändern nach.
+
+**Der Burger steht neben der `tablist`, nicht darin** – ein Knopf zwischen den Reitern
+verletzt `aria-required-children`. Dafür gibt es den Rahmen `avd-academy-tabs__nav`; die
+trennende Linie sitzt an ihm, damit sie über die ganze Breite läuft.
+
+Vier neue öffentliche Namen – `avd-academy-tabs__nav`, `avd-academy-tabs__more`,
+`avd-academy-tabs--compact`, `avd-academy-tabs--menu-offen` –, **Markup Contract auf
+Fassung 3**. Die seitliche Fassung bleibt unberührt.
+
+#### Die Schnittstelle der Simulationen ist englisch
+
+**Major, und hier liegt der Grund für den Zeitpunkt:** Diese Namen stehen in fremden
+Simulationsskripten. Sie später umzubenennen wäre ein zweiter Bruch – der richtige Moment
+ist der erste.
+
+| vorher | jetzt |
+| ------ | ----- |
+| `sim.tempo(stufe)` | `sim.speed(level)` |
+| `sim.szenario(id)` | `sim.scenario(id)` |
+| `sim.uebersicht()` | `sim.overview()` |
+| `sim.ost(an)` | `sim.caption(on)` |
+| `sim.szenarien` | `sim.scenarios` |
+| `sim.aktuellesSzenario` | `sim.currentScenario` |
+| `sim.istUebersicht` | `sim.isOverview` |
+| Adresse `#/uebersicht` | `#/overview` |
+
+Mit umgezogen sind die Auszeichnungen, die das Layout setzt: `data-avd-academy-sim-ost` →
+`-caption`, `avd-academy-sim__ost*` → `__caption*`, `data-uebersicht` → `data-overview`,
+`avd-academy-sim__tab--uebersicht` → `--overview`, und die CSS-Variable
+`--avd-academy-sim-ost-h` → `--avd-academy-sim-caption-h`. Wer davon etwas in eigenem CSS
+selektiert, schreibt um.
+
+**Die mitgelieferten Beispiele mussten nicht angefasst werden** – sie rufen `setup`,
+`registerStep`, `registerScenario`, `list`, `pulse` und `codeLine`, und die hießen schon
+vorher so. Nachgemessen an der gebauten Beispielsimulation: Schnittstelle vollständig
+englisch, vier Szenarien, Schrittwechsel, Tempo, Übersicht und Szenariowechsel geprüft.
+
+#### Die Doku der Simulationen nannte Namen, die es nicht mehr gab
+
+Kein Bruch, sondern eine Korrektur – und eine, die Arbeit gekostet hat: Die deutsche Seite
+führte `titel`, `dauer` und `beschreibung` als Schritt- und Szenariofelder, dazu die
+Kontext-Schlüssel `vorher`, `richtung`, `animiert`, `schritt`, `anzahl` und `szenarioIndex`
+sowie die Front-Matter-Schlüssel `einleitung`, `erklaerspalte` und `tempo`. **Nichts davon
+existiert** – die Feldnamen sind mit 2.0 auf Englisch umgestellt worden, die
+Front-Matter-Schlüssel liegen unter `simulation.*`. Die englische Fassung war an diesen
+Stellen richtig; die deutsche war die ältere von beiden.
+
+#### Die Kompatibilitätsschichten sind weg
+
+Das Register nennt sie „technische Schuld mit Verfallsdatum“, und das Datum ist dieser Major.
+Beide Einträge sind abgearbeitet:
+
+- **`brand.website`** wird nicht mehr als Rückfall gelesen. Die Adresse steht unter
+  `contact.website`; `ruby bin/migrate.rb --from 2 --to 3` benennt sie um. Der Schlüssel ist
+  auch aus dem Konfigurations-Schema gestrichen.
+- **`avd-academy-theme-toggle`** und **`avd-academy-print-btn`** stehen nicht mehr neben
+  `avd-academy-tool` auf den Knöpfen. Wer sie in seiner `assets/custom.css` selektiert,
+  schreibt auf `.avd-academy-tool--theme` bzw. `.avd-academy-tool--print` um. **Markup
+  Contract auf Fassung 2** – zwei öffentliche Namen sind entfallen.
+
+#### Weiteres
+
+**Config-Schema auf Version 3** (`audience_filter` entfernt). Die Fassung 2 bleibt unter
+`/schemas/config/2/` erreichbar.
+
+**Eine `permalink`-Seite belegt ihre Adresse.** Sie wird weiterhin nicht umbenannt, fiel bis
+hierher aber aus der Kollisionsprüfung – eine über `slug` oder `folder_slug` abgebildete
+Seite konnte still auf dieselbe Adresse laufen, und Jekyll schrieb beide.
+
+**`links.rb --label`.** Seit jeder Build filtert, laufen regelmäßig mehrere; ohne
+Beschriftung stehen zwei gleichlautende Ergebnisse nebeneinander.
+
+**Neu: `avd-academy-fieldtable--wrap`.** Die erste Spalte einer Feldtabelle darf damit an
+Leerzeichen umbrechen – die Namen selbst bleiben ganz. Für Tabellen, deren erste Zelle neben
+dem Namen noch etwas trägt (einen Alias etwa); ohne das stünde die Spalte so breit wie Name
+plus Zusatz.
+
+**Die Kontrastprüfung fährt EINEN Browser statt einen je Seite.** Sie rief bis hierher
+`chrome --headless --dump-dom` auf – einmal je Seite **und** Farbschema. Gemessen an der
+Doku-Site sind das 148 Chrome-Kaltstarts. Der Browser-Teil liegt jetzt in
+`jekyll/contrast.mjs` neben `a11y.mjs`, beide teilen sich `browser.mjs`.
+
+| | vorher | jetzt |
+| --- | --- | --- |
+| lokal (74 Seiten × 2 Schemata) | 3 min 34 | **44 s** |
+| Chrome-Starts | 148 | **1** |
+
+Der Bericht bleibt Zeichen für Zeichen derselbe – mit einem Unterschied: Der alte Lauf
+verlor sporadisch eine Seite als „Sonde ohne Antwort“, der neue misst sie.
+
+**Dafür braucht die Kontrastprüfung jetzt Node (22+)**, so wie die Barrierefreiheitsmessung
+längst. Fehlt es, steigt der Lauf sichtbar aus, statt eine leere Messung als sauberen Lauf
+auszugeben.
+
+**Der Bericht ist jetzt reproduzierbar sortiert.** Bei gleichem Kontrastverhältnis entschied
+vorher die Reihenfolge der Messung – zwei Läufe über dieselbe Site lieferten denselben Inhalt
+in anderer Ordnung, und ein Diff zeigte Bewegung, wo keine war.
+
+**Neu: `jekyll/components.rb`.** Prüft, ob ein Baustein so **benutzt** ist, dass er tut, was
+er soll – der Markup Contract sagt nur, welche Namen es gibt. Die erste Regel gilt der
+Info-Schaltfläche; sie stand im Theme selbst an 16 Stellen falsch, ohne dass es auffiel. Das
+Werkzeug lag bis hierher unter `bin/` und damit nur diesem Repo zur Verfügung – der Defekt
+kann aber in jeder Unterlage entstehen.
+
+**Neu: `jekyll/readability.mjs`.** Misst, wie schwer sich die Prosa des gebauten `_site`
+liest – Flesch-Reading-Ease (deutsch nach Amstad) und, auf Deutsch, die Wiener
+Sachtextformel. Anders als die übrigen Werkzeuge braucht es eine Installation
+(`npm install --no-save @lunarisapp/readability`); fehlt sie, steigt der Lauf sichtbar aus.
+Sie liegt nicht im Paket, weil sie mit rund 48 MB in jedem Bundle mitreiste.
+
+**Zwei Icons mehr:** `academy/icons/icon-design.svg` und `icon-blocks.svg`. Die Kachel
+(`avd-academy-card`) trug ihr Zeichen bis hierher als **Emoji** – das sieht auf jedem
+System anders aus und wird vom Screenreader mitgelesen. Jetzt steht dort dasselbe
+`avd-academy-linkicon` wie in der Navigation, mit `alt=""`, weil der Titel danebensteht.
+
 ## 2.50.0
 
 ### `jekyll/version.txt` – das Theme nennt seine Fassung dort, wo sie gelesen wird
@@ -280,7 +886,7 @@ Adresse, Vor/Zurück, tiefer Verweis in einen geschlossenen Reiter, `open=` als 
 abgemeldeter Baustein, unbekannter Wert, und das Fragment einer Präsentationsseite bleibt
 unangetastet.
 
-**Doku:** [Zustand in der Adresse](https://timetoact.ghe.com/AVD-Academy-Tools/academy-theme/blob/main/docs/verwendung/zustand-in-der-url.md)
+**Doku:** [Zustand in der Adresse](https://timetoact.ghe.com/AVD-Academy-Tools/academy-theme/blob/main/docs/funktionen/zustand-in-der-url.md)
 und je Baustein ein Abschnitt in `docs/theme/bausteine.md`.
 
 ## 2.45.0
@@ -1567,7 +2173,7 @@ für jedes Verweisziel. In `avd-page-url.html` ist sie aus gemessenen Gründen e
 statt eingebunden – der Include verdoppelte dort die Bauzeit (4,7 s → 9,5 s); der
 Kommentar an beiden Stellen hält das fest.
 
-Doku: [Mehrsprachigkeit → Die Sprache einer Seite](https://timetoact.ghe.com/pages/AVD-Academy-Tools/academy-theme/docs/theme/mehrsprachigkeit.html#seitensprache).
+Doku: [Mehrsprachigkeit → Die Sprache einer Seite](https://timetoact.ghe.com/pages/AVD-Academy-Tools/academy-theme/docs/funktionen/mehrsprachigkeit.html#seitensprache).
 
 ---
 
@@ -1913,7 +2519,7 @@ CHANGELOG verwiesen relativ auf die Doku **dieses** Repos:
 ```
 ../docs/verwendung/einbindung.md#mehr-host
 ../github-pages/#verweise-pruefen
-../docs/theme/mehrsprachigkeit.md
+../docs/funktionen/mehrsprachigkeit.md
 ```
 
 Im eigenen Repo zeigen die ins Ziel. In einem Schulungs-Repo gibt es weder `docs/` noch
@@ -2772,7 +3378,7 @@ Blindheit hat 2.5.1 grün durchlaufen lassen.
 **Für Konsumenten:** Beide Workflow-Vorlagen (`github-pages/deploy.example.yml`,
 `theme/jekyll/starter/pages.yml`, Vorlagenversion **10**) rufen die Prüfung nach dem
 Build auf. Wer eine ältere Kopie hat, zieht den Schritt nach – nötig ist er nicht.
-Doku: [GitHub Pages → Tote Verweise finden](https://timetoact.ghe.com/AVD-Academy-Tools/academy-theme/blob/main/github-pages/index.md).
+Doku: [GitHub Pages → Tote Verweise finden](https://timetoact.ghe.com/AVD-Academy-Tools/academy-theme/blob/main/docs/funktionen/github-pages.md).
 
 ### Behoben: die automatische Brotkrume verlinkte Ordner, die es nicht gibt
 
@@ -3034,7 +3640,7 @@ Screenshots das müssen.
 
 Neu: `theme/jekyll/_includes/avd-i18n.html` (Sprache, Sprachfassungen, Wörterbuch),
 `theme/jekyll/_includes/avd-lang-value.html` (Sprachkarten auflösen), die Klasse
-`avd-academy-tool--lang`. Doku: [Mehrsprachigkeit](https://timetoact.ghe.com/AVD-Academy-Tools/academy-theme/blob/main/docs/theme/mehrsprachigkeit.md).
+`avd-academy-tool--lang`. Doku: [Mehrsprachigkeit](https://timetoact.ghe.com/AVD-Academy-Tools/academy-theme/blob/main/docs/funktionen/mehrsprachigkeit.md).
 
 ---
 
@@ -3583,45 +4189,17 @@ Register der Übergangslösungen, die nur existieren, um einen Bruch zu vermeide
 **Jeder Eintrag ist technische Schuld mit Verfallsdatum:** Beim nächsten
 Major-Sprung wird die Liste durchgegangen und geleert.
 
-| Seit | Kompatibilitätsschicht | Entfällt mit |
-| ---- | ---------------------- | ------------ |
-| 2.1.0 | `brand.website` wird gelesen, wenn `contact.website` fehlt | **3.0** |
-| 2.3.0 | `avd-academy-theme-toggle` und `avd-academy-print-btn` bleiben neben `avd-academy-tool` auf den Knöpfen | **3.0** |
+**Für 3.0 durchgegangen und geleert.** Zwei Einträge standen drin, beide sind weg:
 
-**Eintrag 2.1.0 im Klartext.** Die Academy-Website heißt seit 2.1.0 `contact.website`. Der
-alte Schlüssel `brand.website` bleibt als Rückfall lesbar, damit der Umzug keine
-Konfiguration bricht. **Beim Sprung auf 3.0 ist zu tun:**
+| Seit | Schicht | erledigt in |
+| ---- | ------- | ----------- |
+| 2.1.0 | `brand.website` als Rückfall für `contact.website` | 3.0 – Schlüssel aus Layouts, Footer und Schema entfernt, Migrationsregel in `bin/migrate.rb` |
+| 2.3.0 | `avd-academy-theme-toggle` / `avd-academy-print-btn` neben `avd-academy-tool` | 3.0 – Selektoren und Klassen entfernt |
 
-1. Den Rückfall `| default: site.brand.website` aus `theme/jekyll/_layouts/default.html`,
-   `theme/jekyll/_layouts/presentation.html` und `theme/jekyll/_includes/footer.html`
-   entfernen.
-2. `brand.website` aus `theme/jekyll/schema/config.schema.json` streichen (und die
-   Schema-Version in `config.version.txt` hochzählen, weil ein bisher erlaubter Schlüssel
-   entfällt).
-3. In `bin/migrate.rb` unter der Stufe `3` die Regel `%w[brand website] => %w[contact
-   website]` ergänzen – dann zieht `ruby bin/migrate.rb --from 2 --to 3` den Schlüssel in
-   den Repos um.
-4. Die veraltet-Vermerke aus `docs/theme/academy.md`, `docs/theme/schemas.md` und
-   `docs/theme/migration-2.0.md` entfernen.
-
-**Projekte müssen danach:** `brand.website` in ihrer `_config.yml` auf `contact.website`
-umbenennen (falls überhaupt gesetzt – in den Pipelines schreibt die Vorlage den neuen
-Schlüssel bereits seit Vorlagenversion 9).
-
-**Eintrag 2.3.0 im Klartext.** Die Seitenwerkzeuge sind seit 2.3.0 eine Komponente und
-tragen `avd-academy-tool`. Die beiden alten Namen stehen im Markup-Vertrag – fremde
-Repos selektieren sie in ihrer `assets/custom.css` – und bleiben deshalb als zweite
-Klasse auf denselben Knöpfen. **Beim Sprung auf 3.0 ist zu tun:**
-
-1. `avd-academy-theme-toggle` und `avd-academy-print-btn` aus dem Selektor in
-   `theme/academy/components.css` und aus der Ausblendliste in
-   `theme/academy/print.css` entfernen.
-2. Beide Klassen aus den Knöpfen in `theme/jekyll/_includes/tools.html` streichen.
-3. `bin/markup-contract.sh > theme/markup-contract.txt` neu erzeugen.
-
-**Projekte müssen danach:** In ihrer `assets/custom.css` `.avd-academy-theme-toggle`
-bzw. `.avd-academy-print-btn` auf `.avd-academy-tool--theme` bzw.
-`.avd-academy-tool--print` umschreiben. Wer die Werkzeuge nur über die Variablen
+**Projekte müssen danach:** `brand.website` in `contact.website` umbenennen
+(`ruby bin/migrate.rb --from 2 --to 3` erledigt es) und in ihrer `assets/custom.css`
+`.avd-academy-theme-toggle` bzw. `.avd-academy-print-btn` auf `.avd-academy-tool--theme`
+bzw. `.avd-academy-tool--print` umschreiben. Wer die Werkzeuge nur über die Variablen
 `--avd-academy-tool-*` anpasst, ist nicht betroffen.
 
 **Für 2.0 durchgegangen und geleert.** Der Durchgang hat eine Schicht gefunden, die nie hier
