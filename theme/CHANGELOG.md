@@ -15,6 +15,65 @@ Abschnitt „Theme-Version“.
 
 ---
 
+## 3.13.1
+
+### Nach einer Druckvorschau wurden die Reiter zur wachsenden Liste
+
+**Patch.** Wer die Druckvorschau einer Seite mit Reitern öffnete und wieder schloss, hatte
+danach **keinen Reiterstreifen mehr**: Jeder Klick legte den neuen Inhalt zu allen vorher
+geöffneten dazu, bis zum nächsten Neuladen.
+
+Für den Druck klappt das Theme alle `<details>` auf und nimmt ihnen dafür kurz das
+`name`-Attribut, über das der Browser sie gruppiert. Dieser Teil war richtig. Falsch war,
+dass die Vorbereitung **zweimal** lief – `beforeprint` und der Wechsel des Media-Query sind
+beide unbedingt registriert. Beim zweiten Lauf fand sie nichts mehr vor und überschrieb die
+beiden Merklisten mit **leeren** Listen; danach gab es nichts mehr zurückzustellen.
+
+Vorbereitung und Aufräumen laufen jetzt genau einmal je Druck, gleich über welchen Weg sie
+angestoßen werden. Gemeldet aus `training-concept-container-technologies` (A-007).
+
+### Ein modales `<dialog>` saß oben links statt in der Mitte
+
+**Patch.** Der Reset `* { margin: 0 }` traf auch `<dialog>`. Ein modales Fenster zentriert
+der Browser über `inset: 0` **und `margin: auto`** – ohne dieses `auto` klebt es in der
+Ecke. Das Theme stellt die Vorgabe jetzt wieder her.
+
+**Der Reset war dabei nur die halbe Ursache.** Steht das Fenster im Inhaltsfluss – der
+Normalfall –, trifft es auch der **Blockrhythmus**, und der ist spezifischer als die
+Vorgabe: Er setzt ein `margin-top` und schiebt das Fenster an den oberen Rand. Gemessen auf
+einer Seite mit modalem Fenster: 26 px oben, 676 px unten. `dialog` ist deshalb auch aus
+den Rhythmus-Regeln ausgenommen; danach steht es in beiden Achsen mittig (351 px oben wie
+unten).
+
+Die Marge ist hier **Funktion**, nicht Dekoration. Wer das Fenster baut, sucht den Grund in
+seinem eigenen CSS und findet ihn dort nicht. Gemeldet aus
+`training-concept-container-technologies` (A-005).
+
+### Folieninhalt steht senkrecht in der Mitte
+
+**Patch.** Eine Folie trägt **eine** Aussage und ist meist kurz – oft ein Bild und zwei
+Zeilen. Oben angeschlagen las sich das wie ein angefangener Text; in der Mitte steht es als
+Aussage da.
+
+Gesetzt ist das als `margin-block: auto` an der Inhaltsspalte, **nicht** als
+`justify-content: center`: Beide zentrieren, aber `justify-content: center` schneidet bei zu
+hohem Inhalt den **oberen** Rand ab, und er ist dann nicht mehr erreichbar. Automatische
+Außenabstände lösen sich bei fehlendem Platz zu Null auf – eine zu hohe Folie beginnt oben
+und lässt sich vollständig rollen.
+
+**Bestehende Foliensätze sehen damit anders aus.** Die Titelfolie und das Regie-Deck waren
+schon zentriert und bleiben, wie sie sind. Gemeldet aus
+`training-concept-container-technologies` (A-008).
+
+### Festgehalten: Die Wortmarke trägt die Schulungsfarbe
+
+**Patch.** Dass die Wortmarke mit `brand.logo_ratio` die Akzentfarbe annimmt, stand bisher
+nur als Mechanik in der Doku – nicht als Entscheidung. Jetzt steht in
+[Academy-Design](https://timetoact.ghe.com/AVD-Academy-Tools/academy-theme/blob/main/docs/theme/academy.md), **warum** eine Marke das hier darf: Auf einer
+Unterlage ist die Wortmarke die Kopfzeile des Materials, nicht der Absender. Und daraus
+folgt die Regel, an der sich künftige Layouts messen lassen müssen – **alle** tragen
+dieselbe Umschaltung, auch die mit eigener Kopfleiste.
+
 ## 3.13.0
 
 ### Ein eigenes Icon darf jetzt mitfärben: `mask`
