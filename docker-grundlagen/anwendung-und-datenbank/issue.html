@@ -1,62 +1,4 @@
-<!DOCTYPE html>
-<!--
-  ATVANTAGE-Academy – EINZIGES Seitenlayout (Jekyll)
-  --------------------------------------------------
-  Ein Layout für alles: allgemeine Doku-Seiten UND Guides (Übungen/Anleitungen).
-  Optik nach der ATVANTAGE-Website: Meta-Nav, weiße sticky Kopfzeile, Hero-Band,
-  zweispaltig mit rechter Sidebar (automatisches Inhaltsverzeichnis, Fortschritt
-  aus Task-Listen, weiterführende Ressourcen). Überschriften ohne Emoji-Icons.
-
-  Verwendung im Front Matter:  layout: default   (oder `layout: guide` – Alias,
-  siehe guide.html; beides rendert dieselbe Guide-Ansicht)
-
-  `layout: visualization` (siehe visualization.html) rendert dieselbe Seite OHNE
-  obere Navigation (Meta-Leiste + Kopfzeile/TopNav), OHNE Brotkrumen und OHNE den
-  rechten Bereich (Inhaltsverzeichnis, Fortschritt, Ressourcen – auch bei gesetztem
-  `resources`), mit schmalerem Hero-Balken und breiterem, zentriertem Inhalt – für
-  eigenständige Visualisierungen/Simulationen.
-
-  Alle Front-Matter-Felder sind OPTIONAL (Convention over Configuration). Nur der
-  Titel ist faktisch erforderlich – als `title:` ODER als erste `#`-Überschrift:
-
-    title:       "…"                → sonst erste #-Überschrift (eins von beiden nötig)
-    description: "…"                → Meta-Description
-    duration:    8                  → Zahl in Minuten → Hero-Tag „ca. 8 Minuten“
-                                       (ungefähre LESEDAUER; bei Guides/Übungen die
-                                       Dauer der Übung, bei Visualisierungen die
-                                       Bearbeitungszeit – dort unüblich, aber erlaubt).
-    topics:      ["Cloud & DevOps"] → weitere Hero-Tags
-    resources:   [{title, url, icon}, …] → Sidebar-Karte „Weiterführende Informationen“.
-                                       title und/oder icon (Bildpfad); icon erscheint
-                                       rechts und wird kreisrund dargestellt.
-    breadcrumb:                     → Brotkrumen anpassen (beides optional):
-      label: "…"                    → überschreibt den Ordnernamen dieser Ebene;
-                                       in der Ordner-`index.md` gesetzt gilt es für
-                                       ALLE Seiten im Ordner und in Unterordnern.
-      ancestors: [{title, url}, …]  → explizite Vorfahren-Kette OHNE die aktuelle
-                                       Seite (diese wird automatisch angehängt); in
-                                       der `index.md` gesetzt wird sie vererbt.
-
-  „Markdown kopieren“ (Button im Hero) erscheint NUR auf Guides – dort ist das
-  Übernehmen des Quelltexts der Zweck. Bedingungen: Markdown-Seite (`.md`, nicht
-  reines HTML) UND der Schalter `toolbar.copy` (Vorgabe: nur `layout: guide`, siehe
-  `_includes/avd-switch.html`). Doku-Seiten und Visualisierungen haben ihn nicht –
-  bei letzteren, weil ihr Inhalt nicht sinnvoll als Markdown kopierbar ist.
-
-  DIE SEITENWERKZEUGE – QR-Code, Farbschema-Umschalter, Drucken – sind EINE
-  Komponente (`_includes/tools.html`) an zwei Standorten in diesem Rahmen:
-
-    Kopfzeile   `chrome: true`  (page, guide)      QR + Farbschema
-    Hero rechts `hero_tools`    (visualization)    QR + Farbschema + Drucken
-
-  Die Regel dahinter ist die Kopfzeile: Wo es sie gibt, tragen die Werkzeuge sie;
-  wo nicht, tritt der Hero an ihre Stelle. Drucken gibt es nur dort, weil auf einer
-  gewöhnlichen Seite der Browser-Befehl (Strg/Cmd+P) genügt, die rahmenlose
-  Ansicht aber keinen anderen Weg aufs Papier hat.
-
-  Der QR-Code wird erst im Browser erzeugt (theme/academy/atvantage.js), weil die
-  Adresse zur Build-Zeit nicht feststeht; ohne JavaScript erscheint er nicht.
---><html lang="de">
+<!DOCTYPE html><html lang="de">
 <head>
   <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1"><title>Die Webanwendung spricht mit der Datenbank · Containertechnologien (Academy)</title><meta name="description" content="Die Webanwendung aus Block 3 liest aus der Datenbank aus Block 4 – über ein eigenes Netzwerk und den Containernamen."><meta property="og:site_name" content="Containertechnologien (Academy)">
@@ -64,13 +6,35 @@
 <meta property="og:description" content="Die Webanwendung aus Block 3 liest aus der Datenbank aus Block 4 – über ein eigenes Netzwerk und den Containernamen.">
 <meta property="og:type" content="article"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790741874">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790741874" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790741874" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790741874">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=118a443d"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=2dd7a61e">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=91dc645c">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=4b561b0b">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=da9fc064"><style>
+:where(.avd-academy-guide-main a[href*="docker.com"]) {
+  position: relative;
+  padding-left: 1.35em;
+}
+:where(.avd-academy-guide-main a[href*="docker.com"])::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .18em;
+  width: 1em;
+  height: 1em;
+  background: center / contain no-repeat;
+  background-image: none;
+  background-color: currentColor;
+  mask-image: url("/training-material-container-technologies/assets/icons/docker.svg");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+}
+.avd-academy-linkmark--none :where(.avd-academy-guide-main a[href*="docker.com"]),
+:where(.avd-academy-guide-main a[href*="docker.com"]).avd-academy-linkmark--none { padding-left: 0; }
+</style><link rel="stylesheet" media="print" href="/training-material-container-technologies/theme/academy/print.css?v=aedd1b20">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=c7831634" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=a9cecc4f" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=2b412283">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -83,24 +47,8 @@
         .querySelectorAll(_auswahl)
         .forEach((el) => { if (!el.dataset.highlighted) { hljs.highlightElement(el); } });
       _faerben(document);
-
-      /* NACHTRAEGLICH EINGEFUEGTER CODE. Die Hervorhebung laeuft einmal beim Laden.
-         Eine Seite, die ihre Codebloecke per Skript einsetzt - eine Visualisierung,
-         die rohe Nachrichten durchschaltet -, bekam deshalb gar keine Farben und
-         baute sich einen eigenen Hervorheber. Genau die Kopie, die das Theme
-         verhindern soll.
-
-         `AvdHighlight.apply(knoten)` faerbt, was seither dazugekommen ist; `hljs`
-         liegt daneben fuer Faelle, die mehr brauchen. Das Ereignis sagt Seiten, die
-         frueh zeichnen, wann der Haken da ist - die Module laden asynchron. */
       window.AvdHighlight = { hljs, apply: _faerben, languages: _hlsprachen.slice() };
       document.dispatchEvent(new CustomEvent("avd-academy-highlight-ready"));
-
-      /* Statuszeile nach Klasse einfaerben. highlight.js gibt jedem dreistelligen
-         Code dieselbe Klasse `hljs-number` - in einem Mitschnitt ist aber genau das
-         die Stelle, auf die man zuerst sieht: 2xx ist etwas anderes als 4xx.
-         Deshalb hier die einzige eigene Zutat, und bewusst nur diese: Die
-         Statusklassen von HTTP aendern sich nicht, das bleibt stabil. */
       document.querySelectorAll("pre code.language-http .hljs-number").forEach((el) => {
         const code = parseInt(el.textContent, 10);
         if (code >= 100 && code <= 599) {
@@ -113,8 +61,8 @@
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
 
-  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790741874">
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790741874"></head><body class="avd-academy-guide">
+  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=43701531">
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=4a155a65"></head><body class="avd-academy-guide">
   <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><div class="avd-academy-metanav"><span>ATVANTAGE Academy</span>
   </div>
 
@@ -166,12 +114,10 @@ Umgebung läuft.</p>
 <h2 id="definition-of-done">Definition of Done</h2>
 
 <ul class="task-list">
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Ein Netzwerk <code>kurs-netz</code> existiert, und beide Container hängen darin.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Ein Netzwerk <code>helloworld-network</code> existiert, und beide Container hängen
+darin.</li>
   <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" /><code>curl http://localhost:8080</code> liefert den Text, der in der Datenbanktabelle
 <code>gruss</code> steht.</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />In <code>app.py</code> steht <strong>keine</strong> Adresse – sie kommt als Umgebungsvariable.</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Deine <code>befehle.md</code> enthält alle Befehle, die für den Start beider Container
-nötig sind.</li>
   <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast die Reflexionsfragen schriftlich beantwortet.</li>
 </ul>
 
@@ -181,7 +127,7 @@ nötig sind.</li>
 
 <p>Das ist neu – deshalb steht es hier vollständig:</p>
 
-<pre><code class="language-bash">docker network create kurs-netz
+<pre><code class="language-bash">docker network create helloworld-network
 </code></pre>
 
 <pre><code class="language-bash">docker network ls
@@ -193,40 +139,65 @@ nötig sind.</li>
 Datenbank aus der vorigen Übung <strong>neu</strong> – mit denselben Umgebungsvariablen,
 demselben Volume und zusätzlich:</p>
 
-<pre><code class="language-text">--network kurs-netz
+<pre><code class="language-text">--network helloworld-network
 </code></pre>
 
 <blockquote>
-  <p><strong>Hinweis:</strong> Die Befehle dafür stehen in Deiner <code>befehle.md</code>. Das Volume
-<code>kurs-daten</code> sorgt dafür, dass Deine Tabelle <code>gruss</code> noch da ist – prüf das,
-bevor Du weitermachst.</p>
+  <p><strong>Hinweis:</strong> Das Volume <code>kurs-daten</code> sorgt dafür, dass Deine Tabelle <code>gruss</code>
+noch da ist – prüf das, bevor Du weitermachst.</p>
 </blockquote>
 
-<h3 id="die-anwendung-erweitern">Die Anwendung erweitern</h3>
+<h3 id="die-anwendung-liest-aus-der-datenbank">Die Anwendung liest aus der Datenbank</h3>
 
-<p>Ersetze <code>app.py</code> durch diese Fassung. Sie liest die Adresse der Datenbank aus der
-Umgebung:</p>
+<p>Das hier ist eine <strong>neue</strong> Anwendung: Sie holt ihre Begrüßungen aus der
+Datenbank. Ob Du <code>app.py</code> damit ersetzt oder sie als zweite Datei danebenlegst,
+bleibt Dir überlassen.</p>
 
 <pre><code class="language-python">import os
 from flask import Flask
-import psycopg
+import psycopg2
 
 app = Flask(__name__)
 
+# Konfiguration aus der Umgebung – die Werte dahinter gelten nur,
+# solange nichts gesetzt ist.
+DB_NAME = os.getenv("DB_NAME", "helloworld")
+DB_USER = os.getenv("DB_USER", "postgres")
+DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_PORT = os.getenv("DB_PORT", "5432")
+
+# Das Passwort darf auch aus einer Datei kommen: DB_PASSWORD_FILE nennt den Pfad.
+PASSWORD_FILE = os.getenv("DB_PASSWORD_FILE")
+if PASSWORD_FILE:
+    with open(PASSWORD_FILE) as datei:
+        DB_PASSWORD = datei.read().strip()
+else:
+    DB_PASSWORD = os.getenv("DB_PASSWORD", "postgres")
+
 @app.get("/")
 def start():
-    with psycopg.connect(os.environ["DATABASE_URL"]) as verbindung:
-        zeilen = verbindung.execute("SELECT text FROM gruss").fetchall()
-    return "\n".join(zeile[0] for zeile in zeilen) + "\n"
+    connection = psycopg2.connect(
+        dbname=DB_NAME,
+        user=DB_USER,
+        password=DB_PASSWORD,
+        host=DB_HOST,
+        port=DB_PORT,
+    )
+    cursor = connection.cursor()
+    cursor.execute("SELECT text FROM gruss")
+    rows = cursor.fetchall()
+    cursor.close()
+    connection.close()
+    return "\n".join(row[0] for row in rows) + "\n"
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
 </code></pre>
 
-<p>Ergänze <code>requirements.txt</code>:</p>
+<p>Verwende diese <code>requirements.txt</code>:</p>
 
 <pre><code class="language-text">flask==3.0.3
-psycopg[binary]==3.2.3
+psycopg2-binary==2.9.13
 </code></pre>
 
 <h3 id="die-anwendung-starten">Die Anwendung starten</h3>
@@ -234,15 +205,24 @@ psycopg[binary]==3.2.3
 <p>Starte sie wie in der vorigen Übung – mit drei Ergänzungen:</p>
 
 <ul>
-  <li>Sie gehört in dasselbe Netzwerk: <code>--network kurs-netz</code></li>
-  <li>Sie bekommt die Adresse der Datenbank mit:
-<code>-e DATABASE_URL=postgresql://kurs:geheim@meine-db:5432/helloworld</code></li>
+  <li>Sie gehört in dasselbe Netzwerk: <code>--network helloworld-network</code></li>
+  <li>
+    <p>Sie bekommt die Angaben zur Datenbank mit – dieselben, mit denen Du sie
+eingerichtet hast:</p>
+
+    <pre><code class="language-text">-e DB_HOST=meine-db -e DB_NAME=helloworld -e DB_USER=kurs -e DB_PASSWORD=geheim
+</code></pre>
+  </li>
   <li>Der Port 8080 muss nach außen.</li>
 </ul>
 
 <blockquote>
-  <p><strong>Hinweis:</strong> Sieh Dir die Adresse genau an. Der Teil <code>meine-db</code> ist der <strong>Name
-des Datenbank-Containers</strong> – nicht <code>localhost</code>, nicht eine IP.</p>
+  <p><strong>Hinweis:</strong> Benutzer und Passwort sind sehr wohl nötig: Die Werte im Quelltext
+sind nur Vorgaben, und <code>postgres</code>/<code>postgres</code> kennt Deine Datenbank nicht. Allein
+<code>DB_PORT</code> kannst Du weglassen – 5432 stimmt bereits.</p>
+
+  <p>Sieh Dir <code>DB_HOST</code> genau an. <code>meine-db</code> ist der <strong>Name des
+Datenbank-Containers</strong> – nicht <code>localhost</code>, nicht eine IP.</p>
 </blockquote>
 
 <p>Ruf die Anwendung auf:</p>
@@ -256,6 +236,27 @@ refused“ heißt etwas anderes als „could not translate host name“ – das 
 ein Zeitproblem, das andere ein Namensproblem.</p>
 </blockquote>
 
+<h3 id="optional-das-passwort-aus-einer-datei-lesen">Optional: Das Passwort aus einer Datei lesen</h3>
+
+<p>In der Datenbank-Übung hast Du das Passwort aus einer Datei gelesen statt aus
+einer Variablen. Die Anwendung kann das auch: Ist <code>DB_PASSWORD_FILE</code> gesetzt,
+nimmt sie den Inhalt der genannten Datei.</p>
+
+<p>Leg die Datei an und reich sie hinein – statt <code>-e DB_PASSWORD=geheim</code>:</p>
+
+<pre><code class="language-bash">echo 'geheim' &gt; db-passwort.txt
+</code></pre>
+
+<pre><code class="language-bash">-v "$(pwd)/db-passwort.txt":/run/secrets/db-passwort
+-e DB_PASSWORD_FILE=/run/secrets/db-passwort
+</code></pre>
+
+<blockquote>
+  <p><strong>Hinweis:</strong> Dieselbe Datei kann auch die Datenbank lesen – dort heißt die
+Variable <code>POSTGRES_PASSWORD_FILE</code>. Dann steht das Passwort an genau <strong>einer</strong>
+Stelle, und die liegt nicht in der Prozessliste.</p>
+</blockquote>
+
 <h3 id="den-namen-auf-die-probe-stellen">Den Namen auf die Probe stellen</h3>
 
 <p>Stopp den Datenbank-Container, ruf die Anwendung erneut auf und sieh Dir an, was
@@ -265,12 +266,10 @@ passiert. Starte die Datenbank danach wieder.</p>
 
 <ul>
   <li>Warum funktioniert <code>meine-db</code> als Adresse, und warum wäre <code>localhost</code> falsch?</li>
-  <li>Was steht alles in <code>DATABASE_URL</code>, und warum steht diese Zeichenkette nicht im
-Quelltext der Anwendung?</li>
+  <li>Welche Angaben gibst Du der Anwendung von außen mit? Warum stehen im Quelltext
+nur Vorgabewerte und nicht Deine eigenen?</li>
   <li>Was ist passiert, als die Datenbank weg war? Wie sollte sich eine Anwendung in
 diesem Fall verhalten?</li>
-  <li>Du brauchst jetzt mehrere Befehle, um diese zwei Container zu starten. <strong>Was
-stört Dich daran?</strong></li>
 </ul>
 
 
@@ -291,12 +290,10 @@ Du…
 
 ## Definition of Done
 
-* [ ] Ein Netzwerk `kurs-netz` existiert, und beide Container hängen darin.
+* [ ] Ein Netzwerk `helloworld-network` existiert, und beide Container hängen
+  darin.
 * [ ] `curl http://localhost:8080` liefert den Text, der in der Datenbanktabelle
   `gruss` steht.
-* [ ] In `app.py` steht **keine** Adresse – sie kommt als Umgebungsvariable.
-* [ ] Deine `befehle.md` enthält alle Befehle, die für den Start beider Container
-  nötig sind.
 * [ ] Du hast die Reflexionsfragen schriftlich beantwortet.
 
 ## Arbeitsschritte
@@ -306,7 +303,7 @@ Du…
 Das ist neu – deshalb steht es hier vollständig:
 
 ```bash
-docker network create kurs-netz
+docker network create helloworld-network
 ```
 
 ```bash
@@ -320,53 +317,86 @@ Datenbank aus der vorigen Übung **neu** – mit denselben Umgebungsvariablen,
 demselben Volume und zusätzlich:
 
 ```text
---network kurs-netz
+--network helloworld-network
 ```
 
-&gt; **Hinweis:** Die Befehle dafür stehen in Deiner `befehle.md`. Das Volume
-&gt; `kurs-daten` sorgt dafür, dass Deine Tabelle `gruss` noch da ist – prüf das,
-&gt; bevor Du weitermachst.
+&gt; **Hinweis:** Das Volume `kurs-daten` sorgt dafür, dass Deine Tabelle `gruss`
+&gt; noch da ist – prüf das, bevor Du weitermachst.
 
-### Die Anwendung erweitern
+### Die Anwendung liest aus der Datenbank
 
-Ersetze `app.py` durch diese Fassung. Sie liest die Adresse der Datenbank aus der
-Umgebung:
+Das hier ist eine **neue** Anwendung: Sie holt ihre Begrüßungen aus der
+Datenbank. Ob Du `app.py` damit ersetzt oder sie als zweite Datei danebenlegst,
+bleibt Dir überlassen.
 
 ```python
 import os
 from flask import Flask
-import psycopg
+import psycopg2
 
 app = Flask(__name__)
 
+# Konfiguration aus der Umgebung – die Werte dahinter gelten nur,
+# solange nichts gesetzt ist.
+DB_NAME = os.getenv(&quot;DB_NAME&quot;, &quot;helloworld&quot;)
+DB_USER = os.getenv(&quot;DB_USER&quot;, &quot;postgres&quot;)
+DB_HOST = os.getenv(&quot;DB_HOST&quot;, &quot;localhost&quot;)
+DB_PORT = os.getenv(&quot;DB_PORT&quot;, &quot;5432&quot;)
+
+# Das Passwort darf auch aus einer Datei kommen: DB_PASSWORD_FILE nennt den Pfad.
+PASSWORD_FILE = os.getenv(&quot;DB_PASSWORD_FILE&quot;)
+if PASSWORD_FILE:
+    with open(PASSWORD_FILE) as datei:
+        DB_PASSWORD = datei.read().strip()
+else:
+    DB_PASSWORD = os.getenv(&quot;DB_PASSWORD&quot;, &quot;postgres&quot;)
+
 @app.get(&quot;/&quot;)
 def start():
-    with psycopg.connect(os.environ[&quot;DATABASE_URL&quot;]) as verbindung:
-        zeilen = verbindung.execute(&quot;SELECT text FROM gruss&quot;).fetchall()
-    return &quot;\n&quot;.join(zeile[0] for zeile in zeilen) + &quot;\n&quot;
+    connection = psycopg2.connect(
+        dbname=DB_NAME,
+        user=DB_USER,
+        password=DB_PASSWORD,
+        host=DB_HOST,
+        port=DB_PORT,
+    )
+    cursor = connection.cursor()
+    cursor.execute(&quot;SELECT text FROM gruss&quot;)
+    rows = cursor.fetchall()
+    cursor.close()
+    connection.close()
+    return &quot;\n&quot;.join(row[0] for row in rows) + &quot;\n&quot;
 
 if __name__ == &quot;__main__&quot;:
     app.run(host=&quot;0.0.0.0&quot;, port=8080)
 ```
 
-Ergänze `requirements.txt`:
+Verwende diese `requirements.txt`:
 
 ```text
 flask==3.0.3
-psycopg[binary]==3.2.3
+psycopg2-binary==2.9.13
 ```
 
 ### Die Anwendung starten
 
 Starte sie wie in der vorigen Übung – mit drei Ergänzungen:
 
-- Sie gehört in dasselbe Netzwerk: `--network kurs-netz`
-- Sie bekommt die Adresse der Datenbank mit:
-  `-e DATABASE_URL=postgresql://kurs:geheim@meine-db:5432/helloworld`
+- Sie gehört in dasselbe Netzwerk: `--network helloworld-network`
+- Sie bekommt die Angaben zur Datenbank mit – dieselben, mit denen Du sie
+  eingerichtet hast:
+
+  ```text
+  -e DB_HOST=meine-db -e DB_NAME=helloworld -e DB_USER=kurs -e DB_PASSWORD=geheim
+  ```
 - Der Port 8080 muss nach außen.
 
-&gt; **Hinweis:** Sieh Dir die Adresse genau an. Der Teil `meine-db` ist der **Name
-&gt; des Datenbank-Containers** – nicht `localhost`, nicht eine IP.
+&gt; **Hinweis:** Benutzer und Passwort sind sehr wohl nötig: Die Werte im Quelltext
+&gt; sind nur Vorgaben, und `postgres`/`postgres` kennt Deine Datenbank nicht. Allein
+&gt; `DB_PORT` kannst Du weglassen – 5432 stimmt bereits.
+&gt;
+&gt; Sieh Dir `DB_HOST` genau an. `meine-db` ist der **Name des
+&gt; Datenbank-Containers** – nicht `localhost`, nicht eine IP.
 
 Ruf die Anwendung auf:
 
@@ -378,6 +408,27 @@ curl http://localhost:8080
 &gt; refused“ heißt etwas anderes als „could not translate host name“ – das eine ist
 &gt; ein Zeitproblem, das andere ein Namensproblem.
 
+### Optional: Das Passwort aus einer Datei lesen
+
+In der Datenbank-Übung hast Du das Passwort aus einer Datei gelesen statt aus
+einer Variablen. Die Anwendung kann das auch: Ist `DB_PASSWORD_FILE` gesetzt,
+nimmt sie den Inhalt der genannten Datei.
+
+Leg die Datei an und reich sie hinein – statt `-e DB_PASSWORD=geheim`:
+
+```bash
+echo &apos;geheim&apos; &gt; db-passwort.txt
+```
+
+```bash
+-v &quot;$(pwd)/db-passwort.txt&quot;:/run/secrets/db-passwort
+-e DB_PASSWORD_FILE=/run/secrets/db-passwort
+```
+
+&gt; **Hinweis:** Dieselbe Datei kann auch die Datenbank lesen – dort heißt die
+&gt; Variable `POSTGRES_PASSWORD_FILE`. Dann steht das Passwort an genau **einer**
+&gt; Stelle, und die liegt nicht in der Prozessliste.
+
 ### Den Namen auf die Probe stellen
 
 Stopp den Datenbank-Container, ruf die Anwendung erneut auf und sieh Dir an, was
@@ -386,17 +437,17 @@ passiert. Starte die Datenbank danach wieder.
 ## Reflexionsfragen
 
 - Warum funktioniert `meine-db` als Adresse, und warum wäre `localhost` falsch?
-- Was steht alles in `DATABASE_URL`, und warum steht diese Zeichenkette nicht im
-  Quelltext der Anwendung?
+- Welche Angaben gibst Du der Anwendung von außen mit? Warum stehen im Quelltext
+  nur Vorgabewerte und nicht Deine eigenen?
 - Was ist passiert, als die Datenbank weg war? Wie sollte sich eine Anwendung in
   diesem Fall verhalten?
-- Du brauchst jetzt mehrere Befehle, um diese zwei Container zu starten. **Was
-  stört Dich daran?**
 
 ## Weiterführende Informationen
 
 - [Docker CLI Reference](https://docs.docker.com/reference/cli/docker/)
 - [Netzwerke in Docker](https://docs.docker.com/engine/network/)
+- [Musterlösung (PR)](https://github.com/atvantage-academy/code-template-docker-basics/pull/4)
+- [Musterlösung (Pages)](https://atvantage-academy.github.io/code-template-docker-basics/anwendung-und-datenbank/)
 </textarea>
     </main><aside class="avd-academy-guide-sidebar"><details class="avd-academy-guide-side avd-academy-guide-side--toc avd-academy-fold" data-avd-academy-toc-box
                data-avd-academy-toc-grenze="12" open hidden>
@@ -408,7 +459,7 @@ passiert. Starte die Datenbank danach wieder.
       </div>
       <div class="avd-academy-guide-side avd-academy-guide-side--bordered">
         <div class="avd-academy-guide-side__label">Weiterführende Informationen</div>
-        <div class="avd-academy-guide-side__links"><a href="https://docs.docker.com/reference/cli/docker/" target="_blank" rel="noopener"><span>Docker CLI Reference</span></a><a href="https://docs.docker.com/engine/network/" target="_blank" rel="noopener"><span>Netzwerke in Docker</span></a>
+        <div class="avd-academy-guide-side__links"><a href="https://docs.docker.com/reference/cli/docker/" target="_blank" rel="noopener"><span>Docker CLI Reference</span><span class="avd-academy-linkicon avd-academy-linkicon--right avd-academy-linkicon--mark" style="--avd-academy-linkicon-src: url('/training-material-container-technologies/assets/icons/docker.svg')" aria-hidden="true"></span></a><a href="https://docs.docker.com/engine/network/" target="_blank" rel="noopener"><span>Netzwerke in Docker</span><span class="avd-academy-linkicon avd-academy-linkicon--right avd-academy-linkicon--mark" style="--avd-academy-linkicon-src: url('/training-material-container-technologies/assets/icons/docker.svg')" aria-hidden="true"></span></a><a href="https://github.com/atvantage-academy/code-template-docker-basics/pull/4" target="_blank" rel="noopener"><span>Musterlösung (PR)</span><span class="avd-academy-linkicon avd-academy-linkicon--right avd-academy-linkicon--mark" style="--avd-academy-linkicon-src: url('/training-material-container-technologies/theme/academy/icons/icon-github.svg')" aria-hidden="true"></span></a><a href="https://atvantage-academy.github.io/code-template-docker-basics/anwendung-und-datenbank/" target="_blank" rel="noopener"><span>Musterlösung (Pages)</span><span class="avd-academy-linkicon avd-academy-linkicon--right avd-academy-linkicon--mark" style="--avd-academy-linkicon-src: url('/training-material-container-technologies/theme/academy/icons/icon-github-pages.svg')" aria-hidden="true"></span></a>
         </div></div>
     </aside>
   </div><div class="avd-academy-print-contact" aria-hidden="true">

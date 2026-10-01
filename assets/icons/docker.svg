@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="#FF5401" role="img" aria-label="Docker">
+  <!-- Wal mit gestapelten Containern – das Sinnbild von Docker, als Silhouette in
+       der Machart der Theme-Marken (24x24, EIN Farbton).
+       KEIN Nachbau des Markenzeichens, sondern dessen Motiv in der Formsprache
+       dieses Icon-Satzes.
+
+       NUR DIE SILHOUETTE ZÄHLT: Das Theme zeichnet Linkmarken im Inhalt als
+       MASKE – die Farbe kommt dann vom Text, nicht aus dieser Datei (siehe
+       assets/custom.css). Deshalb ist das Auge KEIN weißer Kreis, sondern ein
+       echtes Loch im Rumpf (`fill-rule="evenodd"`): Weiß wäre in einer Maske
+       deckend und das Auge damit unsichtbar. -->
+  <!-- Die Ladung: unten vier, darüber drei, obenauf einer. -->
+  <path d="M2.2 11.9h3.1v3.1H2.2zM5.8 11.9h3.1v3.1H5.8zM9.4 11.9h3.1v3.1H9.4zM13 11.9h3.1v3.1H13zM5.8 8.3h3.1v3.1H5.8zM9.4 8.3h3.1v3.1H9.4zM13 8.3h3.1v3.1H13zM9.4 4.7h3.1v3.1H9.4z"/>
+  <!-- Der Rumpf mit dem Bug rechts, das Auge als ausgespartes Loch. -->
+  <path fill-rule="evenodd" d="M1.1 15.9h16.4c.9 0 1.6.2 2.2.6.7-1.2 1.9-2 3.3-2.2-.1 1.9-1.2 3.5-2.9 4.2-2 3.1-5.5 4.8-9.8 4.8-3 0-5.4-.8-7.1-2.4-1.3-1.3-2-3.1-2.1-5zM15.4 17.6a.8.8 0 1 0 1.6 0 .8.8 0 1 0-1.6 0z"/>
+  <!-- Die Schwanzflosse links. -->
+  <path d="M1.6 15.4C.7 14.4.3 13 .5 11.6c1.1.4 2 1.3 2.3 2.4z"/>
+</svg>

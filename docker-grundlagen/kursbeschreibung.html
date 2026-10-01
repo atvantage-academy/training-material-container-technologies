@@ -1,62 +1,4 @@
-<!DOCTYPE html>
-<!--
-  ATVANTAGE-Academy – EINZIGES Seitenlayout (Jekyll)
-  --------------------------------------------------
-  Ein Layout für alles: allgemeine Doku-Seiten UND Guides (Übungen/Anleitungen).
-  Optik nach der ATVANTAGE-Website: Meta-Nav, weiße sticky Kopfzeile, Hero-Band,
-  zweispaltig mit rechter Sidebar (automatisches Inhaltsverzeichnis, Fortschritt
-  aus Task-Listen, weiterführende Ressourcen). Überschriften ohne Emoji-Icons.
-
-  Verwendung im Front Matter:  layout: default   (oder `layout: guide` – Alias,
-  siehe guide.html; beides rendert dieselbe Guide-Ansicht)
-
-  `layout: visualization` (siehe visualization.html) rendert dieselbe Seite OHNE
-  obere Navigation (Meta-Leiste + Kopfzeile/TopNav), OHNE Brotkrumen und OHNE den
-  rechten Bereich (Inhaltsverzeichnis, Fortschritt, Ressourcen – auch bei gesetztem
-  `resources`), mit schmalerem Hero-Balken und breiterem, zentriertem Inhalt – für
-  eigenständige Visualisierungen/Simulationen.
-
-  Alle Front-Matter-Felder sind OPTIONAL (Convention over Configuration). Nur der
-  Titel ist faktisch erforderlich – als `title:` ODER als erste `#`-Überschrift:
-
-    title:       "…"                → sonst erste #-Überschrift (eins von beiden nötig)
-    description: "…"                → Meta-Description
-    duration:    8                  → Zahl in Minuten → Hero-Tag „ca. 8 Minuten“
-                                       (ungefähre LESEDAUER; bei Guides/Übungen die
-                                       Dauer der Übung, bei Visualisierungen die
-                                       Bearbeitungszeit – dort unüblich, aber erlaubt).
-    topics:      ["Cloud & DevOps"] → weitere Hero-Tags
-    resources:   [{title, url, icon}, …] → Sidebar-Karte „Weiterführende Informationen“.
-                                       title und/oder icon (Bildpfad); icon erscheint
-                                       rechts und wird kreisrund dargestellt.
-    breadcrumb:                     → Brotkrumen anpassen (beides optional):
-      label: "…"                    → überschreibt den Ordnernamen dieser Ebene;
-                                       in der Ordner-`index.md` gesetzt gilt es für
-                                       ALLE Seiten im Ordner und in Unterordnern.
-      ancestors: [{title, url}, …]  → explizite Vorfahren-Kette OHNE die aktuelle
-                                       Seite (diese wird automatisch angehängt); in
-                                       der `index.md` gesetzt wird sie vererbt.
-
-  „Markdown kopieren“ (Button im Hero) erscheint NUR auf Guides – dort ist das
-  Übernehmen des Quelltexts der Zweck. Bedingungen: Markdown-Seite (`.md`, nicht
-  reines HTML) UND der Schalter `toolbar.copy` (Vorgabe: nur `layout: guide`, siehe
-  `_includes/avd-switch.html`). Doku-Seiten und Visualisierungen haben ihn nicht –
-  bei letzteren, weil ihr Inhalt nicht sinnvoll als Markdown kopierbar ist.
-
-  DIE SEITENWERKZEUGE – QR-Code, Farbschema-Umschalter, Drucken – sind EINE
-  Komponente (`_includes/tools.html`) an zwei Standorten in diesem Rahmen:
-
-    Kopfzeile   `chrome: true`  (page, guide)      QR + Farbschema
-    Hero rechts `hero_tools`    (visualization)    QR + Farbschema + Drucken
-
-  Die Regel dahinter ist die Kopfzeile: Wo es sie gibt, tragen die Werkzeuge sie;
-  wo nicht, tritt der Hero an ihre Stelle. Drucken gibt es nur dort, weil auf einer
-  gewöhnlichen Seite der Browser-Befehl (Strg/Cmd+P) genügt, die rahmenlose
-  Ansicht aber keinen anderen Weg aufs Papier hat.
-
-  Der QR-Code wird erst im Browser erzeugt (theme/academy/atvantage.js), weil die
-  Adresse zur Build-Zeit nicht feststeht; ohne JavaScript erscheint er nicht.
---><html lang="de">
+<!DOCTYPE html><html lang="de">
 <head>
   <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1"><title>Kursbeschreibung · Containertechnologien (Academy)</title><meta name="description" content="Docker-Grundlagen – zwei Tage vom ersten Container bis zum eigenen, veröffentlichten Image."><meta property="og:site_name" content="Containertechnologien (Academy)">
@@ -64,13 +6,35 @@
 <meta property="og:description" content="Docker-Grundlagen – zwei Tage vom ersten Container bis zum eigenen, veröffentlichten Image.">
 <meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790741874">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790741874" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790741874" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790741874">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=118a443d"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=2dd7a61e">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=91dc645c">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=4b561b0b">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=da9fc064"><style>
+:where(.avd-academy-guide-main a[href*="docker.com"]) {
+  position: relative;
+  padding-left: 1.35em;
+}
+:where(.avd-academy-guide-main a[href*="docker.com"])::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .18em;
+  width: 1em;
+  height: 1em;
+  background: center / contain no-repeat;
+  background-image: none;
+  background-color: currentColor;
+  mask-image: url("/training-material-container-technologies/assets/icons/docker.svg");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+}
+.avd-academy-linkmark--none :where(.avd-academy-guide-main a[href*="docker.com"]),
+:where(.avd-academy-guide-main a[href*="docker.com"]).avd-academy-linkmark--none { padding-left: 0; }
+</style><link rel="stylesheet" media="print" href="/training-material-container-technologies/theme/academy/print.css?v=aedd1b20">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=c7831634" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=a9cecc4f" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=2b412283">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -83,24 +47,8 @@
         .querySelectorAll(_auswahl)
         .forEach((el) => { if (!el.dataset.highlighted) { hljs.highlightElement(el); } });
       _faerben(document);
-
-      /* NACHTRAEGLICH EINGEFUEGTER CODE. Die Hervorhebung laeuft einmal beim Laden.
-         Eine Seite, die ihre Codebloecke per Skript einsetzt - eine Visualisierung,
-         die rohe Nachrichten durchschaltet -, bekam deshalb gar keine Farben und
-         baute sich einen eigenen Hervorheber. Genau die Kopie, die das Theme
-         verhindern soll.
-
-         `AvdHighlight.apply(knoten)` faerbt, was seither dazugekommen ist; `hljs`
-         liegt daneben fuer Faelle, die mehr brauchen. Das Ereignis sagt Seiten, die
-         frueh zeichnen, wann der Haken da ist - die Module laden asynchron. */
       window.AvdHighlight = { hljs, apply: _faerben, languages: _hlsprachen.slice() };
       document.dispatchEvent(new CustomEvent("avd-academy-highlight-ready"));
-
-      /* Statuszeile nach Klasse einfaerben. highlight.js gibt jedem dreistelligen
-         Code dieselbe Klasse `hljs-number` - in einem Mitschnitt ist aber genau das
-         die Stelle, auf die man zuerst sieht: 2xx ist etwas anderes als 4xx.
-         Deshalb hier die einzige eigene Zutat, und bewusst nur diese: Die
-         Statusklassen von HTTP aendern sich nicht, das bleibt stabil. */
       document.querySelectorAll("pre code.language-http .hljs-number").forEach((el) => {
         const code = parseInt(el.textContent, 10);
         if (code >= 100 && code <= 599) {
@@ -113,8 +61,8 @@
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
 
-  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790741874">
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790741874"></head><body class="avd-academy-guide">
+  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=43701531">
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=4a155a65"></head><body class="avd-academy-guide">
   <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><div class="avd-academy-metanav"><span>ATVANTAGE Academy</span>
   </div>
 

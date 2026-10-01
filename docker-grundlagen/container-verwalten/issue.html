@@ -1,76 +1,40 @@
-<!DOCTYPE html>
-<!--
-  ATVANTAGE-Academy – EINZIGES Seitenlayout (Jekyll)
-  --------------------------------------------------
-  Ein Layout für alles: allgemeine Doku-Seiten UND Guides (Übungen/Anleitungen).
-  Optik nach der ATVANTAGE-Website: Meta-Nav, weiße sticky Kopfzeile, Hero-Band,
-  zweispaltig mit rechter Sidebar (automatisches Inhaltsverzeichnis, Fortschritt
-  aus Task-Listen, weiterführende Ressourcen). Überschriften ohne Emoji-Icons.
-
-  Verwendung im Front Matter:  layout: default   (oder `layout: guide` – Alias,
-  siehe guide.html; beides rendert dieselbe Guide-Ansicht)
-
-  `layout: visualization` (siehe visualization.html) rendert dieselbe Seite OHNE
-  obere Navigation (Meta-Leiste + Kopfzeile/TopNav), OHNE Brotkrumen und OHNE den
-  rechten Bereich (Inhaltsverzeichnis, Fortschritt, Ressourcen – auch bei gesetztem
-  `resources`), mit schmalerem Hero-Balken und breiterem, zentriertem Inhalt – für
-  eigenständige Visualisierungen/Simulationen.
-
-  Alle Front-Matter-Felder sind OPTIONAL (Convention over Configuration). Nur der
-  Titel ist faktisch erforderlich – als `title:` ODER als erste `#`-Überschrift:
-
-    title:       "…"                → sonst erste #-Überschrift (eins von beiden nötig)
-    description: "…"                → Meta-Description
-    duration:    8                  → Zahl in Minuten → Hero-Tag „ca. 8 Minuten“
-                                       (ungefähre LESEDAUER; bei Guides/Übungen die
-                                       Dauer der Übung, bei Visualisierungen die
-                                       Bearbeitungszeit – dort unüblich, aber erlaubt).
-    topics:      ["Cloud & DevOps"] → weitere Hero-Tags
-    resources:   [{title, url, icon}, …] → Sidebar-Karte „Weiterführende Informationen“.
-                                       title und/oder icon (Bildpfad); icon erscheint
-                                       rechts und wird kreisrund dargestellt.
-    breadcrumb:                     → Brotkrumen anpassen (beides optional):
-      label: "…"                    → überschreibt den Ordnernamen dieser Ebene;
-                                       in der Ordner-`index.md` gesetzt gilt es für
-                                       ALLE Seiten im Ordner und in Unterordnern.
-      ancestors: [{title, url}, …]  → explizite Vorfahren-Kette OHNE die aktuelle
-                                       Seite (diese wird automatisch angehängt); in
-                                       der `index.md` gesetzt wird sie vererbt.
-
-  „Markdown kopieren“ (Button im Hero) erscheint NUR auf Guides – dort ist das
-  Übernehmen des Quelltexts der Zweck. Bedingungen: Markdown-Seite (`.md`, nicht
-  reines HTML) UND der Schalter `toolbar.copy` (Vorgabe: nur `layout: guide`, siehe
-  `_includes/avd-switch.html`). Doku-Seiten und Visualisierungen haben ihn nicht –
-  bei letzteren, weil ihr Inhalt nicht sinnvoll als Markdown kopierbar ist.
-
-  DIE SEITENWERKZEUGE – QR-Code, Farbschema-Umschalter, Drucken – sind EINE
-  Komponente (`_includes/tools.html`) an zwei Standorten in diesem Rahmen:
-
-    Kopfzeile   `chrome: true`  (page, guide)      QR + Farbschema
-    Hero rechts `hero_tools`    (visualization)    QR + Farbschema + Drucken
-
-  Die Regel dahinter ist die Kopfzeile: Wo es sie gibt, tragen die Werkzeuge sie;
-  wo nicht, tritt der Hero an ihre Stelle. Drucken gibt es nur dort, weil auf einer
-  gewöhnlichen Seite der Browser-Befehl (Strg/Cmd+P) genügt, die rahmenlose
-  Ansicht aber keinen anderen Weg aufs Papier hat.
-
-  Der QR-Code wird erst im Browser erzeugt (theme/academy/atvantage.js), weil die
-  Adresse zur Build-Zeit nicht feststeht; ohne JavaScript erscheint er nicht.
---><html lang="de">
+<!DOCTYPE html><html lang="de">
 <head>
   <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"><title>Einen Container aus einem fremden Image betreiben · Containertechnologien (Academy)</title><meta name="description" content="Ein fremdes Image ziehen, daraus einen Container erzeugen, ihn starten, hineinsehen, stoppen und löschen – und dabei beobachten, was dabei verloren geht."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Einen Container aus einem fremden Image betreiben · Containertechnologien (Academy)</title><meta name="description" content="Ein fremdes Image ziehen und daraus drei Container betreiben – einen leeren, einen mit einer Seite darin und einen, dessen Seite auf dem eigenen Rechner liegt."><meta property="og:site_name" content="Containertechnologien (Academy)">
 <meta property="og:title" content="Einen Container aus einem fremden Image betreiben">
-<meta property="og:description" content="Ein fremdes Image ziehen, daraus einen Container erzeugen, ihn starten, hineinsehen, stoppen und löschen – und dabei beobachten, was dabei verloren geht.">
+<meta property="og:description" content="Ein fremdes Image ziehen und daraus drei Container betreiben – einen leeren, einen mit einer Seite darin und einen, dessen Seite auf dem eigenen Rechner liegt.">
 <meta property="og:type" content="article"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790741874">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790741874" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790741874" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790741874">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=118a443d"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=2dd7a61e">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=91dc645c">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=4b561b0b">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=da9fc064"><style>
+:where(.avd-academy-guide-main a[href*="docker.com"]) {
+  position: relative;
+  padding-left: 1.35em;
+}
+:where(.avd-academy-guide-main a[href*="docker.com"])::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .18em;
+  width: 1em;
+  height: 1em;
+  background: center / contain no-repeat;
+  background-image: none;
+  background-color: currentColor;
+  mask-image: url("/training-material-container-technologies/assets/icons/docker.svg");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+}
+.avd-academy-linkmark--none :where(.avd-academy-guide-main a[href*="docker.com"]),
+:where(.avd-academy-guide-main a[href*="docker.com"]).avd-academy-linkmark--none { padding-left: 0; }
+</style><link rel="stylesheet" media="print" href="/training-material-container-technologies/theme/academy/print.css?v=aedd1b20">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=c7831634" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=a9cecc4f" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=2b412283">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -83,24 +47,8 @@
         .querySelectorAll(_auswahl)
         .forEach((el) => { if (!el.dataset.highlighted) { hljs.highlightElement(el); } });
       _faerben(document);
-
-      /* NACHTRAEGLICH EINGEFUEGTER CODE. Die Hervorhebung laeuft einmal beim Laden.
-         Eine Seite, die ihre Codebloecke per Skript einsetzt - eine Visualisierung,
-         die rohe Nachrichten durchschaltet -, bekam deshalb gar keine Farben und
-         baute sich einen eigenen Hervorheber. Genau die Kopie, die das Theme
-         verhindern soll.
-
-         `AvdHighlight.apply(knoten)` faerbt, was seither dazugekommen ist; `hljs`
-         liegt daneben fuer Faelle, die mehr brauchen. Das Ereignis sagt Seiten, die
-         frueh zeichnen, wann der Haken da ist - die Module laden asynchron. */
       window.AvdHighlight = { hljs, apply: _faerben, languages: _hlsprachen.slice() };
       document.dispatchEvent(new CustomEvent("avd-academy-highlight-ready"));
-
-      /* Statuszeile nach Klasse einfaerben. highlight.js gibt jedem dreistelligen
-         Code dieselbe Klasse `hljs-number` - in einem Mitschnitt ist aber genau das
-         die Stelle, auf die man zuerst sieht: 2xx ist etwas anderes als 4xx.
-         Deshalb hier die einzige eigene Zutat, und bewusst nur diese: Die
-         Statusklassen von HTTP aendern sich nicht, das bleibt stabil. */
       document.querySelectorAll("pre code.language-http .hljs-number").forEach((el) => {
         const code = parseInt(el.textContent, 10);
         if (code >= 100 && code <= 599) {
@@ -113,8 +61,8 @@
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
 
-  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790741874">
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790741874"></head><body class="avd-academy-guide">
+  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=43701531">
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=4a155a65"></head><body class="avd-academy-guide">
   <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><div class="avd-academy-metanav"><span>ATVANTAGE Academy</span>
   </div>
 
@@ -137,7 +85,7 @@
 </header>
 <section class="avd-academy-guide-hero"
            aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a><span>/</span><span aria-current="page">Einen Container aus einem fremden Image betreiben</span></nav><div class="avd-academy-guide-hero__meta">
-      <div class="avd-academy-guide-hero__tags"><span class="avd-academy-tag avd-academy-tag--time">ca. 35 Minuten</span><span class="avd-academy-tag">Container</span><span class="avd-academy-tag">Images</span><span class="avd-academy-tag">Lebenszyklus</span>
+      <div class="avd-academy-guide-hero__tags"><span class="avd-academy-tag avd-academy-tag--time">ca. 45 Minuten</span><span class="avd-academy-tag">Container</span><span class="avd-academy-tag">Images</span><span class="avd-academy-tag">Lebenszyklus</span><span class="avd-academy-tag">Bind Mount</span>
       </div>
       <div class="avd-academy-guide-hero__actions">
         <button type="button" class="avd-academy-btn avd-academy-btn--ghost avd-academy-copy-md"
@@ -157,48 +105,44 @@ dazugeben muss.</p>
 <p>Du…</p>
 
 <ul>
-  <li>ziehst ein Image aus einer Registry und erkennst am Namen, welchen Stand Du
-bekommen hast.</li>
-  <li>erzeugst, startest, stoppst und löschst einen Container mit jeweils einem eigenen
-Befehl.</li>
-  <li>listest laufende und angehaltene Container auf und unterscheidest die beiden
-Zustände.</li>
-  <li>führst einen Befehl <strong>in</strong> einem laufenden Container aus.</li>
-  <li>sagst voraus, was mit einer Datei im Container passiert, wenn er gestoppt bzw.
-gelöscht wird – und prüfst Deine Vorhersage.</li>
+  <li>ziehst Images aus einer Registry.</li>
+  <li>erkennst, welche Tags auf dasselbe Image zeigen und welche nicht.</li>
+  <li>erstellst, startest, stoppst und löschst Container.</li>
+  <li>erklärst den Lebenszyklus eines Containers und was Zustandslosigkeit bedeutet.</li>
 </ul>
 
 <h2 id="definition-of-done">Definition of Done</h2>
 
 <ul class="task-list">
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast <code>nginx</code> in zwei verschiedenen Ständen gezogen und beide in der
-Image-Liste gefunden.</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Ein Container mit dem Namen <code>mein-webserver</code> läuft und liefert im Browser
-bzw. über <code>curl</code> die NGINX-Startseite aus.</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast im laufenden Container eine zusätzliche Seite angelegt und sie
-abgerufen.</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast den Container gestoppt, wieder gestartet und geprüft, ob die Seite
-noch da ist.</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast den Container gelöscht, einen neuen aus demselben Image erzeugt und
-geprüft, ob die Seite noch da ist.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Ein Container mit <code>nginx</code> läuft und ist von außen erreichbar.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Ein zweiter Container liefert <strong>Deine eigene Seite</strong> aus.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Ein dritter Container liefert eine Seite aus, die <strong>auf Deinem Rechner</strong>
+liegt.</li>
   <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast die Reflexionsfragen schriftlich beantwortet.</li>
 </ul>
 
 <h2 id="arbeitsschritte">Arbeitsschritte</h2>
 
+<div class="avd-academy-callout avd-academy-callout--info">
+  <p><strong>Jeden Befehl kannst Du nachschlagen.</strong> Was er tut und welche Schalter er kennt,
+steht in der <a href="https://docs.docker.com/reference/cli/docker/">Docker CLI Reference</a> –
+für den ersten Befehl dieser Übung etwa auf der Seite zu
+<a href="https://docs.docker.com/reference/cli/docker/image/pull/"><code>docker image pull</code></a>.</p>
+</div>
+
 <h3 id="ein-image-ziehen">Ein Image ziehen</h3>
 
 <p>Hol Dir zwei Stände desselben Images – einmal ohne Angabe eines Tags, einmal mit.</p>
 
-<pre><code class="language-bash">docker pull nginx
+<pre><code class="language-bash">docker image pull nginx
 </code></pre>
 
-<pre><code class="language-bash">docker pull nginx:1.27.5
+<pre><code class="language-bash">docker image pull nginx:1.27.5
 </code></pre>
 
 <p>Sieh Dir an, was jetzt lokal liegt:</p>
 
-<pre><code class="language-bash">docker images
+<pre><code class="language-bash">docker image ls
 </code></pre>
 
 <blockquote>
@@ -206,7 +150,7 @@ geprüft, ob die Seite noch da ist.</li>
 Befehl gezogen, obwohl Du keinen angegeben hast?</p>
 </blockquote>
 
-<h3 id="einen-container-erzeugen--zunächst-ohne-tür-nach-außen">Einen Container erzeugen – zunächst ohne Tür nach außen</h3>
+<h3 id="einen-container-erzeugen-und-starten">Einen Container erzeugen und starten</h3>
 
 <p>Erzeugen heißt noch nicht starten. Mach den Schritt bewusst einzeln.</p>
 
@@ -215,36 +159,27 @@ Befehl gezogen, obwohl Du keinen angegeben hast?</p>
 
 <p>Sieh nach, ob er da ist:</p>
 
-<pre><code class="language-bash">docker container ls
-</code></pre>
-
 <pre><code class="language-bash">docker container ls -a
 </code></pre>
 
-<blockquote>
-  <p><strong>Hinweis:</strong> Der erste Befehl zeigt Dir nichts, der zweite schon. Das ist kein
-Fehler – merk Dir den Unterschied, Du wirst ihn noch oft brauchen.</p>
-</blockquote>
-
-<h3 id="den-container-starten-und-aufrufen--versuch-eins">Den Container starten und aufrufen – Versuch eins</h3>
+<p>Jetzt starten – und den Webserver <strong>aus dem Container heraus</strong> fragen, denn
+darin lauscht er auf Port 80:</p>
 
 <pre><code class="language-bash">docker container start mein-webserver
 </code></pre>
 
-<p>Der Webserver im Container lauscht auf Port 80. Versuch, ihn zu erreichen:</p>
-
-<pre><code class="language-bash">curl http://localhost:8080
+<pre><code class="language-bash">docker container exec mein-webserver curl -s http://localhost
 </code></pre>
 
 <blockquote>
-  <p><strong>Hinweis:</strong> Das geht schief, und das ist so gewollt. Notiere, was <code>curl</code>
-meldet. Der Webserver <strong>läuft</strong> – schau selbst nach:
-<code>docker container logs mein-webserver</code>.</p>
+  <p><strong>Hinweis:</strong> Von innen antwortet er – der Webserver läuft also. Aus Deiner
+eigenen Shell erreichst Du ihn trotzdem nicht. Notiere, woran das liegen könnte,
+bevor Du weiterliest.</p>
 </blockquote>
 
-<h3 id="noch-einmal-diesmal-mit-tür-nach-außen">Noch einmal, diesmal mit Tür nach außen</h3>
+<h3 id="den-port-nach-außen-geben">Den Port nach außen geben</h3>
 
-<p>Ob ein Port nach außen gelegt wird, entscheidet sich beim <strong>Erzeugen</strong> des
+<p>Ob ein Port weitergegeben wird, entscheidet sich beim <strong>Erzeugen</strong> des
 Containers. Ein laufender Container lässt sich darin nicht mehr ändern – also
 weg damit und neu:</p>
 
@@ -271,82 +206,85 @@ nicht auf dem Rechner Deines Browsers – nimm dort <code>curl</code> aus dersel
   <p><code>-p 8080:80</code> liest sich von außen nach innen: <strong>außen 8080, innen 80.</strong></p>
 </blockquote>
 
-<h3 id="eine-datei-im-container-anlegen">Eine Datei im Container anlegen</h3>
+<h3 id="einen-zweiten-container--mit-einer-eigenen-seite-darin">Einen zweiten Container – mit einer eigenen Seite darin</h3>
 
-<p>Du kannst einen Befehl <strong>innerhalb</strong> eines laufenden Containers ausführen lassen.</p>
+<p>Stell einen zweiten Container daneben, <strong>ohne</strong> den ersten zu stoppen. Beide
+sollen gleichzeitig laufen und von außen erreichbar sein.</p>
 
-<pre><code class="language-bash">docker container exec mein-webserver bash -c "echo 'Hallo Welt' &gt; /usr/share/nginx/html/hallo.html"
+<p>Leg in <strong>diesem zweiten</strong> Container eine zusätzliche Seite an. Einen Befehl
+kannst Du auch <strong>innerhalb</strong> eines laufenden Containers ausführen lassen:</p>
+
+<pre><code class="language-bash">docker container exec zweiter-webserver bash -c "echo 'Hallo Welt' &gt; /usr/share/nginx/html/hallo.html"
 </code></pre>
 
-<p>Prüfe, ob die neue Seite ausgeliefert wird:</p>
+<p>Teste, ob die neue Seite per HTTP erreichbar ist. Überprüfe, dass sie beim
+<strong>ersten</strong> Container nicht verfügbar ist.</p>
 
-<pre><code class="language-bash">curl http://localhost:8080/hallo.html
+<p>Stopp den zweiten Container und starte ihn wieder. Überprüfe, ob die Seite immer
+noch erreichbar ist.</p>
+
+<h3 id="ein-dritter-container--die-seite-liegt-auf-deinem-rechner">Ein dritter Container – die Seite liegt auf Deinem Rechner</h3>
+
+<p>Bisher ist alles, was Du angelegt hast, <strong>im</strong> Container entstanden. Jetzt
+andersherum: Die Seite liegt bei Dir, der Container reicht sie nur durch.</p>
+
+<p>Leg auf Deinem Rechner ein Verzeichnis <code>website</code> an und darin eine Datei
+<code>index.html</code> mit etwas Inhalt.</p>
+
+<p>Erstelle einen dritten Container, diesmal mit einem zusätzlichen Parameter: Er
+hängt Dein Verzeichnis dorthin, wo NGINX seine Seiten sucht.</p>
+
+<pre><code class="language-bash">-v "$(pwd)/website":/usr/share/nginx/html
 </code></pre>
 
-<h3 id="stoppen-neu-starten-und-nachsehen">Stoppen, neu starten und nachsehen</h3>
+<div class="avd-academy-callout avd-academy-callout--warning">
+  <p><strong>Git Bash unter Windows:</strong> Sie baut den Pfad im Container zu einem Windows-Pfad
+um – der Container findet das Verzeichnis dann nicht. Stell dem Aufruf in diesem
+Fall <code>MSYS_NO_PATHCONV=1</code> voran:</p>
 
-<pre><code class="language-bash">docker container stop mein-webserver
+  <pre><code class="language-bash">MSYS_NO_PATHCONV=1 docker container create ...
 </code></pre>
+</div>
 
-<pre><code class="language-bash">docker container start mein-webserver
-</code></pre>
-
-<pre><code class="language-bash">curl http://localhost:8080/hallo.html
-</code></pre>
+<p>Starte ihn und ruf die Seite auf. Ändere dann die Datei <strong>auf Deinem Rechner</strong>
+und ruf die Seite erneut auf – ohne den Container anzufassen.</p>
 
 <blockquote>
-  <p><strong>Hinweis:</strong> Notiere Dein Ergebnis, bevor Du weitermachst. Gleich wird es
-interessant.</p>
+  <p><strong>Hinweis:</strong> Das Verzeichnis einzuhängen heißt <strong>Bind Mount</strong>: Der Container
+sieht einen Ordner Deines Rechners an einer Stelle seines eigenen
+Dateisystems. Häng das <strong>Verzeichnis</strong> ein, nicht die einzelne Datei – viele
+Editoren legen beim Speichern eine neue Datei an, und die findet der Container
+dann nicht mehr.</p>
 </blockquote>
 
-<h3 id="löschen-neu-erzeugen-und-nachsehen">Löschen, neu erzeugen und nachsehen</h3>
+<div class="avd-academy-callout avd-academy-callout--info">
+  <p><strong>Zum Schluss aufräumen</strong> – erst, wenn Du alle drei nebeneinander gesehen hast:</p>
 
-<p>Überleg Dir <strong>vorher</strong>, was Du erwartest – dann probiere es aus.</p>
-
-<pre><code class="language-bash">docker container stop mein-webserver
+  <pre><code class="language-bash">docker container stop mein-webserver zweiter-webserver dritter-webserver
 </code></pre>
 
-<pre><code class="language-bash">docker container rm mein-webserver
+  <pre><code class="language-bash">docker container rm mein-webserver zweiter-webserver dritter-webserver
 </code></pre>
-
-<pre><code class="language-bash">docker container create --name mein-webserver -p 8080:80 nginx:1.27.5
-</code></pre>
-
-<pre><code class="language-bash">docker container start mein-webserver
-</code></pre>
-
-<pre><code class="language-bash">curl http://localhost:8080/hallo.html
-</code></pre>
-
-<blockquote>
-  <p><strong>Hinweis:</strong> Wenn das Ergebnis Dich überrascht, hast Du gerade den wichtigsten
-Punkt dieser Übung gefunden. Schreib ihn auf.</p>
-</blockquote>
-
-<h3 id="zum-schluss-aufräumen">Zum Schluss aufräumen</h3>
-
-<pre><code class="language-bash">docker container stop mein-webserver
-</code></pre>
-
-<pre><code class="language-bash">docker container rm mein-webserver
-</code></pre>
+</div>
 
 <h2 id="reflexionsfragen">Reflexionsfragen</h2>
 
 <ul>
-  <li>Der erste Container lief, war aber nicht erreichbar. <strong>Woran lag das</strong> – und
-warum ließ sich das am laufenden Container nicht nachträglich beheben?</li>
-  <li>Was ist mit der Datei <code>hallo.html</code> passiert, als der Container <strong>gestoppt und
-wieder gestartet</strong> wurde? Und als er <strong>gelöscht und neu angelegt</strong> wurde? Wie
-erklärst Du den Unterschied?</li>
-  <li>Was macht der folgende Befehl, und wozu wäre er nützlich?
-<code>docker run --rm -it nginx:1.27.5 /bin/sh</code>
-Welche drei Schritte dieser Übung fasst er zusammen, und was bedeutet <code>--rm</code>?</li>
-  <li>Der erste <code>docker pull</code> ohne Tag hat etwas gezogen. <strong>Was genau</strong>, und warum ist
-das für einen Server, der morgen noch laufen soll, ein Problem?</li>
-  <li><strong>Wie findest Du das passende Image für Deinen Anwendungsfall?</strong> Woran erkennst
-Du auf Docker Hub, ob Du einem Image trauen kannst – und was tust Du, wenn es
-für Deine Anwendung gar keins gibt?</li>
+  <li>Der erste Container lief, war aber nicht erreichbar. <strong>Woran lag das?</strong></li>
+  <li>Der zweite Container liefert <code>hallo.html</code> aus, der erste nicht – obwohl beide
+aus <strong>demselben Image</strong> stammen. Wie erklärst Du das? Was ist beim Stoppen und
+Neustarten mit der Datei passiert, und was <strong>würde</strong> passieren, wenn Du den
+Container löschst und neu erzeugst?</li>
+  <li><strong>Für welche Anwendungsfälle sind Bind Mounts sinnvoll?</strong></li>
+  <li>
+    <p>Was macht der folgende Befehl, und wozu wäre er nützlich?</p>
+
+    <pre><code class="language-bash">docker container run --rm -it nginx:1.27.5 /bin/sh
+</code></pre>
+  </li>
+  <li><strong>Welche Bedeutung hat das <code>latest</code>-Tag?</strong></li>
+  <li>In der Dokumentation zu <code>docker image pull</code> steht ein Abschnitt <strong>Aliases</strong>.
+Wie ist er zu deuten?</li>
 </ul>
 
 
@@ -360,54 +298,50 @@ dazugeben muss.
 
 Du…
 
-- ziehst ein Image aus einer Registry und erkennst am Namen, welchen Stand Du
-  bekommen hast.
-- erzeugst, startest, stoppst und löschst einen Container mit jeweils einem eigenen
-  Befehl.
-- listest laufende und angehaltene Container auf und unterscheidest die beiden
-  Zustände.
-- führst einen Befehl **in** einem laufenden Container aus.
-- sagst voraus, was mit einer Datei im Container passiert, wenn er gestoppt bzw.
-  gelöscht wird – und prüfst Deine Vorhersage.
+- ziehst Images aus einer Registry.
+- erkennst, welche Tags auf dasselbe Image zeigen und welche nicht.
+- erstellst, startest, stoppst und löschst Container.
+- erklärst den Lebenszyklus eines Containers und was Zustandslosigkeit bedeutet.
 
 ## Definition of Done
 
-* [ ] Du hast `nginx` in zwei verschiedenen Ständen gezogen und beide in der
-  Image-Liste gefunden.
-* [ ] Ein Container mit dem Namen `mein-webserver` läuft und liefert im Browser
-  bzw. über `curl` die NGINX-Startseite aus.
-* [ ] Du hast im laufenden Container eine zusätzliche Seite angelegt und sie
-  abgerufen.
-* [ ] Du hast den Container gestoppt, wieder gestartet und geprüft, ob die Seite
-  noch da ist.
-* [ ] Du hast den Container gelöscht, einen neuen aus demselben Image erzeugt und
-  geprüft, ob die Seite noch da ist.
+* [ ] Ein Container mit `nginx` läuft und ist von außen erreichbar.
+* [ ] Ein zweiter Container liefert **Deine eigene Seite** aus.
+* [ ] Ein dritter Container liefert eine Seite aus, die **auf Deinem Rechner**
+  liegt.
 * [ ] Du hast die Reflexionsfragen schriftlich beantwortet.
 
 ## Arbeitsschritte
+
+&lt;div class=&quot;avd-academy-callout avd-academy-callout--info&quot; markdown=&quot;1&quot;&gt;
+**Jeden Befehl kannst Du nachschlagen.** Was er tut und welche Schalter er kennt,
+steht in der [Docker CLI Reference](https://docs.docker.com/reference/cli/docker/) –
+für den ersten Befehl dieser Übung etwa auf der Seite zu
+[`docker image pull`](https://docs.docker.com/reference/cli/docker/image/pull/).
+&lt;/div&gt;
 
 ### Ein Image ziehen
 
 Hol Dir zwei Stände desselben Images – einmal ohne Angabe eines Tags, einmal mit.
 
 ```bash
-docker pull nginx
+docker image pull nginx
 ```
 
 ```bash
-docker pull nginx:1.27.5
+docker image pull nginx:1.27.5
 ```
 
 Sieh Dir an, was jetzt lokal liegt:
 
 ```bash
-docker images
+docker image ls
 ```
 
 &gt; **Hinweis:** Schau in der Spalte `TAG` genau hin. Welchen Tag hat der erste
 &gt; Befehl gezogen, obwohl Du keinen angegeben hast?
 
-### Einen Container erzeugen – zunächst ohne Tür nach außen
+### Einen Container erzeugen und starten
 
 Erzeugen heißt noch nicht starten. Mach den Schritt bewusst einzeln.
 
@@ -418,35 +352,27 @@ docker container create --name mein-webserver nginx:1.27.5
 Sieh nach, ob er da ist:
 
 ```bash
-docker container ls
-```
-
-```bash
 docker container ls -a
 ```
 
-&gt; **Hinweis:** Der erste Befehl zeigt Dir nichts, der zweite schon. Das ist kein
-&gt; Fehler – merk Dir den Unterschied, Du wirst ihn noch oft brauchen.
-
-### Den Container starten und aufrufen – Versuch eins
+Jetzt starten – und den Webserver **aus dem Container heraus** fragen, denn
+darin lauscht er auf Port 80:
 
 ```bash
 docker container start mein-webserver
 ```
 
-Der Webserver im Container lauscht auf Port 80. Versuch, ihn zu erreichen:
-
 ```bash
-curl http://localhost:8080
+docker container exec mein-webserver curl -s http://localhost
 ```
 
-&gt; **Hinweis:** Das geht schief, und das ist so gewollt. Notiere, was `curl`
-&gt; meldet. Der Webserver **läuft** – schau selbst nach:
-&gt; `docker container logs mein-webserver`.
+&gt; **Hinweis:** Von innen antwortet er – der Webserver läuft also. Aus Deiner
+&gt; eigenen Shell erreichst Du ihn trotzdem nicht. Notiere, woran das liegen könnte,
+&gt; bevor Du weiterliest.
 
-### Noch einmal, diesmal mit Tür nach außen
+### Den Port nach außen geben
 
-Ob ein Port nach außen gelegt wird, entscheidet sich beim **Erzeugen** des
+Ob ein Port weitergegeben wird, entscheidet sich beim **Erzeugen** des
 Containers. Ein laufender Container lässt sich darin nicht mehr ändern – also
 weg damit und neu:
 
@@ -476,95 +402,93 @@ curl http://localhost:8080
 &gt;
 &gt; `-p 8080:80` liest sich von außen nach innen: **außen 8080, innen 80.**
 
-### Eine Datei im Container anlegen
+### Einen zweiten Container – mit einer eigenen Seite darin
 
-Du kannst einen Befehl **innerhalb** eines laufenden Containers ausführen lassen.
+Stell einen zweiten Container daneben, **ohne** den ersten zu stoppen. Beide
+sollen gleichzeitig laufen und von außen erreichbar sein.
+
+Leg in **diesem zweiten** Container eine zusätzliche Seite an. Einen Befehl
+kannst Du auch **innerhalb** eines laufenden Containers ausführen lassen:
 
 ```bash
-docker container exec mein-webserver bash -c &quot;echo &apos;Hallo Welt&apos; &gt; /usr/share/nginx/html/hallo.html&quot;
+docker container exec zweiter-webserver bash -c &quot;echo &apos;Hallo Welt&apos; &gt; /usr/share/nginx/html/hallo.html&quot;
 ```
 
-Prüfe, ob die neue Seite ausgeliefert wird:
+Teste, ob die neue Seite per HTTP erreichbar ist. Überprüfe, dass sie beim
+**ersten** Container nicht verfügbar ist.
+
+Stopp den zweiten Container und starte ihn wieder. Überprüfe, ob die Seite immer
+noch erreichbar ist.
+
+### Ein dritter Container – die Seite liegt auf Deinem Rechner
+
+Bisher ist alles, was Du angelegt hast, **im** Container entstanden. Jetzt
+andersherum: Die Seite liegt bei Dir, der Container reicht sie nur durch.
+
+Leg auf Deinem Rechner ein Verzeichnis `website` an und darin eine Datei
+`index.html` mit etwas Inhalt.
+
+Erstelle einen dritten Container, diesmal mit einem zusätzlichen Parameter: Er
+hängt Dein Verzeichnis dorthin, wo NGINX seine Seiten sucht.
 
 ```bash
-curl http://localhost:8080/hallo.html
+-v &quot;$(pwd)/website&quot;:/usr/share/nginx/html
 ```
 
-### Stoppen, neu starten und nachsehen
+&lt;div class=&quot;avd-academy-callout avd-academy-callout--warning&quot; markdown=&quot;1&quot;&gt;
+**Git Bash unter Windows:** Sie baut den Pfad im Container zu einem Windows-Pfad
+um – der Container findet das Verzeichnis dann nicht. Stell dem Aufruf in diesem
+Fall `MSYS_NO_PATHCONV=1` voran:
 
 ```bash
-docker container stop mein-webserver
+MSYS_NO_PATHCONV=1 docker container create ...
 ```
+&lt;/div&gt;
+
+Starte ihn und ruf die Seite auf. Ändere dann die Datei **auf Deinem Rechner**
+und ruf die Seite erneut auf – ohne den Container anzufassen.
+
+&gt; **Hinweis:** Das Verzeichnis einzuhängen heißt **Bind Mount**: Der Container
+&gt; sieht einen Ordner Deines Rechners an einer Stelle seines eigenen
+&gt; Dateisystems. Häng das **Verzeichnis** ein, nicht die einzelne Datei – viele
+&gt; Editoren legen beim Speichern eine neue Datei an, und die findet der Container
+&gt; dann nicht mehr.
+
+&lt;div class=&quot;avd-academy-callout avd-academy-callout--info&quot; markdown=&quot;1&quot;&gt;
+**Zum Schluss aufräumen** – erst, wenn Du alle drei nebeneinander gesehen hast:
 
 ```bash
-docker container start mein-webserver
-```
-
-```bash
-curl http://localhost:8080/hallo.html
-```
-
-&gt; **Hinweis:** Notiere Dein Ergebnis, bevor Du weitermachst. Gleich wird es
-&gt; interessant.
-
-### Löschen, neu erzeugen und nachsehen
-
-Überleg Dir **vorher**, was Du erwartest – dann probiere es aus.
-
-```bash
-docker container stop mein-webserver
-```
-
-```bash
-docker container rm mein-webserver
-```
-
-```bash
-docker container create --name mein-webserver -p 8080:80 nginx:1.27.5
-```
-
-```bash
-docker container start mein-webserver
-```
-
-```bash
-curl http://localhost:8080/hallo.html
-```
-
-&gt; **Hinweis:** Wenn das Ergebnis Dich überrascht, hast Du gerade den wichtigsten
-&gt; Punkt dieser Übung gefunden. Schreib ihn auf.
-
-### Zum Schluss aufräumen
-
-```bash
-docker container stop mein-webserver
+docker container stop mein-webserver zweiter-webserver dritter-webserver
 ```
 
 ```bash
-docker container rm mein-webserver
+docker container rm mein-webserver zweiter-webserver dritter-webserver
 ```
+&lt;/div&gt;
 
 ## Reflexionsfragen
 
-- Der erste Container lief, war aber nicht erreichbar. **Woran lag das** – und
-  warum ließ sich das am laufenden Container nicht nachträglich beheben?
-- Was ist mit der Datei `hallo.html` passiert, als der Container **gestoppt und
-  wieder gestartet** wurde? Und als er **gelöscht und neu angelegt** wurde? Wie
-  erklärst Du den Unterschied?
+- Der erste Container lief, war aber nicht erreichbar. **Woran lag das?**
+- Der zweite Container liefert `hallo.html` aus, der erste nicht – obwohl beide
+  aus **demselben Image** stammen. Wie erklärst Du das? Was ist beim Stoppen und
+  Neustarten mit der Datei passiert, und was **würde** passieren, wenn Du den
+  Container löschst und neu erzeugst?
+- **Für welche Anwendungsfälle sind Bind Mounts sinnvoll?**
 - Was macht der folgende Befehl, und wozu wäre er nützlich?
-  `docker run --rm -it nginx:1.27.5 /bin/sh`
-  Welche drei Schritte dieser Übung fasst er zusammen, und was bedeutet `--rm`?
-- Der erste `docker pull` ohne Tag hat etwas gezogen. **Was genau**, und warum ist
-  das für einen Server, der morgen noch laufen soll, ein Problem?
-- **Wie findest Du das passende Image für Deinen Anwendungsfall?** Woran erkennst
-  Du auf Docker Hub, ob Du einem Image trauen kannst – und was tust Du, wenn es
-  für Deine Anwendung gar keins gibt?
+
+  ```bash
+  docker container run --rm -it nginx:1.27.5 /bin/sh
+  ```
+- **Welche Bedeutung hat das `latest`-Tag?**
+- In der Dokumentation zu `docker image pull` steht ein Abschnitt **Aliases**.
+  Wie ist er zu deuten?
 
 ## Weiterführende Informationen
 
 - [Docker CLI Reference](https://docs.docker.com/reference/cli/docker/)
-- [Das NGINX-Image auf Docker Hub](https://hub.docker.com/_/nginx)
-- [Die Schulungsumgebung nutzen](/shared/schulungsumgebung/)
+- [NGINX-Image](https://hub.docker.com/_/nginx)
+- [Musterlösung (PR)](https://github.com/atvantage-academy/code-template-docker-basics/pull/1)
+- [Musterlösung (Pages)](https://atvantage-academy.github.io/code-template-docker-basics/container-verwalten/)
 </textarea>
     </main><aside class="avd-academy-guide-sidebar"><details class="avd-academy-guide-side avd-academy-guide-side--toc avd-academy-fold" data-avd-academy-toc-box
                data-avd-academy-toc-grenze="12" open hidden>
@@ -576,7 +500,7 @@ docker container rm mein-webserver
       </div>
       <div class="avd-academy-guide-side avd-academy-guide-side--bordered">
         <div class="avd-academy-guide-side__label">Weiterführende Informationen</div>
-        <div class="avd-academy-guide-side__links"><a href="https://docs.docker.com/reference/cli/docker/" target="_blank" rel="noopener"><span>Docker CLI Reference</span></a><a href="https://hub.docker.com/_/nginx" target="_blank" rel="noopener"><span>Das NGINX-Image auf Docker Hub</span></a><a href="/shared/schulungsumgebung/"><span>Die Schulungsumgebung nutzen</span></a>
+        <div class="avd-academy-guide-side__links"><a href="https://docs.docker.com/reference/cli/docker/" target="_blank" rel="noopener"><span>Docker CLI Reference</span><span class="avd-academy-linkicon avd-academy-linkicon--right avd-academy-linkicon--mark" style="--avd-academy-linkicon-src: url('/training-material-container-technologies/assets/icons/docker.svg')" aria-hidden="true"></span></a><a href="https://hub.docker.com/_/nginx" target="_blank" rel="noopener"><span>NGINX-Image</span><span class="avd-academy-linkicon avd-academy-linkicon--right avd-academy-linkicon--mark" style="--avd-academy-linkicon-src: url('/training-material-container-technologies/assets/icons/docker.svg')" aria-hidden="true"></span></a><a href="https://github.com/atvantage-academy/code-template-docker-basics/pull/1" target="_blank" rel="noopener"><span>Musterlösung (PR)</span><span class="avd-academy-linkicon avd-academy-linkicon--right avd-academy-linkicon--mark" style="--avd-academy-linkicon-src: url('/training-material-container-technologies/theme/academy/icons/icon-github.svg')" aria-hidden="true"></span></a><a href="https://atvantage-academy.github.io/code-template-docker-basics/container-verwalten/" target="_blank" rel="noopener"><span>Musterlösung (Pages)</span><span class="avd-academy-linkicon avd-academy-linkicon--right avd-academy-linkicon--mark" style="--avd-academy-linkicon-src: url('/training-material-container-technologies/theme/academy/icons/icon-github-pages.svg')" aria-hidden="true"></span></a>
         </div></div>
     </aside>
   </div><div class="avd-academy-print-contact" aria-hidden="true">

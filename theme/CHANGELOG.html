@@ -1,62 +1,4 @@
-<!DOCTYPE html>
-<!--
-  ATVANTAGE-Academy – EINZIGES Seitenlayout (Jekyll)
-  --------------------------------------------------
-  Ein Layout für alles: allgemeine Doku-Seiten UND Guides (Übungen/Anleitungen).
-  Optik nach der ATVANTAGE-Website: Meta-Nav, weiße sticky Kopfzeile, Hero-Band,
-  zweispaltig mit rechter Sidebar (automatisches Inhaltsverzeichnis, Fortschritt
-  aus Task-Listen, weiterführende Ressourcen). Überschriften ohne Emoji-Icons.
-
-  Verwendung im Front Matter:  layout: default   (oder `layout: guide` – Alias,
-  siehe guide.html; beides rendert dieselbe Guide-Ansicht)
-
-  `layout: visualization` (siehe visualization.html) rendert dieselbe Seite OHNE
-  obere Navigation (Meta-Leiste + Kopfzeile/TopNav), OHNE Brotkrumen und OHNE den
-  rechten Bereich (Inhaltsverzeichnis, Fortschritt, Ressourcen – auch bei gesetztem
-  `resources`), mit schmalerem Hero-Balken und breiterem, zentriertem Inhalt – für
-  eigenständige Visualisierungen/Simulationen.
-
-  Alle Front-Matter-Felder sind OPTIONAL (Convention over Configuration). Nur der
-  Titel ist faktisch erforderlich – als `title:` ODER als erste `#`-Überschrift:
-
-    title:       "…"                → sonst erste #-Überschrift (eins von beiden nötig)
-    description: "…"                → Meta-Description
-    duration:    8                  → Zahl in Minuten → Hero-Tag „ca. 8 Minuten“
-                                       (ungefähre LESEDAUER; bei Guides/Übungen die
-                                       Dauer der Übung, bei Visualisierungen die
-                                       Bearbeitungszeit – dort unüblich, aber erlaubt).
-    topics:      ["Cloud & DevOps"] → weitere Hero-Tags
-    resources:   [{title, url, icon}, …] → Sidebar-Karte „Weiterführende Informationen“.
-                                       title und/oder icon (Bildpfad); icon erscheint
-                                       rechts und wird kreisrund dargestellt.
-    breadcrumb:                     → Brotkrumen anpassen (beides optional):
-      label: "…"                    → überschreibt den Ordnernamen dieser Ebene;
-                                       in der Ordner-`index.md` gesetzt gilt es für
-                                       ALLE Seiten im Ordner und in Unterordnern.
-      ancestors: [{title, url}, …]  → explizite Vorfahren-Kette OHNE die aktuelle
-                                       Seite (diese wird automatisch angehängt); in
-                                       der `index.md` gesetzt wird sie vererbt.
-
-  „Markdown kopieren“ (Button im Hero) erscheint NUR auf Guides – dort ist das
-  Übernehmen des Quelltexts der Zweck. Bedingungen: Markdown-Seite (`.md`, nicht
-  reines HTML) UND der Schalter `toolbar.copy` (Vorgabe: nur `layout: guide`, siehe
-  `_includes/avd-switch.html`). Doku-Seiten und Visualisierungen haben ihn nicht –
-  bei letzteren, weil ihr Inhalt nicht sinnvoll als Markdown kopierbar ist.
-
-  DIE SEITENWERKZEUGE – QR-Code, Farbschema-Umschalter, Drucken – sind EINE
-  Komponente (`_includes/tools.html`) an zwei Standorten in diesem Rahmen:
-
-    Kopfzeile   `chrome: true`  (page, guide)      QR + Farbschema
-    Hero rechts `hero_tools`    (visualization)    QR + Farbschema + Drucken
-
-  Die Regel dahinter ist die Kopfzeile: Wo es sie gibt, tragen die Werkzeuge sie;
-  wo nicht, tritt der Hero an ihre Stelle. Drucken gibt es nur dort, weil auf einer
-  gewöhnlichen Seite der Browser-Befehl (Strg/Cmd+P) genügt, die rahmenlose
-  Ansicht aber keinen anderen Weg aufs Papier hat.
-
-  Der QR-Code wird erst im Browser erzeugt (theme/academy/atvantage.js), weil die
-  Adresse zur Build-Zeit nicht feststeht; ohne JavaScript erscheint er nicht.
---><html lang="de">
+<!DOCTYPE html><html lang="de">
 <head>
   <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1"><title>Änderungen am ATVANTAGE Academy Theme · Containertechnologien (Academy)</title><meta property="og:site_name" content="Containertechnologien (Academy)">
@@ -64,13 +6,35 @@
 
 <meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790741874">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790741874" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790741874" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790741874">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=118a443d"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=2dd7a61e">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=91dc645c">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=4b561b0b">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=da9fc064"><style>
+:where(.avd-academy-guide-main a[href*="docker.com"]) {
+  position: relative;
+  padding-left: 1.35em;
+}
+:where(.avd-academy-guide-main a[href*="docker.com"])::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .18em;
+  width: 1em;
+  height: 1em;
+  background: center / contain no-repeat;
+  background-image: none;
+  background-color: currentColor;
+  mask-image: url("/training-material-container-technologies/assets/icons/docker.svg");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+}
+.avd-academy-linkmark--none :where(.avd-academy-guide-main a[href*="docker.com"]),
+:where(.avd-academy-guide-main a[href*="docker.com"]).avd-academy-linkmark--none { padding-left: 0; }
+</style><link rel="stylesheet" media="print" href="/training-material-container-technologies/theme/academy/print.css?v=aedd1b20">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=c7831634" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=a9cecc4f" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=2b412283">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -83,24 +47,8 @@
         .querySelectorAll(_auswahl)
         .forEach((el) => { if (!el.dataset.highlighted) { hljs.highlightElement(el); } });
       _faerben(document);
-
-      /* NACHTRAEGLICH EINGEFUEGTER CODE. Die Hervorhebung laeuft einmal beim Laden.
-         Eine Seite, die ihre Codebloecke per Skript einsetzt - eine Visualisierung,
-         die rohe Nachrichten durchschaltet -, bekam deshalb gar keine Farben und
-         baute sich einen eigenen Hervorheber. Genau die Kopie, die das Theme
-         verhindern soll.
-
-         `AvdHighlight.apply(knoten)` faerbt, was seither dazugekommen ist; `hljs`
-         liegt daneben fuer Faelle, die mehr brauchen. Das Ereignis sagt Seiten, die
-         frueh zeichnen, wann der Haken da ist - die Module laden asynchron. */
       window.AvdHighlight = { hljs, apply: _faerben, languages: _hlsprachen.slice() };
       document.dispatchEvent(new CustomEvent("avd-academy-highlight-ready"));
-
-      /* Statuszeile nach Klasse einfaerben. highlight.js gibt jedem dreistelligen
-         Code dieselbe Klasse `hljs-number` - in einem Mitschnitt ist aber genau das
-         die Stelle, auf die man zuerst sieht: 2xx ist etwas anderes als 4xx.
-         Deshalb hier die einzige eigene Zutat, und bewusst nur diese: Die
-         Statusklassen von HTTP aendern sich nicht, das bleibt stabil. */
       document.querySelectorAll("pre code.language-http .hljs-number").forEach((el) => {
         const code = parseInt(el.textContent, 10);
         if (code >= 100 && code <= 599) {
@@ -113,8 +61,8 @@
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
 
-  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790741874">
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790741874"></head><body class="avd-academy-guide">
+  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=43701531">
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=4a155a65"></head><body class="avd-academy-guide">
   <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><div class="avd-academy-metanav"><span>ATVANTAGE Academy</span>
   </div>
 
@@ -178,6 +126,743 @@
 inkompatibel gilt und wie eingestuft wird, steht in
 <a href="https://timetoact.ghe.com/AVD-Academy-Tools/academy-theme/blob/main/AGENTS.md"><code>AGENTS.md</code></a>,
 Abschnitt „Theme-Version“.</p>
+
+<hr />
+
+<h2 id="3130">3.13.0</h2>
+
+<h3 id="ein-eigenes-icon-darf-jetzt-mitfärben-mask">Ein eigenes Icon darf jetzt mitfärben: <code>mask</code></h3>
+
+<p><strong>Minor.</strong> Die sechs Vorgaben des Themes tragen die Farbe ihres Verweises. Ein eigenes Icon
+aus <code>linkmarks</code> tat das nicht – aus gutem Grund: Dem Theme sieht man einer fremden Datei
+nicht an, ob sie eine einfarbige Glyphe oder ein <strong>Foto</strong> ist, und eine Maske machte aus
+beidem eine Silhouette.</p>
+
+<p><strong>Die Lücke war nicht die Vorgabe, sondern dass es keinen Weg daneben gab.</strong> Der Wert von
+<code>linkmarks</code> war im Schema schlicht <code>{"type": "string"}</code> – wer ein einfarbiges Icon eintrug,
+konnte nirgends sagen „das darf mitfärben”. Jetzt kann er es:</p>
+
+<pre><code class="language-yaml">linkmarks:
+  "docker.com": /assets/icons/docker.svg          # wie bisher: behält seine Farben
+  "jira.example.com":
+    icon: /assets/icons/jira.svg
+    mask: true                                    # einfarbig: folgt der Linkfarbe
+</code></pre>
+
+<p>Die Zeichenketten-Form bleibt gültig und bedeutet unverändert dasselbe. <strong>Die Zusage kann
+nur die Autorin geben</strong> – sie kennt ihr Bild.</p>
+
+<p><strong>Es wirkt an beiden Orten</strong>, im Fließtext wie in TopNav, Fußbereich und
+Ressourcen-Leiste. Nachgemessen am gebauten Stand mit roter Linkfarbe:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>Fließtext</th>
+      <th>Seitenleiste</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>mask: true</code></td>
+      <td>Maske, Fläche <code>rgb(200,30,30)</code></td>
+      <td><code>&lt;span&gt;</code>, Maske, <code>rgb(200,30,30)</code></td>
+    </tr>
+    <tr>
+      <td>ohne <code>mask</code></td>
+      <td>keine Maske</td>
+      <td><code>&lt;img&gt;</code>, keine Maske</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="das-github-pages-icon-ist-nicht-mehr-angeschnitten">Das GitHub-Pages-Icon ist nicht mehr angeschnitten</h3>
+
+<p>Es wirkte beschnitten – und war es: Gemessen mit <code>getBBox()</code> ragte der Octocat <strong>1,6
+Einheiten nach links und 1,33 nach oben</strong> aus der <code>viewBox</code> heraus, während die Kugel unten
+rechts mit 0,2 Einheiten fast am Rand klebte. Das Zeichen sitzt jetzt mit ringsum 1,05 bis
+1,17 Einheiten Luft darin.</p>
+
+<h3 id="korrektur">Korrektur</h3>
+
+<p>Die Beschreibung von <code>linkmarks</code> im Konfigurations-Schema nannte noch <strong>fünf</strong> Vorgaben und
+zählte <code>github.io</code> nicht mit – ein unvollständiges Umbenennen aus 3.10.0. Das ist der Text,
+den die IDE beim Schreiben der <code>_config.yml</code> zeigt.</p>
+
+<p>Schema-Fassungen bleiben unverändert (Config 10): Die Objektform kommt <strong>zusätzlich</strong> zur
+Zeichenkette, nichts wird entfernt oder verengt.</p>
+
+<hr />
+
+<h2 id="3120">3.12.0</h2>
+
+<h3 id="auch-neben-dem-fließtext-trägt-die-linkmarke-die-farbe-ihres-verweises">Auch neben dem Fließtext trägt die Linkmarke die Farbe ihres Verweises</h3>
+
+<p><strong>Minor.</strong> Mit 3.10.1 nahm das Icon vor einem Verweis <code>currentColor</code> an – aber nur im
+<strong>Fließtext</strong>. In Navigation, Fußbereich und Ressourcen-Leiste blieb es orange, auch wenn
+der Linktext daneben blau war. Auf einer Seite mit eigener Akzentfarbe standen damit zwei
+Farben nebeneinander, die dasselbe meinen.</p>
+
+<p><strong>Der Grund war das Markup, nicht die Farbe.</strong> Dort steht das Icon als <code>&lt;img&gt;</code>, und ein
+<code>&lt;img&gt;</code> ist ein <strong>ersetztes</strong> Element: Eine Maske beschneidet es, färbt es aber nicht um –
+seine Pixel kommen aus der Datei, und in der steht <code>fill="#FF5401"</code>. Keine CSS-Variable der
+Seite reicht dorthin.</p>
+
+<p><strong>Für die sechs Linkmarken-Glyphen gibt das Theme jetzt ein maskiertes Element aus:</strong></p>
+
+<pre><code class="language-html">&lt;!-- vorher --&gt;  &lt;img  class="avd-academy-linkicon" src="…/icon-github.svg" alt=""&gt;
+&lt;!-- jetzt  --&gt;  &lt;span class="avd-academy-linkicon avd-academy-linkicon--mark" …&gt;&lt;/span&gt;
+</code></pre>
+
+<h3 id="was-ausdrücklich-ein-bild-bleibt">Was ausdrücklich ein Bild bleibt</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>warum</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>die übrigen 21 Icons des Themes</td>
+      <td><strong>Anthrazit-Kacheln</strong> mit weißen und orangen Zeichen – maskiert würden sie zu einer einfarbigen Fläche</td>
+    </tr>
+    <tr>
+      <td>ein eigenes <code>icon:</code> einer Autorin</td>
+      <td>Sie hat das Bild gewählt, samt seiner Farben</td>
+    </tr>
+    <tr>
+      <td>Profilbilder</td>
+      <td>Die Teamseiten zeigen über dasselbe Feld <strong>Fotos</strong>, kreisrund beschnitten</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Entschieden wird das am <strong>Markup</strong>, nicht in der CSS: <code>_includes/avd-linkicon.html</code> kennt die
+sechs einfarbigen Glyphen namentlich. Ein Pfadpräfix wie „alles unter <code>icons/</code>” träfe auch
+die Kacheln.</p>
+
+<p><strong>Der runde Beschnitt entfällt für die Glyphen.</strong> <code>.avd-academy-linkicon</code> rundet
+quadratische Quellbilder zu Avataren; bei LinkedIn schnitte der Radius die Ecken des
+Zeichens ab.</p>
+
+<p><strong>Ohne Maskenunterstützung</strong> bleibt es beim Bild in seiner eigenen Farbe – dieselbe
+Rückfallebene wie bei den Marken im Fließtext.</p>
+
+<p><strong>Neue Klasse <code>avd-academy-linkicon--mark</code></strong>, Markup Contract Fassung 7. Für Autorinnen
+ändert sich nichts: Weder <code>resources</code> noch <code>nav</code> noch <code>footer</code> bekommen ein neues Feld.</p>
+
+<hr />
+
+<h2 id="3110">3.11.0</h2>
+
+<h3 id="ein-feldname-wird-gerade-gerückt-permaid--perma_id">Ein Feldname wird gerade gerückt: <code>permaid</code> → <code>perma_id</code></h3>
+
+<p><strong>Minor, und nichts bricht.</strong> Zusammengesetzte Feldnamen des Themes schreiben sich mit
+Unterstrich – <code>page_id</code>, <code>folder_slug</code>, <code>og_image</code>, <code>cache_busting</code>, <code>compact_after</code>,
+<code>open_threshold</code>, <code>error_mode</code>, <code>logo_ratio</code>. Genau <strong>einer</strong> tat es nicht: <code>permaid</code>.</p>
+
+<pre><code class="language-yaml">perma_id: http-grundlagen   # neu
+permaid:   http-grundlagen   # wirkt weiter, meldet sich als veraltet
+</code></pre>
+
+<p><strong>Der alte Name wirkt unverändert</strong>, und zwar überall: Die Seite bekommt ihre kurze
+Adresse, die Weiterleitung entsteht, der Eintrag in <code>avd-permalinks.json</code> auch. Umgelegt
+wird er, bevor irgendetwas ihn liest (<code>_plugins/avd-aliases.rb</code>, Haken <code>post_read</code>) – der
+übrige Code kennt nur noch einen Namen.</p>
+
+<p><strong>Stehen beide auf einer Seite, gewinnt <code>perma_id</code>.</strong> Wer beide schreibt, hat den neuen
+bewusst gesetzt; der alte steht meist nur noch da, weil ihn niemand entfernt hat.</p>
+
+<h3 id="der-schemaprüfer-kennt-deprecated">Der Schemaprüfer kennt <code>deprecated</code></h3>
+
+<p>Neu als Schlüsselwort in <code>schema/validate.rb</code> – und ausdrücklich als <strong>Hinweis</strong>, nicht als
+Fehler:</p>
+
+<pre><code>HINWEIS: `permaid` ist veraltet – 1 Stelle(n).
+         VERALTET: benutze `perma_id`.
+         z. B. docs/beispiel.md:4
+</code></pre>
+
+<p>Der Lauf bleibt grün (Exit-Code 0). Wäre es ein Fehler, ginge jeder bestehende Stand rot,
+und diese Umbenennung wäre ein Major statt eines Minor. Gesammelt wird <strong>je Feld</strong>, nicht
+je Stelle: Wer <code>permaid</code> auf vierzig Seiten stehen hat, bekommt einen Satz und drei
+Beispiele – dieselbe Form wie beim <code>lang</code>-Hinweis.</p>
+
+<p>Der Nachfolger steht in der <strong>Beschreibung</strong> des Schemas und nicht in einem eigenen
+Schlüsselwort: <code>deprecated</code> ist in JSON Schema ein Boolean, und die veröffentlichten
+Schemas liest auch die IDE. Eine Quelle, nicht zwei, die auseinanderlaufen können.</p>
+
+<h3 id="avd-permalinksjson-trägt-beide-schlüssel"><code>avd-permalinks.json</code> trägt beide Schlüssel</h3>
+
+<p>Die Datei lesen fremde Pipelines; ein Schlüssel, den kein Schema prüft, darf nicht
+stillschweigend verschwinden. Sie trägt deshalb <code>perma_id</code> <strong>und</strong> <code>permaid</code> mit demselben
+Wert. Der alte entfällt mit dem nächsten Major.</p>
+
+<h3 id="was-nicht-umbenannt-wurde">Was NICHT umbenannt wurde</h3>
+
+<p>Geprüft wurden alle 51 Front-Matter- und 100 Konfigurationsschlüssel. <code>permaid</code> war der
+einzige belegte Ausreißer. Bewusst geblieben sind:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>warum</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>noindex</code></td>
+      <td>spiegelt <code>&lt;meta name="robots" content="noindex"&gt;</code> – eine Web-Konvention</td>
+    </tr>
+    <tr>
+      <td><code>tagline</code>, <code>website</code></td>
+      <td>echte englische Wörter, keine Zusammensetzungen</td>
+    </tr>
+    <tr>
+      <td><code>qr</code>, <code>toc</code>, <code>i18n</code></td>
+      <td>etablierte Abkürzungen; <code>qr_code</code> wäre keine Verbesserung</td>
+    </tr>
+    <tr>
+      <td><code>og_image</code></td>
+      <td><code>og</code> ist der Namensraum, der Unterstrich steht richtig</td>
+    </tr>
+    <tr>
+      <td><code>audience</code> / <code>audiences</code></td>
+      <td>kein Tippfehler-Paar: die Zielgruppe DIESES Builds gegen die Deklaration aller</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Offen und bewusst vertagt: <code>linkmarks</code> (Wortschöpfung, läse sich als <code>link_marks</code>) und die
+Asymmetrie zwischen <code>page_id</code> beim Setzen und <code>page</code> beim Verweisen.</p>
+
+<p>Schema-Fassungen bleiben unverändert (Front Matter 4): Ein zusätzliches optionales Feld ist
+additiv, und entfernt wird nichts.</p>
+
+<hr />
+
+<h2 id="3101">3.10.1</h2>
+
+<h3 id="die-linkmarke-trägt-die-farbe-ihres-verweises">Die Linkmarke trägt die Farbe ihres Verweises</h3>
+
+<p>Das Icon vor einem Verweis stand fest auf dem <strong>Akzent</strong> der Site. Die Linkfarbe kommt im
+Auslieferungszustand aus derselben Quelle – wer sie aber eigens setzt, bekam ein Icon in
+einer Farbe und den Text daneben in einer anderen. Die Marke nimmt jetzt <code>currentColor</code>
+und folgt damit dem Verweis, vor dem sie steht.</p>
+
+<pre><code class="language-css">/* vorher */ background-color: var(--avd-academy-color-accent);
+/* jetzt  */ background-color: currentColor;
+</code></pre>
+
+<p><strong>Im Auslieferungszustand ändert sich nichts.</strong> <code>--avd-academy-color-link</code> ist als
+<code>var(--avd-academy-color-accent)</code> definiert; ohne eigene Linkfarbe ist das Ergebnis Pixel
+für Pixel dasselbe wie in 3.10.0.</p>
+
+<p><strong><code>fill="currentColor"</code> im SVG hätte das nicht geleistet, und das ist nachgemessen:</strong> Ein
+über <code>url()</code> geladenes SVG ist ein eigenes Dokument. <code>currentColor</code> löst dort gegen dessen
+eigene Wurzel auf und wird <strong>schwarz</strong>, nicht zur Farbe der Seite. Die Farbe muss von
+aussen kommen – über die Fläche unter der Maske. Die Icon-Dateien sind deshalb unverändert.</p>
+
+<p><strong>Neu zugesagt:</strong> <code>ui --avd-academy-color-link --avd-academy-color-bg</code> (3:1). Ohne diese
+Zeile wäre die Marke die einzige UI-Grafik des Themes ohne gemessenes Kontrastpaar – ihr
+Kontrast hängt jetzt an der Linkfarbe und nicht mehr am Akzent. Kontrastpaare in Fassung 2,
+320 Messungen.</p>
+
+<p><strong>Unverändert bleibt zweierlei:</strong> Ohne Unterstützung für <code>mask-image</code> zeigt der Browser
+weiterhin die Datei selbst, also das Marken-Orange – diese Rückfallebene gab es schon
+vorher. Und ein eigenes Icon aus <code>linkmarks</code> bleibt unmaskiert und behält seine Farben; es
+könnte mehrfarbig sein, und eine Maske machte daraus eine Silhouette.</p>
+
+<hr />
+
+<h2 id="3100">3.10.0</h2>
+
+<h3 id="eine-eigene-linkmarke-für-github-pages">Eine eigene Linkmarke für GitHub Pages</h3>
+
+<p><strong>Minor.</strong> Ein Verweis auf ein Repository und ein Verweis auf die daraus veröffentlichte
+Seite sind zwei verschiedene Ziele. Bisher trug nur der erste eine Marke: <code>github.com</code>
+wurde erkannt, <code>github.io</code> nicht – ausgerechnet die Adresse, unter der die Unterlagen der
+Academy selbst stehen.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Ziel</th>
+      <th>woran</th>
+      <th>Icon</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>github.com</code></td>
+      <td>Host</td>
+      <td>Octocat</td>
+    </tr>
+    <tr>
+      <td><strong><code>github.io</code></strong></td>
+      <td><strong>Host</strong></td>
+      <td><strong>Octocat mit Weltkugel</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Warum ein eigenes Icon und nicht dasselbe.</strong> GitHub hat für Pages keine eigene Marke,
+und der Octocat allein verspricht Quelltext. Wer in einer Unterlage auf beides verweist –
+„hier das Repo, hier die fertige Seite” –, soll den Unterschied <strong>vor</strong> dem Klick sehen.
+Das Zeichen ist deshalb die Octocat-Marke mit einer ausgestanzten Kugel daneben; die
+Aussparung ist keine Zierde, sondern nötig, weil Linkmarken einfarbig als Maske gerendert
+werden und beide Formen sonst zu einer Fläche zusammenliefen.</p>
+
+<p><strong>Die beiden Muster können sich nicht in die Quere kommen:</strong> <code>github.com</code> kommt in
+<code>…github.io/…</code> nicht vor und umgekehrt. Ein Repo-Link behält den Octocat.</p>
+
+<p>Neu dazu die Klasse <code>avd-academy-linkmark--github-pages</code> – für den Fall, dass eine
+veröffentlichte Seite unter eigener Domain liegt und das Muster deshalb nicht greift:</p>
+
+<pre><code class="language-html">&lt;a class="avd-academy-linkmark--github-pages" href="https://schulung.example.com/"&gt;die Unterlage&lt;/a&gt;
+</code></pre>
+
+<p>Die Marke gilt wie die anderen auch im Fließtext, in der Navigation, im Fußbereich und in
+der Ressourcen-Leiste; <code>avd-academy-linkmark--none</code> nimmt sie wie gewohnt weg.
+Markup-Contract-Fassung 6, neu im Paket <code>academy/icons/icon-github-pages.svg</code>.</p>
+
+<p><strong>Wer <code>github.io</code> schon selbst in <code>linkmarks</code> eingetragen hat, behält seine Angabe</strong> –
+ein gleicher Schlüssel in der <code>_config.yml</code> gewinnt weiterhin gegen die Vorgabe.</p>
+
+<hr />
+
+<h2 id="390">3.9.0</h2>
+
+<h3 id="die-ausgelieferte-seite-wird-schlank">Die ausgelieferte Seite wird schlank</h3>
+
+<p><strong>Minor.</strong> Am Verhalten ändert sich nichts, an der Menge schon: Eine gewöhnliche Doku-Seite
+lud bisher rund <strong>288 KB</strong> Theme-CSS und -JS, jetzt sind es <strong>107 KB</strong>. Nichts davon muss
+ein Projekt tun – es kommt mit dem Paket.</p>
+
+<p><strong>Kommentare bleiben in der Quelle.</strong> Das Seitenlayout trug seine Erklärung als echten
+HTML-Kommentar, und damit stand sie in <strong>jeder</strong> gebauten Seite: 3 631 Byte, bei einer
+48-KB-Seite rund sieben Prozent. Dasselbe galt für die Kommentare in den Inline-Skripten
+(Spracherkennung, Syntax-Hervorhebung), im erzeugten <code>&lt;style&gt;</code> der Linkmarken und in den
+SVG-Bildmarken. Alle Erklärungen stehen weiter da, wo sie hingehören – als
+Liquid-Kommentar in der Quelle, der es nicht ins Ergebnis schafft.</p>
+
+<p><strong>CSS, JS und SVG werden minimiert ausgeliefert.</strong> Leerraum und Kommentare raus, lokale
+Namen im JavaScript gekürzt (esbuild). <strong>Öffentliche Namen bleiben unangetastet:</strong> Jede
+Klasse <code>avd-academy-*</code> und jede Variable <code>--avd-academy-*</code> aus
+<code>contract/markup-contract.txt</code> heißt nach der Minimierung genau so wie davor – sie sind
+eine Zusage, kein Implementierungsdetail. Das Markenfundament unter <code>atvantage/</code> bleibt
+ebenfalls, wie es aus dem Export kam.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Datei</th>
+      <th style="text-align: right">vorher</th>
+      <th style="text-align: right">nachher</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>academy/components.css</code></td>
+      <td style="text-align: right">110 872</td>
+      <td style="text-align: right">47 431</td>
+    </tr>
+    <tr>
+      <td><code>academy/atvantage.js</code></td>
+      <td style="text-align: right">90 138</td>
+      <td style="text-align: right">26 749</td>
+    </tr>
+    <tr>
+      <td><code>jekyll/simulation.js</code> + <code>.css</code></td>
+      <td style="text-align: right">78 671</td>
+      <td style="text-align: right">37 647</td>
+    </tr>
+    <tr>
+      <td>alles zusammen</td>
+      <td style="text-align: right">435 646</td>
+      <td style="text-align: right">175 724</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong><code>print.css</code> hält das Rendern nicht mehr auf.</strong> Es wird mit <code>media="print"</code> eingebunden –
+12 KB, die für die Bildschirmansicht nichts beitragen. Die eine Bildschirmregel, die dort
+stand (<code>.avd-academy-print-contact</code> ausblenden), liegt jetzt in <code>components.css</code>. <strong>Wer
+eigenes Druck-CSS an dieser Datei vorbei ergänzt hat, braucht nichts zu tun;</strong> wer
+Bildschirmregeln in einer eigenen <code>print.css</code>-Kopie führte, verschiebt sie wie hier.</p>
+
+<h3 id="neu-assetscache_busting">Neu: <code>assets.cache_busting</code></h3>
+
+<p>Hinter jeder Asset-Adresse steht eine Kennung, damit der Browser nach einem neuen Build
+nicht die alte Fassung aus seinem Cache zeigt. Bisher war das die <strong>Bauzeit</strong> – also
+entwertete jeder Build <strong>alles</strong>, auch die 110 KB <code>components.css</code>, an der sich nichts
+geändert hatte. Jetzt entsteht die Kennung aus dem <strong>Dateiinhalt</strong>: Was gleich geblieben
+ist, bleibt im Cache.</p>
+
+<pre><code class="language-yaml">assets:
+  cache_busting: hash   # Vorgabe – Kennung aus dem Dateiinhalt
+  # cache_busting: time # Bauzeit, das Verhalten bis 3.8
+  # cache_busting: none # gar keine Kennung, etwa hinter einem CDN
+</code></pre>
+
+<p>Schema-Fassungen bleiben unverändert (<code>config</code> 10): Das Feld ist optional und additiv.</p>
+
+<h3 id="doku-auslieferung">Doku: „Auslieferung“</h3>
+
+<p>Unter <em>Funktionsumfang → Bauen</em> steht alles davon auf einer Seite – was das Theme von
+sich aus schlank hält, was ausdrücklich nicht passiert und wo die beiden Schalter sitzen.
+Neu im Paket dafür <code>academy/icons/icon-delivery.svg</code>.</p>
+
+<hr />
+
+<h2 id="381">3.8.1</h2>
+
+<h3 id="der-kopieren-knopf-funktioniert-wieder-ohne-sicheren-kontext">Der Kopieren-Knopf funktioniert wieder ohne sicheren Kontext</h3>
+
+<p>An einem Code-Block und an „Markdown kopieren” tat der Knopf nichts, und in der Konsole
+stand:</p>
+
+<pre><code>Uncaught TypeError: Cannot read properties of undefined (reading 'writeText')
+</code></pre>
+
+<p><strong><code>navigator.clipboard</code> gibt es nur im sicheren Kontext.</strong> Eine aus dem Dateisystem
+geöffnete Unterlage hat keinen, und über <code>http://</code> von einer anderen Maschine aus auch
+nicht. Dort ist das Objekt schlicht <code>undefined</code>, und der direkte Zugriff wirft.</p>
+
+<p><strong>Der Rückfall war längst da – nur eingeschlossen.</strong> Der Adress-Knopf der Werkzeugleiste
+hatte ihn seit 3.4.0; er lag aber <strong>innerhalb</strong> dessen eigener Funktion und war für die
+beiden anderen Knöpfe nicht erreichbar. Ein Rückfall, den nur eine von drei gleichartigen
+Stellen kennt, ist keiner. Er steht jetzt einmal für alle (<code>copyText</code>).</p>
+
+<p><strong>Auch eine Ablehnung fällt jetzt zurück.</strong> Die Schnittstelle kann da sein und trotzdem
+ablehnen – fehlende Berechtigung, Seite nicht im Vordergrund. Und schlagen <strong>beide</strong> Wege
+fehl, fängt der Aufrufer das ab: Sonst bliebe eine unbehandelte Ablehnung stehen, derselbe
+rote Konsoleneintrag eine Zeile später. Der Knopf bleibt dann unmarkiert – er hat nicht
+kopiert und soll es nicht behaupten.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Lage</th>
+      <th>vorher</th>
+      <th>nachher</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>kein <code>navigator.clipboard</code></td>
+      <td><code>TypeError</code>, keine Rückmeldung</td>
+      <td>kopiert über das Textfeld</td>
+    </tr>
+    <tr>
+      <td><code>writeText</code> lehnt ab</td>
+      <td>unbehandelte Ablehnung</td>
+      <td>Rückfall, sonst stiller Misserfolg</td>
+    </tr>
+    <tr>
+      <td>Normalfall</td>
+      <td>kopiert</td>
+      <td>unverändert</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h2 id="380">3.8.0</h2>
+
+<h3 id="permalink-pfade-dürfen-je-sprache-verschieden-heißen">Permalink-Pfade dürfen je Sprache verschieden heißen</h3>
+
+<p><strong>Minor.</strong> Ein Vorsatz ist eine Adresse, und Adressen sind mehrsprachig: Was auf Deutsch
+„Schulungen” heißt, heißt auf Englisch „Trainings”. Überall dort, wo in <code>permalinks</code> ein
+Pfad steht – in <code>base</code> wie in jedem Wert unter <code>overrides.entries</code> –, darf jetzt statt einer
+Zeichenkette eine <strong>Sprachkarte</strong> stehen, genau wie bei <code>folder_slug</code>:</p>
+
+<pre><code class="language-yaml">permalinks:
+  overrides:
+    strategy: path
+    entries:
+      "/trainings/**": { de: "/schulungen/{1}", en: "/trainings/{1}" }
+</code></pre>
+
+<table>
+  <thead>
+    <tr>
+      <th>Seite</th>
+      <th>Adresse</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>deutsche Fassung</td>
+      <td><code>/schulungen/«ordner»/«permaid»/</code></td>
+    </tr>
+    <tr>
+      <td>englische Fassung</td>
+      <td><code>/en/trainings/«ordner»/«permaid»/</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Für <code>base</code> gilt dasselbe, ganz ohne <code>overrides</code> – <code>base: { de: "/kurz", en: "/short" }</code>
+ergibt <code>/kurz/«permaid»/</code> und <code>/en/short/«permaid»/</code>.</p>
+
+<p><strong>Die Sprachwurzel kommt weiterhin davor.</strong> Die Karte wählt nur, welcher Pfad dahinter
+steht; das Muster links trifft wie immer den Quellpfad.</p>
+
+<p><strong>Eine unvollständige Karte bricht den Bau ab</strong> – hier gibt es keinen Rückfall auf die
+Standardsprache, anders als bei <code>sprachtext</code>-Feldern. Dort ist der Wert eine Beschriftung:
+Fehlt sie, steht der deutsche Text im englischen Baum, sichtbar und schnell behoben. Hier
+ist der Wert eine <strong>Adresse</strong>; ein Rückfall legte die englische Seite unter den deutschen
+Vorsatz, und alles, was die Sprache am Pfad abliest, hielte sie für deutsch. Der Bau bliebe
+dabei grün. Ein nicht deklarierter Code bricht ebenso ab.</p>
+
+<p><strong>Zweimal geprüft:</strong> Das Schema kennt die deklarierten Sprachen und meldet einen unbekannten
+Code <strong>vor</strong> dem Bau mit Zeilennummer (neue Definition <code>sprachpfad</code>); die Vollständigkeit
+prüft das Plugin beim Bau.</p>
+
+<p><strong>Reserviert wird jetzt genauer.</strong> Ein <code>{ de: "/schulungen", en: "/trainings" }</code> sperrt
+<code>/schulungen/</code> und <code>/en/trainings/</code> – nicht mehr <code>/en/schulungen/</code>, wo nie ein Permalink
+entstünde. Eine Zeichenkette gilt weiterhin in jedem Sprachbaum.</p>
+
+<p><strong>Nichts zu tun für bestehende Sites:</strong> Eine Zeichenkette bedeutet unverändert dasselbe.
+Die Schemafassung steigt nicht – es kommt eine Möglichkeit hinzu, keine fällt weg.</p>
+
+<hr />
+
+<h2 id="371">3.7.1</h2>
+
+<h3 id="das-icon-bleibt-bei-seinem-verweis">Das Icon bleibt bei seinem Verweis</h3>
+
+<p>Stand ein Verweis am Zeilenende, konnte der Umbruch zwischen Marke und Text fallen: Das Icon
+blieb allein auf der einen Zeile, der Verweistext rutschte auf die nächste.</p>
+
+<p><strong>Die Ursache war die Bauart, nicht ein Randfall.</strong> Als <code>inline-block</code> war das Icon ein
+eigenes Kästchen im Textfluss, und dahinter darf ein Browser umbrechen. Gemessen über 121
+Spaltenbreiten trat das bei <strong>14</strong> davon auf.</p>
+
+<p><strong>Jetzt nimmt das Icon am Umbruch gar nicht mehr teil:</strong> Es ist absolut positioniert, den
+Platz macht das <code>padding-left</code> des Verweises – und der bricht erst <strong>vor seinem ersten Wort</strong>
+um. Nach derselben Messung: <strong>0 von 121</strong>.</p>
+
+<p><strong>Lange Verweistexte brechen weiterhin normal.</strong> Das war die Gegenprobe, denn ein
+<code>white-space: nowrap</code> hätte den Umbruch zwar auch verhindert – und dafür jeden langen Verweis
+über den Rand geschoben.</p>
+
+<p><strong>Die Rücknahme nimmt den Platz mit weg.</strong> <code>avd-academy-linkmark--none</code> entfernt jetzt auch
+die Einrückung, sonst bliebe eine Lücke ohne Icon stehen. Sie nennt dafür dieselben Ziele
+noch einmal, statt pauschal <code>a { padding-left: 0 }</code> zu schreiben: Das hätte auch einem Knopf
+im selben Abschnitt seine Innenabstände genommen – nachgemessen, er behält sie.</p>
+
+<h3 id="die-marke-trägt-die-farbe-der-site">Die Marke trägt die Farbe der Site</h3>
+
+<p>Ein Schulungsrepo mit blauem Akzent bekam bisher <strong>orange</strong> Linkmarken. Die Icons liegen als
+Bilddatei vor, und ein Bild färbt kein CSS um.</p>
+
+<p><strong>Jetzt nehmen die fünf Vorgaben die Akzentfarbe</strong> – <code>--avd-academy-color-accent</code>, also auch
+das, was <code>--avd-academy-accent-base</code> daraus ableitet, und den Wechsel zwischen Hell und
+Dunkel gleich mit.</p>
+
+<p><strong>Maske statt Filter, und das ist gemessen.</strong> Eine <code>filter</code>-Kette kann eine Zielfarbe nur
+annähern – gemessen <code>rgb(36,126,237)</code> statt <code>rgb(31,111,235)</code> – und vor allem <strong>keine
+Variable lesen</strong>: Ihre Stufen sind feste Zahlen, die Akzentfarbe steht erst zur Laufzeit
+fest. Die Maske nimmt das Icon als Schablone und die Farbe aus dem Token: exakt getroffen.</p>
+
+<p><strong>Wo keine Maske geht, bleibt alles beim Alten.</strong> Der Umbau steht in einem <code>@supports</code>;
+ohne Maskenunterstützung bliebe sonst ein eingefärbter Klotz in Icon-Grösse stehen.</p>
+
+<p><strong><code>icon-pdf.svg</code> ist neu gezeichnet.</strong> Die Buchstaben „PD” und der Eckknick waren weiss
+<em>aufgemalt</em> – in einer Maske ist Weiss deckend, das Blatt wäre eine leere Fläche geworden.
+Jetzt sind sie <strong>Aussparungen</strong> (<code>fill-rule="evenodd"</code>). Sichtbar ändert sich dadurch nichts,
+ausser dass der Eckknick nun auch als Knick zu sehen ist.</p>
+
+<p><strong>Ein eigenes Icon aus <code>site.linkmarks</code> bleibt unmaskiert.</strong> Es könnte mehrfarbig sein, und
+eine Maske machte daraus eine Silhouette – die erzeugten Regeln nehmen sie ausdrücklich
+zurück. Wer seine Marke eingefärbt haben will, liefert sie in der gewünschten Farbe.</p>
+
+<p>Der Markup Contract bleibt bei <strong>Fassung 5</strong>: Es kommt kein Name dazu und keiner fällt weg.</p>
+
+<hr />
+
+<h2 id="370">3.7.0</h2>
+
+<h3 id="linkmarken-sind-jetzt-eine-schnittstelle">Linkmarken sind jetzt eine Schnittstelle</h3>
+
+<p><strong>Minor.</strong> Welches Ziel welches Icon bekommt, steht ab jetzt in der <code>_config.yml</code> – und
+damit im Projekt, nicht im Theme:</p>
+
+<pre><code class="language-yaml">linkmarks:
+  "docker.com": /assets/icons/docker.svg         # neues Ziel
+  "github.com": /assets/icons/github-eigen.svg   # Vorgabe überschrieben
+  ".zip": /assets/icons/archiv.svg               # neue Endung
+</code></pre>
+
+<p><strong>Der Schlüssel sagt selbst, wie er trifft:</strong> mit einem Punkt beginnend eine <strong>Endung</strong>, mit
+einem Doppelpunkt endend ein <strong>Schema</strong>, sonst ein <strong>Host</strong>. Drei Formen, die sich nicht
+verwechseln lassen – und keine vierte Regel, die man nachschlagen müsste.</p>
+
+<p><strong>Es ergänzt und überschreibt, es ersetzt nicht.</strong> Die fünf Vorgaben bleiben; ein gleicher
+Schlüssel gewinnt, ein neuer kommt dazu. Das ist Jekylls eigenes Zusammenführen der
+Konfigurationen – nachgemessen, nicht angenommen.</p>
+
+<p><strong>Überschreibst Du eine Vorgabe, zieht ihre Klasse mit.</strong> <code>avd-academy-linkmark--github</code>
+bedeutet „dieses Ziel”, nicht „diese Datei”. Ein eigener Schlüssel bekommt bewusst <strong>keine</strong>
+Klasse: Das Theme soll ihren Namen nicht erfinden.</p>
+
+<p><strong>Es wirkt an allen drei Stellen</strong> – als Marke im Fließtext und als Standard-Icon in TopNav,
+Fußbereich und <code>resources</code>. Die Rangfolge: <code>icon</code> am Eintrag, dann <code>linkmarks</code>, dann die
+Vorgaben.</p>
+
+<p><strong>Die Vorgaben bleiben in der CSS, nicht in <code>_config.defaults.yml</code>.</strong> Zwei der drei Consumer
+laden diese Datei nicht; stünden die fünf Ziele dort, verlören genau diese Sites ihre
+Marken. Dieselbe Falle wie beim Wörterbuch.</p>
+
+<p><strong>Kein neues Icon im Paket.</strong> Ein Docker-Logo wäre ein fremdes Markenzeichen, über das das
+Theme nicht zu entscheiden hat – wer es braucht, bringt es mit und trägt eine Zeile ein.</p>
+
+<p>Der Markup Contract bleibt bei <strong>Fassung 5</strong>: Es kommt kein Name dazu und keiner fällt weg.</p>
+
+<hr />
+
+<h2 id="361">3.6.1</h2>
+
+<h3 id="ein-eintrag-ohne-icon-bekommt-es-jetzt-vom-ziel">Ein Eintrag ohne <code>icon</code> bekommt es jetzt vom Ziel</h3>
+
+<p>Wer in <code>resources</code> oder in der TopNav einen Verweis nach draußen setzt, musste bisher den
+Icon-Pfad dazuschreiben. Jetzt genügen Titel und Adresse:</p>
+
+<pre><code class="language-yaml">resources:
+  - title: "Den Trainerleitfaden lesen"
+    url: /shared/trainerleitfaden-lesen.html      # intern – kein Icon
+  - title: "Musterlösungen (GitHub)"
+    url: https://github.com/atvantage-academy/…   # Octocat, ohne Zutun
+</code></pre>
+
+<p>Erkannt wird dasselbe wie bei den Linkmarken im Fließtext: <code>github.com</code>, <code>linkedin.com</code>,
+<code>baeldung.com</code>, ein <code>mailto:</code> und eine Adresse, die auf <code>.pdf</code> <strong>endet</strong> (<code>/a.pdf.html</code> ist
+eine HTML-Seite, <code>handout.pdf?v=2</code> eine PDF).</p>
+
+<p><strong>Eine eigene Angabe schlägt die Ableitung immer.</strong> Bei einem Kurzlink, einem Spiegel unter
+eigener Domain oder einem zweiten Profil beim selben Anbieter liegt das Muster daneben –
+dann sagt es die Autorin.</p>
+
+<p><strong>Abgeleitet wird nur mit <code>title</code>.</strong> Ein Eintrag ohne Titel rendert das Icon <strong>statt</strong> eines
+Textes; aus einem Menüpunkt würde sonst ein nacktes Logo. Der Kontaktblock des Fußbereichs
+bleibt ebenfalls unberührt: Dort steht die E-Mail-Adresse als Text, und ein Umschlag daneben
+sagte nichts, was die Adresse nicht schon sagt.</p>
+
+<p><strong>Ein Auflöser für alle drei Stellen</strong> – <code>theme/jekyll/_includes/avd-link-icon.html</code>, benutzt
+von Kopfzeile, Fußbereich und Ressourcen-Leiste. Stünde die Regel an jeder einzeln, wäre sie
+an einer davon irgendwann vergessen.</p>
+
+<p><strong>Die Zielliste steht damit zweimal</strong> – hier in Liquid, im Fließtext als CSS
+(<code>avd-academy-linkmark</code>). Das ist bewusst: Ein <code>::before</code> in der Leiste sähe anders aus als
+ein gesetztes Icon, stünde auf der falschen Seite und liesse sich nicht überschreiben. Beide
+Stellen verweisen aufeinander; <strong>wer ein Ziel ergänzt, ergänzt es an beiden.</strong></p>
+
+<hr />
+
+<h2 id="360">3.6.0</h2>
+
+<h3 id="linkmarken-ein-verweis-zeigt-sein-ziel">Linkmarken: ein Verweis zeigt sein Ziel</h3>
+
+<p><strong>Minor.</strong> Ein Verweis nach draußen bekommt <strong>von selbst</strong> ein Icon, das verrät, wo er
+hinführt. Die Autorin schreibt einen gewöhnlichen Markdown-Link, sonst nichts:</p>
+
+<pre><code class="language-markdown">Die [Musterlösung](https://github.com/…) liegt im Repo.
+</code></pre>
+
+<table>
+  <thead>
+    <tr>
+      <th>Ziel</th>
+      <th>woran</th>
+      <th>Icon</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>github.com</code></td>
+      <td>Domain</td>
+      <td>Octocat</td>
+    </tr>
+    <tr>
+      <td><code>linkedin.com</code></td>
+      <td>Domain</td>
+      <td>LinkedIn</td>
+    </tr>
+    <tr>
+      <td><code>baeldung.com</code></td>
+      <td>Domain</td>
+      <td>Feder</td>
+    </tr>
+    <tr>
+      <td><code>mailto:</code></td>
+      <td><strong>Schema</strong></td>
+      <td>Umschlag</td>
+    </tr>
+    <tr>
+      <td><code>.pdf</code></td>
+      <td><strong>Endung</strong></td>
+      <td>Blatt</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Die letzten beiden sind keine Marken, sondern Gattungen.</strong> Ein <code>mailto:</code> gehört keinem
+Anbieter, und eine Dateiendung erst recht nicht – deshalb konnten sie hinzukommen, ohne dass
+jemand über ein fremdes Logo entscheiden muss. Die drei Markenzeichen sind dieselben, die
+Academy Online längst führt; das Theme ist jetzt ihr einziger Ort.</p>
+
+<p><strong>Zwei Ausnahmen, beide als Klasse:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>avd-academy-linkmark--none</code></td>
+      <td>keine Marke, auch wenn ein Muster greift – wirkt auch von einem Vorfahren aus, für eine ganze Linkliste</td>
+    </tr>
+    <tr>
+      <td><code>avd-academy-linkmark--«name»</code></td>
+      <td>diese Marke, auch wenn keines greift – für Kurzlinks, Weiterleitungen, Spiegel unter eigener Domain</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Nur im Inhaltsbereich.</strong> In Navigation, Fußbereich und Ressourcen tragen Verweise ihr Icon
+weiter über das Feld <code>icon</code> – dort bestimmt die Autorin das Bild, hier das Ziel.</p>
+
+<p><strong>Kein JavaScript.</strong> Ein Attributselektor auf <code>href</code> leistet das und wirkt auch im Ausdruck
+und in einem Bundle, das jemand aus dem Dateisystem öffnet.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>neu im Contract</td>
+      <td>die sechs <code>avd-academy-linkmark--*</code></td>
+    </tr>
+    <tr>
+      <td>Fassung</td>
+      <td>4 → <strong>5</strong> (290 Namen)</td>
+    </tr>
+  </tbody>
+</table>
 
 <hr />
 
@@ -5181,6 +5866,34 @@ Projekt, <strong>nach</strong> dem Release.</p>
 <p>Register der Übergangslösungen, die nur existieren, um einen Bruch zu vermeiden.
 <strong>Jeder Eintrag ist technische Schuld mit Verfallsdatum:</strong> Beim nächsten
 Major-Sprung wird die Liste durchgegangen und geleert.</p>
+
+<p><strong>Offen für den nächsten Major (4.0)</strong> – verfolgt in Issue #269:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Seit</th>
+      <th>Schicht</th>
+      <th>beim Major zu tun</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>3.11.0</td>
+      <td><code>permaid</code> als Alias für <code>perma_id</code> (Front Matter)</td>
+      <td>Feld aus <code>frontmatter.schema.json</code> und aus <code>AvdAcademy::Aliases::FRONT_MATTER</code> entfernen</td>
+    </tr>
+    <tr>
+      <td>3.11.0</td>
+      <td>Schlüssel <code>permaid</code> neben <code>perma_id</code> in <code>avd-permalinks.json</code></td>
+      <td>aus <code>avd-permalinks.rb</code> entfernen</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Projekte müssen dann:</strong> <code>permaid:</code> im Front Matter in <code>perma_id:</code> umbenennen – der
+Schemaprüfer nennt bis dahin jede Stelle. Wer <code>avd-permalinks.json</code> in einer eigenen
+Pipeline liest, stellt dort auf den Schlüssel <code>perma_id</code> um.</p>
 
 <p><strong>Für 3.0 durchgegangen und geleert.</strong> Zwei Einträge standen drin, beide sind weg:</p>
 

@@ -1,62 +1,4 @@
-<!DOCTYPE html>
-<!--
-  ATVANTAGE-Academy – EINZIGES Seitenlayout (Jekyll)
-  --------------------------------------------------
-  Ein Layout für alles: allgemeine Doku-Seiten UND Guides (Übungen/Anleitungen).
-  Optik nach der ATVANTAGE-Website: Meta-Nav, weiße sticky Kopfzeile, Hero-Band,
-  zweispaltig mit rechter Sidebar (automatisches Inhaltsverzeichnis, Fortschritt
-  aus Task-Listen, weiterführende Ressourcen). Überschriften ohne Emoji-Icons.
-
-  Verwendung im Front Matter:  layout: default   (oder `layout: guide` – Alias,
-  siehe guide.html; beides rendert dieselbe Guide-Ansicht)
-
-  `layout: visualization` (siehe visualization.html) rendert dieselbe Seite OHNE
-  obere Navigation (Meta-Leiste + Kopfzeile/TopNav), OHNE Brotkrumen und OHNE den
-  rechten Bereich (Inhaltsverzeichnis, Fortschritt, Ressourcen – auch bei gesetztem
-  `resources`), mit schmalerem Hero-Balken und breiterem, zentriertem Inhalt – für
-  eigenständige Visualisierungen/Simulationen.
-
-  Alle Front-Matter-Felder sind OPTIONAL (Convention over Configuration). Nur der
-  Titel ist faktisch erforderlich – als `title:` ODER als erste `#`-Überschrift:
-
-    title:       "…"                → sonst erste #-Überschrift (eins von beiden nötig)
-    description: "…"                → Meta-Description
-    duration:    8                  → Zahl in Minuten → Hero-Tag „ca. 8 Minuten“
-                                       (ungefähre LESEDAUER; bei Guides/Übungen die
-                                       Dauer der Übung, bei Visualisierungen die
-                                       Bearbeitungszeit – dort unüblich, aber erlaubt).
-    topics:      ["Cloud & DevOps"] → weitere Hero-Tags
-    resources:   [{title, url, icon}, …] → Sidebar-Karte „Weiterführende Informationen“.
-                                       title und/oder icon (Bildpfad); icon erscheint
-                                       rechts und wird kreisrund dargestellt.
-    breadcrumb:                     → Brotkrumen anpassen (beides optional):
-      label: "…"                    → überschreibt den Ordnernamen dieser Ebene;
-                                       in der Ordner-`index.md` gesetzt gilt es für
-                                       ALLE Seiten im Ordner und in Unterordnern.
-      ancestors: [{title, url}, …]  → explizite Vorfahren-Kette OHNE die aktuelle
-                                       Seite (diese wird automatisch angehängt); in
-                                       der `index.md` gesetzt wird sie vererbt.
-
-  „Markdown kopieren“ (Button im Hero) erscheint NUR auf Guides – dort ist das
-  Übernehmen des Quelltexts der Zweck. Bedingungen: Markdown-Seite (`.md`, nicht
-  reines HTML) UND der Schalter `toolbar.copy` (Vorgabe: nur `layout: guide`, siehe
-  `_includes/avd-switch.html`). Doku-Seiten und Visualisierungen haben ihn nicht –
-  bei letzteren, weil ihr Inhalt nicht sinnvoll als Markdown kopierbar ist.
-
-  DIE SEITENWERKZEUGE – QR-Code, Farbschema-Umschalter, Drucken – sind EINE
-  Komponente (`_includes/tools.html`) an zwei Standorten in diesem Rahmen:
-
-    Kopfzeile   `chrome: true`  (page, guide)      QR + Farbschema
-    Hero rechts `hero_tools`    (visualization)    QR + Farbschema + Drucken
-
-  Die Regel dahinter ist die Kopfzeile: Wo es sie gibt, tragen die Werkzeuge sie;
-  wo nicht, tritt der Hero an ihre Stelle. Drucken gibt es nur dort, weil auf einer
-  gewöhnlichen Seite der Browser-Befehl (Strg/Cmd+P) genügt, die rahmenlose
-  Ansicht aber keinen anderen Weg aufs Papier hat.
-
-  Der QR-Code wird erst im Browser erzeugt (theme/academy/atvantage.js), weil die
-  Adresse zur Build-Zeit nicht feststeht; ohne JavaScript erscheint er nicht.
---><html lang="de">
+<!DOCTYPE html><html lang="de">
 <head>
   <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1"><title>Ein Python-Skript im Container ausführen · Containertechnologien (Academy)</title><meta name="description" content="Ein fertiges Python-Skript in einem fremden Image ausführen – ohne Schritt-für-Schritt-Anleitung."><meta property="og:site_name" content="Containertechnologien (Academy)">
@@ -64,13 +6,35 @@
 <meta property="og:description" content="Ein fertiges Python-Skript in einem fremden Image ausführen – ohne Schritt-für-Schritt-Anleitung.">
 <meta property="og:type" content="article"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790741874">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790741874" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790741874" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790741874">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=118a443d"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=2dd7a61e">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=91dc645c">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=4b561b0b">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=da9fc064"><style>
+:where(.avd-academy-guide-main a[href*="docker.com"]) {
+  position: relative;
+  padding-left: 1.35em;
+}
+:where(.avd-academy-guide-main a[href*="docker.com"])::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .18em;
+  width: 1em;
+  height: 1em;
+  background: center / contain no-repeat;
+  background-image: none;
+  background-color: currentColor;
+  mask-image: url("/training-material-container-technologies/assets/icons/docker.svg");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+}
+.avd-academy-linkmark--none :where(.avd-academy-guide-main a[href*="docker.com"]),
+:where(.avd-academy-guide-main a[href*="docker.com"]).avd-academy-linkmark--none { padding-left: 0; }
+</style><link rel="stylesheet" media="print" href="/training-material-container-technologies/theme/academy/print.css?v=aedd1b20">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=c7831634" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=a9cecc4f" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=2b412283">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -83,24 +47,8 @@
         .querySelectorAll(_auswahl)
         .forEach((el) => { if (!el.dataset.highlighted) { hljs.highlightElement(el); } });
       _faerben(document);
-
-      /* NACHTRAEGLICH EINGEFUEGTER CODE. Die Hervorhebung laeuft einmal beim Laden.
-         Eine Seite, die ihre Codebloecke per Skript einsetzt - eine Visualisierung,
-         die rohe Nachrichten durchschaltet -, bekam deshalb gar keine Farben und
-         baute sich einen eigenen Hervorheber. Genau die Kopie, die das Theme
-         verhindern soll.
-
-         `AvdHighlight.apply(knoten)` faerbt, was seither dazugekommen ist; `hljs`
-         liegt daneben fuer Faelle, die mehr brauchen. Das Ereignis sagt Seiten, die
-         frueh zeichnen, wann der Haken da ist - die Module laden asynchron. */
       window.AvdHighlight = { hljs, apply: _faerben, languages: _hlsprachen.slice() };
       document.dispatchEvent(new CustomEvent("avd-academy-highlight-ready"));
-
-      /* Statuszeile nach Klasse einfaerben. highlight.js gibt jedem dreistelligen
-         Code dieselbe Klasse `hljs-number` - in einem Mitschnitt ist aber genau das
-         die Stelle, auf die man zuerst sieht: 2xx ist etwas anderes als 4xx.
-         Deshalb hier die einzige eigene Zutat, und bewusst nur diese: Die
-         Statusklassen von HTTP aendern sich nicht, das bleibt stabil. */
       document.querySelectorAll("pre code.language-http .hljs-number").forEach((el) => {
         const code = parseInt(el.textContent, 10);
         if (code >= 100 && code <= 599) {
@@ -113,8 +61,8 @@
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
 
-  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790741874">
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790741874"></head><body class="avd-academy-guide">
+  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=43701531">
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=4a155a65"></head><body class="avd-academy-guide">
   <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><div class="avd-academy-metanav"><span>ATVANTAGE Academy</span>
   </div>
 
@@ -137,7 +85,7 @@
 </header>
 <section class="avd-academy-guide-hero"
            aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a><span>/</span><span aria-current="page">Ein Python-Skript im Container ausführen</span></nav><div class="avd-academy-guide-hero__meta">
-      <div class="avd-academy-guide-hero__tags"><span class="avd-academy-tag avd-academy-tag--time">ca. 20 Minuten</span><span class="avd-academy-tag">Container</span><span class="avd-academy-tag">Images</span><span class="avd-academy-tag">Eigenrecherche</span>
+      <div class="avd-academy-guide-hero__tags"><span class="avd-academy-tag avd-academy-tag--time">ca. 15 Minuten</span><span class="avd-academy-tag">Container</span><span class="avd-academy-tag">Images</span><span class="avd-academy-tag">Eigenrecherche</span>
       </div>
       <div class="avd-academy-guide-hero__actions">
         <button type="button" class="avd-academy-btn avd-academy-btn--ghost avd-academy-copy-md"
@@ -169,54 +117,38 @@ zurückzulassen.</li>
   <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Das Skript läuft in einem Container und gibt seine Zeile aus.</li>
   <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Auf Deinem Rechner ist <strong>kein</strong> Python installiert worden.</li>
   <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Nach dem Lauf ist <strong>kein</strong> Container übrig (<code>docker container ls -a</code>).</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Der Befehl, der funktioniert hat, steht in Deiner <code>befehle.md</code>.</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast die Reflexionsfragen schriftlich beantwortet.</li>
 </ul>
 
 <h2 id="dein-auftrag">Dein Auftrag</h2>
 
 <p>Diese Übung nennt <strong>kein einziges Kommando</strong>. Das ist Absicht: Du hast alles
 gesehen, was Du brauchst – den Rest findest Du in der
-<a href="https://docs.docker.com/reference/cli/docker/">Referenz</a> oder bei Deiner
-Partnerin.</p>
+<a href="https://docs.docker.com/reference/cli/docker/">Referenz</a>.</p>
 
 <p>Leg eine Datei <code>hello.py</code> an, mit dem Editor Deiner Wahl:</p>
 
 <pre><code class="language-python">print("Hallo aus dem Container!")
 </code></pre>
 
-<p>Bring sie in einem Container zur Ausführung. Es gibt mehr als einen Weg.</p>
+<p>Bring sie in einem Container zur Ausführung. Am Ende solltest Du
+<code>Hallo aus dem Container!</code> auf der Konsole sehen, und der Container selbst ist
+nach der Ausführung wieder gelöscht. Es gibt mehr als einen Weg.</p>
 
 <blockquote>
-  <p><strong>Hinweis:</strong> Eine Datei kann auf zwei Arten in einen Container gelangen: Du
-hängst das Verzeichnis beim Start ein, oder Du kopierst sie in einen laufenden
-Container hinein. Beides ist hier erlaubt.</p>
+  <p><strong>Hinweis:</strong> Welches Image die passende Laufzeitumgebung mitbringt, suchst Du
+Dir selbst – auf <a href="https://hub.docker.com/">Docker Hub</a> wirst Du fündig.</p>
 </blockquote>
 
 <blockquote>
-  <p><strong>Hinweis:</strong> Ab dieser Übung gilt die Empfehlung <code>docker run --rm</code>. Sonst
-sammeln sich beim Ausprobieren Container an, die niemand mehr braucht.</p>
-</blockquote>
-
-<blockquote>
-  <p><strong>Hinweis für die Git Bash unter Windows:</strong> Hängst Du ein Verzeichnis ein,
-baut die Git Bash den Pfad im Container zu einem Windows-Pfad um – der
-Container findet die Datei dann nicht. Stell dem Aufruf in diesem Fall
-<code>MSYS_NO_PATHCONV=1</code> voran:
-<code>MSYS_NO_PATHCONV=1 docker run ...</code></p>
+  <p><strong>Hinweis:</strong> Gesucht ist ein Aufruf der Form <code>docker container run --rm …</code>.
+Ab dieser Übung ist das der Normalfall: Ohne <code>--rm</code> sammeln sich beim
+Ausprobieren Container an, die niemand mehr braucht.</p>
 </blockquote>
 
 <h2 id="reflexionsfragen">Reflexionsfragen</h2>
 
-<ul>
-  <li>Welches Image hast Du genommen, und warum gerade dieses? Was hättest Du
-stattdessen nehmen können?</li>
-  <li>Lag Dein Skript <strong>im Image</strong> oder <strong>daneben</strong>? Woran erkennst Du das?</li>
-  <li>Was müsstest Du einer Kollegin schicken, damit sie genau dasselbe Ergebnis
-bekommt?</li>
-  <li>Was ist nach dem Lauf mit dem Container passiert – und was wäre ohne <code>--rm</code>
-passiert?</li>
-</ul>
+<p>Hier gibt es nichts aufzuschreiben – was Du gefunden hast, besprechen wir
+gemeinsam.</p>
 
 
 <textarea id="avd-academy-md-source" hidden aria-hidden="true"># Ein Python-Skript im Container ausführen
@@ -239,15 +171,12 @@ Du…
 * [ ] Das Skript läuft in einem Container und gibt seine Zeile aus.
 * [ ] Auf Deinem Rechner ist **kein** Python installiert worden.
 * [ ] Nach dem Lauf ist **kein** Container übrig (`docker container ls -a`).
-* [ ] Der Befehl, der funktioniert hat, steht in Deiner `befehle.md`.
-* [ ] Du hast die Reflexionsfragen schriftlich beantwortet.
 
 ## Dein Auftrag
 
 Diese Übung nennt **kein einziges Kommando**. Das ist Absicht: Du hast alles
 gesehen, was Du brauchst – den Rest findest Du in der
-[Referenz](https://docs.docker.com/reference/cli/docker/) oder bei Deiner
-Partnerin.
+[Referenz](https://docs.docker.com/reference/cli/docker/).
 
 Leg eine Datei `hello.py` an, mit dem Editor Deiner Wahl:
 
@@ -255,36 +184,27 @@ Leg eine Datei `hello.py` an, mit dem Editor Deiner Wahl:
 print(&quot;Hallo aus dem Container!&quot;)
 ```
 
-Bring sie in einem Container zur Ausführung. Es gibt mehr als einen Weg.
+Bring sie in einem Container zur Ausführung. Am Ende solltest Du
+`Hallo aus dem Container!` auf der Konsole sehen, und der Container selbst ist
+nach der Ausführung wieder gelöscht. Es gibt mehr als einen Weg.
 
-&gt; **Hinweis:** Eine Datei kann auf zwei Arten in einen Container gelangen: Du
-&gt; hängst das Verzeichnis beim Start ein, oder Du kopierst sie in einen laufenden
-&gt; Container hinein. Beides ist hier erlaubt.
+&gt; **Hinweis:** Welches Image die passende Laufzeitumgebung mitbringt, suchst Du
+&gt; Dir selbst – auf [Docker Hub](https://hub.docker.com/) wirst Du fündig.
 
-&gt; **Hinweis:** Ab dieser Übung gilt die Empfehlung `docker run --rm`. Sonst
-&gt; sammeln sich beim Ausprobieren Container an, die niemand mehr braucht.
-
-&gt; **Hinweis für die Git Bash unter Windows:** Hängst Du ein Verzeichnis ein,
-&gt; baut die Git Bash den Pfad im Container zu einem Windows-Pfad um – der
-&gt; Container findet die Datei dann nicht. Stell dem Aufruf in diesem Fall
-&gt; `MSYS_NO_PATHCONV=1` voran:
-&gt; `MSYS_NO_PATHCONV=1 docker run ...`
+&gt; **Hinweis:** Gesucht ist ein Aufruf der Form `docker container run --rm …`.
+&gt; Ab dieser Übung ist das der Normalfall: Ohne `--rm` sammeln sich beim
+&gt; Ausprobieren Container an, die niemand mehr braucht.
 
 ## Reflexionsfragen
 
-- Welches Image hast Du genommen, und warum gerade dieses? Was hättest Du
-  stattdessen nehmen können?
-- Lag Dein Skript **im Image** oder **daneben**? Woran erkennst Du das?
-- Was müsstest Du einer Kollegin schicken, damit sie genau dasselbe Ergebnis
-  bekommt?
-- Was ist nach dem Lauf mit dem Container passiert – und was wäre ohne `--rm`
-  passiert?
+Hier gibt es nichts aufzuschreiben – was Du gefunden hast, besprechen wir
+gemeinsam.
 
 ## Weiterführende Informationen
 
 - [Docker CLI Reference](https://docs.docker.com/reference/cli/docker/)
-- [Das Python-Image auf Docker Hub](https://hub.docker.com/_/python)
-- [Die Schulungsumgebung nutzen](/shared/schulungsumgebung/)
+- [Musterlösung (PR)](https://github.com/atvantage-academy/code-template-docker-basics/pull/9)
+- [Musterlösung (Pages)](https://atvantage-academy.github.io/code-template-docker-basics/anwendungen-im-container/)
 </textarea>
     </main><aside class="avd-academy-guide-sidebar"><details class="avd-academy-guide-side avd-academy-guide-side--toc avd-academy-fold" data-avd-academy-toc-box
                data-avd-academy-toc-grenze="12" open hidden>
@@ -296,7 +216,7 @@ Bring sie in einem Container zur Ausführung. Es gibt mehr als einen Weg.
       </div>
       <div class="avd-academy-guide-side avd-academy-guide-side--bordered">
         <div class="avd-academy-guide-side__label">Weiterführende Informationen</div>
-        <div class="avd-academy-guide-side__links"><a href="https://docs.docker.com/reference/cli/docker/" target="_blank" rel="noopener"><span>Docker CLI Reference</span></a><a href="https://hub.docker.com/_/python" target="_blank" rel="noopener"><span>Das Python-Image auf Docker Hub</span></a><a href="/shared/schulungsumgebung/"><span>Die Schulungsumgebung nutzen</span></a>
+        <div class="avd-academy-guide-side__links"><a href="https://docs.docker.com/reference/cli/docker/" target="_blank" rel="noopener"><span>Docker CLI Reference</span><span class="avd-academy-linkicon avd-academy-linkicon--right avd-academy-linkicon--mark" style="--avd-academy-linkicon-src: url('/training-material-container-technologies/assets/icons/docker.svg')" aria-hidden="true"></span></a><a href="https://github.com/atvantage-academy/code-template-docker-basics/pull/9" target="_blank" rel="noopener"><span>Musterlösung (PR)</span><span class="avd-academy-linkicon avd-academy-linkicon--right avd-academy-linkicon--mark" style="--avd-academy-linkicon-src: url('/training-material-container-technologies/theme/academy/icons/icon-github.svg')" aria-hidden="true"></span></a><a href="https://atvantage-academy.github.io/code-template-docker-basics/anwendungen-im-container/" target="_blank" rel="noopener"><span>Musterlösung (Pages)</span><span class="avd-academy-linkicon avd-academy-linkicon--right avd-academy-linkicon--mark" style="--avd-academy-linkicon-src: url('/training-material-container-technologies/theme/academy/icons/icon-github-pages.svg')" aria-hidden="true"></span></a>
         </div></div>
     </aside>
   </div><div class="avd-academy-print-contact" aria-hidden="true">

@@ -1,62 +1,4 @@
-<!DOCTYPE html>
-<!--
-  ATVANTAGE-Academy – EINZIGES Seitenlayout (Jekyll)
-  --------------------------------------------------
-  Ein Layout für alles: allgemeine Doku-Seiten UND Guides (Übungen/Anleitungen).
-  Optik nach der ATVANTAGE-Website: Meta-Nav, weiße sticky Kopfzeile, Hero-Band,
-  zweispaltig mit rechter Sidebar (automatisches Inhaltsverzeichnis, Fortschritt
-  aus Task-Listen, weiterführende Ressourcen). Überschriften ohne Emoji-Icons.
-
-  Verwendung im Front Matter:  layout: default   (oder `layout: guide` – Alias,
-  siehe guide.html; beides rendert dieselbe Guide-Ansicht)
-
-  `layout: visualization` (siehe visualization.html) rendert dieselbe Seite OHNE
-  obere Navigation (Meta-Leiste + Kopfzeile/TopNav), OHNE Brotkrumen und OHNE den
-  rechten Bereich (Inhaltsverzeichnis, Fortschritt, Ressourcen – auch bei gesetztem
-  `resources`), mit schmalerem Hero-Balken und breiterem, zentriertem Inhalt – für
-  eigenständige Visualisierungen/Simulationen.
-
-  Alle Front-Matter-Felder sind OPTIONAL (Convention over Configuration). Nur der
-  Titel ist faktisch erforderlich – als `title:` ODER als erste `#`-Überschrift:
-
-    title:       "…"                → sonst erste #-Überschrift (eins von beiden nötig)
-    description: "…"                → Meta-Description
-    duration:    8                  → Zahl in Minuten → Hero-Tag „ca. 8 Minuten“
-                                       (ungefähre LESEDAUER; bei Guides/Übungen die
-                                       Dauer der Übung, bei Visualisierungen die
-                                       Bearbeitungszeit – dort unüblich, aber erlaubt).
-    topics:      ["Cloud & DevOps"] → weitere Hero-Tags
-    resources:   [{title, url, icon}, …] → Sidebar-Karte „Weiterführende Informationen“.
-                                       title und/oder icon (Bildpfad); icon erscheint
-                                       rechts und wird kreisrund dargestellt.
-    breadcrumb:                     → Brotkrumen anpassen (beides optional):
-      label: "…"                    → überschreibt den Ordnernamen dieser Ebene;
-                                       in der Ordner-`index.md` gesetzt gilt es für
-                                       ALLE Seiten im Ordner und in Unterordnern.
-      ancestors: [{title, url}, …]  → explizite Vorfahren-Kette OHNE die aktuelle
-                                       Seite (diese wird automatisch angehängt); in
-                                       der `index.md` gesetzt wird sie vererbt.
-
-  „Markdown kopieren“ (Button im Hero) erscheint NUR auf Guides – dort ist das
-  Übernehmen des Quelltexts der Zweck. Bedingungen: Markdown-Seite (`.md`, nicht
-  reines HTML) UND der Schalter `toolbar.copy` (Vorgabe: nur `layout: guide`, siehe
-  `_includes/avd-switch.html`). Doku-Seiten und Visualisierungen haben ihn nicht –
-  bei letzteren, weil ihr Inhalt nicht sinnvoll als Markdown kopierbar ist.
-
-  DIE SEITENWERKZEUGE – QR-Code, Farbschema-Umschalter, Drucken – sind EINE
-  Komponente (`_includes/tools.html`) an zwei Standorten in diesem Rahmen:
-
-    Kopfzeile   `chrome: true`  (page, guide)      QR + Farbschema
-    Hero rechts `hero_tools`    (visualization)    QR + Farbschema + Drucken
-
-  Die Regel dahinter ist die Kopfzeile: Wo es sie gibt, tragen die Werkzeuge sie;
-  wo nicht, tritt der Hero an ihre Stelle. Drucken gibt es nur dort, weil auf einer
-  gewöhnlichen Seite der Browser-Befehl (Strg/Cmd+P) genügt, die rahmenlose
-  Ansicht aber keinen anderen Weg aufs Papier hat.
-
-  Der QR-Code wird erst im Browser erzeugt (theme/academy/atvantage.js), weil die
-  Adresse zur Build-Zeit nicht feststeht; ohne JavaScript erscheint er nicht.
---><html lang="de">
+<!DOCTYPE html><html lang="de">
 <head>
   <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1"><title>Die Webanwendung als eigenes Image · Containertechnologien (Academy)</title><meta name="description" content="Aus der Webanwendung ein eigenes Image machen – und dabei entscheiden, was hineingehört und was beim Start bleibt."><meta property="og:site_name" content="Containertechnologien (Academy)">
@@ -64,13 +6,35 @@
 <meta property="og:description" content="Aus der Webanwendung ein eigenes Image machen – und dabei entscheiden, was hineingehört und was beim Start bleibt.">
 <meta property="og:type" content="article"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790741874">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790741874" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790741874" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790741874">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=118a443d"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=2dd7a61e">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=91dc645c">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=4b561b0b">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=da9fc064"><style>
+:where(.avd-academy-guide-main a[href*="docker.com"]) {
+  position: relative;
+  padding-left: 1.35em;
+}
+:where(.avd-academy-guide-main a[href*="docker.com"])::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .18em;
+  width: 1em;
+  height: 1em;
+  background: center / contain no-repeat;
+  background-image: none;
+  background-color: currentColor;
+  mask-image: url("/training-material-container-technologies/assets/icons/docker.svg");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+}
+.avd-academy-linkmark--none :where(.avd-academy-guide-main a[href*="docker.com"]),
+:where(.avd-academy-guide-main a[href*="docker.com"]).avd-academy-linkmark--none { padding-left: 0; }
+</style><link rel="stylesheet" media="print" href="/training-material-container-technologies/theme/academy/print.css?v=aedd1b20">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=c7831634" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=a9cecc4f" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=2b412283">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -83,24 +47,8 @@
         .querySelectorAll(_auswahl)
         .forEach((el) => { if (!el.dataset.highlighted) { hljs.highlightElement(el); } });
       _faerben(document);
-
-      /* NACHTRAEGLICH EINGEFUEGTER CODE. Die Hervorhebung laeuft einmal beim Laden.
-         Eine Seite, die ihre Codebloecke per Skript einsetzt - eine Visualisierung,
-         die rohe Nachrichten durchschaltet -, bekam deshalb gar keine Farben und
-         baute sich einen eigenen Hervorheber. Genau die Kopie, die das Theme
-         verhindern soll.
-
-         `AvdHighlight.apply(knoten)` faerbt, was seither dazugekommen ist; `hljs`
-         liegt daneben fuer Faelle, die mehr brauchen. Das Ereignis sagt Seiten, die
-         frueh zeichnen, wann der Haken da ist - die Module laden asynchron. */
       window.AvdHighlight = { hljs, apply: _faerben, languages: _hlsprachen.slice() };
       document.dispatchEvent(new CustomEvent("avd-academy-highlight-ready"));
-
-      /* Statuszeile nach Klasse einfaerben. highlight.js gibt jedem dreistelligen
-         Code dieselbe Klasse `hljs-number` - in einem Mitschnitt ist aber genau das
-         die Stelle, auf die man zuerst sieht: 2xx ist etwas anderes als 4xx.
-         Deshalb hier die einzige eigene Zutat, und bewusst nur diese: Die
-         Statusklassen von HTTP aendern sich nicht, das bleibt stabil. */
       document.querySelectorAll("pre code.language-http .hljs-number").forEach((el) => {
         const code = parseInt(el.textContent, 10);
         if (code >= 100 && code <= 599) {
@@ -113,8 +61,8 @@
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
 
-  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790741874">
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790741874"></head><body class="avd-academy-guide">
+  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=43701531">
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=4a155a65"></head><body class="avd-academy-guide">
   <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><div class="avd-academy-metanav"><span>ATVANTAGE Academy</span>
   </div>
 
@@ -159,7 +107,6 @@
   <li>schreibst ein Dockerfile für eine Anwendung mit Abhängigkeiten.</li>
   <li>entscheidest begründet, was ins Image gehört und was beim Start dazukommt.</li>
   <li>startest Deine Anwendung aus dem selbst gebauten Image gegen die Datenbank.</li>
-  <li>benennst, was Du jetzt noch weitergeben müsstest – und was nicht mehr.</li>
 </ul>
 
 <h2 id="definition-of-done">Definition of Done</h2>
@@ -170,39 +117,23 @@ Abhängigkeiten.</li>
   <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Ein Container daraus antwortet auf <code>curl http://localhost:8080</code> mit den
 Daten aus der Datenbank.</li>
   <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Im Dockerfile steht <strong>keine</strong> Datenbankadresse.</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Der Startbefehl steht in Deiner <code>befehle.md</code> – er ist jetzt <strong>eine</strong> Zeile.</li>
   <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast die Reflexionsfragen schriftlich beantwortet.</li>
 </ul>
 
 <h2 id="dein-auftrag">Dein Auftrag</h2>
 
-<p>Du hast in Block 3 aufgeschrieben, was Du weitergeben müsstest, damit eine
-Kollegin Deine Anwendung startet. <strong>Diese Liste wird jetzt zum Dockerfile.</strong></p>
-
 <p>Schreib ein <code>Dockerfile</code> neben <code>app.py</code> und <code>requirements.txt</code>. Es soll:</p>
 
 <ul>
   <li>von einem Image ausgehen, das Python mitbringt,</li>
+  <li>die Dateien hineinlegen,</li>
   <li>die Abhängigkeiten installieren,</li>
-  <li>die Anwendung hineinlegen,</li>
   <li>den Port bekanntgeben, auf dem die Anwendung lauscht,</li>
   <li>die Anwendung beim Start ausführen.</li>
 </ul>
 
 <p>Bau daraus <code>meine-webapp:1.0.0</code> und starte einen Container, der die Datenbank aus
 der vorigen Übung erreicht.</p>
-
-<blockquote>
-  <p><strong>Hinweis:</strong> Die Anweisungen, die Du brauchst, stehen in der
-<a href="https://docs.docker.com/reference/dockerfile/">Dockerfile-Referenz</a>: <code>FROM</code>,
-<code>WORKDIR</code>, <code>COPY</code>, <code>RUN</code>, <code>EXPOSE</code>, <code>CMD</code>. Mehr sind es nicht.</p>
-</blockquote>
-
-<blockquote>
-  <p><strong>Die eigentliche Frage dieser Übung:</strong> Die Anwendung braucht die Adresse der
-Datenbank. <strong>Gehört sie ins Dockerfile?</strong> Entscheide Dich bewusst und schreib
-Deine Begründung auf – Du wirst danach gefragt.</p>
-</blockquote>
 
 <blockquote>
   <p><strong>Hinweis:</strong> <code>CMD</code> erwartet eine Liste, keine Zeichenkette:
@@ -212,15 +143,10 @@ Deine Begründung auf – Du wirst danach gefragt.</p>
 <h2 id="reflexionsfragen">Reflexionsfragen</h2>
 
 <ul>
-  <li>Was aus Deiner Liste steht jetzt im Dockerfile, und was gibst Du weiter beim
-<code>docker run</code>? Wo verläuft die Grenze?</li>
-  <li>Du hast Dich bei der Datenbankadresse entschieden. <strong>Was wäre der Preis der
-anderen Entscheidung</strong> – wie viele Images bräuchtest Du für Entwicklung, Test
-und Produktion?</li>
-  <li>Der Build hat die Abhängigkeiten geladen. Was passiert beim nächsten Build,
-wenn Du nur eine Zeile in <code>app.py</code> änderst? Stört Dich das?</li>
-  <li>Was müsstest Du einer Kollegin jetzt noch geben, damit sie die Anwendung
-startet? Vergleiche mit Deiner Antwort aus Block 3.</li>
+  <li>Gehört die Adresse der Datenbank ins Dockerfile, oder wird sie beim Erzeugen
+des Containers als Parameter mitgegeben? <strong>Begründe Deine Antwort.</strong></li>
+  <li>Mit <code>ENV</code> lässt sich eine Umgebungsvariable schon im Dockerfile setzen. Wenn
+Konfiguration doch von außen kommen soll: <strong>Wozu dann <code>ENV</code>?</strong></li>
 </ul>
 
 
@@ -236,7 +162,6 @@ Du…
 - schreibst ein Dockerfile für eine Anwendung mit Abhängigkeiten.
 - entscheidest begründet, was ins Image gehört und was beim Start dazukommt.
 - startest Deine Anwendung aus dem selbst gebauten Image gegen die Datenbank.
-- benennst, was Du jetzt noch weitergeben müsstest – und was nicht mehr.
 
 ## Definition of Done
 
@@ -245,52 +170,37 @@ Du…
 * [ ] Ein Container daraus antwortet auf `curl http://localhost:8080` mit den
   Daten aus der Datenbank.
 * [ ] Im Dockerfile steht **keine** Datenbankadresse.
-* [ ] Der Startbefehl steht in Deiner `befehle.md` – er ist jetzt **eine** Zeile.
 * [ ] Du hast die Reflexionsfragen schriftlich beantwortet.
 
 ## Dein Auftrag
 
-Du hast in Block 3 aufgeschrieben, was Du weitergeben müsstest, damit eine
-Kollegin Deine Anwendung startet. **Diese Liste wird jetzt zum Dockerfile.**
-
 Schreib ein `Dockerfile` neben `app.py` und `requirements.txt`. Es soll:
 
 - von einem Image ausgehen, das Python mitbringt,
+- die Dateien hineinlegen,
 - die Abhängigkeiten installieren,
-- die Anwendung hineinlegen,
 - den Port bekanntgeben, auf dem die Anwendung lauscht,
 - die Anwendung beim Start ausführen.
 
 Bau daraus `meine-webapp:1.0.0` und starte einen Container, der die Datenbank aus
 der vorigen Übung erreicht.
 
-&gt; **Hinweis:** Die Anweisungen, die Du brauchst, stehen in der
-&gt; [Dockerfile-Referenz](https://docs.docker.com/reference/dockerfile/): `FROM`,
-&gt; `WORKDIR`, `COPY`, `RUN`, `EXPOSE`, `CMD`. Mehr sind es nicht.
-
-&gt; **Die eigentliche Frage dieser Übung:** Die Anwendung braucht die Adresse der
-&gt; Datenbank. **Gehört sie ins Dockerfile?** Entscheide Dich bewusst und schreib
-&gt; Deine Begründung auf – Du wirst danach gefragt.
-
 &gt; **Hinweis:** `CMD` erwartet eine Liste, keine Zeichenkette:
 &gt; `CMD [&quot;python&quot;, &quot;app.py&quot;]`.
 
 ## Reflexionsfragen
 
-- Was aus Deiner Liste steht jetzt im Dockerfile, und was gibst Du weiter beim
-  `docker run`? Wo verläuft die Grenze?
-- Du hast Dich bei der Datenbankadresse entschieden. **Was wäre der Preis der
-  anderen Entscheidung** – wie viele Images bräuchtest Du für Entwicklung, Test
-  und Produktion?
-- Der Build hat die Abhängigkeiten geladen. Was passiert beim nächsten Build,
-  wenn Du nur eine Zeile in `app.py` änderst? Stört Dich das?
-- Was müsstest Du einer Kollegin jetzt noch geben, damit sie die Anwendung
-  startet? Vergleiche mit Deiner Antwort aus Block 3.
+- Gehört die Adresse der Datenbank ins Dockerfile, oder wird sie beim Erzeugen
+  des Containers als Parameter mitgegeben? **Begründe Deine Antwort.**
+- Mit `ENV` lässt sich eine Umgebungsvariable schon im Dockerfile setzen. Wenn
+  Konfiguration doch von außen kommen soll: **Wozu dann `ENV`?**
 
 ## Weiterführende Informationen
 
 - [Dockerfile-Referenz](https://docs.docker.com/reference/dockerfile/)
 - [Das Python-Image auf Docker Hub](https://hub.docker.com/_/python)
+- [Musterlösung (PR)](https://github.com/atvantage-academy/code-template-docker-basics/pull/15)
+- [Musterlösung (Pages)](https://atvantage-academy.github.io/code-template-docker-basics/eigene-images-bauen/)
 </textarea>
     </main><aside class="avd-academy-guide-sidebar"><details class="avd-academy-guide-side avd-academy-guide-side--toc avd-academy-fold" data-avd-academy-toc-box
                data-avd-academy-toc-grenze="12" open hidden>
@@ -302,7 +212,7 @@ der vorigen Übung erreicht.
       </div>
       <div class="avd-academy-guide-side avd-academy-guide-side--bordered">
         <div class="avd-academy-guide-side__label">Weiterführende Informationen</div>
-        <div class="avd-academy-guide-side__links"><a href="https://docs.docker.com/reference/dockerfile/" target="_blank" rel="noopener"><span>Dockerfile-Referenz</span></a><a href="https://hub.docker.com/_/python" target="_blank" rel="noopener"><span>Das Python-Image auf Docker Hub</span></a>
+        <div class="avd-academy-guide-side__links"><a href="https://docs.docker.com/reference/dockerfile/" target="_blank" rel="noopener"><span>Dockerfile-Referenz</span><span class="avd-academy-linkicon avd-academy-linkicon--right avd-academy-linkicon--mark" style="--avd-academy-linkicon-src: url('/training-material-container-technologies/assets/icons/docker.svg')" aria-hidden="true"></span></a><a href="https://hub.docker.com/_/python" target="_blank" rel="noopener"><span>Das Python-Image auf Docker Hub</span><span class="avd-academy-linkicon avd-academy-linkicon--right avd-academy-linkicon--mark" style="--avd-academy-linkicon-src: url('/training-material-container-technologies/assets/icons/docker.svg')" aria-hidden="true"></span></a><a href="https://github.com/atvantage-academy/code-template-docker-basics/pull/15" target="_blank" rel="noopener"><span>Musterlösung (PR)</span><span class="avd-academy-linkicon avd-academy-linkicon--right avd-academy-linkicon--mark" style="--avd-academy-linkicon-src: url('/training-material-container-technologies/theme/academy/icons/icon-github.svg')" aria-hidden="true"></span></a><a href="https://atvantage-academy.github.io/code-template-docker-basics/eigene-images-bauen/" target="_blank" rel="noopener"><span>Musterlösung (Pages)</span><span class="avd-academy-linkicon avd-academy-linkicon--right avd-academy-linkicon--mark" style="--avd-academy-linkicon-src: url('/training-material-container-technologies/theme/academy/icons/icon-github-pages.svg')" aria-hidden="true"></span></a>
         </div></div>
     </aside>
   </div><div class="avd-academy-print-contact" aria-hidden="true">

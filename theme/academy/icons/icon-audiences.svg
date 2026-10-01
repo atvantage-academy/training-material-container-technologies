@@ -1,13 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Zielgruppen">
-  <!-- Farben aus dem ATVANTAGE-Fundament: Anthrazit #343E3F, Orange #FF5401. -->
-  <rect width="32" height="32" fill="#343E3F"/>
-  <!-- Zwei Gruppen nebeneinander - die eine hervorgehoben: gebaut wird immer eine. -->
-  <g fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round">
-    <circle cx="11" cy="12" r="3.2"/>
-    <path d="M6 24v-1.5a5 5 0 0 1 10 0V24"/>
-  </g>
-  <g fill="#FF5401">
-    <circle cx="22" cy="12" r="3.2"/>
-    <path d="M17 24v-1.5a5 5 0 0 1 10 0V24z"/>
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Zielgruppen"><rect width="32" height="32" fill="#343E3F"/><g fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="12" r="3.2"/><path d="M6 24v-1.5a5 5 0 0 1 10 0V24"/></g><g fill="#FF5401"><circle cx="22" cy="12" r="3.2"/><path d="M17 24v-1.5a5 5 0 0 1 10 0V24z"/></g></svg>

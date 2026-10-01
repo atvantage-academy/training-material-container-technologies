@@ -116,7 +116,15 @@ klasse  avd-academy-http-status--4xx
 klasse  avd-academy-http-status--5xx
 klasse  avd-academy-layouttree
 klasse  avd-academy-linkicon
+klasse  avd-academy-linkicon--mark
 klasse  avd-academy-linkicon--right
+klasse  avd-academy-linkmark--baeldung
+klasse  avd-academy-linkmark--github
+klasse  avd-academy-linkmark--github-pages
+klasse  avd-academy-linkmark--linkedin
+klasse  avd-academy-linkmark--mail
+klasse  avd-academy-linkmark--none
+klasse  avd-academy-linkmark--pdf
 klasse  avd-academy-materials
 klasse  avd-academy-materials__col
 klasse  avd-academy-materials__head

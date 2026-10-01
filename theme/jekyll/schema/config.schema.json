@@ -126,9 +126,9 @@
           "description": "OB UND WIE – ein Schlüssel für beides, damit sich nichts widersprechen kann. `full`: Die Seite liegt NUR unter dem Permalink; die kurze Adresse steht in der Adresszeile, ein Lesezeichen merkt sich sie. `light`: Die Seite bleibt, wo sie ist, und unter dem Permalink entsteht eine Weiterleitung – nichts kann brechen, dafür bietet die Werkzeugleiste die kurze Adresse zum Kopieren an. `disabled`: Jedes `permaid` wird übergangen, und der Vorsatz ist für gewöhnliche Seiten frei."
         },
         "base": {
-          "type": "string",
+          "$ref": "#/definitions/sprachpfad",
           "default": "/p",
-          "description": "VORSATZ DER KURZEN ADRESSEN – und der RÜCKFALL: Er gilt für jede Seite, auf die kein Eintrag aus `entries` passt, und ohne `entries` für alle. Er gehört den Permalinks GANZ: Liegt eine gewöhnliche Seite darunter, bricht der Bau ab – sie würde sonst still überschrieben. Die Sprachbasis kommt davor (`/p/…` auf Deutsch, `/en/p/…` auf Englisch), denn alles, was die Sprache am Pfad abliest, hielte die Seite sonst für die der Standardsprache."
+          "description": "VORSATZ DER KURZEN ADRESSEN – und der RÜCKFALL: Er gilt für jede Seite, auf die kein Eintrag aus `entries` passt, und ohne `entries` für alle. Er gehört den Permalinks GANZ: Liegt eine gewöhnliche Seite darunter, bricht der Bau ab – sie würde sonst still überschrieben. Die Sprachbasis kommt davor (`/p/…` auf Deutsch, `/en/p/…` auf Englisch), denn alles, was die Sprache am Pfad abliest, hielte die Seite sonst für die der Standardsprache. MEHRSPRACHIG: statt einer Zeichenkette auch eine Sprachkarte `{ de: \"/p\", en: \"/s\" }` – dann muss sie jede deklarierte Sprache nennen."
         },
         "overrides": {
           "type": "object",
@@ -150,9 +150,9 @@
             "entries": {
               "type": "object",
               "additionalProperties": {
-                "type": "string"
+                "$ref": "#/definitions/sprachpfad"
               },
-              "description": "DIE EINTRÄGE ZUR GEWÄHLTEN STRATEGIE, GEORDNET – bei mehreren Treffern gewinnt der ERSTE. Bei `layout` ist der Schlüssel ein Layoutname (freier Text, damit eigene Layouts dazukommen können). Bei `path` ein Pfadmuster, VERANKERT AN DER WURZEL DES QUELLBAUMS: `*` steht für EIN Segment, `**` für beliebig viele, ein Schrägstrich am Ende meint „dieses Verzeichnis und alles darunter\". `/funktionen/**` trifft also NICHT `docs/funktionen/…` – dafür `/docs/funktionen/**`. Ein Muster ohne Treffer nennt der Lauf, und `.avd-permalinks` zählt je Eintrag mit. IM WERT SIND PLATZHALTER ERLAUBT: `{0}`, `{1}`, … stehen für die Stellen HINTER dem festen Teil des Musters, von null an gezählt. EINGESETZT WIRD, WAS ÖFFENTLICH HEISST – ein Ordner `03-http` mit `folder_slug: http-grundlagen` ergibt `http-grundlagen`, nicht `03-http`; sonst stünde die Nummerierung aus dem Editor in der Adresse. PLATZHALTER ZEIGEN NUR AUF VERZEICHNISSE, nie auf die Seite selbst: Ihr Name steht ohnehin als `permaid` dahinter, und ihn davor zu wiederholen ergäbe eine Dopplung. Zeigt ein Platzhalter dorthin, bricht der Bau ab. Das MUSTER trifft dagegen den Quellpfad: Es beschreibt die Ablage, und gegen die öffentliche Adresse zu mustern hiesse, die Sprachwurzel mitzumustern. Ein Platzhalter ohne Entsprechung bricht den Bau ab, ebenso ein `{}` oder `{x}` – stillschweigend etwas Falsches zu bauen wäre schlimmer."
+              "description": "DIE EINTRÄGE ZUR GEWÄHLTEN STRATEGIE, GEORDNET – bei mehreren Treffern gewinnt der ERSTE. Bei `layout` ist der Schlüssel ein Layoutname (freier Text, damit eigene Layouts dazukommen können). Bei `path` ein Pfadmuster, VERANKERT AN DER WURZEL DES QUELLBAUMS: `*` steht für EIN Segment, `**` für beliebig viele, ein Schrägstrich am Ende meint „dieses Verzeichnis und alles darunter\". `/funktionen/**` trifft also NICHT `docs/funktionen/…` – dafür `/docs/funktionen/**`. Ein Muster ohne Treffer nennt der Lauf, und `.avd-permalinks` zählt je Eintrag mit. IM WERT SIND PLATZHALTER ERLAUBT: `{0}`, `{1}`, … stehen für die Stellen HINTER dem festen Teil des Musters, von null an gezählt. EINGESETZT WIRD, WAS ÖFFENTLICH HEISST – ein Ordner `03-http` mit `folder_slug: http-grundlagen` ergibt `http-grundlagen`, nicht `03-http`; sonst stünde die Nummerierung aus dem Editor in der Adresse. PLATZHALTER ZEIGEN NUR AUF VERZEICHNISSE, nie auf die Seite selbst: Ihr Name steht ohnehin als `permaid` dahinter, und ihn davor zu wiederholen ergäbe eine Dopplung. Zeigt ein Platzhalter dorthin, bricht der Bau ab. Das MUSTER trifft dagegen den Quellpfad: Es beschreibt die Ablage, und gegen die öffentliche Adresse zu mustern hiesse, die Sprachwurzel mitzumustern. Ein Platzhalter ohne Entsprechung bricht den Bau ab, ebenso ein `{}` oder `{x}` – stillschweigend etwas Falsches zu bauen wäre schlimmer. MEHRSPRACHIG: Ein Wert darf statt einer Zeichenkette eine Sprachkarte sein – `{\"/trainings/**\": { de: \"/schulungen/{1}\", en: \"/trainings/{1}\" }}`. Sie muss jede deklarierte Sprache nennen; eine fehlende bricht den Bau ab, weil ein Rückfall die Seite in den falschen Sprachbaum legte."
             }
           },
           "oneOf": [
@@ -453,6 +453,23 @@
         }
       }
     },
+    "assets": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Auslieferung der Theme-Assets (CSS/JS).",
+      "properties": {
+        "cache_busting": {
+          "type": "string",
+          "enum": [
+            "hash",
+            "time",
+            "none"
+          ],
+          "default": "hash",
+          "description": "Woraus die Kennung `?v=…` hinter jeder Asset-Adresse entsteht. `hash` rechnet sie aus dem Dateiinhalt – unveränderte Dateien bleiben im Browser-Cache. `time` nimmt die Bauzeit und entwertet damit bei jedem Build alles (Verhalten bis Theme 3.8). `none` hängt gar nichts an, etwa wenn ein CDN die Fassungen verwaltet. Der Wert heißt `none` und nicht `off`, weil YAML `off` als Boolean liest."
+        }
+      }
+    },
     "styles": {
       "description": "Eigenes Stylesheet der Site NACH den Theme-Stilen – ein einzelner Pfad oder eine Liste. STANDARD: keines. Hier gehört nur hinein, was site-spezifisch ist; alles Allgemeine gehört ins Theme.",
       "oneOf": [
@@ -567,6 +584,37 @@
             }
           }
         }
+      }
+    },
+    "linkmarks": {
+      "type": "object",
+      "description": "Zuordnung Ziel → Icon für die Linkmarken: Ein Verweis, der das Ziel trifft, bekommt das Icon von selbst – im Inhalt als Marke davor, in TopNav, Fußbereich und `resources` als Standard-Icon, wenn der Eintrag keines nennt. DER SCHLÜSSEL SAGT, WIE ER TRIFFT: mit einem Punkt beginnend eine ENDUNG (`.zip`), mit einem Doppelpunkt endend ein SCHEMA (`mailto:`), sonst ein HOST (`docker.com`). Der Wert ist ein site-relativer Icon-Pfad. ERGÄNZT UND ÜBERSCHREIBT die sechs Vorgaben des Themes (github.com, github.io, linkedin.com, baeldung.com, mailto:, .pdf) – ein gleicher Schlüssel gewinnt, ein neuer kommt dazu. Eine Angabe am Eintrag selbst (`icon`) schlägt beides. DER WERT DARF STATT EINES PFADES EIN OBJEKT SEIN: `{ icon: \"/assets/x.svg\", mask: true }`. `mask: true` sagt zu, dass das Bild EINFARBIG ist – dann trägt die Marke die Farbe ihres Verweises, wie die Vorgaben des Themes. Ohne die Angabe behält das Bild seine eigenen Farben, denn ein mehrfarbiges Icon oder ein Foto würde von einer Maske zu einer einfarbigen Silhouette.",
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "string",
+            "description": "Site-relativer Pfad zum Icon. Es behält seine eigenen Farben."
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "icon"
+            ],
+            "description": "Icon mit Zusage über seine Farbigkeit.",
+            "properties": {
+              "icon": {
+                "type": "string",
+                "description": "Site-relativer Pfad zum Icon."
+              },
+              "mask": {
+                "type": "boolean",
+                "default": false,
+                "description": "`true` sagt zu, dass das Bild einfarbig ist. Dann wird es als Maske gezeichnet und trägt die Farbe seines Verweises – in beiden Farbschemata und bei eigener Akzentfarbe. Für ein mehrfarbiges Icon oder ein Foto NICHT setzen: Die Maske machte daraus eine einfarbige Silhouette."
+              }
+            }
+          }
+        ]
       }
     },
     "components": {
@@ -876,6 +924,22 @@
           }
         }
       }
+    },
+    "sprachpfad": {
+      "description": "Pfad – entweder EINE Zeichenkette (gilt für alle Sprachen) oder eine SPRACHKARTE mit einem Eintrag je Sprachcode. ANDERS ALS BEI `sprachtext` MUSS DIE KARTE VOLLSTÄNDIG SEIN: Jede in `i18n.languages` deklarierte Sprache braucht einen Eintrag, sonst bricht der Bau ab. Grund: Hier steht eine ADRESSE, keine Beschriftung. Ein Rückfall auf die Standardsprache legte die fremdsprachige Seite unter den Vorsatz der Standardsprache – und alles, was die Sprache am Pfad abliest, hielte sie für die der Standardsprache. Ein nicht deklarierter Code bricht ebenso ab; er täte sonst nichts, und der Bau bliebe grün.",
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "ein Pfad für alle Sprachen"
+        },
+        {
+          "type": "object",
+          "description": "Sprachkarte: je deklariertem Sprachcode ein Pfad, z. B. `{ de: \"/schulungen/{1}\", en: \"/trainings/{1}\" }`. Vollständig, ohne Rückfall.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      ]
     }
   }
 }

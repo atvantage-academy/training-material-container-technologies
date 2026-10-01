@@ -149,11 +149,24 @@
         "modul-tcp-ip"
       ]
     },
-    "permaid": {
+    "perma_id": {
       "type": "string",
       "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
       "description": "PERMALINK DIESER SEITE – eine kurze Adresse, die NIE wechselt: für den Beamer, einen QR-Code auf Papier, einen Link im Ticket. Die Zeile IST der Schalter; ohne sie bekommt die Seite keinen. EINE ID IST EIN VERSPRECHEN, dass die Adresse bleibt – sie wird nicht geändert, auch nicht, wenn der Titel sich ändert, sonst ist jeder ausgegebene Link tot. Erlaubt sind Kleinbuchstaben, Ziffern und Bindestriche. EINDEUTIG JE SPRACHBAUM: Dieselbe ID in der deutschen und der englischen Fassung ist in Ordnung – der Pfad hält sie auseinander. NICHT `slug`: Der benennt ein Segment an Ort und Stelle um, der Baum überlebt; ein Permalink ist eine globale Adresse. UND NICHT `permalink`: Das gehört Jekyll und setzt schlicht die Adresse DIESER Seite – ohne Kollisionsprüfung, ohne Weiterleitung, ohne Eintrag in `avd-permalinks.json`. Stehen beide auf einer Seite, gewinnt in `full` das `permaid`. Wirkt nur bei `permalinks.mode: full` oder `light`.",
-      "examples": ["http-grundlagen", "k7f3q"]
+      "examples": [
+        "http-grundlagen",
+        "k7f3q"
+      ]
+    },
+    "permaid": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "VERALTET: benutze `perma_id`. Der Name wird mit dem nächsten Major entfernt; bis dahin wirkt er unverändert. Stehen beide auf einer Seite, gewinnt `perma_id`. Hintergrund: Zusammengesetzte Feldnamen des Themes schreiben sich mit Unterstrich (`page_id`, `folder_slug`, `og_image`) – `permaid` war der einzige, der es nicht tat. PERMALINK DIESER SEITE – eine kurze Adresse, die NIE wechselt: für den Beamer, einen QR-Code auf Papier, einen Link im Ticket. Die Zeile IST der Schalter; ohne sie bekommt die Seite keinen. EINE ID IST EIN VERSPRECHEN, dass die Adresse bleibt – sie wird nicht geändert, auch nicht, wenn der Titel sich ändert, sonst ist jeder ausgegebene Link tot. Erlaubt sind Kleinbuchstaben, Ziffern und Bindestriche. EINDEUTIG JE SPRACHBAUM: Dieselbe ID in der deutschen und der englischen Fassung ist in Ordnung – der Pfad hält sie auseinander. NICHT `slug`: Der benennt ein Segment an Ort und Stelle um, der Baum überlebt; ein Permalink ist eine globale Adresse. UND NICHT `permalink`: Das gehört Jekyll und setzt schlicht die Adresse DIESER Seite – ohne Kollisionsprüfung, ohne Weiterleitung, ohne Eintrag in `avd-permalinks.json`. Stehen beide auf einer Seite, gewinnt in `full` das `permaid`. Wirkt nur bei `permalinks.mode: full` oder `light`.",
+      "examples": [
+        "http-grundlagen",
+        "k7f3q"
+      ],
+      "deprecated": true
     },
     "permalink": {
       "type": "string",
@@ -502,7 +515,7 @@
         },
         "icon": {
           "$ref": "frontmatter.schema.json#/definitions/sprachtext",
-          "description": "Icon-Pfad, site-relativ. Mit `title` erscheint es davor, ohne `title` allein. Das Theme liefert u. a. `/theme/academy/icons/icon-guide.svg`. MEHRSPRACHIG: auch als Sprachkarte `{ de: …, en: … }`."
+          "description": "Icon-Pfad, site-relativ. Mit `title` erscheint es davor, ohne `title` allein. Das Theme liefert u. a. `/theme/academy/icons/icon-guide.svg`. OHNE ANGABE entscheidet das Ziel: Ein Eintrag MIT `title`, der auf github.com, linkedin.com, baeldung.com, ein `mailto:` oder eine `.pdf` zeigt, bekommt das passende Icon von selbst; eine eigene Angabe schlägt das immer. MEHRSPRACHIG: auch als Sprachkarte `{ de: …, en: … }`."
         },
         "audiences": {
           "$ref": "#/definitions/zielgruppen",

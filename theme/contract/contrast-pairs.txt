@@ -96,6 +96,17 @@ text --avd-academy-tone-alert-ink --avd-academy-color-bg-subtle
 #     `text`: Die Zusage sagt genau das, was sie hält.
 gross --avd-academy-color-accent --avd-academy-color-bg
 
+# --- Die Linkmarke trägt die Farbe ihres Verweises --------------------------
+#     Seit 3.10.1 nimmt das Icon vor einem Verweis `currentColor` statt fest den
+#     Akzent. Damit hängt sein Kontrast an `--avd-academy-color-link` und nicht
+#     mehr am Paar darüber – und ohne diese Zeile wäre die Marke die einzige
+#     UI-Grafik des Themes ohne gemessene Zusage. `ui`, nicht `gross`: Sie ist
+#     ein Zeichen und kein Text, für sie gelten die 3:1 aus 1.4.11.
+#     Im Auslieferungszustand ist `--avd-academy-color-link` derselbe Wert wie
+#     der Akzent; die Zusage wird erst dort zur eigenen Aussage, wo ein Projekt
+#     die Linkfarbe selbst setzt.
+ui --avd-academy-color-link --avd-academy-color-bg
+
 # --- Statusfarben als Rahmen und Bedeutungsträger ---------------------------
 ui --avd-academy-color-danger --avd-academy-color-bg
 ui --avd-academy-color-danger --avd-academy-color-bg-subtle

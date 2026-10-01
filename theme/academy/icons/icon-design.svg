@@ -1,8 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Design-Fundament">
-  <!-- Farben aus dem ATVANTAGE-Fundament: Anthrazit #343E3F, Orange #FF5401. -->
-  <rect width="32" height="32" fill="#343E3F"/>
-  <!-- Drei Farbfelder = die Tokens, aus denen jede Unterlage ihre Farben nimmt. -->
-  <rect x="7"  y="9" width="6" height="14" rx="1.5" fill="#FF5401"/>
-  <rect x="15" y="9" width="4" height="14" rx="1.5" fill="#ffffff"/>
-  <rect x="21" y="9" width="4" height="14" rx="1.5" fill="none" stroke="#ffffff" stroke-width="2"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Design-Fundament"><rect width="32" height="32" fill="#343E3F"/><rect x="7"  y="9" width="6" height="14" rx="1.5" fill="#FF5401"/><rect x="15" y="9" width="4" height="14" rx="1.5" fill="#ffffff"/><rect x="21" y="9" width="4" height="14" rx="1.5" fill="none" stroke="#ffffff" stroke-width="2"/></svg>

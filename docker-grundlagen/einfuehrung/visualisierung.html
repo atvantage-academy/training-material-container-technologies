@@ -1,0 +1,721 @@
+<!DOCTYPE html><html lang="de">
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Containerwissen kompakt · Containertechnologien (Academy)</title><meta name="description" content="Registry, Docker Daemon, CLI, Images und Container auf einer Seite – mit den Befehlen dazwischen. Jeder Baustein erklärt sich per Klick."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta property="og:title" content="Containerwissen kompakt">
+<meta property="og:description" content="Registry, Docker Daemon, CLI, Images und Container auf einer Seite – mit den Befehlen dazwischen. Jeder Baustein erklärt sich per Klick.">
+<meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=118a443d"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=2dd7a61e">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=91dc645c">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=4b561b0b">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=da9fc064"><style>
+:where(.avd-academy-guide-main a[href*="docker.com"]) {
+  position: relative;
+  padding-left: 1.35em;
+}
+:where(.avd-academy-guide-main a[href*="docker.com"])::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .18em;
+  width: 1em;
+  height: 1em;
+  background: center / contain no-repeat;
+  background-image: none;
+  background-color: currentColor;
+  mask-image: url("/training-material-container-technologies/assets/icons/docker.svg");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+}
+.avd-academy-linkmark--none :where(.avd-academy-guide-main a[href*="docker.com"]),
+:where(.avd-academy-guide-main a[href*="docker.com"]).avd-academy-linkmark--none { padding-left: 0; }
+</style><link rel="stylesheet" media="print" href="/training-material-container-technologies/theme/academy/print.css?v=aedd1b20">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=c7831634" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=a9cecc4f" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=2b412283">
+<script type="module">
+  const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
+  const _hlsprachen = ["java", "http", "json", "xml"];
+  Promise.all([import(_hlbase + "core.min.js"), ..._hlsprachen.map((s) => import(_hlbase + s + ".min.js"))])
+    .then(([core, ...grammatiken]) => {
+      const hljs = core.default;
+      _hlsprachen.forEach((s, i) => hljs.registerLanguage(s, grammatiken[i].default));
+      const _auswahl = _hlsprachen.map((s) => "pre code.language-" + s).join(",");
+      const _faerben = (wurzel) => (wurzel || document)
+        .querySelectorAll(_auswahl)
+        .forEach((el) => { if (!el.dataset.highlighted) { hljs.highlightElement(el); } });
+      _faerben(document);
+      window.AvdHighlight = { hljs, apply: _faerben, languages: _hlsprachen.slice() };
+      document.dispatchEvent(new CustomEvent("avd-academy-highlight-ready"));
+      document.querySelectorAll("pre code.language-http .hljs-number").forEach((el) => {
+        const code = parseInt(el.textContent, 10);
+        if (code >= 100 && code <= 599) {
+          el.classList.add("avd-academy-http-status--" + Math.floor(code / 100) + "xx");
+        }
+      });
+    });
+</script>
+<link rel="apple-touch-icon" sizes="180x180" href="/training-material-container-technologies/theme/atvantage/assets/icon-180.png">
+<link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
+<link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
+
+  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=43701531">
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=4a155a65"></head><body class="avd-academy-guide avd-academy-guide--viz">
+  <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><section class="avd-academy-guide-hero avd-academy-guide-hero--slim"
+           aria-labelledby="avd-academy-page-title"><div class="avd-academy-guide-hero__meta">
+      <div class="avd-academy-guide-hero__tags">
+      </div>
+      <div class="avd-academy-guide-hero__actions"><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
+                title="Diese Seite auf Deinem Smartphone öffnen"
+                aria-label="Diese Seite auf Deinem Smartphone öffnen"></button><button type="button" class="avd-academy-tool avd-academy-tool--theme" data-avd-academy-theme-toggle
+              title="Farbschema umschalten (hell/dunkel)"
+              aria-label="Farbschema umschalten">◐</button><button type="button" class="avd-academy-tool avd-academy-tool--print"
+                data-avd-academy-print
+                title="Diese Seite drucken" aria-label="Diese Seite drucken"></button>
+      </div>
+    </div><h1 id="avd-academy-page-title">Containerwissen kompakt</h1>
+  </section><div class="avd-academy-guide-layout">
+    <main class="avd-academy-guide-main" id="avd-academy-content">
+
+<p>Das ganze Thema auf einer Seite: Wo Images liegen, wer sie holt, was daraus
+wird – und mit welchen Befehlen. <strong>Klicke einen Baustein an</strong>, um die Erklärung
+dazu zu öffnen – <strong>Esc</strong> oder ein Klick daneben schließt sie wieder. Die Pfeile
+dazwischen tragen den Befehl, der den Schritt macht.</p>
+
+<style>
+  /* =========================================================================
+     CONTAINERWISSEN KOMPAKT
+     Nur Anordnung und Zustand. Alle Farben aus den Academy-Tokens – sonst
+     kippt das dunkle Schema.
+     ========================================================================= */
+
+  /* --- Die Bühne: zwei Orte, dazwischen die Leitung ---------------------- */
+  .cv {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) clamp(7rem, 12vw, 11rem) minmax(0, 1.2fr);
+    gap: var(--avd-academy-space-3);
+    /* UNTEN VERANKERT, nicht mittig: Gezogen und geschoben werden IMAGES, nicht
+       Kästen. Rechts stehen die Images tief im Daemon-Kasten, links sind es die
+       untersten Kacheln – über die gemeinsame Unterkante treffen sich beide. */
+    align-items: end;
+    margin: var(--avd-academy-space-6) 0;
+  }
+  /* Hebt die Pfeile auf die Zeile der Images: Darunter liegt rechts nur noch
+     die Befehlszeile des Daemons. */
+  .cv__wire { margin-bottom: 3rem; gap: var(--avd-academy-space-2); }
+  @media (max-width: 62rem) {
+    .cv { grid-template-columns: 1fr; align-items: stretch; }
+    .cv__wire { margin-bottom: 0; }
+  }
+
+  .cv__place {
+    border: 2px solid var(--avd-academy-color-border);
+    border-radius: var(--avd-academy-radius-lg);
+    padding: var(--avd-academy-space-4);
+    background: var(--avd-academy-color-bg-subtle);
+  }
+  .cv__place-title { margin: 0 0 var(--avd-academy-space-1); font-size: var(--avd-academy-fs-md); }
+  .cv__place-note {
+    margin: 0 0 var(--avd-academy-space-3);
+    font-size: var(--avd-academy-fs-sm);
+    color: var(--avd-academy-color-ink-muted);
+  }
+
+  /* --- Anklickbares --------------------------------------------------------
+     Jeder Baustein IST ein Knopf – nicht ein Kasten mit einem Knopf darin.
+     Das Fragezeichen ist nur Schmuck (`aria-hidden`), der Name trägt die
+     Beschriftung. */
+  .cv__button,
+  .cv__tile {
+    display: flex;
+    align-items: center;
+    gap: var(--avd-academy-space-2);
+    width: 100%;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    background: var(--avd-academy-color-bg);
+    border: 2px solid var(--avd-academy-color-border);
+    border-radius: var(--avd-academy-radius);
+    padding: var(--avd-academy-space-2) var(--avd-academy-space-3);
+  }
+  .cv__button {
+    background: none;
+    border: 0;
+    padding: 0;
+    font-size: inherit;
+    font-weight: var(--avd-academy-fw-bold);
+  }
+  .cv__tile + .cv__tile { margin-top: var(--avd-academy-space-2); }
+  .cv__button:hover .cv__badge,
+  .cv__tile:hover { border-color: var(--avd-academy-color-accent); }
+  .cv__button:hover { color: var(--avd-academy-color-accent-ink); }
+
+  /* --- „Hier kannst Du nachsehen“ ------------------------------------------
+     Alles, was sich öffnen lässt, leuchtet unter dem Zeiger auf – die ganze
+     Fläche, nicht nur die Überschrift. Bei der Registry und beim Daemon ist
+     der KASTEN der Hotspot (`data-cv-area`); der Knopf in der Überschrift
+     bleibt daneben bestehen, weil eine Fläche allein mit der Tastatur nicht
+     erreichbar wäre. */
+  .cv__place[data-cv-area],
+  .cv__daemon[data-cv-area] { cursor: pointer; }
+  .cv__place[data-cv-area],
+  .cv__daemon[data-cv-area],
+  .cv__tile {
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+  }
+  /* Zeigt der Zeiger auf einen Baustein IM Kasten, tritt der Kasten zurück -
+     sonst leuchten zwei Dinge, von denen nur eines gemeint ist. */
+  .cv__place[data-cv-area]:hover:not(:has(.cv__tile:hover, a:hover)),
+  .cv__place[data-cv-area]:focus-within:not(:has(.cv__tile:focus-visible, a:focus-visible)),
+  .cv__daemon[data-cv-area]:hover:not(:has(.cv__tile:hover, a:hover)),
+  .cv__daemon[data-cv-area]:focus-within:not(:has(.cv__tile:focus-visible, a:focus-visible)),
+  .cv__tile:hover,
+  .cv__tile:focus-visible {
+    border-color: var(--avd-academy-color-accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--avd-academy-color-accent) 32%, transparent);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cv__place[data-cv-area],
+    .cv__daemon[data-cv-area],
+    .cv__tile { transition: none; }
+  }
+  .cv__button:focus-visible,
+  .cv__tile:focus-visible {
+    outline: 3px solid var(--avd-academy-color-accent);
+    outline-offset: 2px;
+  }
+  /* Das runde „i“ zeigt an: Hier steckt mehr. */
+  .cv__badge {
+    flex: 0 0 auto;
+    display: inline-grid;
+    place-items: center;
+    width: 1.35rem;
+    height: 1.35rem;
+    border: 2px solid var(--avd-academy-color-accent);
+    border-radius: 50%;
+    color: var(--avd-academy-color-accent-ink);
+    font-size: 0.8rem;
+    font-weight: var(--avd-academy-fw-bold);
+    line-height: 1;
+  }
+  .cv__tile code { font-size: 0.9em; }
+  .cv__tile-text { display: block; }
+  .cv__tile-note {
+    display: block;
+    font-size: var(--avd-academy-fs-sm);
+    color: var(--avd-academy-color-ink-muted);
+  }
+  .cv__icon { flex: 0 0 auto; fill: none; stroke: var(--avd-academy-color-accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* --- Die Leitung zwischen Registry und Rechner ------------------------- */
+  .cv__wire {
+    display: grid;
+    gap: var(--avd-academy-space-3);
+    justify-items: center;
+    text-align: center;
+  }
+  .cv__wire code { font-size: var(--avd-academy-fs-sm); white-space: nowrap; }
+  .cv__arrow { display: block; width: 100%; max-width: 6rem; height: auto; }
+  .cv__arrow-line { fill: none; stroke: var(--avd-academy-color-accent); stroke-width: 4; }
+  .cv__arrow-head { fill: var(--avd-academy-color-accent); }
+  @media (max-width: 62rem) {
+    .cv__arrow { transform: rotate(90deg); max-width: 4rem; }
+  }
+
+  /* --- Der Daemon trägt Images und Container ----------------------------- */
+  .cv__daemon {
+    margin-top: var(--avd-academy-space-3);
+    border: 2px dashed var(--avd-academy-color-accent);
+    border-radius: var(--avd-academy-radius);
+    padding: var(--avd-academy-space-3);
+    background: var(--avd-academy-color-bg);
+  }
+  .cv__daemon-body {
+    display: grid;
+    /* `minmax(0, …)`: Ohne das wachsen die Kacheln auf ihren Inhalt und der
+       Container-Kasten schob sich aus dem Daemon-Rahmen heraus. */
+    grid-template-columns: minmax(0, 1fr) minmax(5rem, 0.7fr) minmax(0, 1fr);
+    gap: var(--avd-academy-space-2);
+    align-items: center;
+    margin-top: var(--avd-academy-space-3);
+  }
+  @media (max-width: 40rem) {
+    .cv__daemon-body { grid-template-columns: 1fr; }
+    .cv__daemon-body .cv__arrow { transform: rotate(90deg); }
+  }
+  .cv__cross { display: grid; justify-items: center; gap: var(--avd-academy-space-1); }
+  .cv__cross code { font-size: 0.75rem; text-align: center; }
+  .cv__hint {
+    margin: var(--avd-academy-space-3) 0 0;
+    font-size: var(--avd-academy-fs-sm);
+    color: var(--avd-academy-color-ink-muted);
+  }
+  .cv__api {
+    margin: var(--avd-academy-space-2) 0 0;
+    padding-left: var(--avd-academy-space-3);
+    border-left: 3px solid var(--avd-academy-color-border);
+    font-size: var(--avd-academy-fs-sm);
+    color: var(--avd-academy-color-ink-muted);
+  }
+
+  /* --- Der Mensch an der Tastatur ----------------------------------------
+     Dasselbe Strichmännchen wie im Foliensatz: Es macht sichtbar, dass die CLI
+     die Stelle ist, an der ein Mensch eingreift. */
+  .cv__with-person { display: flex; align-items: center; gap: var(--avd-academy-space-2); }
+  .cv__with-person > .cv__tile { flex: 1 1 auto; }
+  .cv__person { flex: 0 0 auto; text-align: center; }
+  .cv__person-figure {
+    display: block;
+    fill: none;
+    stroke: var(--avd-academy-color-ink);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .cv__person-head { fill: var(--avd-academy-color-bg); }
+  .cv__person-label {
+    display: block;
+    font-size: var(--avd-academy-fs-sm);
+    color: var(--avd-academy-color-ink-muted);
+  }
+
+  /* --- Reiter im Erklärkasten ---------------------------------------------
+     Der Baustein kommt aus dem Theme (`avd-academy-tabs`); hier bekommt er nur
+     einen engeren Abstand und eine FESTE Höhe - sonst springt der Kasten beim
+     Umschalten. */
+  .cv__detail .avd-academy-tabs.avd-academy-tabs { margin: var(--avd-academy-space-4) 0 0; }
+  .cv__detail .avd-academy-tabs--enhanced > .avd-academy-tabs__panel[open] {
+    min-height: 15rem;
+    padding: var(--avd-academy-space-4);
+  }
+
+  /* --- Die Erläuterungen ---------------------------------------------------
+     Sie stehen IM Dokument (Druck!) und werden am Bildschirm nur geöffnet. */
+  .cv__detail {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 60;
+    width: min(48rem, 92vw);
+    max-height: 86vh;
+    overflow-y: auto;
+    padding: var(--avd-academy-space-6);
+    background: var(--avd-academy-color-bg);
+    border: 2px solid var(--avd-academy-color-accent);
+    border-radius: var(--avd-academy-radius-lg);
+    box-shadow: 0 1.5rem 3rem rgb(0 0 0 / 0.25);
+  }
+  .cv__detail:focus-visible { outline: 3px solid var(--avd-academy-color-accent); outline-offset: 3px; }
+  .cv__detail > :first-child { margin-top: 0; }
+  .cv__detail table { width: 100%; border-collapse: collapse; font-size: var(--avd-academy-fs-sm); }
+  .cv__detail th,
+  .cv__detail td {
+    border: 1px solid var(--avd-academy-color-border);
+    padding: var(--avd-academy-space-1) var(--avd-academy-space-2);
+    text-align: left;
+    vertical-align: top;
+  }
+  .cv__detail th { background: var(--avd-academy-color-bg-subtle); }
+  .cv__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgb(0 0 0 / 0.5);
+  }
+  .cv__diagram { display: block; width: 100%; max-width: 34rem; height: auto; margin: var(--avd-academy-space-4) 0; }
+  .cv__state { fill: var(--avd-academy-color-bg-subtle); stroke: var(--avd-academy-color-border); stroke-width: 2; }
+  /* UML: gefüllter Kreis = Startknoten, Ring mit gefülltem Kern = Endknoten. */
+  .cv__node-start { fill: var(--avd-academy-color-ink); }
+  .cv__node-end { fill: none; stroke: var(--avd-academy-color-ink); stroke-width: 2.5; }
+  .cv__node-core { fill: var(--avd-academy-color-ink); }
+  .cv__state-note { fill: var(--avd-academy-color-ink-muted); font-size: 12px; }
+  .cv__state-label { fill: var(--avd-academy-color-headline); font-size: 15px; }
+  .cv__edge { fill: none; stroke: var(--avd-academy-color-accent); stroke-width: 2.5; }
+  .cv__edge-head { fill: var(--avd-academy-color-accent); }
+  .cv__edge-label { fill: var(--avd-academy-color-ink-muted); font-size: 13px; }
+
+  /* Nur für den Druck gedacht – am Bildschirm wäre es eine leere Überschrift. */
+  .cv__print-only { display: none; }
+
+  /* --- Drucklayout: ALLES ist drin --------------------------------------- */
+  @media print {
+    .cv__detail[hidden] { display: block; }
+    .cv__detail {
+      position: static;
+      transform: none;
+      width: auto;
+      max-height: none;
+      overflow: visible;
+      box-shadow: none;
+      border-color: var(--avd-academy-color-border);
+      margin-top: var(--avd-academy-space-4);
+      break-inside: avoid;
+    }
+    .cv__print-only { display: block; }
+    .cv__backdrop,
+    .cv__badge { display: none !important; }
+    .cv { break-inside: avoid; }
+  }
+</style>
+
+<div class="cv">
+
+  <section class="cv__place" data-cv-area="cv-registry">
+    <h2 class="cv__place-title">
+      <button type="button" class="cv__button" data-cv-target="cv-registry">
+        Registry <span class="cv__badge" aria-hidden="true">i</span>
+      </button>
+    </h2>
+    <p class="cv__place-note"><a href="https://hub.docker.com">Docker Hub</a>, GitHub Container Registry, Harbor im eigenen Haus …</p>
+
+    <button type="button" class="cv__tile" data-cv-target="cv-image-registry">
+      <svg class="cv__icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 8 12 4l8 4-8 4-8-4Z" /><path d="M4 12l8 4 8-4" /><path d="M4 16l8 4 8-4" /></svg>
+      <span><span class="cv__tile-text"><code>mein-team/webshop:1.4</code></span><span class="cv__tile-note">Image – Bauplan, unveränderlich</span></span>
+    </button>
+    <button type="button" class="cv__tile" data-cv-target="cv-image-registry">
+      <svg class="cv__icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 8 12 4l8 4-8 4-8-4Z" /><path d="M4 12l8 4 8-4" /><path d="M4 16l8 4 8-4" /></svg>
+      <span><span class="cv__tile-text"><code>library/postgres:16</code></span><span class="cv__tile-note">Image – Bauplan, unveränderlich</span></span>
+    </button>
+  </section>
+
+  <div class="cv__wire">
+    <svg class="cv__arrow" viewBox="0 0 80 24" role="img" aria-label="Pfeil von der Registry zum Rechner">
+      <path class="cv__arrow-line" d="M4 12 H58" />
+      <path class="cv__arrow-head" d="M56 2 L78 12 L56 22 Z" />
+    </svg>
+    <code>docker image pull</code>
+    <svg class="cv__arrow" viewBox="0 0 80 24" role="img" aria-label="Pfeil vom Rechner zur Registry">
+      <path class="cv__arrow-line" d="M76 12 H22" />
+      <path class="cv__arrow-head" d="M24 2 L2 12 L24 22 Z" />
+    </svg>
+    <code>docker image push</code>
+  </div>
+
+  <section class="cv__place">
+    <h2 class="cv__place-title">Dein Rechner</h2>
+    <p class="cv__place-note">Die Werkzeugkiste: ein Befehlswerkzeug und ein Dienst, der arbeitet.</p>
+
+    <div class="cv__with-person">
+      <span class="cv__person">
+        <svg class="cv__person-figure" viewBox="0 0 64 84" width="48" height="63" aria-hidden="true">
+          <circle class="cv__person-head" cx="26" cy="15" r="11" />
+          <path d="M26 26 V52 M26 52 L14 78 M26 52 L38 78 M26 33 L12 46 M26 33 L52 42" />
+        </svg>
+        <span class="cv__person-label">Entwickler:in</span>
+      </span>
+      <button type="button" class="cv__tile" data-cv-target="cv-cli">
+        <svg class="cv__icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M7 10l3 3-3 3" /><path d="M12.5 16H17" /></svg>
+        <span><span class="cv__tile-text">Docker CLI <span class="cv__badge" aria-hidden="true">i</span></span><span class="cv__tile-note">das, was Du tippst</span></span>
+      </button>
+    </div>
+
+    <p class="cv__api">schickt Aufträge über die <strong>Docker-API</strong> ↓</p>
+
+    <div class="cv__daemon" data-cv-area="cv-daemon">
+      <button type="button" class="cv__button" data-cv-target="cv-daemon">
+        Docker Daemon <span class="cv__badge" aria-hidden="true">i</span>
+      </button>
+      <p class="cv__hint">Der Dienst, der alles tut – auch die Verbindung zur Registry.</p>
+
+      <div class="cv__daemon-body">
+        <button type="button" class="cv__tile" data-cv-target="cv-image-local">
+          <svg class="cv__icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 8 12 4l8 4-8 4-8-4Z" /><path d="M4 12l8 4 8-4" /><path d="M4 16l8 4 8-4" /></svg>
+          <span><span class="cv__tile-text">Images <span class="cv__badge" aria-hidden="true">i</span></span><span class="cv__tile-note">lokale Kopien</span></span>
+        </button>
+
+        <div class="cv__cross">
+          <svg class="cv__arrow" viewBox="0 0 80 24" role="img" aria-label="Pfeil vom Image zum Container">
+            <path class="cv__arrow-line" d="M4 12 H58" />
+            <path class="cv__arrow-head" d="M56 2 L78 12 L56 22 Z" />
+          </svg>
+          <code>docker container create</code>
+        </div>
+
+        <button type="button" class="cv__tile" data-cv-target="cv-container">
+          <svg class="cv__icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="3" y="7" width="18" height="12" rx="2" /><path d="M8 7v12M13 7v12M18 7v12" /></svg>
+          <span><span class="cv__tile-text">Container <span class="cv__badge" aria-hidden="true">i</span></span><span class="cv__tile-note">laufende Ausprägung</span></span>
+        </button>
+      </div>
+
+      <p class="cv__hint"><code>docker container start</code> · <code>docker container stop</code> · <code>docker container rm</code></p>
+    </div>
+  </section>
+
+</div>
+
+<blockquote>
+  <p><strong>Merksatz:</strong> Das Image ist der Bauplan und liegt in der Registry, der Container
+ist die laufende Ausprägung auf Deinem Rechner – und dazwischen steht immer der
+Docker Daemon.</p>
+</blockquote>
+
+<h2 class="cv__print-only">Alle Erläuterungen</h2>
+
+<div class="cv__details">
+
+<section class="cv__detail" id="cv-registry" role="dialog" aria-modal="true" aria-labelledby="cv-registry-title" tabindex="-1" hidden="">
+  <h3 id="cv-registry-title">Registry: Organisation, Repository, Tag</h3>
+  <p>Der Ort, an dem Images liegen. Docker Hub ist eine davon; viele Häuser
+  betreiben eine eigene (Harbor, Nexus, GitHub Container Registry).</p>
+  <p>Der vollständige Name sagt, wo ein Image liegt und welche Fassung gemeint ist:</p>
+  <p><code>registry.example.com/mein-team/webshop:1.4</code></p>
+  <table>
+    <tr><th>Teil</th><th>Was er benennt</th></tr>
+    <tr><td><code>registry.example.com</code></td><td>Die <strong>Registry</strong>. Fehlt sie, ist Docker Hub gemeint.</td></tr>
+    <tr><td><code>mein-team</code></td><td>Die <strong>Organisation</strong>: wem der Name gehört.</td></tr>
+    <tr><td><code>webshop</code></td><td>Das <strong>Repository</strong>: alle Fassungen einer Software.</td></tr>
+    <tr><td><code>1.4</code></td><td>Der <strong>Tag</strong>: die Fassung. Fehlt er, gilt <code>latest</code>.</td></tr>
+  </table>
+  <p><strong>Ein Tag ist ein Zeiger, kein Stand.</strong> Er lässt sich umhängen;
+  eindeutig ist nur der Digest. Für private Repositories und jedes Veröffentlichen:
+  <code>docker login</code>.</p>
+</section>
+
+<section class="cv__detail" id="cv-image-registry" role="dialog" aria-modal="true" aria-labelledby="cv-image-registry-title" tabindex="-1" hidden="">
+  <h3 id="cv-image-registry-title">Das Image</h3>
+  <p>Der unveränderliche Bauplan: ein fertiges Dateisystem und die Angaben, wie
+  daraus ein Container wird.</p>
+  <div class="avd-academy-tabs">
+    <details class="avd-academy-tabs__panel" name="cv-image-tabs" open="">
+      <summary>Hash</summary>
+      <p>Jedes Image trägt einen <code>sha256:…</code>-Digest, gerechnet aus
+      seinem Inhalt.</p>
+      <ul>
+        <li>Gleicher Inhalt → gleicher Digest, in jeder Registry.</li>
+        <li>Ändert sich der Inhalt, ändert sich der Digest – es ist dann ein anderes Image.</li>
+        <li>Mehrere Tags dürfen auf denselben Digest zeigen.</li>
+      </ul>
+      <p>Anzeigen: <code>docker image ls --digests</code></p>
+    </details>
+    <details class="avd-academy-tabs__panel" name="cv-image-tabs">
+      <summary>Metadaten</summary>
+      <p>Im Image steckt mehr als das Dateisystem – und all das reist mit:</p>
+      <ul>
+        <li>Erstellungszeitpunkt und Autor</li>
+        <li>Architektur und Betriebssystem (<code>linux/amd64</code>)</li>
+        <li>Startbefehl und Arbeitsverzeichnis</li>
+        <li>Ports und vorbelegte Umgebungsvariablen</li>
+        <li>Labels: Titel, Beschreibung, Version, Quelle, Lizenz</li>
+      </ul>
+      <p>Ansehen: <code>docker image inspect mein-team/webshop:1.4</code></p>
+    </details>
+  </div>
+</section>
+
+<section class="cv__detail" id="cv-daemon" role="dialog" aria-modal="true" aria-labelledby="cv-daemon-title" tabindex="-1" hidden="">
+  <h3 id="cv-daemon-title">Docker Daemon: der, der arbeitet</h3>
+  <p>Ein Dienst auf dem Rechner. Er spricht mit der Registry, lädt Images, legt
+  Container an, startet und stoppt sie und verwaltet Speicher, Netze und Volumes.</p>
+  <p><strong>Alles, was Du tippst, führt er aus – nicht die CLI.</strong> Die
+  schickt nur einen Auftrag über die Docker-API.</p>
+  <ul>
+    <li><strong>Pfade gelten dort, wo der Daemon läuft</strong> – bei einem entfernten Daemon ist das ein anderer Rechner.</li>
+    <li><strong>Läuft er nicht, geht nichts:</strong> <em>„Cannot connect to the Docker daemon“</em>.</li>
+    <li><strong>Wer mit ihm sprechen darf, darf viel</strong> – eine Rechtefrage auf dem Rechner.</li>
+  </ul>
+</section>
+
+<section class="cv__detail" id="cv-cli" role="dialog" aria-modal="true" aria-labelledby="cv-cli-title" tabindex="-1" hidden="">
+  <h3 id="cv-cli-title">Docker CLI: die Befehle</h3>
+  <p>Dein Befehlswerkzeug. Sie tut selbst nichts – sie beauftragt den Daemon.</p>
+  <table>
+    <tr><th>Befehl</th><th>Wofür</th></tr>
+    <tr><td><code>docker login</code></td><td>an einer Registry anmelden</td></tr>
+    <tr><td><code>docker image pull &lt;name&gt;:&lt;tag&gt;</code></td><td>Image holen</td></tr>
+    <tr><td><code>docker image push &lt;name&gt;:&lt;tag&gt;</code></td><td>Image veröffentlichen</td></tr>
+    <tr><td><code>docker image ls</code></td><td>lokale Images auflisten</td></tr>
+    <tr><td><code>docker container create &lt;image&gt;</code></td><td>Container anlegen</td></tr>
+    <tr><td><code>docker container start &lt;name&gt;</code></td><td>Container starten</td></tr>
+    <tr><td><code>docker container stop &lt;name&gt;</code></td><td>Container anhalten</td></tr>
+    <tr><td><code>docker container ls --all</code></td><td>Container auflisten, auch gestoppte</td></tr>
+    <tr><td><code>docker container logs &lt;name&gt;</code></td><td>Ausgaben ansehen</td></tr>
+    <tr><td><code>docker container rm &lt;name&gt;</code></td><td>Container entfernen</td></tr>
+    <tr><td><code>docker container run &lt;image&gt;</code></td><td>anlegen und starten in einem</td></tr>
+  </table>
+  <p><strong>Immer die Langform</strong> – <code>docker image pull</code> statt
+  <code>docker pull</code>. Sie sagt, <em>worauf</em> der Befehl wirkt; genau diese
+  Unterscheidung übt der Kurs. Alle Befehle mit allen Schaltern:
+  <a href="https://docs.docker.com/reference/cli/docker/">Docker-CLI-Referenz</a></p>
+</section>
+
+<section class="cv__detail" id="cv-image-local" role="dialog" aria-modal="true" aria-labelledby="cv-image-local-title" tabindex="-1" hidden="">
+  <h3 id="cv-image-local-title">Images auf Deinem Rechner</h3>
+  <p>Hier liegt <strong>dasselbe Image</strong> wie in der Registry – inhaltlich
+  identisch, mit demselben Digest. Kein zweites Original, sondern eine
+  <strong>gecachte Kopie</strong> im Speicher des Daemons.</p>
+  <ul>
+    <li><code>docker image pull</code> legt die Kopie an; ein zweiter Aufruf lädt nur, was noch fehlt.</li>
+    <li><code>docker image rm</code> löscht die Kopie – in der Registry bleibt das Image.</li>
+    <li><code>docker image tag</code> hängt einen zweiten Namen an denselben Digest. Das brauchst Du vor dem <code>docker image push</code>: Der Name muss zur Ziel-Registry passen.</li>
+  </ul>
+</section>
+
+<section class="cv__detail" id="cv-container" role="dialog" aria-modal="true" aria-labelledby="cv-container-title" tabindex="-1" hidden="">
+  <h3 id="cv-container-title">Container: der Lebenszyklus</h3>
+  <p>Die <strong>laufende Ausprägung</strong> eines Images: eigene Prozesse, eigene
+  Umgebungsvariablen, ein eigener beschreibbarer Bereich. Aus einem Image können
+  viele Container werden.</p>
+  <svg class="cv__diagram" viewBox="0 0 560 210" role="img" aria-label="Zustandsdiagramm: Vom Startknoten führt „docker container create“ in den Zustand „nicht laufend“. Von dort führt „docker container start“ in den Zustand „läuft“ und „docker container stop“ wieder zurück. Aus „nicht laufend“ führt „docker container rm“ in den Endzustand.">
+    <defs>
+      <marker id="cv-arrowhead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+        <path class="cv__edge-head" d="M0 0 L10 5 L0 10 Z" />
+      </marker>
+    </defs>
+    <circle class="cv__node-start" cx="100" cy="20" r="9" />
+    <rect class="cv__state" x="20" y="62" width="160" height="60" rx="10" />
+    <text class="cv__state-label" x="100" y="86" text-anchor="middle" dominant-baseline="central">nicht laufend</text>
+    <text class="cv__state-note" x="100" y="106" text-anchor="middle" dominant-baseline="central">created · exited</text>
+    <rect class="cv__state" x="380" y="62" width="160" height="60" rx="10" />
+    <text class="cv__state-label" x="460" y="92" text-anchor="middle" dominant-baseline="central">läuft</text>
+    <circle class="cv__node-end" cx="100" cy="188" r="12" />
+    <circle class="cv__node-core" cx="100" cy="188" r="6.5" />
+    <path class="cv__edge" marker-end="url(#cv-arrowhead)" d="M100 30 V58" />
+    <path class="cv__edge" marker-end="url(#cv-arrowhead)" d="M184 80 H374" />
+    <path class="cv__edge" marker-end="url(#cv-arrowhead)" d="M376 106 H186" />
+    <path class="cv__edge" marker-end="url(#cv-arrowhead)" d="M100 126 V172" />
+    <text class="cv__edge-label" x="112" y="44">docker container create</text>
+    <text class="cv__edge-label" x="280" y="70" text-anchor="middle">docker container start</text>
+    <text class="cv__edge-label" x="280" y="124" text-anchor="middle">docker container stop</text>
+    <text class="cv__edge-label" x="112" y="152">docker container rm</text>
+  </svg>
+  <p><code>docker container run</code> legt an und startet in einem Schritt.</p>
+  <p>Docker unterscheidet im <em>nicht laufenden</em> Zustand zwei Fälle:
+  <code>created</code> (noch nie gelaufen) und <code>exited</code> (schon gelaufen,
+  mit Rückgabewert und Protokoll). Für das Bedienen macht das keinen Unterschied –
+  <code>docker container start</code> führt aus beiden ins Laufen.</p>
+  <p><strong>Beim Entfernen ist alles weg, was im Container entstanden ist</strong> –
+  was dagegen hilft, ist Thema des Blocks über Konfiguration und Zustand.</p>
+  <p>Den Ablauf Schritt für Schritt:
+  <a href="/training-material-container-technologies/docker-grundlagen/einfuehrung/simulation.html">Simulation „Der Lebenszyklus eines Containers“</a></p>
+</section>
+
+</div>
+
+<script>
+  /* Öffnen und Schließen der Erläuterungen. Die Texte stehen im Dokument und
+     werden NICHT erzeugt – sonst fehlten sie im Druck. Ohne JavaScript bleibt
+     die Bühne lesbar; die Erläuterungen sind dann über den Druck erreichbar. */
+  (function () {
+    var panels = document.querySelectorAll(".cv__detail");
+    if (!panels.length) return;
+
+    var backdrop = null;
+    var openEl = null;
+    var trigger = null;
+
+    /* Die Adresse trägt den Zustand: `…/visualisierung.html#cv-registry` lässt
+       sich verschicken und als Lesezeichen ablegen. `replaceState` statt einer
+       Zuweisung an `location.hash`: Das legt keinen Verlaufseintrag je Klick an
+       und springt nicht zur (verborgenen) Sprungmarke. */
+    function setHash(id) {
+      var target = id ? "#" + id : location.pathname + location.search;
+      if (id && location.hash === "#" + id) return;
+      if (!id && !location.hash) return;
+      history.replaceState(null, "", target);
+    }
+
+    function closePanel() {
+      if (!openEl) return;
+      openEl.hidden = true;
+      setHash(null);
+      if (backdrop) { backdrop.remove(); backdrop = null; }
+      if (trigger) { trigger.setAttribute("aria-expanded", "false"); trigger.focus(); }
+      openEl = null;
+      trigger = null;
+    }
+
+    function openPanel(id, button) {
+      var target = document.getElementById(id);
+      if (!target) return;
+      closePanel();
+      backdrop = document.createElement("div");
+      backdrop.className = "cv__backdrop";
+      backdrop.addEventListener("click", closePanel);
+      target.parentNode.insertBefore(backdrop, target);
+      target.hidden = false;
+      openEl = target;
+      trigger = button || null;
+      if (trigger) trigger.setAttribute("aria-expanded", "true");
+      target.scrollTop = 0;
+      target.focus();
+      setHash(id);
+    }
+
+    /* Beim Laden und bei jeder Adressänderung (Lesezeichen, Zurück-Taste,
+       getippte Adresse) den Zustand herstellen, den die Adresse beschreibt. */
+    function applyHash() {
+      var id = (location.hash || "").replace(/^#/, "");
+      var target = id ? document.getElementById(id) : null;
+      if (target && target.classList.contains("cv__detail")) {
+        if (openEl !== target) openPanel(id, document.querySelector("[data-cv-target='" + id + "']"));
+      } else if (openEl) {
+        closePanel();
+      }
+    }
+
+    document.querySelectorAll("[data-cv-target]").forEach(function (button) {
+      button.setAttribute("aria-expanded", "false");
+      button.setAttribute("aria-controls", button.getAttribute("data-cv-target"));
+      button.addEventListener("click", function () {
+        openPanel(button.getAttribute("data-cv-target"), button);
+      });
+    });
+
+    /* Der ganze Kasten ist Hotspot. Ein Klick auf etwas, das selbst reagiert
+       (eigener Knopf, Link), hat Vorrang – dort wird nichts überschrieben. */
+    document.querySelectorAll("[data-cv-area]").forEach(function (area) {
+      var id = area.getAttribute("data-cv-area");
+      area.addEventListener("click", function (e) {
+        if (e.target.closest("a, button")) return;
+        openPanel(id, area.querySelector("[data-cv-target='" + id + "']"));
+      });
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closePanel();
+    });
+
+    /* Der Fokus bleibt im geöffneten Kasten: Wandert er hinaus, kommt er zurück.
+       Das ersetzt eine Fokusfalle mit wenigen Zeilen. */
+    document.addEventListener("focusin", function (e) {
+      if (openEl && !openEl.contains(e.target)) openEl.focus();
+    });
+
+    window.addEventListener("hashchange", applyHash);
+    applyHash();
+
+    /* Vor dem Drucken alles zu: Ein geöffneter Kasten läge sonst über der
+       Seite, während darunter ohnehin schon alle Texte stehen. */
+    window.addEventListener("beforeprint", closePanel);
+  })();
+</script>
+
+
+
+    </main>
+  </div><div class="avd-academy-print-contact" aria-hidden="true">
+    <span>Kontakt: https://academy.atvantage-academy.workers.dev/</span>
+    <span>academy@atvantage.com</span>
+  </div>
+
+  <footer class="avd-academy-footer">
+  <div class="avd-academy-footer__grid">
+    <div><strong>Containertechnologien (Academy)</strong>
+      <p>Schulungsunterlagen der ATVANTAGE Academy.</p>
+    </div><div>
+      <strong>Kontakt</strong>
+      <p><a href="https://academy.atvantage-academy.workers.dev/" target="_blank" rel="noopener">Website</a><br><a href="mailto:academy@atvantage.com">academy@atvantage.com</a><br>
+      </p>
+    </div></div>
+  <div class="avd-academy-footer__legal">
+    © <span data-avd-academy-year>2026</span> ATVANTAGE
+  </div>
+</footer>
+
+</body>
+</html>

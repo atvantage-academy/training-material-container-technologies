@@ -1,59 +1,40 @@
-<!DOCTYPE html>
-<!--
-  ATVANTAGE-Academy – Layout „presentation“ (Jekyll)
-  --------------------------------------------------
-  Folienbasierter Vortrag aus GEWÖHNLICHEM MARKDOWN. Die Seite läuft im Vollbild,
-  das Academy-Theme tritt zurück: keine Meta-Leiste, keine TopNav, keine
-  Brotkrumen, kein Footer, keine Sidebar – nur eine schmale Kopfleiste mit dem
-  Präsentationstitel und die Folienfläche darunter.
-
-  Übersetzung Markdown → Folien (macht presentation.js zur Laufzeit):
-    #  (bzw. Front-Matter `title`)  → Titel der Präsentation: klein in der
-                                      Kopfleiste UND groß auf der Titelfolie
-    ## (h2)                         → Titel einer Folie; JEDES h2 beginnt eine
-                                      neue Folie
-    alles vor dem ersten h2         → Titelfolie (Untertitel, Trainer:in, Datum)
-
-  Bedienung: ← → (auch Leertaste, Bild ↑/↓, Pos1/Ende), die Schaltflächen unten
-  rechts oder Wischen auf dem Touchscreen. Beim Wechsel schiebt sich die Folie
-  nach links aus dem Bild. Die aktuelle Folie steht im URL-Hash (#/3) und ist
-  damit verlinkbar und reload-fest.
-
-  Drucken: Jede Präsentation hat ein Drucklayout – im Ausdruck steht jede Folie
-  auf einer eigenen Seite (Schaltflächen und Fortschritt entfallen). Der Knopf in
-  der Kopfleiste löst es aus. Der QR-Code neben dem Knopf bleibt im Ausdruck
-  stehen und führt vom Blatt zurück zur Online-Fassung.
-
-  QR-Code: links vom Farbschema-Umschalter (dieselbe Reihenfolge wie in der
-  Kopfzeile der übrigen Seiten), gleich groß, Tooltip „Diese Seite auf Deinem
-  Smartphone öffnen“; vergrößert sich bei Hover/Tippen auf Scan-Größe. Er zeigt
-  auf die AKTUELLE Folie (Fragment #/3) und wird beim Blättern neu berechnet.
-
-  Front Matter (alles optional):
-    title:       "…"              → sonst die erste #-Überschrift
-    description: "…"              → Meta-Description
-
-  OHNE JavaScript bleibt die Seite lesbar: Sie rendert dann als eine lange,
-  scrollbare Markdown-Seite (die Folien-Aufteilung ist eine Zutat, keine
-  Voraussetzung).
-
-  Das eigenständige Deck (templates/presentations/, reines HTML mit Fragmenten
-  und Speaker-Notes) bleibt daneben bestehen – siehe docs/theme/academy.md.
---><html lang="de">
+<!DOCTYPE html><html lang="de">
 <head>
   <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"><title>Warum Container? · Containertechnologien (Academy)</title><meta name="description" content="Von der Agilität über die Wall of Confusion zum Container als Paket – und von dort zu den Begriffen Image und Container."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Warum Container? · Containertechnologien (Academy)</title><meta name="description" content="Von der Agilität über die Wall of Confusion zum Container als Paket – und zur Abgrenzung gegen die virtuelle Maschine."><meta property="og:site_name" content="Containertechnologien (Academy)">
 <meta property="og:title" content="Warum Container?">
-<meta property="og:description" content="Von der Agilität über die Wall of Confusion zum Container als Paket – und von dort zu den Begriffen Image und Container.">
+<meta property="og:description" content="Von der Agilität über die Wall of Confusion zum Container als Paket – und zur Abgrenzung gegen die virtuelle Maschine.">
 <meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790741874">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790741874" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790741874" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790741874">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=118a443d"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=2dd7a61e">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=91dc645c">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=4b561b0b">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=da9fc064"><style>
+:where(.avd-academy-guide-main a[href*="docker.com"]) {
+  position: relative;
+  padding-left: 1.35em;
+}
+:where(.avd-academy-guide-main a[href*="docker.com"])::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .18em;
+  width: 1em;
+  height: 1em;
+  background: center / contain no-repeat;
+  background-image: none;
+  background-color: currentColor;
+  mask-image: url("/training-material-container-technologies/assets/icons/docker.svg");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+}
+.avd-academy-linkmark--none :where(.avd-academy-guide-main a[href*="docker.com"]),
+:where(.avd-academy-guide-main a[href*="docker.com"]).avd-academy-linkmark--none { padding-left: 0; }
+</style><link rel="stylesheet" media="print" href="/training-material-container-technologies/theme/academy/print.css?v=aedd1b20">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=c7831634" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=a9cecc4f" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=2b412283">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -66,24 +47,8 @@
         .querySelectorAll(_auswahl)
         .forEach((el) => { if (!el.dataset.highlighted) { hljs.highlightElement(el); } });
       _faerben(document);
-
-      /* NACHTRAEGLICH EINGEFUEGTER CODE. Die Hervorhebung laeuft einmal beim Laden.
-         Eine Seite, die ihre Codebloecke per Skript einsetzt - eine Visualisierung,
-         die rohe Nachrichten durchschaltet -, bekam deshalb gar keine Farben und
-         baute sich einen eigenen Hervorheber. Genau die Kopie, die das Theme
-         verhindern soll.
-
-         `AvdHighlight.apply(knoten)` faerbt, was seither dazugekommen ist; `hljs`
-         liegt daneben fuer Faelle, die mehr brauchen. Das Ereignis sagt Seiten, die
-         frueh zeichnen, wann der Haken da ist - die Module laden asynchron. */
       window.AvdHighlight = { hljs, apply: _faerben, languages: _hlsprachen.slice() };
       document.dispatchEvent(new CustomEvent("avd-academy-highlight-ready"));
-
-      /* Statuszeile nach Klasse einfaerben. highlight.js gibt jedem dreistelligen
-         Code dieselbe Klasse `hljs-number` - in einem Mitschnitt ist aber genau das
-         die Stelle, auf die man zuerst sieht: 2xx ist etwas anderes als 4xx.
-         Deshalb hier die einzige eigene Zutat, und bewusst nur diese: Die
-         Statusklassen von HTTP aendern sich nicht, das bleibt stabil. */
       document.querySelectorAll("pre code.language-http .hljs-number").forEach((el) => {
         const code = parseInt(el.textContent, 10);
         if (code >= 100 && code <= 599) {
@@ -95,9 +60,9 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/training-material-container-technologies/theme/atvantage/assets/icon-180.png">
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/presentation.css?v=1790741874">
-  <script src="/training-material-container-technologies/theme/jekyll/presentation.js?v=1790741874" defer></script>
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790741874"></head>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/presentation.css?v=254289db">
+  <script src="/training-material-container-technologies/theme/jekyll/presentation.js?v=b2cc2b42" defer></script>
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=4a155a65"></head>
 <body class="avd-academy-present" data-avd-academy-present data-avd-academy-present-title="Warum Container?">
   <a class="avd-academy-skip-link" href="#avd-academy-deck">Zum Inhalt springen</a>
 
@@ -130,11 +95,30 @@ FORM
 DIE FOLIEN STUETZEN, SIE FUEHREN NICHT
 - Die Einheit lebt am BOARD: Die Liste "Was braucht eine Anwendung?" entsteht
   mit der Gruppe, und der Rahmen darum wird dort gezogen. Diese Folien zeigen
-  nur, was sich schlecht an die Tafel malen laesst.
+  nur, was sich schlecht an die Tafel malen lässt.
 - Folie "Was braucht eine Anwendung?" deshalb ERST ZEIGEN, WENN DIE GRUPPE
   gesammelt hat - vorher nimmt sie die Antwort vorweg.
-- KEINE Namensherkunft-Folie: Der Trainer zeigt dafuer seine eigenen Folien
-  (alte vs. moderne Schifffahrt). Nicht nachbauen.
+- Die Folie „Das Paket heißt Container“ trägt die beiden Bilder aus dem alten
+  Foliensatz (Warenverkehr früher/heute, `assets/bilder/`). Der Verweis ist
+  RELATIV (`../../assets/…`) und bleibt es: Liquid ist in diesem Repo
+  abgeschaltet (`render_with_liquid: false`), ein `relative_url`-Filter stünde
+  wörtlich auf der Folie – und ein wurzel-absoluter Pfad bräche in der
+  Lernenden-Ausgabe, die unter einer `baseurl` liegt. Früher zeigte der
+  Trainer sie aus einem eigenen Foliensatz - sie gehören jetzt hierher.
+
+DIE BEGRIFFE STEHEN NICHT MEHR HIER
+- Image, Container, Registry und der Lebenszyklus sind in die Visualisierung
+  `visualisierung.md` gewandert („Containerwissen kompakt“). Der Foliensatz
+  endet mit der Abgrenzung gegen die virtuelle Maschine; danach wird die
+  Visualisierung projiziert. Keine Folien dazu nachbauen.
+
+DER UNTERSCHIED IST DIE ISOLATION, NICHT „MENSCH ODER MASCHINE“
+- Die Anleitung ist nicht deshalb schlecht, weil ein MENSCH sie abarbeitet: Ein
+  Skript täte dasselbe. Entscheidend ist, WO sie ausgeführt wird - auf dem
+  ZIELRECHNER, den sie dabei verändert und den sich mehrere Anwendungen teilen.
+- Der Container dreht das um: Übergeben wird etwas FERTIG INSTALLIERTES, auf dem
+  Zielrechner wird nichts mehr installiert. Dieser Gegensatz trägt die Folien
+  „die Anleitung“, „Was braucht eine Anwendung“ und „Das Paket heißt Container“.
 ===============================================================================
 -->
 
@@ -147,13 +131,56 @@ DIE FOLIEN STUETZEN, SIE FUEHREN NICHT
      EINFUEHRUNG – Bilder zur Herleitung
      Alle Farben aus den Academy-Tokens.
      ========================================================================= */
-  .wc__kette {
+  /* Die Herleitung läuft im Z: Diagramm links, rechts daneben „Agilität“,
+     darunter „Häufig liefern“, links daneben „Also selbst ausliefern“ und
+     zuletzt über die ganze Breite der DevOps-Hinweis. Schmal gestapelt kippt
+     das Z in eine Spalte – dann zeigen alle Pfeile nach unten. */
+  .wc__z {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-    gap: var(--avd-academy-space-4);
+    grid-template-columns: 1fr;
+    align-items: center;
+    gap: var(--avd-academy-space-2) var(--avd-academy-space-3);
     max-width: 52rem;
-    margin: var(--avd-academy-space-8) auto;
+    margin: var(--avd-academy-space-4) auto 0;
     text-align: left;
+  }
+  /* Der geschwungene Pfeil zwischen den Gliedern: Das ist eine Folge, kein
+     Nebeneinander. Die Grundform zeigt nach RECHTS und wird gedreht - schmal
+     und in der Spalte nach unten (90°), im Z quer nach links (180°).
+     REIHENFOLGE BEACHTEN: Die Drehungen stehen NACH dieser Regel, sonst
+     gewinnt bei gleicher Spezifität wieder die 90°. */
+  .wc__folgepfeil {
+    display: flex; align-items: center; justify-content: center;
+    /* Der gedrehte Pfeil braucht die Höhe seiner Breite - sonst ragt er in den
+       Abstand der Nachbarzeile. */
+    min-height: 3.75rem;
+  }
+  .wc__folgepfeil svg {
+    display: block;
+    width: 3.5rem;
+    height: auto;
+    transform: rotate(90deg);
+  }
+  .wc__folgepfeil-bogen {
+    fill: none;
+    stroke: var(--avd-academy-color-accent);
+    stroke-width: 8;
+    stroke-linecap: round;
+  }
+  .wc__folgepfeil-spitze { fill: var(--avd-academy-color-accent); }
+  @media (min-width: 48rem) {
+    .wc__z { grid-template-columns: 1fr auto 1fr; }
+    /* Das Bild ist das hohe Element; es trägt die ersten beiden Zeilen. */
+    .wc__z-bild   { grid-area: 1 / 1 / 3 / 2; align-self: center; }
+    /* „Agilität“ sitzt am UNTEREN Rand seiner Zeile - direkt über dem Pfeil. */
+    .wc__z-1      { grid-area: 1 / 3; align-self: end; }
+    .wc__z-ab1    { grid-area: 2 / 3; }
+    .wc__z-2      { grid-area: 3 / 3; }
+    .wc__z-quer   { grid-area: 3 / 2; }
+    .wc__z-3      { grid-area: 3 / 1; }
+    .wc__z-ab3    { grid-area: 4 / 1; }
+    .wc__z-devops { grid-area: 5 / 1 / auto / -1; }
+    .wc__folgepfeil--quer svg { transform: rotate(180deg); }
   }
   .wc__glied {
     padding: var(--avd-academy-space-4);
@@ -182,13 +209,62 @@ DIE FOLIEN STUETZEN, SIE FUEHREN NICHT
     border-radius: var(--avd-academy-radius);
   }
   .wc__seite p { margin: var(--avd-academy-space-2) 0 0; }
-  .wc__wand {
-    width: 0.8rem;
-    background: repeating-linear-gradient(
-      0deg,
-      var(--avd-academy-color-border) 0 0.5rem,
-      transparent 0.5rem 0.65rem);
-    border-radius: var(--avd-academy-radius);
+  .wc__seite ul {
+    margin: var(--avd-academy-space-3) 0 0;
+    padding-left: 1.1em;
+    font-size: var(--avd-academy-fs-sm);
+    color: var(--avd-academy-color-ink-muted);
+  }
+  .wc__seite li + li { margin-top: var(--avd-academy-space-1); }
+  /* Statt einer glatten Wand: die gemauerte Wand mit der Code Bomb im Flug.
+     Sie steht MITTIG zwischen den beiden Seiten, nicht gestreckt - sonst
+     zieht das Bild die Zeile in die Länge. */
+  .wc__bombe { width: 14rem; align-self: center; }
+  .wc__bombe svg { display: block; width: 100%; height: auto; }
+  .wc__ziegel {
+    fill: var(--avd-academy-color-bg-subtle);
+    stroke: var(--avd-academy-color-border);
+    stroke-width: 2;
+  }
+  .wc__fuge { stroke: var(--avd-academy-color-border); stroke-width: 1.5; }
+  .wc__boden { stroke: var(--avd-academy-color-border); stroke-width: 2; }
+  .wc__flug {
+    fill: none;
+    stroke: var(--avd-academy-color-ink-muted);
+    stroke-width: 2;
+    stroke-dasharray: 6 5;
+  }
+  .wc__flug-spitze { fill: var(--avd-academy-color-ink-muted); }
+  .wc__bombe-koerper { fill: var(--avd-academy-color-ink); }
+  .wc__bombe-text {
+    fill: var(--avd-academy-color-bg);
+    font-size: 15px;
+    font-weight: var(--avd-academy-fw-bold);
+  }
+  .wc__lunte {
+    fill: none;
+    stroke: var(--avd-academy-color-ink-muted);
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+  .wc__mensch {
+    fill: none;
+    stroke: var(--avd-academy-color-ink);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .wc__kopf { fill: var(--avd-academy-color-bg); }
+  .wc__funke { fill: var(--avd-academy-color-warning); }
+  .wc__strahl {
+    fill: none;
+    stroke: var(--avd-academy-color-warning);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+  }
+  @media (max-width: 48rem) {
+    .wc__mauer { grid-template-columns: 1fr; justify-items: center; }
+    .wc__seite { width: 100%; }
   }
 
   /* Die Liste mit dem Rahmen darum - das Bild der Einheit. */
@@ -225,6 +301,32 @@ DIE FOLIEN STUETZEN, SIE FUEHREN NICHT
     text-align: left;
   }
 
+  /* Warenverkehr früher/heute - die beiden Bilder aus dem alten Foliensatz.
+     Feste Bildhöhe + object-fit, damit das Paar trotz unterschiedlicher
+     Seitenverhältnisse auf einer Linie liegt. */
+  .wc__warenverkehr {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: var(--avd-academy-space-4);
+    max-width: 50rem;
+    margin: var(--avd-academy-space-6) auto;
+    text-align: left;
+  }
+  .wc__warenverkehr figure { margin: 0; }
+  .wc__warenverkehr img {
+    display: block;
+    width: 100%;
+    height: 11rem;
+    object-fit: cover;
+    border: 2px solid var(--avd-academy-color-border);
+    border-radius: var(--avd-academy-radius);
+  }
+  .wc__warenverkehr figcaption {
+    margin-top: var(--avd-academy-space-2);
+    font-size: var(--avd-academy-fs-sm);
+    color: var(--avd-academy-color-ink-muted);
+  }
+
   /* Bauplan und Ausprägung. */
   .wc__paar {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
@@ -242,6 +344,163 @@ DIE FOLIEN STUETZEN, SIE FUEHREN NICHT
   .wc__karte p:last-child { margin-bottom: 0; }
   .wc__karte code { font-size: 0.9em; }
 
+  /* Die Schleife: Agilität dreht dieselbe Runde öfter. Skizze als
+     Gedankenstütze für den Trainer – Tests entstehen VOR dem Design und
+     laufen gegen die Implementierung (TDD). */
+  .wc__schleife {
+    max-width: 22rem;
+    margin: 0;
+  }
+  .wc__schleife svg { display: block; width: 100%; height: auto; }
+  .wc__schleife figcaption {
+    margin-top: var(--avd-academy-space-2);
+    font-size: var(--avd-academy-fs-sm);
+    color: var(--avd-academy-color-ink-muted);
+  }
+  .wc__station {
+    fill: var(--avd-academy-color-bg-subtle);
+    stroke: var(--avd-academy-color-border);
+    stroke-width: 2;
+  }
+  .wc__station-text {
+    fill: var(--avd-academy-color-headline);
+    font-size: 19px;
+    font-weight: var(--avd-academy-fw-medium);
+  }
+  .wc__bogen { fill: none; stroke: var(--avd-academy-color-accent); stroke-width: 3; }
+  .wc__spitze { fill: var(--avd-academy-color-accent); }
+  .wc__tdd {
+    stroke: var(--avd-academy-color-ink-muted);
+    stroke-width: 2;
+    stroke-dasharray: 6 5;
+  }
+  .wc__chip { fill: var(--avd-academy-color-bg); }
+  .wc__chip-text { fill: var(--avd-academy-color-ink-muted); font-size: 15px; }
+
+  /* Aufbau eines Containers: Oben, was IM Container steckt, unten dasselbe
+     beim Host - verbunden durch die Zuordnung dazwischen. Die Symbole sind
+     EINMAL definiert und werden zweimal benutzt (<use>): Nur so ist auf einen
+     Blick zu sehen, dass es dieselbe Sache ist, einmal abgegrenzt. */
+  /* Diese Folie bricht aus der 52rem-Spalte aus: Tabelle und Skizze stehen
+     nebeneinander, sonst wird die Folie zu hoch. `margin-inline-start: 50%`
+     plus Rückversatz zentriert den breiteren Block über der schmalen Spalte. */
+  .wc__breit {
+    /* Die Breite der Folie MINUS ihres Innenrands (derselbe clamp-Ausdruck wie
+       in presentation.css) und ein Rest für die Bildlaufleiste. Ein fester
+       vw-Anteil war zu großzügig: Bei ~1200 px lief der Block über den Rand. */
+    --wc-rand: clamp(1.5rem, 1rem + 4vw, 5rem);
+    width: min(74rem, calc(100vw - 2 * var(--wc-rand) - 1rem));
+    margin-inline-start: 50%;
+    transform: translateX(-50%);
+    display: grid;
+    grid-template-columns: minmax(18rem, 1fr) minmax(20rem, 1.1fr);
+    gap: var(--avd-academy-space-6);
+    align-items: center;
+    text-align: left;
+  }
+  @media (max-width: 62rem) {
+    .wc__breit {
+      width: 100%;
+      margin-inline-start: 0;
+      transform: none;
+      grid-template-columns: 1fr;
+    }
+  }
+  /* Vergleichstabelle: VM vorn, Container HINTEN - die Folie läuft auf den
+     Container zu, deshalb steht er in der letzten Spalte und ist betont. */
+  .wc__tabelle {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--avd-academy-fs-sm);
+  }
+  .wc__tabelle th,
+  .wc__tabelle td {
+    border: 1px solid var(--avd-academy-color-border);
+    padding: var(--avd-academy-space-2) var(--avd-academy-space-3);
+    text-align: left;
+    vertical-align: top;
+  }
+  .wc__tabelle thead th {
+    background: var(--avd-academy-color-bg-subtle);
+    color: var(--avd-academy-color-headline);
+    font-weight: var(--avd-academy-fw-bold);
+  }
+  .wc__tabelle tbody th {
+    color: var(--avd-academy-color-ink-muted);
+    font-weight: var(--avd-academy-fw-medium);
+  }
+  .wc__tabelle thead th:last-child { color: var(--avd-academy-color-accent-ink); }
+  .wc__tabelle tbody td:last-child { color: var(--avd-academy-color-ink); }
+  .wc__aufbau { margin: 0; }
+  .wc__aufbau svg { display: block; width: 100%; height: auto; }
+  .wc__aufbau figcaption {
+    margin-top: var(--avd-academy-space-2);
+    font-size: var(--avd-academy-fs-sm);
+    color: var(--avd-academy-color-ink-muted);
+    text-align: left;
+  }
+  .wc__kasten { fill: none; stroke: var(--avd-academy-color-accent); stroke-width: 3; }
+  .wc__kasten-titel {
+    fill: var(--avd-academy-color-accent-ink);
+    font-size: 17px;
+    font-weight: var(--avd-academy-fw-bold);
+  }
+  .wc__host {
+    fill: var(--avd-academy-color-bg-subtle);
+    stroke: var(--avd-academy-color-border);
+    stroke-width: 2;
+  }
+  .wc__host-titel {
+    fill: var(--avd-academy-color-headline);
+    font-size: 17px;
+    font-weight: var(--avd-academy-fw-bold);
+  }
+  /* Die Symbole erben Strich und Füllung vom <use> - deshalb steht die Farbe
+     hier und nicht an den Pfaden in <defs>. */
+  .wc__ico {
+    fill: none;
+    stroke: var(--avd-academy-color-accent);
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .wc__ico--host { stroke: var(--avd-academy-color-ink-muted); }
+  .wc__ico-text { fill: var(--avd-academy-color-ink); font-size: 13px; }
+  .wc__ico-text--host { fill: var(--avd-academy-color-ink-muted); font-size: 13px; }
+  .wc__zuordnung {
+    fill: none;
+    stroke: var(--avd-academy-color-ink-muted);
+    stroke-width: 2;
+    stroke-dasharray: 6 5;
+  }
+  .wc__zuordnung-spitze { fill: var(--avd-academy-color-ink-muted); }
+  .wc__zuordnung-feld { fill: var(--avd-academy-color-bg); }
+  .wc__zuordnung-text { fill: var(--avd-academy-color-ink-muted); font-size: 12.5px; }
+  /* Der Kernel ist die Schicht, DURCH die die Zuordnung läuft: Er wird VOR den
+     Pfeilen gezeichnet, damit sie sichtbar hindurchgehen. */
+  .wc__kernel {
+    fill: var(--avd-academy-color-bg-subtle);
+    stroke: var(--avd-academy-color-ink-muted);
+    stroke-width: 2;
+  }
+  .wc__kernel-titel {
+    fill: var(--avd-academy-color-headline);
+    font-size: 15px;
+    font-weight: var(--avd-academy-fw-bold);
+  }
+  /* Umgebungsvariablen gehen NICHT durch den Kernel - das Zeichen dafür. */
+  .wc__gesperrt {
+    fill: none;
+    stroke: var(--avd-academy-color-ink-muted);
+    stroke-width: 2.5;
+  }
+  .wc__os {
+    fill: var(--avd-academy-color-bg);
+    stroke: var(--avd-academy-color-border);
+    stroke-width: 2;
+  }
+  .wc__os-text { fill: var(--avd-academy-color-ink); font-size: 13px; }
+
   .avd-academy-slide__inner { max-width: 52rem; margin-block: auto; }
   .avd-academy-slide h2 { margin-bottom: var(--avd-academy-space-8); text-wrap: normal; }
   .avd-academy-slide__inner > p { margin-bottom: var(--avd-academy-space-6); }
@@ -249,36 +508,105 @@ DIE FOLIEN STUETZEN, SIE FUEHREN NICHT
 
 <h2 id="agilität-will-häufig-liefern">Agilität will häufig liefern</h2>
 
-<div class="wc__kette">
-  <div class="wc__glied">
+<div class="wc__z">
+  <figure class="wc__schleife wc__z-bild">
+  <svg viewBox="0 0 520 300" role="img" aria-labelledby="wc-schleife-titel">
+    <title id="wc-schleife-titel">Kreislauf aus vier Stationen: Analyse, Tests schreiben, Design, Implementierung – und wieder von vorn. Eine gestrichelte Verbindung zwischen Tests und Implementierung ist mit TDD beschriftet.</title>
+    <defs>
+      <marker id="wc-spitze" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+        <path class="wc__spitze" d="M0 0 L10 5 L0 10 Z" />
+      </marker>
+    </defs>
+    <line class="wc__tdd" x1="336" y1="84" x2="194" y2="218" />
+    <rect class="wc__chip" x="240" y="140" width="50" height="22" rx="6" />
+    <text class="wc__chip-text" x="265" y="152" text-anchor="middle" dominant-baseline="central">TDD</text>
+    <path class="wc__bogen" marker-end="url(#wc-spitze)" d="M215 48 H300" />
+    <path class="wc__bogen" marker-end="url(#wc-spitze)" d="M405 81 V216" />
+    <path class="wc__bogen" marker-end="url(#wc-spitze)" d="M305 252 H220" />
+    <path class="wc__bogen" marker-end="url(#wc-spitze)" d="M115 219 V84" />
+    <rect class="wc__station" x="20" y="20" width="190" height="56" rx="10" />
+    <text class="wc__station-text" x="115" y="48" text-anchor="middle" dominant-baseline="central">Analyse</text>
+    <rect class="wc__station" x="310" y="20" width="190" height="56" rx="10" />
+    <text class="wc__station-text" x="405" y="48" text-anchor="middle" dominant-baseline="central">Tests schreiben</text>
+    <rect class="wc__station" x="310" y="224" width="190" height="56" rx="10" />
+    <text class="wc__station-text" x="405" y="252" text-anchor="middle" dominant-baseline="central">Design</text>
+    <rect class="wc__station" x="20" y="224" width="190" height="56" rx="10" />
+    <text class="wc__station-text" x="115" y="252" text-anchor="middle" dominant-baseline="central">Implementierung</text>
+  </svg>
+  <figcaption>Jede Runde endet mit etwas Lieferbarem – und trifft auf den Übergabepunkt zum Betrieb.</figcaption>
+  </figure>
+  <div class="wc__glied wc__z-1">
     <p><strong>Agilität</strong>In kurzen Abständen etwas Fertiges abliefern.</p>
   </div>
-  <div class="wc__glied">
+  <div class="wc__folgepfeil wc__z-ab1" aria-hidden="true"><svg viewBox="0 0 48 28"><path class="wc__folgepfeil-bogen" d="M6 22 C 16 22 22 8 32 8" /><path class="wc__folgepfeil-spitze" d="M29 0 L47 8 L29 16 Z" /></svg></div>
+  <div class="wc__glied wc__z-2">
     <p><strong>Häufig liefern</strong>Heißt: den Übergabepunkt zum Betrieb oft passieren.</p>
   </div>
-  <div class="wc__glied wc__glied--ziel">
+  <div class="wc__folgepfeil wc__folgepfeil--quer wc__z-quer" aria-hidden="true"><svg viewBox="0 0 48 28"><path class="wc__folgepfeil-bogen" d="M6 22 C 16 22 22 8 32 8" /><path class="wc__folgepfeil-spitze" d="M29 0 L47 8 L29 16 Z" /></svg></div>
+  <div class="wc__glied wc__glied--ziel wc__z-3">
     <p><strong>Also selbst ausliefern</strong>Wer ihn oft passiert, will ihn nicht jedes Mal verhandeln.</p>
+  </div>
+  <div class="wc__folgepfeil wc__z-ab3" aria-hidden="true"><svg viewBox="0 0 48 28"><path class="wc__folgepfeil-bogen" d="M6 22 C 16 22 22 8 32 8" /><path class="wc__folgepfeil-spitze" d="M29 0 L47 8 L29 16 Z" /></svg></div>
+  <div class="avd-academy-callout avd-academy-callout--info wc__z-devops">
+    <p><strong>DevOps</strong> ist hier genau das – und nicht mehr: Entwicklung und
+    Betrieb teilen sich Werkzeuge und Verantwortung.</p>
   </div>
 </div>
 
-<p><strong>DevOps</strong> ist hier genau das – und nicht mehr: Entwicklung und Betrieb teilen
-sich Werkzeuge und Verantwortung.</p>
-
-<h2 id="früher-eine-mauer-dazwischen">Früher: eine Mauer dazwischen</h2>
+<h2 id="früher-die-wall-of-confusion">Früher: die Wall of Confusion</h2>
 
 <div class="wc__mauer">
   <div class="wc__seite">
     <strong>Entwicklung</strong>
     <p>„Bei mir läuft es.“</p>
+    <ul>
+      <li>wartet auf den Betrieb</li>
+      <li>sieht die Logs nur auf Zuruf</li>
+      <li>kann den Fehler nicht selbst nachstellen</li>
+    </ul>
   </div>
-  <div class="wc__wand" aria-hidden="true"></div>
+  <div class="wc__bombe">
+    <svg viewBox="0 0 280 260" role="img" aria-labelledby="wc-bombe-titel">
+      <title id="wc-bombe-titel">Zwei Personen, zwischen ihnen eine gemauerte Wand. Über die Wand fliegt eine Bombe mit brennender Lunte, beschriftet mit „Code“. Die Person rechts hebt abwehrend die Arme.</title>
+      <defs>
+        <marker id="wc-flug-spitze" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto">
+          <path class="wc__flug-spitze" d="M0 0 L10 5 L0 10 Z" />
+        </marker>
+      </defs>
+      <path class="wc__flug" marker-end="url(#wc-flug-spitze)" d="M78 180 Q 140 -20 205 178" />
+      <line class="wc__boden" x1="5" y1="245" x2="275" y2="245" />
+      <rect class="wc__ziegel" x="122" y="110" width="36" height="135" />
+      <path class="wc__fuge" d="M122 132.5 H158 M122 155 H158 M122 177.5 H158 M122 200 H158 M122 222.5 H158 M140 110 V132.5 M140 155 V177.5 M140 200 V222.5" />
+      <g class="wc__mensch">
+        <circle class="wc__kopf" cx="58" cy="176" r="11" />
+        <path d="M58 187 V214 M58 214 L46 243 M58 214 L70 243 M58 194 L42 208 M58 193 L76 182" />
+      </g>
+      <g class="wc__mensch">
+        <circle class="wc__kopf" cx="222" cy="176" r="11" />
+        <path d="M222 187 V214 M222 214 L210 243 M222 214 L234 243 M222 194 L206 180 M222 194 L238 180" />
+      </g>
+      <path class="wc__lunte" d="M140 47 C 148 34 158 32 166 28" />
+      <circle class="wc__funke" cx="172" cy="24" r="5" />
+      <path class="wc__strahl" d="M172 14 V8 M182 18 l6 -4 M183 31 l7 3 M161 15 l-4 -5" />
+      <rect class="wc__bombe-koerper" x="132" y="47" width="16" height="10" rx="2" />
+      <circle class="wc__bombe-koerper" cx="140" cy="79" r="25" />
+      <text class="wc__bombe-text" x="140" y="80" text-anchor="middle" dominant-baseline="central">Code</text>
+    </svg>
+  </div>
   <div class="wc__seite">
     <strong>Betrieb</strong>
     <p>„Dann hast Du es falsch gebaut.“</p>
+    <ul>
+      <li>bekommt ein Paket, das er nicht gebaut hat</li>
+      <li>bringt es nach fremder Anleitung zum Laufen</li>
+      <li>meldet zurück, was er im Log sieht</li>
+    </ul>
   </div>
 </div>
 
-<p>Darüber flog ein Paket – ein <code>JAR</code>, ein NPM-Paket, ein ZIP mit Skripten.</p>
+<p>Was da flog – ein <code>JAR</code>, ein NPM-Paket, ein ZIP mit Skripten – heißt <strong>Code Bomb</strong>.
+Jede Rückfrage nimmt denselben Weg zurück: Die Entwicklung kommt an nichts selbst
+heran, wartet auf jede Antwort – und aus Minuten werden Tage.</p>
 
 <h2 id="und-dabei-immer-die-anleitung">Und dabei immer: die Anleitung</h2>
 
@@ -287,14 +615,17 @@ sich Werkzeuge und Verantwortung.</p>
 Verzeichnis <code>/var/data</code> anlegen, Schreibrecht für den Dienstbenutzer.</p>
 </blockquote>
 
-<p>Sie ist Prosa. Sie veraltet. Und sie wird von Menschen ausgeführt.</p>
+<p>Sie ist Prosa, und sie veraltet. Der Kern ist aber ein anderer: <strong>Ausgeführt wird
+sie auf dem Zielrechner</strong> – und sie verändert ihn. Ein Skript statt Prosa ändert
+daran nichts; es installiert dieselben Dinge auf derselben Maschine, auf der
+nebenan schon etwas anderes läuft.</p>
 
 <p><strong>Das Paket enthielt die Anwendung – aber nicht das, was sie zum Laufen braucht.</strong></p>
 
 <h2 id="was-braucht-eine-anwendung-zum-laufen">Was braucht eine Anwendung zum Laufen?</h2>
 
 <div class="wc__rahmen">
-  <p class="wc__rahmen-kopf">Das alles steckt ab jetzt im Paket:</p>
+  <p class="wc__rahmen-kopf">Das alles steckt ab jetzt im Paket – fertig installiert, nicht auf dem Zielrechner:</p>
   <ul class="wc__braucht">
     <li>Laufzeit und Bibliotheken</li>
     <li>Dateisystem, Verzeichnisse</li>
@@ -310,47 +641,107 @@ Adressen der Nachbardienste, Zugangsdaten, Speicher und CPU.</p>
 
 <h2 id="das-paket-heißt-container">Das Paket heißt Container</h2>
 
-<p>Früher: <strong>Paket + Anleitung</strong>, ausgeführt von Menschen.</p>
+<div class="wc__warenverkehr">
+  <figure>
+    <img src="../../assets/bilder/warenverkehr-frueher.jpg" alt="Historische Aufnahme: Ein Dampfschiff wird am Kai beladen, Arbeiter rollen einzelne Holzfässer heran und stapeln sie an Deck." />
+    <figcaption><strong>Früher:</strong> Jedes Stück einzeln. Für jedes Gut ein eigenes Verfahren, und jeder Hafen macht es anders.</figcaption>
+  </figure>
+  <figure>
+    <img src="../../assets/bilder/warenverkehr-heute.jpg" alt="Ein voll beladenes Containerschiff auf See; alle Container haben dieselben Maße und sind gestapelt." />
+    <figcaption><strong>Heute:</strong> Eine genormte Kiste. Der Kran fragt nicht, was drin ist – er kennt nur die Kiste.</figcaption>
+  </figure>
+</div>
 
-<p>Jetzt: <strong>ein Artefakt</strong>, das seine Umgebung mitbringt – und überall gleich startet.</p>
+<p>Früher: <strong>Paket + Anleitung</strong> – ausgeführt auf dem Zielrechner, der sich dabei verändert.</p>
+
+<p>Jetzt: <strong>ein fertig installiertes Artefakt</strong> – auf dem Zielrechner wird nichts mehr
+installiert. Es bringt seine Umgebung mit, läuft abgeschottet neben den anderen und
+startet überall gleich.</p>
 
 <h2 id="container-ist-nicht-virtuelle-maschine">Container ist nicht virtuelle Maschine</h2>
 
-<div class="wc__paar">
-  <div class="wc__karte">
-    <h3>Virtuelle Maschine</h3>
-    <p>Bringt ein <strong>ganzes Betriebssystem</strong> mit.</p>
-    <p>Startet in Minuten. Eine Handvoll pro Maschine.</p>
-  </div>
-  <div class="wc__karte">
-    <h3>Container</h3>
-    <p>Teilt sich den <strong>Kernel</strong> des Wirts.</p>
-    <p>Startet in Sekunden. Dutzende pro Maschine.</p>
-  </div>
+<div class="wc__breit">
+  <table class="wc__tabelle">
+    <thead>
+      <tr><td></td><th scope="col">Virtuelle Maschine</th><th scope="col">Container</th></tr>
+    </thead>
+    <tbody>
+      <tr><th scope="row">Bringt mit</th><td>ein ganzes Betriebssystem</td><td>nur die Anwendung samt ihrer Umgebung</td></tr>
+      <tr><th scope="row">Kernel</th><td>einen eigenen</td><td>den des Hosts</td></tr>
+      <tr><th scope="row">Startet in</th><td>Minuten</td><td>Sekunden</td></tr>
+      <tr><th scope="row">Pro Maschine</th><td>eine Handvoll</td><td>Dutzende</td></tr>
+    </tbody>
+  </table>
+  <figure class="wc__aufbau">
+    <svg viewBox="0 0 620 460" role="img" aria-labelledby="wc-aufbau-titel">
+      <title id="wc-aufbau-titel">Oben der Kasten „Container“ mit Symbolen für Dateisystem, Threads und CPU, Ports, RAM und Umgebungsvariablen. Unten der Host mit demselben Satz Symbole und seinem Betriebssystem, das alles verwaltet. Dazwischen liegt der Kernel: Durch ihn laufen gestrichelte Doppelpfeile, die jedes Paar aufeinander abbilden – Dateisystem auf ein Verzeichnis der Host-Platte, Threads auf Prozesse des Hosts, ein Host-Port auf einen Container-Port, Speicher auf das RAM des Hosts. Nur die Umgebungsvariablen haben keinen Pfeil; ihr Weg durch den Kernel ist mit einem Verbotszeichen versehen.</title>
+      <defs>
+        <marker id="wc-zu-spitze" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path class="wc__zuordnung-spitze" d="M0 0 L10 5 L0 10 Z" />
+        </marker>
+        <g id="ico-fs"><path d="M4 12 h11 l4 5 h17 v18 h-32 z" /></g>
+        <g id="ico-cpu"><path d="M12 12 h16 v16 h-16 z M17 17 h6 v6 h-6 z M16 12 V6 M24 12 V6 M16 28 V34 M24 28 V34 M12 16 H6 M12 24 H6 M28 16 H34 M28 24 H34" /></g>
+        <g id="ico-port"><path d="M15 6 V16 M25 6 V16 M9 16 H31 V22 a11 11 0 0 1 -22 0 Z M20 33 V37" /></g>
+        <g id="ico-ram"><path d="M5 13 h30 v14 h-30 z M13 13 V27 M20 13 V27 M27 13 V27 M10 27 v4 M17 27 v4 M24 27 v4 M31 27 v4" /></g>
+        <g id="ico-env"><path d="M5 10 h20 l10 10 -10 10 h-20 z" /><circle cx="13" cy="20" r="2.5" /></g>
+      </defs>
+      <rect class="wc__kasten" x="16" y="8" width="588" height="138" rx="12" />
+      <text class="wc__kasten-titel" x="36" y="32">Container</text>
+      <use class="wc__ico" href="#ico-fs" x="82" y="46" />
+      <text class="wc__ico-text" x="102" y="106" text-anchor="middle">Dateisystem</text>
+      <use class="wc__ico" href="#ico-cpu" x="192" y="46" />
+      <text class="wc__ico-text" x="212" y="106" text-anchor="middle">Threads / CPU</text>
+      <use class="wc__ico" href="#ico-port" x="302" y="46" />
+      <text class="wc__ico-text" x="322" y="106" text-anchor="middle">Ports</text>
+      <use class="wc__ico" href="#ico-ram" x="412" y="46" />
+      <text class="wc__ico-text" x="432" y="106" text-anchor="middle">RAM</text>
+      <use class="wc__ico" href="#ico-env" x="522" y="46" />
+      <text class="wc__ico-text" x="542" y="100" text-anchor="middle">Umgebungs-</text>
+      <text class="wc__ico-text" x="542" y="116" text-anchor="middle">variablen</text>
+      <rect class="wc__kernel" x="16" y="200" width="588" height="44" rx="8" />
+      <text class="wc__kernel-titel" x="32" y="227">Kernel</text>
+      <path class="wc__zuordnung" marker-start="url(#wc-zu-spitze)" marker-end="url(#wc-zu-spitze)" d="M102 150 V298" />
+      <path class="wc__zuordnung" marker-start="url(#wc-zu-spitze)" marker-end="url(#wc-zu-spitze)" d="M212 150 V298" />
+      <path class="wc__zuordnung" marker-start="url(#wc-zu-spitze)" marker-end="url(#wc-zu-spitze)" d="M322 150 V298" />
+      <path class="wc__zuordnung" marker-start="url(#wc-zu-spitze)" marker-end="url(#wc-zu-spitze)" d="M432 150 V298" />
+      <rect class="wc__zuordnung-feld" x="48" y="152" width="108" height="46" />
+      <text class="wc__zuordnung-text" x="102" y="163" text-anchor="middle">liegt als</text>
+      <text class="wc__zuordnung-text" x="102" y="177" text-anchor="middle">Verzeichnis auf</text>
+      <text class="wc__zuordnung-text" x="102" y="191" text-anchor="middle">der Host-Platte</text>
+      <rect class="wc__zuordnung-feld" x="158" y="152" width="108" height="46" />
+      <text class="wc__zuordnung-text" x="212" y="170" text-anchor="middle">sind Prozesse</text>
+      <text class="wc__zuordnung-text" x="212" y="184" text-anchor="middle">des Hosts</text>
+      <rect class="wc__zuordnung-feld" x="268" y="152" width="108" height="46" />
+      <text class="wc__zuordnung-text" x="322" y="163" text-anchor="middle">Host-Port 8080</text>
+      <text class="wc__zuordnung-text" x="322" y="177" text-anchor="middle">→ Port 80 im</text>
+      <text class="wc__zuordnung-text" x="322" y="191" text-anchor="middle">Container</text>
+      <rect class="wc__zuordnung-feld" x="378" y="152" width="108" height="46" />
+      <text class="wc__zuordnung-text" x="432" y="170" text-anchor="middle">aus dem RAM</text>
+      <text class="wc__zuordnung-text" x="432" y="184" text-anchor="middle">des Hosts</text>
+      <rect class="wc__zuordnung-feld" x="488" y="152" width="108" height="46" />
+      <text class="wc__zuordnung-text" x="542" y="163" text-anchor="middle">bleiben im</text>
+      <text class="wc__zuordnung-text" x="542" y="177" text-anchor="middle">Container –</text>
+      <text class="wc__zuordnung-text" x="542" y="191" text-anchor="middle">nicht gemappt</text>
+      <circle class="wc__gesperrt" cx="542" cy="222" r="13" />
+      <path class="wc__gesperrt" d="M533 231 L551 213" />
+      <rect class="wc__host" x="16" y="300" width="588" height="152" rx="12" />
+      <text class="wc__host-titel" x="36" y="326">Host</text>
+      <rect class="wc__os" x="32" y="336" width="556" height="36" rx="8" />
+      <text class="wc__os-text" x="310" y="359" text-anchor="middle">Betriebssystem – verwaltet Platte, Kerne, Netz und Speicher</text>
+      <use class="wc__ico wc__ico--host" href="#ico-fs" x="82" y="384" />
+      <text class="wc__ico-text--host" x="102" y="444" text-anchor="middle">Platte</text>
+      <use class="wc__ico wc__ico--host" href="#ico-cpu" x="192" y="384" />
+      <text class="wc__ico-text--host" x="212" y="444" text-anchor="middle">CPU-Kerne</text>
+      <use class="wc__ico wc__ico--host" href="#ico-port" x="302" y="384" />
+      <text class="wc__ico-text--host" x="322" y="444" text-anchor="middle">Netzwerk</text>
+      <use class="wc__ico wc__ico--host" href="#ico-ram" x="412" y="384" />
+      <text class="wc__ico-text--host" x="432" y="444" text-anchor="middle">Arbeitsspeicher</text>
+    </svg>
+    <figcaption>Der <strong>Kernel</strong> ist die Schnittstelle: Er grenzt die vier
+    linken Teile ab und bildet sie auf das ab, was der Host hat. Die
+    Umgebungsvariablen nicht – die gehören allein dem Container.</figcaption>
+  </figure>
 </div>
-
-<h2 id="image-und-container">Image und Container</h2>
-
-<div class="wc__paar">
-  <div class="wc__karte">
-    <h3>Image</h3>
-    <p>Der <strong>Bauplan</strong>. Unveränderlich.</p>
-    <p>Wie eine <code>Klasse</code>.</p>
-  </div>
-  <div class="wc__karte">
-    <h3>Container</h3>
-    <p>Eine <strong>laufende Ausprägung</strong>. Es kann viele geben.</p>
-    <p>Wie ein <code>Objekt</code>.</p>
-  </div>
-</div>
-
-<h2 id="der-weg-eines-containers">Der Weg eines Containers</h2>
-
-<p><strong>erzeugt → gestartet → gestoppt → gelöscht</strong></p>
-
-<p>Und davor: das Image aus der <strong>Registry</strong> geholt.</p>
-
-<p>Beim Löschen ist alles weg, was im Container entstanden ist. <em>Merkt Euch die Frage.</em></p>
 
   </main>
 

@@ -35,8 +35,20 @@ require 'date'
 SCHEMA_KEYWORDS = %w[
   $ref type enum const required properties patternProperties additionalProperties
   items minItems uniqueItems minimum exclusiveMinimum maximum oneOf anyOf allOf
-  pattern not
+  pattern not deprecated
 ].freeze
+
+# VERALTETE FELDER SIND KEIN FEHLER, SONDERN EIN HINWEIS – und das ist der ganze
+# Punkt der Übergangsschicht: Ein Repo, das noch den alten Namen schreibt, soll
+# WEITER BAUEN und dabei erfahren, was an seine Stelle tritt. Wäre es ein Fehler,
+# ginge jeder bestehende Stand rot, und die Umbenennung wäre ein Major statt
+# eines Minor.
+#
+# DER NACHFOLGER STEHT IN DER BESCHREIBUNG, nicht in einem eigenen Schlüsselwort:
+# `deprecated` ist in JSON Schema ein BOOLEAN, und die veröffentlichten Schemas
+# liest auch die IDE. Ein eigener Schlüssel wie `x_successor` wäre dort unbekannt
+# und wanderte in jede Fehlerliste. Deshalb trägt die Beschreibung den Satz, und
+# der Prüfer zitiert ihn – eine Quelle, keine zwei, die auseinanderlaufen können.
 
 # ---------------------------------------------------------------------------
 # Validator – Draft-07-Ausschnitt
@@ -44,6 +56,17 @@ SCHEMA_KEYWORDS = %w[
 class Validator
   def initialize
     @documents = {}
+    @deprecations = []
+  end
+
+  # Gefundene veraltete Felder, seit dem letzten `reset_deprecations`.
+  # NEBENKANAL UND NICHT TEIL VON `check_all`s Rückgabe: Deren Ergebnis entscheidet
+  # in `oneOf`/`anyOf`/`not` darüber, ob ein Zweig PASST. Ein Hinweis in derselben
+  # Liste liesse einen gültigen Wert als unpassend erscheinen.
+  attr_reader :deprecations
+
+  def reset_deprecations
+    @deprecations = []
   end
 
   # Schluessel ist der ABSOLUTE Pfad. Damit loest `$ref` relativ zur Datei auf, in
@@ -121,6 +144,13 @@ class Validator
       value.each do |k, v|
         below = pointer + '/' + k.to_s
         if properties.key?(k)
+          if properties[k].is_a?(Hash) && properties[k]['deprecated']
+            # Mehrfach moeglich, wenn derselbe Wert ueber `oneOf` mehrmals geprueft
+            # wird - deshalb nach Zeiger eindeutig halten.
+            unless @deprecations.any? { |d| d[:pointer] == below }
+              @deprecations << { pointer: below, hint: first_sentence(properties[k]['description']) }
+            end
+          end
           errors += check_all(v, properties[k], file, below)
           next
         end
@@ -171,6 +201,13 @@ class Validator
   end
 
   private
+
+  # Der erste Satz der Beschreibung – er traegt die Umstellung („VERALTET: benutze
+  # `perma_id`."). Mehr waere in einer Sammelmeldung Laerm.
+  def first_sentence(text)
+    return nil if text.nil? || text.empty?
+    text.to_s.split(/(?<=\.)\s/, 2).first.strip
+  end
 
   def descriptions(entries)
     entries.map { |s| s['description'] || s['type'] || (s['required'] && "mit #{s['required'].join(', ')}") || s['const'].inspect }.compact.join(' | ')
@@ -425,7 +462,11 @@ class SchemaWalk
       (fragment || '').split('/').reject(&:empty?).each { |t| below = below.is_a?(Hash) ? below[t] : nil }
       return if below.nil?
       # DER TREFFER: eine Sprachkarte an dieser Stelle erlaubt, und der Wert ist eine.
-      if ref.end_with?('/definitions/sprachtext') && value.is_a?(Hash)
+      # ZWEI DEFINITIONEN, DIESELBE CODE-PRÜFUNG: `sprachtext` faellt bei einer
+      # fehlenden Sprache auf die Standardsprache zurueck, `sprachpfad` bricht ab
+      # (das entscheidet das Plugin, nicht dieser Validator). Ein nicht deklarierter
+      # Code ist in BEIDEN Faellen ein Tippfehler, und den findet diese Stelle.
+      if %w[sprachtext sprachpfad].any? { |n| ref.end_with?("/definitions/#{n}") } && value.is_a?(Hash)
         check_codes(value, path)
         return
       end
@@ -655,6 +696,8 @@ version = "Front Matter #{version_of(paths[:frontmatter], 'frontmatter')} / Conf
 configs = [File.join(root, '_config.yml')] if configs.empty?
 
 messages = []
+# Veraltete, aber gueltige Felder: ein HINWEIS am Ende, kein Verstoss.
+veraltet = []
 
 # --- _config.yml ---------------------------------------------------------
 excluded = []
@@ -679,9 +722,14 @@ configs.each do |cfg|
   default_language = data['lang'].to_s if data['lang']
   display = cfg.sub(/\A#{Regexp.escape(root)}\/?/, '')
   config_data << [display, cfg, data]
+  validator.reset_deprecations
   validator.check_all(data, validator.document(paths[:config]), paths[:config]).each do |f|
     line = line_of(cfg, f[:pointer], 0)
     messages << "#{display}#{line ? ":#{line}" : ''}: #{f[:pointer].empty? ? '' : "`#{f[:pointer].sub(%r{\A/}, '').gsub('/', '.')}` "}#{f[:text]}"
+  end
+  validator.deprecations.each do |d|
+    line = line_of(cfg, d[:pointer], 0)
+    veraltet << ["#{display}#{line ? ":#{line}" : ''}", d[:pointer].sub(%r{\A/}, '').gsub('/', '.'), d[:hint]]
   end
 end
 
@@ -812,9 +860,14 @@ Dir.glob(File.join(root, '**', '*.{md,markdown,html}')).sort.each do |path|
   (filenames[[page_language, filename]] ||= []) << rel
 
   next if data.nil?
+  validator.reset_deprecations
   validator.check_all(data, validator.document(paths[:frontmatter]), paths[:frontmatter]).each do |f|
     line = line_of(path, f[:pointer], 1)
     messages << "#{rel}#{line ? ":#{line}" : ''}: #{f[:pointer].empty? ? '' : "`#{f[:pointer].sub(%r{\A/}, '').gsub('/', '.')}` "}#{f[:text]}"
+  end
+  validator.deprecations.each do |d|
+    line = line_of(path, d[:pointer], 1)
+    veraltet << ["#{rel}#{line ? ":#{line}" : ''}", d[:pointer].sub(%r{\A/}, '').gsub('/', '.'), d[:hint]]
   end
   check_audiences(data, audiences.uniq, rel).each do |field, text|
     line = line_of(path, '/' + field.split('.').first, 1)
@@ -945,6 +998,26 @@ if language_codes.size > 1 && !without_language.empty?
        'ihren Platz im Baum; eine Übersetzung lässt sich so nicht woanders ablegen.'
   warn "         z. B. #{examples}#{rest.positive? ? " (und #{rest} weitere)" : ''}"
   warn ''
+end
+
+# VERALTETE FELDER – gültig, aber auf dem Weg hinaus. Gesammelt je FELD und nicht
+# je Stelle: Wer `permaid` auf vierzig Seiten stehen hat, braucht einen Satz dazu
+# und nicht vierzig. Genannt werden drei Dateien als Einstieg, der Rest gezählt –
+# dieselbe Form wie beim `lang`-Hinweis darüber, aus demselben Grund.
+#
+# ES BLEIBT EIN HINWEIS, auch in der Pipeline. Ein Feld, das heute noch gilt, darf
+# den Lauf nicht anhalten; entfernt wird es beim nächsten Major, und bis dahin ist
+# die Meldung die Vorwarnung. Siehe das Register im CHANGELOG.
+unless veraltet.empty?
+  veraltet.group_by { |_, feld, hinweis| [feld, hinweis] }.each do |(feld, hinweis), treffer|
+    stellen = treffer.map(&:first)
+    beispiele = stellen.first(3).join(', ')
+    rest = stellen.size - [stellen.size, 3].min
+    warn "HINWEIS: `#{feld}` ist veraltet – #{stellen.size} Stelle(n)."
+    warn "         #{hinweis}" if hinweis
+    warn "         z. B. #{beispiele}#{rest.positive? ? " (und #{rest} weitere)" : ''}"
+    warn ''
+  end
 end
 
 if messages.empty?

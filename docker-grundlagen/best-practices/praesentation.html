@@ -1,45 +1,4 @@
-<!DOCTYPE html>
-<!--
-  ATVANTAGE-Academy – Layout „presentation“ (Jekyll)
-  --------------------------------------------------
-  Folienbasierter Vortrag aus GEWÖHNLICHEM MARKDOWN. Die Seite läuft im Vollbild,
-  das Academy-Theme tritt zurück: keine Meta-Leiste, keine TopNav, keine
-  Brotkrumen, kein Footer, keine Sidebar – nur eine schmale Kopfleiste mit dem
-  Präsentationstitel und die Folienfläche darunter.
-
-  Übersetzung Markdown → Folien (macht presentation.js zur Laufzeit):
-    #  (bzw. Front-Matter `title`)  → Titel der Präsentation: klein in der
-                                      Kopfleiste UND groß auf der Titelfolie
-    ## (h2)                         → Titel einer Folie; JEDES h2 beginnt eine
-                                      neue Folie
-    alles vor dem ersten h2         → Titelfolie (Untertitel, Trainer:in, Datum)
-
-  Bedienung: ← → (auch Leertaste, Bild ↑/↓, Pos1/Ende), die Schaltflächen unten
-  rechts oder Wischen auf dem Touchscreen. Beim Wechsel schiebt sich die Folie
-  nach links aus dem Bild. Die aktuelle Folie steht im URL-Hash (#/3) und ist
-  damit verlinkbar und reload-fest.
-
-  Drucken: Jede Präsentation hat ein Drucklayout – im Ausdruck steht jede Folie
-  auf einer eigenen Seite (Schaltflächen und Fortschritt entfallen). Der Knopf in
-  der Kopfleiste löst es aus. Der QR-Code neben dem Knopf bleibt im Ausdruck
-  stehen und führt vom Blatt zurück zur Online-Fassung.
-
-  QR-Code: links vom Farbschema-Umschalter (dieselbe Reihenfolge wie in der
-  Kopfzeile der übrigen Seiten), gleich groß, Tooltip „Diese Seite auf Deinem
-  Smartphone öffnen“; vergrößert sich bei Hover/Tippen auf Scan-Größe. Er zeigt
-  auf die AKTUELLE Folie (Fragment #/3) und wird beim Blättern neu berechnet.
-
-  Front Matter (alles optional):
-    title:       "…"              → sonst die erste #-Überschrift
-    description: "…"              → Meta-Description
-
-  OHNE JavaScript bleibt die Seite lesbar: Sie rendert dann als eine lange,
-  scrollbare Markdown-Seite (die Folien-Aufteilung ist eine Zutat, keine
-  Voraussetzung).
-
-  Das eigenständige Deck (templates/presentations/, reines HTML mit Fragmenten
-  und Speaker-Notes) bleibt daneben bestehen – siehe docs/theme/academy.md.
---><html lang="de">
+<!DOCTYPE html><html lang="de">
 <head>
   <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1"><title>Layer und Build-Cache · Containertechnologien (Academy)</title><meta name="description" content="Wie aus einem Dockerfile ein Stapel wird, warum jeder Layer einen Hash aus sich und allem darunter trägt – und was daraus für Cache, geteilte Basis-Images und die Reihenfolge der Zeilen folgt."><meta property="og:site_name" content="Containertechnologien (Academy)">
@@ -47,13 +6,35 @@
 <meta property="og:description" content="Wie aus einem Dockerfile ein Stapel wird, warum jeder Layer einen Hash aus sich und allem darunter trägt – und was daraus für Cache, geteilte Basis-Images und die Reihenfolge der Zeilen folgt.">
 <meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790741874">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790741874" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790741874" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790741874">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=118a443d"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=2dd7a61e">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=91dc645c">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=4b561b0b">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=da9fc064"><style>
+:where(.avd-academy-guide-main a[href*="docker.com"]) {
+  position: relative;
+  padding-left: 1.35em;
+}
+:where(.avd-academy-guide-main a[href*="docker.com"])::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .18em;
+  width: 1em;
+  height: 1em;
+  background: center / contain no-repeat;
+  background-image: none;
+  background-color: currentColor;
+  mask-image: url("/training-material-container-technologies/assets/icons/docker.svg");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+}
+.avd-academy-linkmark--none :where(.avd-academy-guide-main a[href*="docker.com"]),
+:where(.avd-academy-guide-main a[href*="docker.com"]).avd-academy-linkmark--none { padding-left: 0; }
+</style><link rel="stylesheet" media="print" href="/training-material-container-technologies/theme/academy/print.css?v=aedd1b20">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=c7831634" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=a9cecc4f" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=2b412283">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -66,24 +47,8 @@
         .querySelectorAll(_auswahl)
         .forEach((el) => { if (!el.dataset.highlighted) { hljs.highlightElement(el); } });
       _faerben(document);
-
-      /* NACHTRAEGLICH EINGEFUEGTER CODE. Die Hervorhebung laeuft einmal beim Laden.
-         Eine Seite, die ihre Codebloecke per Skript einsetzt - eine Visualisierung,
-         die rohe Nachrichten durchschaltet -, bekam deshalb gar keine Farben und
-         baute sich einen eigenen Hervorheber. Genau die Kopie, die das Theme
-         verhindern soll.
-
-         `AvdHighlight.apply(knoten)` faerbt, was seither dazugekommen ist; `hljs`
-         liegt daneben fuer Faelle, die mehr brauchen. Das Ereignis sagt Seiten, die
-         frueh zeichnen, wann der Haken da ist - die Module laden asynchron. */
       window.AvdHighlight = { hljs, apply: _faerben, languages: _hlsprachen.slice() };
       document.dispatchEvent(new CustomEvent("avd-academy-highlight-ready"));
-
-      /* Statuszeile nach Klasse einfaerben. highlight.js gibt jedem dreistelligen
-         Code dieselbe Klasse `hljs-number` - in einem Mitschnitt ist aber genau das
-         die Stelle, auf die man zuerst sieht: 2xx ist etwas anderes als 4xx.
-         Deshalb hier die einzige eigene Zutat, und bewusst nur diese: Die
-         Statusklassen von HTTP aendern sich nicht, das bleibt stabil. */
       document.querySelectorAll("pre code.language-http .hljs-number").forEach((el) => {
         const code = parseInt(el.textContent, 10);
         if (code >= 100 && code <= 599) {
@@ -95,9 +60,9 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/training-material-container-technologies/theme/atvantage/assets/icon-180.png">
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/presentation.css?v=1790741874">
-  <script src="/training-material-container-technologies/theme/jekyll/presentation.js?v=1790741874" defer></script>
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790741874"></head>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/presentation.css?v=254289db">
+  <script src="/training-material-container-technologies/theme/jekyll/presentation.js?v=b2cc2b42" defer></script>
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=4a155a65"></head>
 <body class="avd-academy-present" data-avd-academy-present data-avd-academy-present-title="Layer und Build-Cache">
   <a class="avd-academy-skip-link" href="#avd-academy-deck">Zum Inhalt springen</a>
 

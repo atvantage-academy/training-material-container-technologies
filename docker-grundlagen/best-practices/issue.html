@@ -1,76 +1,40 @@
-<!DOCTYPE html>
-<!--
-  ATVANTAGE-Academy – EINZIGES Seitenlayout (Jekyll)
-  --------------------------------------------------
-  Ein Layout für alles: allgemeine Doku-Seiten UND Guides (Übungen/Anleitungen).
-  Optik nach der ATVANTAGE-Website: Meta-Nav, weiße sticky Kopfzeile, Hero-Band,
-  zweispaltig mit rechter Sidebar (automatisches Inhaltsverzeichnis, Fortschritt
-  aus Task-Listen, weiterführende Ressourcen). Überschriften ohne Emoji-Icons.
-
-  Verwendung im Front Matter:  layout: default   (oder `layout: guide` – Alias,
-  siehe guide.html; beides rendert dieselbe Guide-Ansicht)
-
-  `layout: visualization` (siehe visualization.html) rendert dieselbe Seite OHNE
-  obere Navigation (Meta-Leiste + Kopfzeile/TopNav), OHNE Brotkrumen und OHNE den
-  rechten Bereich (Inhaltsverzeichnis, Fortschritt, Ressourcen – auch bei gesetztem
-  `resources`), mit schmalerem Hero-Balken und breiterem, zentriertem Inhalt – für
-  eigenständige Visualisierungen/Simulationen.
-
-  Alle Front-Matter-Felder sind OPTIONAL (Convention over Configuration). Nur der
-  Titel ist faktisch erforderlich – als `title:` ODER als erste `#`-Überschrift:
-
-    title:       "…"                → sonst erste #-Überschrift (eins von beiden nötig)
-    description: "…"                → Meta-Description
-    duration:    8                  → Zahl in Minuten → Hero-Tag „ca. 8 Minuten“
-                                       (ungefähre LESEDAUER; bei Guides/Übungen die
-                                       Dauer der Übung, bei Visualisierungen die
-                                       Bearbeitungszeit – dort unüblich, aber erlaubt).
-    topics:      ["Cloud & DevOps"] → weitere Hero-Tags
-    resources:   [{title, url, icon}, …] → Sidebar-Karte „Weiterführende Informationen“.
-                                       title und/oder icon (Bildpfad); icon erscheint
-                                       rechts und wird kreisrund dargestellt.
-    breadcrumb:                     → Brotkrumen anpassen (beides optional):
-      label: "…"                    → überschreibt den Ordnernamen dieser Ebene;
-                                       in der Ordner-`index.md` gesetzt gilt es für
-                                       ALLE Seiten im Ordner und in Unterordnern.
-      ancestors: [{title, url}, …]  → explizite Vorfahren-Kette OHNE die aktuelle
-                                       Seite (diese wird automatisch angehängt); in
-                                       der `index.md` gesetzt wird sie vererbt.
-
-  „Markdown kopieren“ (Button im Hero) erscheint NUR auf Guides – dort ist das
-  Übernehmen des Quelltexts der Zweck. Bedingungen: Markdown-Seite (`.md`, nicht
-  reines HTML) UND der Schalter `toolbar.copy` (Vorgabe: nur `layout: guide`, siehe
-  `_includes/avd-switch.html`). Doku-Seiten und Visualisierungen haben ihn nicht –
-  bei letzteren, weil ihr Inhalt nicht sinnvoll als Markdown kopierbar ist.
-
-  DIE SEITENWERKZEUGE – QR-Code, Farbschema-Umschalter, Drucken – sind EINE
-  Komponente (`_includes/tools.html`) an zwei Standorten in diesem Rahmen:
-
-    Kopfzeile   `chrome: true`  (page, guide)      QR + Farbschema
-    Hero rechts `hero_tools`    (visualization)    QR + Farbschema + Drucken
-
-  Die Regel dahinter ist die Kopfzeile: Wo es sie gibt, tragen die Werkzeuge sie;
-  wo nicht, tritt der Hero an ihre Stelle. Drucken gibt es nur dort, weil auf einer
-  gewöhnlichen Seite der Browser-Befehl (Strg/Cmd+P) genügt, die rahmenlose
-  Ansicht aber keinen anderen Weg aufs Papier hat.
-
-  Der QR-Code wird erst im Browser erzeugt (theme/academy/atvantage.js), weil die
-  Adresse zur Build-Zeit nicht feststeht; ohne JavaScript erscheint er nicht.
---><html lang="de">
+<!DOCTYPE html><html lang="de">
 <head>
   <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"><title>Die Reihenfolge umbauen und messen · Containertechnologien (Academy)</title><meta name="description" content="Das eigene Dockerfile umordnen und den Unterschied in Sekunden messen – und sehen, warum Löschen ein Image nicht kleiner macht."><meta property="og:site_name" content="Containertechnologien (Academy)">
-<meta property="og:title" content="Die Reihenfolge umbauen und messen">
-<meta property="og:description" content="Das eigene Dockerfile umordnen und den Unterschied in Sekunden messen – und sehen, warum Löschen ein Image nicht kleiner macht.">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Das Image optimieren · Containertechnologien (Academy)</title><meta name="description" content="Das eigene Dockerfile umordnen und den Unterschied in Sekunden messen – und das Laufzeit-Image mit einer zweiten Stufe von allem befreien, was nur zum Bauen nötig war."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta property="og:title" content="Das Image optimieren">
+<meta property="og:description" content="Das eigene Dockerfile umordnen und den Unterschied in Sekunden messen – und das Laufzeit-Image mit einer zweiten Stufe von allem befreien, was nur zum Bauen nötig war.">
 <meta property="og:type" content="article"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790741874">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790741874" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790741874" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790741874">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=118a443d"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=2dd7a61e">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=91dc645c">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=4b561b0b">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=da9fc064"><style>
+:where(.avd-academy-guide-main a[href*="docker.com"]) {
+  position: relative;
+  padding-left: 1.35em;
+}
+:where(.avd-academy-guide-main a[href*="docker.com"])::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .18em;
+  width: 1em;
+  height: 1em;
+  background: center / contain no-repeat;
+  background-image: none;
+  background-color: currentColor;
+  mask-image: url("/training-material-container-technologies/assets/icons/docker.svg");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+}
+.avd-academy-linkmark--none :where(.avd-academy-guide-main a[href*="docker.com"]),
+:where(.avd-academy-guide-main a[href*="docker.com"]).avd-academy-linkmark--none { padding-left: 0; }
+</style><link rel="stylesheet" media="print" href="/training-material-container-technologies/theme/academy/print.css?v=aedd1b20">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=c7831634" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=a9cecc4f" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=2b412283">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -83,24 +47,8 @@
         .querySelectorAll(_auswahl)
         .forEach((el) => { if (!el.dataset.highlighted) { hljs.highlightElement(el); } });
       _faerben(document);
-
-      /* NACHTRAEGLICH EINGEFUEGTER CODE. Die Hervorhebung laeuft einmal beim Laden.
-         Eine Seite, die ihre Codebloecke per Skript einsetzt - eine Visualisierung,
-         die rohe Nachrichten durchschaltet -, bekam deshalb gar keine Farben und
-         baute sich einen eigenen Hervorheber. Genau die Kopie, die das Theme
-         verhindern soll.
-
-         `AvdHighlight.apply(knoten)` faerbt, was seither dazugekommen ist; `hljs`
-         liegt daneben fuer Faelle, die mehr brauchen. Das Ereignis sagt Seiten, die
-         frueh zeichnen, wann der Haken da ist - die Module laden asynchron. */
       window.AvdHighlight = { hljs, apply: _faerben, languages: _hlsprachen.slice() };
       document.dispatchEvent(new CustomEvent("avd-academy-highlight-ready"));
-
-      /* Statuszeile nach Klasse einfaerben. highlight.js gibt jedem dreistelligen
-         Code dieselbe Klasse `hljs-number` - in einem Mitschnitt ist aber genau das
-         die Stelle, auf die man zuerst sieht: 2xx ist etwas anderes als 4xx.
-         Deshalb hier die einzige eigene Zutat, und bewusst nur diese: Die
-         Statusklassen von HTTP aendern sich nicht, das bleibt stabil. */
       document.querySelectorAll("pre code.language-http .hljs-number").forEach((el) => {
         const code = parseInt(el.textContent, 10);
         if (code >= 100 && code <= 599) {
@@ -113,8 +61,8 @@
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
 
-  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790741874">
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790741874"></head><body class="avd-academy-guide">
+  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=43701531">
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=4a155a65"></head><body class="avd-academy-guide">
   <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><div class="avd-academy-metanav"><span>ATVANTAGE Academy</span>
   </div>
 
@@ -136,15 +84,15 @@
               aria-label="Farbschema umschalten">◐</button></div>
 </header>
 <section class="avd-academy-guide-hero"
-           aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a><span>/</span><span aria-current="page">Die Reihenfolge umbauen und messen</span></nav><div class="avd-academy-guide-hero__meta">
-      <div class="avd-academy-guide-hero__tags"><span class="avd-academy-tag avd-academy-tag--time">ca. 30 Minuten</span><span class="avd-academy-tag">Layer</span><span class="avd-academy-tag">Build-Cache</span><span class="avd-academy-tag">Dockerfile</span>
+           aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a><span>/</span><span aria-current="page">Das Image optimieren</span></nav><div class="avd-academy-guide-hero__meta">
+      <div class="avd-academy-guide-hero__tags"><span class="avd-academy-tag avd-academy-tag--time">ca. 45 Minuten</span><span class="avd-academy-tag">Layer</span><span class="avd-academy-tag">Build-Cache</span><span class="avd-academy-tag">Dockerfile</span>
       </div>
       <div class="avd-academy-guide-hero__actions">
         <button type="button" class="avd-academy-btn avd-academy-btn--ghost avd-academy-copy-md"
                 data-avd-academy-copy-md="#avd-academy-md-source"
                 title="Markdown kopieren" aria-label="Markdown kopieren"></button>
       </div>
-    </div><h1 id="avd-academy-page-title">Die Reihenfolge umbauen und messen</h1>
+    </div><h1 id="avd-academy-page-title">Das Image optimieren</h1>
   </section><div class="avd-academy-guide-layout">
     <main class="avd-academy-guide-main avd-academy-guide-main--numbered" id="avd-academy-content">
 
@@ -158,9 +106,8 @@
 <ul>
   <li>liest aus der Bau-Ausgabe, welche Schritte aus dem Cache kamen und welche nicht.</li>
   <li>ordnest ein Dockerfile so, dass sich selten Änderndes vorn steht.</li>
-  <li>misst den Unterschied in Sekunden statt ihn zu glauben.</li>
-  <li>erklärst, warum ein Layer, in dem eine Datei gelöscht wird, das Image nicht
-kleiner macht.</li>
+  <li>trennst Bauen und Ausführen in zwei Stufen und machst das Laufzeit-Image damit
+kleiner.</li>
 </ul>
 
 <h2 id="definition-of-done">Definition of Done</h2>
@@ -168,8 +115,8 @@ kleiner macht.</li>
 <ul class="task-list">
   <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast die Bauzeit <strong>vor</strong> dem Umbau nach einer Codeänderung gemessen.</li>
   <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Dein Dockerfile kopiert die Abhängigkeitsliste <strong>vor</strong> dem übrigen Code.</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast die Bauzeit <strong>nach</strong> dem Umbau nach derselben Codeänderung gemessen.</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Beide Zahlen stehen in Deiner <code>befehle.md</code>.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Dein Laufzeit-Image aus zwei Stufen ist messbar kleiner als das
+einstufige.</li>
   <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast die Reflexionsfragen schriftlich beantwortet.</li>
 </ul>
 
@@ -192,13 +139,14 @@ in <code>app.py</code> – zum Beispiel den Text, den die Anwendung ausgibt.</p>
 
 <h3 id="die-reihenfolge-umbauen">Die Reihenfolge umbauen</h3>
 
-<p>Ordne das Dockerfile so um, dass die Abhängigkeitsliste <strong>vor</strong> dem übrigen Code
-kopiert und installiert wird. Der Rest der Anwendung kommt danach.</p>
+<p>Bisher kopiert Dein Dockerfile mit einer Zeile <strong>alles</strong> hinein und installiert
+danach die Abhängigkeiten. Teil das auf:</p>
 
-<blockquote>
-  <p><strong>Hinweis:</strong> Die Datei heißt <code>requirements.txt</code>. Überleg Dir, welche Zeile sich
-häufiger ändert – diese Datei oder Dein Anwendungscode.</p>
-</blockquote>
+<ol>
+  <li>Kopiere zuerst <strong>nur</strong> <code>requirements.txt</code>.</li>
+  <li>Lass <code>pip install</code> laufen.</li>
+  <li>Kopiere <strong>danach</strong> den Rest der Dateien.</li>
+</ol>
 
 <p>Bau einmal, damit der Cache den neuen Aufbau kennt:</p>
 
@@ -217,52 +165,35 @@ häufiger ändert – diese Datei oder Dein Anwendungscode.</p>
 Schritt jetzt <code>CACHED</code> ist, der es vorher nicht war.</p>
 </blockquote>
 
-<h3 id="löschen-macht-nicht-kleiner">Löschen macht nicht kleiner</h3>
+<h3 id="das-laufzeit-image-schlank-machen">Das Laufzeit-Image schlank machen</h3>
 
-<p>Leg ein kleines Dockerfile daneben an, in einer eigenen Datei <code>Dockerfile.ballast</code>:</p>
+<p>Dein Image trägt bisher alles mit sich, was zum <strong>Bauen</strong> nötig war: Python,
+<code>pip</code>, die Paketlisten. Ein Container daraus braucht nichts davon – er hält es
+nur vor, bei jedem Start, auf jedem Knoten, in jeder Umgebung. Je weniger ein
+Container mitschleppt, desto weniger kostet er: beim Verteilen, beim Starten, im
+Betrieb – und desto weniger Angriffsfläche bringt er mit.</p>
 
-<pre><code class="language-dockerfile">FROM debian:12-slim
-RUN apt-get update &amp;&amp; apt-get install -y curl
-RUN rm -rf /var/lib/apt/lists/*
-</code></pre>
+<p>Löschen hilft dagegen nicht: Ein Layer wird nie wieder kleiner. Was hilft, ist
+eine <strong>zweite Stufe</strong> – ein Dockerfile darf mehrere <code>FROM</code> haben. In der ersten
+wird gebaut, in der letzten liegt nur noch das Ergebnis.</p>
 
-<pre><code class="language-bash">docker image build -f Dockerfile.ballast -t ballast:zwei-zeilen .
-</code></pre>
+<p>Hier wird die Anwendung in der ersten Stufe zu <strong>einem ausführbaren Programm</strong>
+gebündelt und in der letzten in ein nacktes Linux gelegt. Leg dafür
+<code>Dockerfile.multistage</code> an:</p>
 
-<p>Und jetzt dasselbe in <strong>einer</strong> Anweisung – ändere <code>Dockerfile.ballast</code> so, dass
-Installation und Aufräumen in einer <code>RUN</code>-Zeile stehen, verbunden mit <code>&amp;&amp;</code>.</p>
-
-<pre><code class="language-bash">docker image build -f Dockerfile.ballast -t ballast:eine-zeile .
-</code></pre>
-
-<p>Vergleiche die Größen:</p>
-
-<pre><code class="language-bash">docker images
-</code></pre>
-
-<blockquote>
-  <p><strong>Hinweis:</strong> Wenn der Unterschied kleiner ausfällt, als Du erwartet hast: Sieh
-Dir an, wie viel die Paketlisten überhaupt ausmachen. Der Mechanismus ist
-derselbe, egal ob es um Megabyte oder Gigabyte geht.</p>
-</blockquote>
-
-<h3 id="bonus-freiwillig-zwei-stufen-statt-einer">Bonus (freiwillig): zwei Stufen statt einer</h3>
-
-<p>Nur, wenn Du früh fertig bist. Ein Layer wird nie wieder kleiner – also bleibt
-auch jedes Werkzeug im Image, mit dem gebaut wurde. Ein Dockerfile darf deshalb
-<strong>mehrere <code>FROM</code></strong> haben: In der ersten Stufe wird gebaut, in der letzten liegt
-nur noch das Ergebnis.</p>
-
-<p>Leg <code>Dockerfile.multistage</code> an:</p>
-
-<pre><code class="language-dockerfile">FROM python:3.12-slim AS bau
+<pre><code class="language-dockerfile">FROM python:3.12-slim-bookworm AS bau
 WORKDIR /bau
-RUN pip install --no-cache-dir pyinstaller
+RUN apt-get update \
+ &amp;&amp; apt-get install -y --no-install-recommends binutils \
+ &amp;&amp; rm -rf /var/lib/apt/lists/*
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt pyinstaller
 COPY app.py .
 RUN pyinstaller --onefile app.py
 
 FROM debian:12-slim
 COPY --from=bau /bau/dist/app /usr/local/bin/app
+EXPOSE 8080
 CMD ["app"]
 </code></pre>
 
@@ -271,16 +202,32 @@ CMD ["app"]
 
 <p>Vergleiche die Größen:</p>
 
-<pre><code class="language-bash">docker images
+<pre><code class="language-bash">docker image ls
 </code></pre>
 
+<p>Starte das neue Image gegen Deine Datenbank – mit denselben Umgebungsvariablen
+wie bisher – und prüfe, dass es dieselbe Antwort liefert.</p>
+
 <blockquote>
-  <p><strong>Hinweis:</strong> <code>COPY --from=bau</code> holt eine Datei aus der ersten Stufe in die
-letzte. Alles andere aus der ersten Stufe – Python, <code>pip</code>, <code>pyinstaller</code>, die
+  <p><strong>Hinweis:</strong> <code>COPY --from=bau</code> holt <strong>eine Datei</strong> aus der ersten Stufe in die
+letzte. Alles Übrige aus der ersten Stufe – Python, <code>pip</code>, <code>pyinstaller</code>, die
 Zwischenergebnisse – landet <strong>nicht</strong> im fertigen Image. Es ist derselbe
-Mechanismus wie beim Aufräumen in einer <code>RUN</code>-Zeile, nur konsequenter: Was in
-der letzten Stufe nie entstanden ist, muss auch nicht gelöscht werden.</p>
+Gedanke wie beim Aufräumen in einer <code>RUN</code>-Zeile, nur konsequenter: Was in der
+letzten Stufe nie entstanden ist, muss auch nicht gelöscht werden.</p>
 </blockquote>
+
+<div class="avd-academy-callout avd-academy-callout--warning">
+  <p><strong>Beide Stufen müssen auf derselben Debian-Fassung aufsetzen</strong> – hier <code>bookworm</code>.
+Nimmst Du oben <code>python:3.12-slim</code> (das zeigt inzwischen auf eine neuere Fassung)
+und unten <code>debian:12-slim</code>, baut das Image zwar, aber der Start scheitert:</p>
+
+  <pre><code class="language-text">Failed to load Python shared library: /lib/.../libm.so.6: version `GLIBC_2.38' not found
+</code></pre>
+
+  <p>Das Programm aus der ersten Stufe erwartet die Bibliotheken, gegen die es gebaut
+wurde. <strong>Das ist kein Sonderfall von Python</strong> – es gilt für jedes Programm, das
+Du in einer Stufe baust und in einer anderen ausführst.</p>
+</div>
 
 <blockquote>
   <p><strong>Hinweis:</strong> Der Bau dauert hier länger als sonst – <code>pyinstaller</code> packt einen
@@ -292,19 +239,11 @@ kleineres Ergebnis.</p>
 
 <ul>
   <li>Wie viel Zeit hat der Umbau gespart, und <strong>wobei genau</strong>?</li>
-  <li>Welche Änderung macht jetzt noch den ganzen Build ungültig – und warum ist das
-richtig so?</li>
-  <li>Warum ist das Image mit zwei <code>RUN</code>-Zeilen größer, obwohl am Ende dieselben
-Dateien fehlen?</li>
-  <li>Was ändert sich an Deinem Image, wenn Du <strong>nur</strong> den Startbefehl (<code>CMD</code>)
-anfasst? Wird dabei eine Schicht neu gebaut?</li>
-  <li>Falls Du den Bonus gemacht hast: Was liegt im Image mit zwei Stufen <strong>nicht</strong>
-mehr drin – und warum hättest Du das mit einer einzelnen <code>RUN</code>-Zeile nicht
-wegbekommen?</li>
+  <li>Welchen Vorteil hat der Multi-Stage-Build?</li>
 </ul>
 
 
-<textarea id="avd-academy-md-source" hidden aria-hidden="true"># Die Reihenfolge umbauen und messen
+<textarea id="avd-academy-md-source" hidden aria-hidden="true"># Das Image optimieren
 
 **Als** Entwicklerin **möchte ich** wissen, was mein Build jedes Mal kostet,
 **damit** ich ihn nicht aus Gewohnheit teuer lasse.
@@ -315,16 +254,15 @@ Du…
 
 - liest aus der Bau-Ausgabe, welche Schritte aus dem Cache kamen und welche nicht.
 - ordnest ein Dockerfile so, dass sich selten Änderndes vorn steht.
-- misst den Unterschied in Sekunden statt ihn zu glauben.
-- erklärst, warum ein Layer, in dem eine Datei gelöscht wird, das Image nicht
-  kleiner macht.
+- trennst Bauen und Ausführen in zwei Stufen und machst das Laufzeit-Image damit
+  kleiner.
 
 ## Definition of Done
 
 * [ ] Du hast die Bauzeit **vor** dem Umbau nach einer Codeänderung gemessen.
 * [ ] Dein Dockerfile kopiert die Abhängigkeitsliste **vor** dem übrigen Code.
-* [ ] Du hast die Bauzeit **nach** dem Umbau nach derselben Codeänderung gemessen.
-* [ ] Beide Zahlen stehen in Deiner `befehle.md`.
+* [ ] Dein Laufzeit-Image aus zwei Stufen ist messbar kleiner als das
+  einstufige.
 * [ ] Du hast die Reflexionsfragen schriftlich beantwortet.
 
 ## Arbeitsschritte
@@ -345,11 +283,12 @@ time docker image build -t meine-webapp:mess-1 .
 
 ### Die Reihenfolge umbauen
 
-Ordne das Dockerfile so um, dass die Abhängigkeitsliste **vor** dem übrigen Code
-kopiert und installiert wird. Der Rest der Anwendung kommt danach.
+Bisher kopiert Dein Dockerfile mit einer Zeile **alles** hinein und installiert
+danach die Abhängigkeiten. Teil das auf:
 
-&gt; **Hinweis:** Die Datei heißt `requirements.txt`. Überleg Dir, welche Zeile sich
-&gt; häufiger ändert – diese Datei oder Dein Anwendungscode.
+1. Kopiere zuerst **nur** `requirements.txt`.
+2. Lass `pip install` laufen.
+3. Kopiere **danach** den Rest der Dateien.
 
 Bau einmal, damit der Cache den neuen Aufbau kennt:
 
@@ -368,55 +307,36 @@ time docker image build -t meine-webapp:mess-3 .
 &gt; **Hinweis:** Vergleiche die beiden Zeiten. Und sieh in der Ausgabe nach, welcher
 &gt; Schritt jetzt `CACHED` ist, der es vorher nicht war.
 
-### Löschen macht nicht kleiner
+### Das Laufzeit-Image schlank machen
 
-Leg ein kleines Dockerfile daneben an, in einer eigenen Datei `Dockerfile.ballast`:
+Dein Image trägt bisher alles mit sich, was zum **Bauen** nötig war: Python,
+`pip`, die Paketlisten. Ein Container daraus braucht nichts davon – er hält es
+nur vor, bei jedem Start, auf jedem Knoten, in jeder Umgebung. Je weniger ein
+Container mitschleppt, desto weniger kostet er: beim Verteilen, beim Starten, im
+Betrieb – und desto weniger Angriffsfläche bringt er mit.
 
-```dockerfile
-FROM debian:12-slim
-RUN apt-get update &amp;&amp; apt-get install -y curl
-RUN rm -rf /var/lib/apt/lists/*
-```
+Löschen hilft dagegen nicht: Ein Layer wird nie wieder kleiner. Was hilft, ist
+eine **zweite Stufe** – ein Dockerfile darf mehrere `FROM` haben. In der ersten
+wird gebaut, in der letzten liegt nur noch das Ergebnis.
 
-```bash
-docker image build -f Dockerfile.ballast -t ballast:zwei-zeilen .
-```
-
-Und jetzt dasselbe in **einer** Anweisung – ändere `Dockerfile.ballast` so, dass
-Installation und Aufräumen in einer `RUN`-Zeile stehen, verbunden mit `&amp;&amp;`.
-
-```bash
-docker image build -f Dockerfile.ballast -t ballast:eine-zeile .
-```
-
-Vergleiche die Größen:
-
-```bash
-docker images
-```
-
-&gt; **Hinweis:** Wenn der Unterschied kleiner ausfällt, als Du erwartet hast: Sieh
-&gt; Dir an, wie viel die Paketlisten überhaupt ausmachen. Der Mechanismus ist
-&gt; derselbe, egal ob es um Megabyte oder Gigabyte geht.
-
-### Bonus (freiwillig): zwei Stufen statt einer
-
-Nur, wenn Du früh fertig bist. Ein Layer wird nie wieder kleiner – also bleibt
-auch jedes Werkzeug im Image, mit dem gebaut wurde. Ein Dockerfile darf deshalb
-**mehrere `FROM`** haben: In der ersten Stufe wird gebaut, in der letzten liegt
-nur noch das Ergebnis.
-
-Leg `Dockerfile.multistage` an:
+Hier wird die Anwendung in der ersten Stufe zu **einem ausführbaren Programm**
+gebündelt und in der letzten in ein nacktes Linux gelegt. Leg dafür
+`Dockerfile.multistage` an:
 
 ```dockerfile
-FROM python:3.12-slim AS bau
+FROM python:3.12-slim-bookworm AS bau
 WORKDIR /bau
-RUN pip install --no-cache-dir pyinstaller
+RUN apt-get update \
+ &amp;&amp; apt-get install -y --no-install-recommends binutils \
+ &amp;&amp; rm -rf /var/lib/apt/lists/*
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt pyinstaller
 COPY app.py .
 RUN pyinstaller --onefile app.py
 
 FROM debian:12-slim
 COPY --from=bau /bau/dist/app /usr/local/bin/app
+EXPOSE 8080
 CMD [&quot;app&quot;]
 ```
 
@@ -427,14 +347,31 @@ docker image build -f Dockerfile.multistage -t meine-webapp:zwei-stufen .
 Vergleiche die Größen:
 
 ```bash
-docker images
+docker image ls
 ```
 
-&gt; **Hinweis:** `COPY --from=bau` holt eine Datei aus der ersten Stufe in die
-&gt; letzte. Alles andere aus der ersten Stufe – Python, `pip`, `pyinstaller`, die
+Starte das neue Image gegen Deine Datenbank – mit denselben Umgebungsvariablen
+wie bisher – und prüfe, dass es dieselbe Antwort liefert.
+
+&gt; **Hinweis:** `COPY --from=bau` holt **eine Datei** aus der ersten Stufe in die
+&gt; letzte. Alles Übrige aus der ersten Stufe – Python, `pip`, `pyinstaller`, die
 &gt; Zwischenergebnisse – landet **nicht** im fertigen Image. Es ist derselbe
-&gt; Mechanismus wie beim Aufräumen in einer `RUN`-Zeile, nur konsequenter: Was in
-&gt; der letzten Stufe nie entstanden ist, muss auch nicht gelöscht werden.
+&gt; Gedanke wie beim Aufräumen in einer `RUN`-Zeile, nur konsequenter: Was in der
+&gt; letzten Stufe nie entstanden ist, muss auch nicht gelöscht werden.
+
+&lt;div class=&quot;avd-academy-callout avd-academy-callout--warning&quot; markdown=&quot;1&quot;&gt;
+**Beide Stufen müssen auf derselben Debian-Fassung aufsetzen** – hier `bookworm`.
+Nimmst Du oben `python:3.12-slim` (das zeigt inzwischen auf eine neuere Fassung)
+und unten `debian:12-slim`, baut das Image zwar, aber der Start scheitert:
+
+```text
+Failed to load Python shared library: /lib/.../libm.so.6: version `GLIBC_2.38&apos; not found
+```
+
+Das Programm aus der ersten Stufe erwartet die Bibliotheken, gegen die es gebaut
+wurde. **Das ist kein Sonderfall von Python** – es gilt für jedes Programm, das
+Du in einer Stufe baust und in einer anderen ausführst.
+&lt;/div&gt;
 
 &gt; **Hinweis:** Der Bau dauert hier länger als sonst – `pyinstaller` packt einen
 &gt; Python-Interpreter mit ein. Das ist der Handel: längere Bauzeit gegen ein
@@ -443,20 +380,14 @@ docker images
 ## Reflexionsfragen
 
 - Wie viel Zeit hat der Umbau gespart, und **wobei genau**?
-- Welche Änderung macht jetzt noch den ganzen Build ungültig – und warum ist das
-  richtig so?
-- Warum ist das Image mit zwei `RUN`-Zeilen größer, obwohl am Ende dieselben
-  Dateien fehlen?
-- Was ändert sich an Deinem Image, wenn Du **nur** den Startbefehl (`CMD`)
-  anfasst? Wird dabei eine Schicht neu gebaut?
-- Falls Du den Bonus gemacht hast: Was liegt im Image mit zwei Stufen **nicht**
-  mehr drin – und warum hättest Du das mit einer einzelnen `RUN`-Zeile nicht
-  wegbekommen?
+- Welchen Vorteil hat der Multi-Stage-Build?
 
 ## Weiterführende Informationen
 
 - [Dockerfile-Referenz](https://docs.docker.com/reference/dockerfile/)
 - [Best practices for Dockerfiles](https://docs.docker.com/build/building/best-practices/)
+- [Musterlösung (PR)](https://github.com/atvantage-academy/code-template-docker-basics/pull/6)
+- [Musterlösung (Pages)](https://atvantage-academy.github.io/code-template-docker-basics/best-practices/)
 </textarea>
     </main><aside class="avd-academy-guide-sidebar"><details class="avd-academy-guide-side avd-academy-guide-side--toc avd-academy-fold" data-avd-academy-toc-box
                data-avd-academy-toc-grenze="12" open hidden>
@@ -468,7 +399,7 @@ docker images
       </div>
       <div class="avd-academy-guide-side avd-academy-guide-side--bordered">
         <div class="avd-academy-guide-side__label">Weiterführende Informationen</div>
-        <div class="avd-academy-guide-side__links"><a href="https://docs.docker.com/reference/dockerfile/" target="_blank" rel="noopener"><span>Dockerfile-Referenz</span></a><a href="https://docs.docker.com/build/building/best-practices/" target="_blank" rel="noopener"><span>Best practices for Dockerfiles</span></a>
+        <div class="avd-academy-guide-side__links"><a href="https://docs.docker.com/reference/dockerfile/" target="_blank" rel="noopener"><span>Dockerfile-Referenz</span><span class="avd-academy-linkicon avd-academy-linkicon--right avd-academy-linkicon--mark" style="--avd-academy-linkicon-src: url('/training-material-container-technologies/assets/icons/docker.svg')" aria-hidden="true"></span></a><a href="https://docs.docker.com/build/building/best-practices/" target="_blank" rel="noopener"><span>Best practices for Dockerfiles</span><span class="avd-academy-linkicon avd-academy-linkicon--right avd-academy-linkicon--mark" style="--avd-academy-linkicon-src: url('/training-material-container-technologies/assets/icons/docker.svg')" aria-hidden="true"></span></a><a href="https://github.com/atvantage-academy/code-template-docker-basics/pull/6" target="_blank" rel="noopener"><span>Musterlösung (PR)</span><span class="avd-academy-linkicon avd-academy-linkicon--right avd-academy-linkicon--mark" style="--avd-academy-linkicon-src: url('/training-material-container-technologies/theme/academy/icons/icon-github.svg')" aria-hidden="true"></span></a><a href="https://atvantage-academy.github.io/code-template-docker-basics/best-practices/" target="_blank" rel="noopener"><span>Musterlösung (Pages)</span><span class="avd-academy-linkicon avd-academy-linkicon--right avd-academy-linkicon--mark" style="--avd-academy-linkicon-src: url('/training-material-container-technologies/theme/academy/icons/icon-github-pages.svg')" aria-hidden="true"></span></a>
         </div></div>
     </aside>
   </div><div class="avd-academy-print-contact" aria-hidden="true">

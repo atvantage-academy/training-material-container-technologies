@@ -1,62 +1,4 @@
-<!DOCTYPE html>
-<!--
-  ATVANTAGE-Academy – EINZIGES Seitenlayout (Jekyll)
-  --------------------------------------------------
-  Ein Layout für alles: allgemeine Doku-Seiten UND Guides (Übungen/Anleitungen).
-  Optik nach der ATVANTAGE-Website: Meta-Nav, weiße sticky Kopfzeile, Hero-Band,
-  zweispaltig mit rechter Sidebar (automatisches Inhaltsverzeichnis, Fortschritt
-  aus Task-Listen, weiterführende Ressourcen). Überschriften ohne Emoji-Icons.
-
-  Verwendung im Front Matter:  layout: default   (oder `layout: guide` – Alias,
-  siehe guide.html; beides rendert dieselbe Guide-Ansicht)
-
-  `layout: visualization` (siehe visualization.html) rendert dieselbe Seite OHNE
-  obere Navigation (Meta-Leiste + Kopfzeile/TopNav), OHNE Brotkrumen und OHNE den
-  rechten Bereich (Inhaltsverzeichnis, Fortschritt, Ressourcen – auch bei gesetztem
-  `resources`), mit schmalerem Hero-Balken und breiterem, zentriertem Inhalt – für
-  eigenständige Visualisierungen/Simulationen.
-
-  Alle Front-Matter-Felder sind OPTIONAL (Convention over Configuration). Nur der
-  Titel ist faktisch erforderlich – als `title:` ODER als erste `#`-Überschrift:
-
-    title:       "…"                → sonst erste #-Überschrift (eins von beiden nötig)
-    description: "…"                → Meta-Description
-    duration:    8                  → Zahl in Minuten → Hero-Tag „ca. 8 Minuten“
-                                       (ungefähre LESEDAUER; bei Guides/Übungen die
-                                       Dauer der Übung, bei Visualisierungen die
-                                       Bearbeitungszeit – dort unüblich, aber erlaubt).
-    topics:      ["Cloud & DevOps"] → weitere Hero-Tags
-    resources:   [{title, url, icon}, …] → Sidebar-Karte „Weiterführende Informationen“.
-                                       title und/oder icon (Bildpfad); icon erscheint
-                                       rechts und wird kreisrund dargestellt.
-    breadcrumb:                     → Brotkrumen anpassen (beides optional):
-      label: "…"                    → überschreibt den Ordnernamen dieser Ebene;
-                                       in der Ordner-`index.md` gesetzt gilt es für
-                                       ALLE Seiten im Ordner und in Unterordnern.
-      ancestors: [{title, url}, …]  → explizite Vorfahren-Kette OHNE die aktuelle
-                                       Seite (diese wird automatisch angehängt); in
-                                       der `index.md` gesetzt wird sie vererbt.
-
-  „Markdown kopieren“ (Button im Hero) erscheint NUR auf Guides – dort ist das
-  Übernehmen des Quelltexts der Zweck. Bedingungen: Markdown-Seite (`.md`, nicht
-  reines HTML) UND der Schalter `toolbar.copy` (Vorgabe: nur `layout: guide`, siehe
-  `_includes/avd-switch.html`). Doku-Seiten und Visualisierungen haben ihn nicht –
-  bei letzteren, weil ihr Inhalt nicht sinnvoll als Markdown kopierbar ist.
-
-  DIE SEITENWERKZEUGE – QR-Code, Farbschema-Umschalter, Drucken – sind EINE
-  Komponente (`_includes/tools.html`) an zwei Standorten in diesem Rahmen:
-
-    Kopfzeile   `chrome: true`  (page, guide)      QR + Farbschema
-    Hero rechts `hero_tools`    (visualization)    QR + Farbschema + Drucken
-
-  Die Regel dahinter ist die Kopfzeile: Wo es sie gibt, tragen die Werkzeuge sie;
-  wo nicht, tritt der Hero an ihre Stelle. Drucken gibt es nur dort, weil auf einer
-  gewöhnlichen Seite der Browser-Befehl (Strg/Cmd+P) genügt, die rahmenlose
-  Ansicht aber keinen anderen Weg aufs Papier hat.
-
-  Der QR-Code wird erst im Browser erzeugt (theme/academy/atvantage.js), weil die
-  Adresse zur Build-Zeit nicht feststeht; ohne JavaScript erscheint er nicht.
---><html lang="de">
+<!DOCTYPE html><html lang="de">
 <head>
   <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1"><title>Ein Dockerfile gegen die Praxis prüfen · Containertechnologien (Academy)</title><meta name="description" content="Ein absichtlich schlechtes Dockerfile prüfen, die Befunde mit einem zweiten Augenpaar vergleichen, überarbeiten – und die Verbesserung in Megabyte messen."><meta property="og:site_name" content="Containertechnologien (Academy)">
@@ -64,13 +6,35 @@
 <meta property="og:description" content="Ein absichtlich schlechtes Dockerfile prüfen, die Befunde mit einem zweiten Augenpaar vergleichen, überarbeiten – und die Verbesserung in Megabyte messen.">
 <meta property="og:type" content="article"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790741874">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790741874" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790741874" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790741874">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=118a443d"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=2dd7a61e">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=91dc645c">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=4b561b0b">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=da9fc064"><style>
+:where(.avd-academy-guide-main a[href*="docker.com"]) {
+  position: relative;
+  padding-left: 1.35em;
+}
+:where(.avd-academy-guide-main a[href*="docker.com"])::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .18em;
+  width: 1em;
+  height: 1em;
+  background: center / contain no-repeat;
+  background-image: none;
+  background-color: currentColor;
+  mask-image: url("/training-material-container-technologies/assets/icons/docker.svg");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+}
+.avd-academy-linkmark--none :where(.avd-academy-guide-main a[href*="docker.com"]),
+:where(.avd-academy-guide-main a[href*="docker.com"]).avd-academy-linkmark--none { padding-left: 0; }
+</style><link rel="stylesheet" media="print" href="/training-material-container-technologies/theme/academy/print.css?v=aedd1b20">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=c7831634" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=a9cecc4f" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=2b412283">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -83,24 +47,8 @@
         .querySelectorAll(_auswahl)
         .forEach((el) => { if (!el.dataset.highlighted) { hljs.highlightElement(el); } });
       _faerben(document);
-
-      /* NACHTRAEGLICH EINGEFUEGTER CODE. Die Hervorhebung laeuft einmal beim Laden.
-         Eine Seite, die ihre Codebloecke per Skript einsetzt - eine Visualisierung,
-         die rohe Nachrichten durchschaltet -, bekam deshalb gar keine Farben und
-         baute sich einen eigenen Hervorheber. Genau die Kopie, die das Theme
-         verhindern soll.
-
-         `AvdHighlight.apply(knoten)` faerbt, was seither dazugekommen ist; `hljs`
-         liegt daneben fuer Faelle, die mehr brauchen. Das Ereignis sagt Seiten, die
-         frueh zeichnen, wann der Haken da ist - die Module laden asynchron. */
       window.AvdHighlight = { hljs, apply: _faerben, languages: _hlsprachen.slice() };
       document.dispatchEvent(new CustomEvent("avd-academy-highlight-ready"));
-
-      /* Statuszeile nach Klasse einfaerben. highlight.js gibt jedem dreistelligen
-         Code dieselbe Klasse `hljs-number` - in einem Mitschnitt ist aber genau das
-         die Stelle, auf die man zuerst sieht: 2xx ist etwas anderes als 4xx.
-         Deshalb hier die einzige eigene Zutat, und bewusst nur diese: Die
-         Statusklassen von HTTP aendern sich nicht, das bleibt stabil. */
       document.querySelectorAll("pre code.language-http .hljs-number").forEach((el) => {
         const code = parseInt(el.textContent, 10);
         if (code >= 100 && code <= 599) {
@@ -113,8 +61,8 @@
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
 
-  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790741874">
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790741874"></head><body class="avd-academy-guide">
+  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=43701531">
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=4a155a65"></head><body class="avd-academy-guide">
   <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><div class="avd-academy-metanav"><span>ATVANTAGE Academy</span>
   </div>
 
@@ -159,8 +107,8 @@ finden und nicht in der Störung.</p>
 <ul>
   <li>benennst an einem gegebenen Dockerfile mindestens vier Stellen, die im Betrieb
 Probleme machen, und begründest jede.</li>
-  <li>baust ein Dockerfile auf einen Multi-Stage-Build um und erklärst, was dadurch
-aus dem Ergebnis verschwindet.</li>
+  <li>überarbeitest es anhand Deiner Befundliste und begründest jeden Eingriff mit
+seiner Folge im Betrieb.</li>
   <li>lässt den Prozess im Container unter einem eigenen Benutzer laufen.</li>
   <li>misst den Unterschied zwischen zwei Images und ordnest ein, woher er kommt.</li>
 </ul>
@@ -171,8 +119,8 @@ aus dem Ergebnis verschwindet.</li>
   <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du hast <strong>allein</strong> eine Liste mit Befunden zum vorgegebenen Dockerfile
 erstellt und sie anschließend mit Deiner Partnerin verglichen.</li>
   <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Das Ausgangs-Image ist gebaut, und Du kennst seine Größe.</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Eine überarbeitete Fassung ist gebaut, nutzt einen Multi-Stage-Build,
-gepinnte Versionen und einen eigenen Benutzer.</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Eine überarbeitete Fassung ist gebaut: schlankes Basis-Image, gepinnte
+Versionen, eigener Benutzer.</li>
   <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Du kennst beide Größen und kannst sagen, woher der größte Anteil der
 Ersparnis kommt.</li>
   <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Der Container aus der überarbeiteten Fassung läuft und antwortet.</li>
@@ -183,19 +131,10 @@ Ersparnis kommt.</li>
 
 <h3 id="das-ausgangsmaterial-anlegen">Das Ausgangsmaterial anlegen</h3>
 
-<pre><code class="language-bash">mkdir ~/review
-</code></pre>
+<p>Leg ein leeres Verzeichnis <code>review</code> an und darin eine <code>index.html</code> mit etwas
+Inhalt.</p>
 
-<pre><code class="language-bash">cd ~/review
-</code></pre>
-
-<pre><code class="language-bash">echo "&lt;h1&gt;Review&lt;/h1&gt;" &gt; index.html
-</code></pre>
-
-<pre><code class="language-bash">nano Dockerfile
-</code></pre>
-
-<p>Schreib <strong>genau dieses</strong> Dockerfile hinein – es ist absichtlich schlecht:</p>
+<p>Daneben kommt ein <code>Dockerfile</code> – <strong>genau dieses</strong>, es ist absichtlich schlecht:</p>
 
 <pre><code class="language-dockerfile">FROM debian:latest
 RUN apt-get update
@@ -227,7 +166,7 @@ hat – über die lohnt es sich zu reden.</p>
 <pre><code class="language-bash">docker image build -t review:schlecht .
 </code></pre>
 
-<pre><code class="language-bash">docker images review
+<pre><code class="language-bash">docker image ls review
 </code></pre>
 
 <blockquote>
@@ -236,36 +175,47 @@ hat – über die lohnt es sich zu reden.</p>
 
 <h3 id="die-überarbeitete-fassung-schreiben">Die überarbeitete Fassung schreiben</h3>
 
-<pre><code class="language-bash">nano Dockerfile.gut
-</code></pre>
-
-<p>Bau die Datei selbst um. Dieses Gerüst zeigt Dir die Multi-Stage-Schreibweise –
-den Rest entscheidest Du anhand Deiner Befundliste:</p>
+<p>Schreib die überarbeitete Fassung in eine zweite Datei, <code>Dockerfile.gut</code>. Dieses
+Gerüst gibt den Rahmen vor – die Multi-Stage-Schreibweise kennst Du aus
+„Das Image optimieren”. Was darin steht und warum, entscheidest Du anhand Deiner
+Befundliste:</p>
 
 <pre><code class="language-dockerfile">FROM debian:12-slim AS aufbereitung
 WORKDIR /arbeit
 COPY index.html .
 RUN echo "&lt;p&gt;gebaut in der Aufbereitungsstufe&lt;/p&gt;" &gt;&gt; index.html
 
-FROM nginx:1.27.5-alpine
+FROM nginxinc/nginx-unprivileged:1.27-alpine
 COPY --from=aufbereitung /arbeit/index.html /usr/share/nginx/html/index.html
-USER nginx
-EXPOSE 80
+EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]
 </code></pre>
 
 <blockquote>
   <p><strong>Hinweis:</strong> Achte auf drei Unterschiede zur Ausgangsfassung, die leicht zu
-übersehen sind: die <strong>Form</strong> von <code>CMD</code> (eckige Klammern statt einer Zeichenkette),
-die <strong>Herkunft</strong> der kopierten Datei (<code>--from=</code>) und den <strong>Benutzer</strong>.</p>
+übersehen sind: die <strong>Form</strong> von <code>CMD</code> (eckige Klammern statt einer
+Zeichenkette), die <strong>Herkunft</strong> der kopierten Datei (<code>--from=</code>) und das
+<strong>Basis-Image</strong>.</p>
 </blockquote>
+
+<div class="avd-academy-callout avd-academy-callout--info">
+  <p><strong>Warum ein anderes NGINX-Image?</strong> Das offizielle <code>nginx</code> läuft als <code>root</code>. Ein
+<code>USER nginx</code> davorzusetzen genügt <strong>nicht</strong> – der Server bricht beim Start ab:</p>
+
+  <pre><code class="language-text">nginx: [emerg] mkdir() "/var/cache/nginx/client_temp" failed (13: Permission denied)
+</code></pre>
+
+  <p><code>nginxinc/nginx-unprivileged</code> ist für den Betrieb ohne <code>root</code> gebaut und lauscht
+deshalb auf <strong>8080</strong> statt 80. Das ist die Lektion hinter dem Befund: Non-Root
+ist keine Zeile, die man nachträglich anhängt – es muss im Image vorgesehen sein.</p>
+</div>
 
 <h3 id="die-überarbeitete-fassung-bauen-und-vergleichen">Die überarbeitete Fassung bauen und vergleichen</h3>
 
 <pre><code class="language-bash">docker image build -f Dockerfile.gut -t review:gut .
 </code></pre>
 
-<pre><code class="language-bash">docker images review
+<pre><code class="language-bash">docker image ls review
 </code></pre>
 
 <blockquote>
@@ -275,7 +225,7 @@ Eingriff den größten Anteil daran hat.</p>
 
 <h3 id="prüfen-dass-sie-auch-läuft">Prüfen, dass sie auch läuft</h3>
 
-<pre><code class="language-bash">docker run -d --name review-gut -p 8090:80 review:gut
+<pre><code class="language-bash">docker container run -d --name review-gut -p 8090:8080 review:gut
 </code></pre>
 
 <pre><code class="language-bash">curl http://localhost:8090
@@ -286,7 +236,8 @@ Eingriff den größten Anteil daran hat.</p>
 
 <blockquote>
   <p><strong>Hinweis:</strong> Führ denselben <code>whoami</code>-Befehl gedanklich für das schlechte Image
-aus. Welchen Benutzer bekämst Du dort?</p>
+aus. Welchen Benutzer bekämst Du dort? Und sieh Dir die Portangabe beim Start
+an: innen 8080, außen 8090.</p>
 </blockquote>
 
 <h3 id="einen-scan-laufen-lassen">Einen Scan laufen lassen</h3>
@@ -320,7 +271,8 @@ Was von dem, was ein Scanner findet, betrifft Deine Anwendung überhaupt?</p>
 der Ersparnis?</li>
   <li>Im schlechten Dockerfile werden die Paketlisten in einer <strong>eigenen</strong> Zeile
 gelöscht. Warum wird das Image dadurch nicht kleiner?</li>
-  <li>Was ändert <code>USER</code> praktisch, und warum verlangen manche Plattformen es?</li>
+  <li>Was ändert es praktisch, dass der Prozess nicht als <code>root</code> läuft, und warum
+verlangen manche Plattformen es? Warum genügt dafür keine <code>USER</code>-Zeile am Ende?</li>
   <li>Warum sollte ein Image regelmäßig neu gebaut werden, auch wenn sich an Deinem
 Code nichts geändert hat?</li>
   <li>Was findet ein Sicherheits-Scan <strong>nicht</strong>? Was folgt daraus für den Umgang mit
@@ -340,8 +292,8 @@ Du…
 
 - benennst an einem gegebenen Dockerfile mindestens vier Stellen, die im Betrieb
   Probleme machen, und begründest jede.
-- baust ein Dockerfile auf einen Multi-Stage-Build um und erklärst, was dadurch
-  aus dem Ergebnis verschwindet.
+- überarbeitest es anhand Deiner Befundliste und begründest jeden Eingriff mit
+  seiner Folge im Betrieb.
 - lässt den Prozess im Container unter einem eigenen Benutzer laufen.
 - misst den Unterschied zwischen zwei Images und ordnest ein, woher er kommt.
 
@@ -350,8 +302,8 @@ Du…
 * [ ] Du hast **allein** eine Liste mit Befunden zum vorgegebenen Dockerfile
   erstellt und sie anschließend mit Deiner Partnerin verglichen.
 * [ ] Das Ausgangs-Image ist gebaut, und Du kennst seine Größe.
-* [ ] Eine überarbeitete Fassung ist gebaut, nutzt einen Multi-Stage-Build,
-  gepinnte Versionen und einen eigenen Benutzer.
+* [ ] Eine überarbeitete Fassung ist gebaut: schlankes Basis-Image, gepinnte
+  Versionen, eigener Benutzer.
 * [ ] Du kennst beide Größen und kannst sagen, woher der größte Anteil der
   Ersparnis kommt.
 * [ ] Der Container aus der überarbeiteten Fassung läuft und antwortet.
@@ -361,23 +313,10 @@ Du…
 
 ### Das Ausgangsmaterial anlegen
 
-```bash
-mkdir ~/review
-```
+Leg ein leeres Verzeichnis `review` an und darin eine `index.html` mit etwas
+Inhalt.
 
-```bash
-cd ~/review
-```
-
-```bash
-echo &quot;&lt;h1&gt;Review&lt;/h1&gt;&quot; &gt; index.html
-```
-
-```bash
-nano Dockerfile
-```
-
-Schreib **genau dieses** Dockerfile hinein – es ist absichtlich schlecht:
+Daneben kommt ein `Dockerfile` – **genau dieses**, es ist absichtlich schlecht:
 
 ```dockerfile
 FROM debian:latest
@@ -410,19 +349,17 @@ docker image build -t review:schlecht .
 ```
 
 ```bash
-docker images review
+docker image ls review
 ```
 
 &gt; **Hinweis:** Schreib die Größe auf. Sie ist Dein Vergleichswert.
 
 ### Die überarbeitete Fassung schreiben
 
-```bash
-nano Dockerfile.gut
-```
-
-Bau die Datei selbst um. Dieses Gerüst zeigt Dir die Multi-Stage-Schreibweise –
-den Rest entscheidest Du anhand Deiner Befundliste:
+Schreib die überarbeitete Fassung in eine zweite Datei, `Dockerfile.gut`. Dieses
+Gerüst gibt den Rahmen vor – die Multi-Stage-Schreibweise kennst Du aus
+„Das Image optimieren&quot;. Was darin steht und warum, entscheidest Du anhand Deiner
+Befundliste:
 
 ```dockerfile
 FROM debian:12-slim AS aufbereitung
@@ -430,16 +367,29 @@ WORKDIR /arbeit
 COPY index.html .
 RUN echo &quot;&lt;p&gt;gebaut in der Aufbereitungsstufe&lt;/p&gt;&quot; &gt;&gt; index.html
 
-FROM nginx:1.27.5-alpine
+FROM nginxinc/nginx-unprivileged:1.27-alpine
 COPY --from=aufbereitung /arbeit/index.html /usr/share/nginx/html/index.html
-USER nginx
-EXPOSE 80
+EXPOSE 8080
 CMD [&quot;nginx&quot;, &quot;-g&quot;, &quot;daemon off;&quot;]
 ```
 
 &gt; **Hinweis:** Achte auf drei Unterschiede zur Ausgangsfassung, die leicht zu
-&gt; übersehen sind: die **Form** von `CMD` (eckige Klammern statt einer Zeichenkette),
-&gt; die **Herkunft** der kopierten Datei (`--from=`) und den **Benutzer**.
+&gt; übersehen sind: die **Form** von `CMD` (eckige Klammern statt einer
+&gt; Zeichenkette), die **Herkunft** der kopierten Datei (`--from=`) und das
+&gt; **Basis-Image**.
+
+&lt;div class=&quot;avd-academy-callout avd-academy-callout--info&quot; markdown=&quot;1&quot;&gt;
+**Warum ein anderes NGINX-Image?** Das offizielle `nginx` läuft als `root`. Ein
+`USER nginx` davorzusetzen genügt **nicht** – der Server bricht beim Start ab:
+
+```text
+nginx: [emerg] mkdir() &quot;/var/cache/nginx/client_temp&quot; failed (13: Permission denied)
+```
+
+`nginxinc/nginx-unprivileged` ist für den Betrieb ohne `root` gebaut und lauscht
+deshalb auf **8080** statt 80. Das ist die Lektion hinter dem Befund: Non-Root
+ist keine Zeile, die man nachträglich anhängt – es muss im Image vorgesehen sein.
+&lt;/div&gt;
 
 ### Die überarbeitete Fassung bauen und vergleichen
 
@@ -448,7 +398,7 @@ docker image build -f Dockerfile.gut -t review:gut .
 ```
 
 ```bash
-docker images review
+docker image ls review
 ```
 
 &gt; **Hinweis:** Wie groß ist der Unterschied? Überleg Dir, welcher einzelne
@@ -457,7 +407,7 @@ docker images review
 ### Prüfen, dass sie auch läuft
 
 ```bash
-docker run -d --name review-gut -p 8090:80 review:gut
+docker container run -d --name review-gut -p 8090:8080 review:gut
 ```
 
 ```bash
@@ -469,7 +419,8 @@ docker container exec review-gut whoami
 ```
 
 &gt; **Hinweis:** Führ denselben `whoami`-Befehl gedanklich für das schlechte Image
-&gt; aus. Welchen Benutzer bekämst Du dort?
+&gt; aus. Welchen Benutzer bekämst Du dort? Und sieh Dir die Portangabe beim Start
+&gt; an: innen 8080, außen 8090.
 
 ### Einen Scan laufen lassen
 
@@ -503,7 +454,8 @@ docker container rm review-gut
   der Ersparnis?
 - Im schlechten Dockerfile werden die Paketlisten in einer **eigenen** Zeile
   gelöscht. Warum wird das Image dadurch nicht kleiner?
-- Was ändert `USER` praktisch, und warum verlangen manche Plattformen es?
+- Was ändert es praktisch, dass der Prozess nicht als `root` läuft, und warum
+  verlangen manche Plattformen es? Warum genügt dafür keine `USER`-Zeile am Ende?
 - Warum sollte ein Image regelmäßig neu gebaut werden, auch wenn sich an Deinem
   Code nichts geändert hat?
 - Was findet ein Sicherheits-Scan **nicht**? Was folgt daraus für den Umgang mit
@@ -513,6 +465,8 @@ docker container rm review-gut
 
 - [Best Practices für Container Images](/docker-grundlagen/best-practices/uebersicht.html)
 - [Building best practices – Docker Docs](https://docs.docker.com/build/building/best-practices/)
+- [Musterlösung (PR)](https://github.com/atvantage-academy/code-template-docker-basics/pull/17)
+- [Musterlösung (Pages)](https://atvantage-academy.github.io/code-template-docker-basics/images-die-tragen/)
 </textarea>
     </main><aside class="avd-academy-guide-sidebar"><details class="avd-academy-guide-side avd-academy-guide-side--toc avd-academy-fold" data-avd-academy-toc-box
                data-avd-academy-toc-grenze="12" open hidden>
@@ -524,7 +478,7 @@ docker container rm review-gut
       </div>
       <div class="avd-academy-guide-side avd-academy-guide-side--bordered">
         <div class="avd-academy-guide-side__label">Weiterführende Informationen</div>
-        <div class="avd-academy-guide-side__links"><a href="/docker-grundlagen/best-practices/uebersicht.html"><span>Best Practices für Container Images</span></a><a href="https://docs.docker.com/build/building/best-practices/" target="_blank" rel="noopener"><span>Building best practices – Docker Docs</span></a>
+        <div class="avd-academy-guide-side__links"><a href="/docker-grundlagen/best-practices/uebersicht.html"><span>Best Practices für Container Images</span></a><a href="https://docs.docker.com/build/building/best-practices/" target="_blank" rel="noopener"><span>Building best practices – Docker Docs</span><span class="avd-academy-linkicon avd-academy-linkicon--right avd-academy-linkicon--mark" style="--avd-academy-linkicon-src: url('/training-material-container-technologies/assets/icons/docker.svg')" aria-hidden="true"></span></a><a href="https://github.com/atvantage-academy/code-template-docker-basics/pull/17" target="_blank" rel="noopener"><span>Musterlösung (PR)</span><span class="avd-academy-linkicon avd-academy-linkicon--right avd-academy-linkicon--mark" style="--avd-academy-linkicon-src: url('/training-material-container-technologies/theme/academy/icons/icon-github.svg')" aria-hidden="true"></span></a><a href="https://atvantage-academy.github.io/code-template-docker-basics/images-die-tragen/" target="_blank" rel="noopener"><span>Musterlösung (Pages)</span><span class="avd-academy-linkicon avd-academy-linkicon--right avd-academy-linkicon--mark" style="--avd-academy-linkicon-src: url('/training-material-container-technologies/theme/academy/icons/icon-github-pages.svg')" aria-hidden="true"></span></a>
         </div></div>
     </aside>
   </div><div class="avd-academy-print-contact" aria-hidden="true">

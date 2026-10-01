@@ -1,76 +1,40 @@
-<!DOCTYPE html>
-<!--
-  ATVANTAGE-Academy – EINZIGES Seitenlayout (Jekyll)
-  --------------------------------------------------
-  Ein Layout für alles: allgemeine Doku-Seiten UND Guides (Übungen/Anleitungen).
-  Optik nach der ATVANTAGE-Website: Meta-Nav, weiße sticky Kopfzeile, Hero-Band,
-  zweispaltig mit rechter Sidebar (automatisches Inhaltsverzeichnis, Fortschritt
-  aus Task-Listen, weiterführende Ressourcen). Überschriften ohne Emoji-Icons.
-
-  Verwendung im Front Matter:  layout: default   (oder `layout: guide` – Alias,
-  siehe guide.html; beides rendert dieselbe Guide-Ansicht)
-
-  `layout: visualization` (siehe visualization.html) rendert dieselbe Seite OHNE
-  obere Navigation (Meta-Leiste + Kopfzeile/TopNav), OHNE Brotkrumen und OHNE den
-  rechten Bereich (Inhaltsverzeichnis, Fortschritt, Ressourcen – auch bei gesetztem
-  `resources`), mit schmalerem Hero-Balken und breiterem, zentriertem Inhalt – für
-  eigenständige Visualisierungen/Simulationen.
-
-  Alle Front-Matter-Felder sind OPTIONAL (Convention over Configuration). Nur der
-  Titel ist faktisch erforderlich – als `title:` ODER als erste `#`-Überschrift:
-
-    title:       "…"                → sonst erste #-Überschrift (eins von beiden nötig)
-    description: "…"                → Meta-Description
-    duration:    8                  → Zahl in Minuten → Hero-Tag „ca. 8 Minuten“
-                                       (ungefähre LESEDAUER; bei Guides/Übungen die
-                                       Dauer der Übung, bei Visualisierungen die
-                                       Bearbeitungszeit – dort unüblich, aber erlaubt).
-    topics:      ["Cloud & DevOps"] → weitere Hero-Tags
-    resources:   [{title, url, icon}, …] → Sidebar-Karte „Weiterführende Informationen“.
-                                       title und/oder icon (Bildpfad); icon erscheint
-                                       rechts und wird kreisrund dargestellt.
-    breadcrumb:                     → Brotkrumen anpassen (beides optional):
-      label: "…"                    → überschreibt den Ordnernamen dieser Ebene;
-                                       in der Ordner-`index.md` gesetzt gilt es für
-                                       ALLE Seiten im Ordner und in Unterordnern.
-      ancestors: [{title, url}, …]  → explizite Vorfahren-Kette OHNE die aktuelle
-                                       Seite (diese wird automatisch angehängt); in
-                                       der `index.md` gesetzt wird sie vererbt.
-
-  „Markdown kopieren“ (Button im Hero) erscheint NUR auf Guides – dort ist das
-  Übernehmen des Quelltexts der Zweck. Bedingungen: Markdown-Seite (`.md`, nicht
-  reines HTML) UND der Schalter `toolbar.copy` (Vorgabe: nur `layout: guide`, siehe
-  `_includes/avd-switch.html`). Doku-Seiten und Visualisierungen haben ihn nicht –
-  bei letzteren, weil ihr Inhalt nicht sinnvoll als Markdown kopierbar ist.
-
-  DIE SEITENWERKZEUGE – QR-Code, Farbschema-Umschalter, Drucken – sind EINE
-  Komponente (`_includes/tools.html`) an zwei Standorten in diesem Rahmen:
-
-    Kopfzeile   `chrome: true`  (page, guide)      QR + Farbschema
-    Hero rechts `hero_tools`    (visualization)    QR + Farbschema + Drucken
-
-  Die Regel dahinter ist die Kopfzeile: Wo es sie gibt, tragen die Werkzeuge sie;
-  wo nicht, tritt der Hero an ihre Stelle. Drucken gibt es nur dort, weil auf einer
-  gewöhnlichen Seite der Browser-Befehl (Strg/Cmd+P) genügt, die rahmenlose
-  Ansicht aber keinen anderen Weg aufs Papier hat.
-
-  Der QR-Code wird erst im Browser erzeugt (theme/academy/atvantage.js), weil die
-  Adresse zur Build-Zeit nicht feststeht; ohne JavaScript erscheint er nicht.
---><html lang="de">
+<!DOCTYPE html><html lang="de">
 <head>
   <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"><title>Best Practices für Container Images · Containertechnologien (Academy)</title><meta name="description" content="Fünfzehn Eingriffe, die den Unterschied machen – nach Wirkung gruppiert, jeder mit dem Grund daneben."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Best Practices für Container Images · Containertechnologien (Academy)</title><meta name="description" content="Sechzehn Eingriffe, nach Wirkung gruppiert – als Karte zum Erkunden, jeder Punkt mit dem Grund dahinter."><meta property="og:site_name" content="Containertechnologien (Academy)">
 <meta property="og:title" content="Best Practices für Container Images">
-<meta property="og:description" content="Fünfzehn Eingriffe, die den Unterschied machen – nach Wirkung gruppiert, jeder mit dem Grund daneben.">
+<meta property="og:description" content="Sechzehn Eingriffe, nach Wirkung gruppiert – als Karte zum Erkunden, jeder Punkt mit dem Grund dahinter.">
 <meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790741874">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790741874" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790741874" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790741874">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=118a443d"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=2dd7a61e">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=91dc645c">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=4b561b0b">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=da9fc064"><style>
+:where(.avd-academy-guide-main a[href*="docker.com"]) {
+  position: relative;
+  padding-left: 1.35em;
+}
+:where(.avd-academy-guide-main a[href*="docker.com"])::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .18em;
+  width: 1em;
+  height: 1em;
+  background: center / contain no-repeat;
+  background-image: none;
+  background-color: currentColor;
+  mask-image: url("/training-material-container-technologies/assets/icons/docker.svg");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+}
+.avd-academy-linkmark--none :where(.avd-academy-guide-main a[href*="docker.com"]),
+:where(.avd-academy-guide-main a[href*="docker.com"]).avd-academy-linkmark--none { padding-left: 0; }
+</style><link rel="stylesheet" media="print" href="/training-material-container-technologies/theme/academy/print.css?v=aedd1b20">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=c7831634" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=a9cecc4f" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=2b412283">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -83,24 +47,8 @@
         .querySelectorAll(_auswahl)
         .forEach((el) => { if (!el.dataset.highlighted) { hljs.highlightElement(el); } });
       _faerben(document);
-
-      /* NACHTRAEGLICH EINGEFUEGTER CODE. Die Hervorhebung laeuft einmal beim Laden.
-         Eine Seite, die ihre Codebloecke per Skript einsetzt - eine Visualisierung,
-         die rohe Nachrichten durchschaltet -, bekam deshalb gar keine Farben und
-         baute sich einen eigenen Hervorheber. Genau die Kopie, die das Theme
-         verhindern soll.
-
-         `AvdHighlight.apply(knoten)` faerbt, was seither dazugekommen ist; `hljs`
-         liegt daneben fuer Faelle, die mehr brauchen. Das Ereignis sagt Seiten, die
-         frueh zeichnen, wann der Haken da ist - die Module laden asynchron. */
       window.AvdHighlight = { hljs, apply: _faerben, languages: _hlsprachen.slice() };
       document.dispatchEvent(new CustomEvent("avd-academy-highlight-ready"));
-
-      /* Statuszeile nach Klasse einfaerben. highlight.js gibt jedem dreistelligen
-         Code dieselbe Klasse `hljs-number` - in einem Mitschnitt ist aber genau das
-         die Stelle, auf die man zuerst sieht: 2xx ist etwas anderes als 4xx.
-         Deshalb hier die einzige eigene Zutat, und bewusst nur diese: Die
-         Statusklassen von HTTP aendern sich nicht, das bleibt stabil. */
       document.querySelectorAll("pre code.language-http .hljs-number").forEach((el) => {
         const code = parseInt(el.textContent, 10);
         if (code >= 100 && code <= 599) {
@@ -113,8 +61,8 @@
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
 
-  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=1790741874">
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790741874"></head><body class="avd-academy-guide avd-academy-guide--viz">
+  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=43701531">
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=4a155a65"></head><body class="avd-academy-guide avd-academy-guide--viz">
   <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><section class="avd-academy-guide-hero avd-academy-guide-hero--slim"
            aria-labelledby="avd-academy-page-title"><div class="avd-academy-guide-hero__meta">
       <div class="avd-academy-guide-hero__tags">
@@ -131,63 +79,124 @@
   </section><div class="avd-academy-guide-layout">
     <main class="avd-academy-guide-main" id="avd-academy-content">
 
-<p>Kein Katalog zum Abhaken. Die fünfzehn Punkte sind nach dem gruppiert, <strong>was sie
+<p>Kein Katalog zum Abhaken. Die sechzehn Punkte sind nach dem gruppiert, <strong>was sie
 bewirken</strong> – such Dir die Gruppe, in der Dein Problem steckt.</p>
 
-<p>Vier davon sind hervorgehoben: Wenn Du heute nur vier Dinge änderst, dann diese.</p>
+<p class="bp__screen-only"><strong>Klicke einen Punkt an</strong>, um zu lesen,
+warum es ihn gibt; <strong>Esc</strong> oder ein Klick daneben schließt wieder.
+Vier Punkte sind hervorgehoben: Wenn Du heute nur vier Dinge änderst, dann diese.</p>
 
 <style>
-  .bp__gruppe { margin: var(--avd-academy-space-12) 0; }
-  .bp__gruppe-titel {
-    display: flex;
-    align-items: baseline;
-    gap: var(--avd-academy-space-3);
-    flex-wrap: wrap;
-    border-bottom: 2px solid var(--avd-academy-color-border);
-    padding-bottom: var(--avd-academy-space-2);
-    margin-bottom: var(--avd-academy-space-6);
+  /* =========================================================================
+     BEST PRACTICES ALS KARTE
+     Nur Anordnung und Zustand. Alle Farben aus den Academy-Tokens.
+     ========================================================================= */
+  .bp__map {
+    position: relative;
+    aspect-ratio: 1280 / 620;
+    margin: var(--avd-academy-space-8) 0;
   }
-  .bp__gruppe-frage {
-    font-size: var(--avd-academy-fs-sm);
-    font-weight: var(--avd-academy-fw-normal);
-    color: var(--avd-academy-color-ink-muted);
+  .bp__links {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  .bp__link {
+    fill: none;
+    stroke: var(--avd-academy-color-border);
+    stroke-width: 2;
   }
 
-  .bp {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
-    gap: var(--avd-academy-space-4);
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  /* Knoten sitzen auf denselben Koordinaten wie die Linien darunter. */
+  .bp__node {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    font: inherit;
+    color: var(--avd-academy-color-ink);
+    background: var(--avd-academy-color-bg);
+    border: 2px solid var(--avd-academy-color-border);
+    border-radius: var(--avd-academy-radius);
+    padding: 0.35rem 0.7rem;
+    cursor: pointer;
+    text-align: left;
+    line-height: 1.25;
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
   }
-  .bp__karte {
-    display: flex;
-    flex-direction: column;
-    gap: var(--avd-academy-space-2);
-    padding: var(--avd-academy-space-4);
-    border: 1px solid var(--avd-academy-color-border);
-    border-radius: var(--avd-academy-radius-lg);
-    background: var(--avd-academy-color-bg-subtle);
-    min-width: 0;
-  }
-  .bp__karte--kern {
-    border-width: 2px;
+  .bp__node:hover,
+  .bp__node:focus-visible {
     border-color: var(--avd-academy-color-accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--avd-academy-color-accent) 32%, transparent);
   }
-  .bp__name {
+  .bp__node:focus-visible { outline: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .bp__node { transition: none; }
+  }
+
+  .bp__center {
+    background: var(--avd-academy-color-accent-soft);
+    border-color: var(--avd-academy-color-accent);
+    color: var(--avd-academy-color-accent-ink);
     font-weight: var(--avd-academy-fw-bold);
     font-size: var(--avd-academy-fs-md);
-    line-height: var(--avd-academy-lh-heading);
+    padding: 0.6rem 1.1rem;
   }
-  .bp__warum {
+  .bp__branch {
+    background: var(--avd-academy-color-bg-subtle);
+    font-weight: var(--avd-academy-fw-bold);
+  }
+  .bp__leaf { font-size: var(--avd-academy-fs-sm); max-width: 19%; }
+  /* Die Blätter wachsen nach außen, nicht über die Mitte: Der Ankerpunkt ist
+     die INNERE Kante, dort endet auch die Linie. */
+  .bp__leaf--links { transform: translate(-100%, -50%); }
+  .bp__leaf--rechts { transform: translate(0, -50%); }
+  /* Die vier, die man zuerst angeht. */
+  .bp__leaf--key { border-color: var(--avd-academy-color-accent); border-width: 2px; }
+  .bp__leaf--key::after {
+    content: "★";
+    margin-left: 0.35rem;
+    color: var(--avd-academy-color-accent-ink);
+  }
+
+  /* --- Schmal: aus der Karte wird eine Liste ------------------------------ */
+  @media (max-width: 62rem) {
+    .bp__map { aspect-ratio: auto; display: flex; flex-direction: column; gap: var(--avd-academy-space-2); align-items: flex-start; }
+    .bp__links { display: none; }
+    .bp__node { position: static; transform: none; max-width: 100%; }
+    .bp__leaf { margin-left: var(--avd-academy-space-6); max-width: 100%; }
+  }
+
+  /* --- Die Erläuterungen -------------------------------------------------- */
+  .bp__detail {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 60;
+    width: min(44rem, 92vw);
+    max-height: 86vh;
+    overflow-y: auto;
+    padding: var(--avd-academy-space-6);
+    background: var(--avd-academy-color-bg);
+    border: 2px solid var(--avd-academy-color-accent);
+    border-radius: var(--avd-academy-radius-lg);
+    box-shadow: 0 1.5rem 3rem rgb(0 0 0 / 0.25);
+  }
+  .bp__detail > :first-child { margin-top: 0; }
+  .bp__detail > :last-child { margin-bottom: 0; }
+  .bp__question { color: var(--avd-academy-color-ink-muted); font-style: italic; }
+  .bp__badge {
+    display: inline-block;
+    padding: 0 var(--avd-academy-space-2);
+    border-radius: var(--avd-academy-radius-sm);
+    background: var(--avd-academy-color-accent-soft);
+    color: var(--avd-academy-color-accent-ink);
     font-size: var(--avd-academy-fs-sm);
-    color: var(--avd-academy-color-ink-muted);
-    margin: 0;
+    font-weight: var(--avd-academy-fw-medium);
   }
   .bp__code {
     overflow-x: auto;
-    margin: 0;
     padding: var(--avd-academy-space-2) var(--avd-academy-space-3);
     border-radius: var(--avd-academy-radius-sm);
     background: var(--avd-academy-code-bg);
@@ -195,170 +204,331 @@ bewirken</strong> – such Dir die Gruppe, in der Dein Problem steckt.</p>
     font-size: var(--avd-academy-fs-sm);
     white-space: pre;
   }
-  .bp__marke {
-    align-self: flex-start;
-    padding: 0 var(--avd-academy-space-2);
-    border-radius: var(--avd-academy-radius-sm);
-    font-size: var(--avd-academy-fs-sm);
-    font-weight: var(--avd-academy-fw-medium);
-    background: var(--avd-academy-color-accent-soft);
-    color: var(--avd-academy-color-accent-ink);
+  .bp__backdrop { position: fixed; inset: 0; z-index: 50; background: rgb(0 0 0 / 0.5); }
+  .bp__print-only { display: none; }
+
+  /* --- Druck: linear und vollständig -------------------------------------- */
+  @media print {
+    /* Die Bedienhinweise und der Sternhinweis gehören zur Karte – ohne sie sind
+       sie auf Papier gegenstandslos. */
+    .bp__map,
+    .bp__screen-only { display: none; }
+    .bp__print-only { display: block; }
+    .bp__detail[hidden] { display: block; }
+    .bp__detail {
+      position: static;
+      transform: none;
+      width: auto;
+      max-height: none;
+      overflow: visible;
+      box-shadow: none;
+      border: 0;
+      border-top: 1px solid var(--avd-academy-color-border);
+      border-radius: 0;
+      padding: var(--avd-academy-space-3) 0 0;
+      margin-top: var(--avd-academy-space-4);
+      break-inside: avoid;
+    }
+    .bp__backdrop { display: none !important; }
   }
 </style>
 
-<section class="bp__gruppe">
-<h2 class="bp__gruppe-titel">Größe <span class="bp__gruppe-frage">Wie lange dauert Ziehen, Starten, Skalieren?</span></h2>
+<div class="bp__map">
+  <svg class="bp__links" viewBox="0 0 1280 620" preserveAspectRatio="none" aria-hidden="true">
+      <path class="bp__link" d="M640 310 C 500.0 310, 500.0 150, 360 150" />
+      <path class="bp__link" d="M360 150 C 295.0 150, 295.0 66, 230 66" />
+      <path class="bp__link" d="M360 150 C 295.0 150, 295.0 122, 230 122" />
+      <path class="bp__link" d="M360 150 C 295.0 150, 295.0 178, 230 178" />
+      <path class="bp__link" d="M360 150 C 295.0 150, 295.0 234, 230 234" />
+      <path class="bp__link" d="M640 310 C 780.0 310, 780.0 150, 920 150" />
+      <path class="bp__link" d="M920 150 C 985.0 150, 985.0 66, 1050 66" />
+      <path class="bp__link" d="M920 150 C 985.0 150, 985.0 122, 1050 122" />
+      <path class="bp__link" d="M920 150 C 985.0 150, 985.0 178, 1050 178" />
+      <path class="bp__link" d="M920 150 C 985.0 150, 985.0 234, 1050 234" />
+      <path class="bp__link" d="M640 310 C 500.0 310, 500.0 470, 360 470" />
+      <path class="bp__link" d="M360 470 C 295.0 470, 295.0 386, 230 386" />
+      <path class="bp__link" d="M360 470 C 295.0 470, 295.0 442, 230 442" />
+      <path class="bp__link" d="M360 470 C 295.0 470, 295.0 498, 230 498" />
+      <path class="bp__link" d="M360 470 C 295.0 470, 295.0 554, 230 554" />
+      <path class="bp__link" d="M640 310 C 780.0 310, 780.0 470, 920 470" />
+      <path class="bp__link" d="M920 470 C 985.0 470, 985.0 386, 1050 386" />
+      <path class="bp__link" d="M920 470 C 985.0 470, 985.0 442, 1050 442" />
+      <path class="bp__link" d="M920 470 C 985.0 470, 985.0 498, 1050 498" />
+      <path class="bp__link" d="M920 470 C 985.0 470, 985.0 554, 1050 554" />
+  </svg>
 
-<ul class="bp">
-
-  <li class="bp__karte bp__karte--kern">
-    <span class="bp__name">Multi-Stage-Build</span>
-    <p class="bp__warum">Compiler, Paketmanager und Testwerkzeuge gehören nicht in das, was läuft. Gebaut wird in der einen Stufe, kopiert wird in die andere.</p>
-    <pre class="bp__code">FROM golang:1.22 AS bau
-RUN go build -o app
-
-FROM alpine:3.19
-COPY --from=bau /app /app</pre>
-    <span class="bp__marke">größter Hebel</span>
-  </li>
-
-  <li class="bp__karte">
-    <span class="bp__name">Schlankes Basis-Image</span>
-    <p class="bp__warum">Weniger Inhalt heißt weniger Ziehzeit, weniger Speicher und weniger, das eine Schwachstelle haben kann.</p>
-    <pre class="bp__code">FROM node:20-alpine</pre>
-  </li>
-
-  <li class="bp__karte">
-    <span class="bp__name">RUN-Befehle verketten</span>
-    <p class="bp__warum">Was in einem späteren Layer gelöscht wird, liegt weiter im früheren. Aufräumen muss im selben Layer geschehen.</p>
-    <pre class="bp__code">RUN apt-get update \
- &amp;&amp; apt-get install -y curl \
- &amp;&amp; rm -rf /var/lib/apt/lists/*</pre>
-  </li>
-
-  <li class="bp__karte">
-    <span class="bp__name">.dockerignore pflegen</span>
-    <p class="bp__warum">Der Punkt am Ende von <code>docker build .</code> schickt das ganze Verzeichnis an den Dienst – samt <code>.git</code> und <code>node_modules</code>.</p>
-    <pre class="bp__code">.git
-node_modules
-tests
-*.log</pre>
-  </li>
-
-</ul>
-</section>
-
-<section class="bp__gruppe">
-<h2 class="bp__gruppe-titel">Sicherheit <span class="bp__gruppe-frage">Was kann jemand anfangen, der hineinkommt?</span></h2>
-
-<ul class="bp">
-
-  <li class="bp__karte bp__karte--kern">
-    <span class="bp__name">Nicht als root laufen</span>
-    <p class="bp__warum">Standard ist root – ohne Not. Manche Plattformen starten ein Image gar nicht erst, das nur als root läuft.</p>
-    <pre class="bp__code">RUN useradd -m anwendung
-USER anwendung</pre>
-    <span class="bp__marke">oft Startvoraussetzung</span>
-  </li>
-
-  <li class="bp__karte">
-    <span class="bp__name">Nur nötige Ports nennen</span>
-    <p class="bp__warum"><code>EXPOSE</code> öffnet nichts, aber es dokumentiert. Eine Liste, die nicht stimmt, ist schlechter als keine.</p>
-    <pre class="bp__code">EXPOSE 8080</pre>
-  </li>
-
-  <li class="bp__karte">
-    <span class="bp__name">Regelmäßig scannen</span>
-    <p class="bp__warum">Ein Scan findet bekannte Schwachstellen in bekannten Paketen – nicht Fehler im eigenen Code und nicht, ob eine Lücke erreichbar ist.</p>
-    <pre class="bp__code">docker scout cves meinimage:1.0.0
-trivy image meinimage:1.0.0</pre>
-  </li>
-
-  <li class="bp__karte">
-    <span class="bp__name">Keine Geheimnisse ins Image</span>
-    <p class="bp__warum">Was einmal in einem Layer steckt, bleibt dort – auch wenn eine spätere Zeile es löscht. Zugangsdaten kommen beim Start dazu.</p>
-    <pre class="bp__code">docker run -e DB_PASSWORT=... meinimage</pre>
-  </li>
-
-</ul>
-</section>
-
-<section class="bp__gruppe">
-<h2 class="bp__gruppe-titel">Reproduzierbarkeit <span class="bp__gruppe-frage">Kommt morgen dasselbe heraus?</span></h2>
-
-<ul class="bp">
-
-  <li class="bp__karte bp__karte--kern">
-    <span class="bp__name">Versionen pinnen</span>
-    <p class="bp__warum">Ohne Tag zieht der Build, was gerade aktuell ist. Derselbe Bauplan ergibt an zwei Tagen zwei Images – und der Unterschied fällt im Betrieb auf.</p>
-    <pre class="bp__code">FROM node:latest          # nicht so
-FROM node:20.11-alpine    # besser</pre>
-    <span class="bp__marke">Grundlage für alles Weitere</span>
-  </li>
-
-  <li class="bp__karte bp__karte--kern">
-    <span class="bp__name">Auch ohne Änderung neu bauen</span>
-    <p class="bp__warum">Der Gegenpol zum Pinnen: Ein Image wird schlechter, ohne dass sich etwas ändert, weil seine Bestandteile altern. Ein turnusmäßiger Neubau zieht die Korrekturen mit.</p>
-    <p class="bp__warum">Pinnen <strong>und</strong> neu bauen – nicht das eine statt des anderen.</p>
-    <span class="bp__marke">wird am häufigsten vergessen</span>
-  </li>
-
-  <li class="bp__karte">
-    <span class="bp__name">Layer-Reihenfolge nach Änderungshäufigkeit</span>
-    <p class="bp__warum">Stabiles zuerst, Wechselndes zuletzt. Sonst wird bei jeder Codeänderung alles neu installiert.</p>
-    <pre class="bp__code">COPY package*.json ./
-RUN npm install
-COPY . .</pre>
-  </li>
-
-  <li class="bp__karte">
-    <span class="bp__name">Ein Bauplan, viele Umgebungen</span>
-    <p class="bp__warum">Dasselbe Image läuft in Entwicklung, Test und Produktion. Was sich unterscheidet, kommt beim Start dazu – sonst ist das Artefakt in Produktion nicht das getestete.</p>
-    <pre class="bp__code">ENV APP_PORT=8080</pre>
-  </li>
-
-</ul>
-</section>
-
-<section class="bp__gruppe">
-<h2 class="bp__gruppe-titel">Betrieb <span class="bp__gruppe-frage">Kann die Plattform damit arbeiten?</span></h2>
-
-<ul class="bp">
-
-  <li class="bp__karte">
-    <span class="bp__name">Exec-Form für CMD und ENTRYPOINT</span>
-    <p class="bp__warum">In der Zeichenketten-Form schiebt sich eine Shell davor. Sie schluckt das Stopp-Signal – der Container wird dann nicht beendet, sondern abgeschossen.</p>
-    <pre class="bp__code">CMD node server.js          # nicht so
-CMD ["node", "server.js"]   # besser</pre>
-  </li>
-
-  <li class="bp__karte">
-    <span class="bp__name">Ein Zweck je Container</span>
-    <p class="bp__warum">Webserver, Worker, Datenbank – getrennt. Zusammen lassen sie sich nicht getrennt aktualisieren, skalieren oder neu starten.</p>
-  </li>
-
-  <li class="bp__karte">
-    <span class="bp__name">Logs nach stdout und stderr</span>
-    <p class="bp__warum">Wer in eine Datei schreibt, schreibt in einen Container, den es morgen nicht mehr gibt. Über den Ausgabestrom sammelt die Plattform mit.</p>
-    <pre class="bp__code">/var/log/app.log    # nicht so
-stdout, stderr      # besser</pre>
-  </li>
-
-  <li class="bp__karte">
-    <span class="bp__name">Zustand nach draußen</span>
-    <p class="bp__warum">„Läuft“ heißt nicht „funktioniert“. Ein <code>HEALTHCHECK</code> sagt es selbst; persistente Daten gehören in ein Volume, nicht in den Container.</p>
-    <pre class="bp__code">HEALTHCHECK CMD curl -f \
-  http://localhost:8080/health || exit 1</pre>
-  </li>
-
-</ul>
-</section>
+  <button type="button" class="bp__node bp__center" data-bp-target="bp-uebersicht" style="left: 50.000%; top: 50.000%;">Best Practices</button>
+  <button type="button" class="bp__node bp__branch" data-bp-target="bp-groesse" style="left: 28.125%; top: 24.194%;">Größe</button>
+  <button type="button" class="bp__node bp__leaf bp__leaf--key bp__leaf--links" data-bp-target="bp-multi-stage-build" style="left: 17.969%; top: 10.645%;">Multi-Stage-Build</button>
+  <button type="button" class="bp__node bp__leaf bp__leaf--links" data-bp-target="bp-schlankes-basis-image" style="left: 17.969%; top: 19.677%;">Schlankes Basis-Image</button>
+  <button type="button" class="bp__node bp__leaf bp__leaf--links" data-bp-target="bp-run-befehle-verketten" style="left: 17.969%; top: 28.710%;">RUN-Befehle verketten</button>
+  <button type="button" class="bp__node bp__leaf bp__leaf--links" data-bp-target="bp-dockerignore-pflegen" style="left: 17.969%; top: 37.742%;">.dockerignore pflegen</button>
+  <button type="button" class="bp__node bp__branch" data-bp-target="bp-sicherheit" style="left: 71.875%; top: 24.194%;">Sicherheit</button>
+  <button type="button" class="bp__node bp__leaf bp__leaf--key bp__leaf--rechts" data-bp-target="bp-nicht-als-root-laufen" style="left: 82.031%; top: 10.645%;">Nicht als root laufen</button>
+  <button type="button" class="bp__node bp__leaf bp__leaf--rechts" data-bp-target="bp-nur-noetige-ports-nennen" style="left: 82.031%; top: 19.677%;">Nur nötige Ports</button>
+  <button type="button" class="bp__node bp__leaf bp__leaf--rechts" data-bp-target="bp-regelmaessig-scannen" style="left: 82.031%; top: 28.710%;">Regelmäßig scannen</button>
+  <button type="button" class="bp__node bp__leaf bp__leaf--rechts" data-bp-target="bp-keine-geheimnisse-ins-image" style="left: 82.031%; top: 37.742%;">Keine Geheimnisse</button>
+  <button type="button" class="bp__node bp__branch" data-bp-target="bp-reproduzierbarkeit" style="left: 28.125%; top: 75.806%;">Reproduzierbarkeit</button>
+  <button type="button" class="bp__node bp__leaf bp__leaf--key bp__leaf--links" data-bp-target="bp-versionen-pinnen" style="left: 17.969%; top: 62.258%;">Versionen pinnen</button>
+  <button type="button" class="bp__node bp__leaf bp__leaf--key bp__leaf--links" data-bp-target="bp-auch-ohne-aenderung-neu-bauen" style="left: 17.969%; top: 71.290%;">Turnusmäßig neu bauen</button>
+  <button type="button" class="bp__node bp__leaf bp__leaf--links" data-bp-target="bp-layer-reihenfolge-nach-aenderungshaeufigkeit" style="left: 17.969%; top: 80.323%;">Layer-Reihenfolge</button>
+  <button type="button" class="bp__node bp__leaf bp__leaf--links" data-bp-target="bp-ein-bauplan-viele-umgebungen" style="left: 17.969%; top: 89.355%;">Ein Bauplan, viele Umgebungen</button>
+  <button type="button" class="bp__node bp__branch" data-bp-target="bp-betrieb" style="left: 71.875%; top: 75.806%;">Betrieb</button>
+  <button type="button" class="bp__node bp__leaf bp__leaf--rechts" data-bp-target="bp-exec-form-fuer-cmd-und-entrypoint" style="left: 82.031%; top: 62.258%;">Exec-Form für CMD</button>
+  <button type="button" class="bp__node bp__leaf bp__leaf--rechts" data-bp-target="bp-ein-zweck-je-container" style="left: 82.031%; top: 71.290%;">Ein Zweck je Container</button>
+  <button type="button" class="bp__node bp__leaf bp__leaf--rechts" data-bp-target="bp-logs-nach-stdout-und-stderr" style="left: 82.031%; top: 80.323%;">Logs nach stdout</button>
+  <button type="button" class="bp__node bp__leaf bp__leaf--rechts" data-bp-target="bp-zustand-nach-draussen" style="left: 82.031%; top: 89.355%;">Zustand nach draußen</button>
+</div>
 
 <blockquote>
   <p><strong>Merksatz:</strong> Die meisten dieser Punkte laufen auf dieselbe Frage hinaus – was
 gehört ins Image, und was kommt beim Start dazu? Wer sie beantworten kann,
 braucht die Liste nur noch zum Nachschlagen.</p>
 </blockquote>
+
+<h2 class="bp__print-only">Alle Punkte im Einzelnen</h2>
+
+<div class="bp__details">
+
+<section class="bp__detail" id="bp-uebersicht" role="dialog" aria-modal="true" aria-labelledby="bp-uebersicht-title" tabindex="-1" hidden="">
+  <h2 id="bp-uebersicht-title">Best Practices: wie diese Karte gemeint ist</h2>
+  <p>Die sechzehn Punkte sind nicht nach Dockerfile-Befehlen sortiert, sondern
+  danach, <strong>was sie bewirken</strong>. Vier Wirkungen, vier Äste:</p>
+  <ul>
+    <li><strong>Größe</strong> – wie lange Ziehen, Starten und Skalieren dauern.</li>
+    <li><strong>Sicherheit</strong> – was jemand anfangen kann, der hineinkommt.</li>
+    <li><strong>Reproduzierbarkeit</strong> – ob morgen dasselbe herauskommt.</li>
+    <li><strong>Betrieb</strong> – ob die Plattform mit dem Image arbeiten kann.</li>
+  </ul>
+  <p>Such Dir den Ast, an dem Dein Problem hängt. <strong>Vier Punkte sind
+  ausgezeichnet</strong> – „größter Hebel“, „oft Startvoraussetzung“, „Grundlage
+  für alles Weitere“ und „wird am häufigsten vergessen“: Mit ihnen lohnt sich der
+  Anfang am meisten.<span class="bp__screen-only"> Auf der Karte tragen sie einen
+  Stern.</span></p>
+</section>
+
+<section class="bp__detail" id="bp-groesse" role="dialog" aria-modal="true" aria-labelledby="bp-groesse-title" tabindex="-1" hidden="">
+  <h2 id="bp-groesse-title">Größe</h2>
+  <p class="bp__question">Wie lange dauert Ziehen, Starten, Skalieren?</p>
+  <p>Jedes Megabyte wird bei jedem Ziehen, jedem Start und jeder Skalierung bezahlt – und alles, was drin ist, kann eine Schwachstelle haben. Die vier Punkte hier setzen an dem an, was überhaupt ins Image kommt.</p>
+</section>
+
+<section class="bp__detail" id="bp-multi-stage-build" role="dialog" aria-modal="true" aria-labelledby="bp-multi-stage-build-title" tabindex="-1" hidden="">
+  <h3 id="bp-multi-stage-build-title">Multi-Stage-Build</h3>
+  <p class="bp__badge">größter Hebel</p>
+  <p>Compiler, Paketmanager und Testwerkzeuge gehören nicht in das, was läuft. Gebaut wird in der einen Stufe, kopiert wird in die andere.</p>
+  <pre class="bp__code">FROM golang:1.22 AS bau
+RUN go build -o app
+
+FROM alpine:3.19
+COPY --from=bau /app /app</pre>
+</section>
+
+<section class="bp__detail" id="bp-schlankes-basis-image" role="dialog" aria-modal="true" aria-labelledby="bp-schlankes-basis-image-title" tabindex="-1" hidden="">
+  <h3 id="bp-schlankes-basis-image-title">Schlankes Basis-Image</h3>
+  <p>Weniger Inhalt heißt weniger Ziehzeit, weniger Speicher und weniger, das eine Schwachstelle haben kann.</p>
+  <pre class="bp__code">FROM node:20-alpine</pre>
+</section>
+
+<section class="bp__detail" id="bp-run-befehle-verketten" role="dialog" aria-modal="true" aria-labelledby="bp-run-befehle-verketten-title" tabindex="-1" hidden="">
+  <h3 id="bp-run-befehle-verketten-title">RUN-Befehle verketten</h3>
+  <p>Was in einem späteren Layer gelöscht wird, liegt weiter im früheren. Aufräumen muss im selben Layer geschehen.</p>
+  <pre class="bp__code">RUN apt-get update \
+ &amp;&amp; apt-get install -y curl \
+ &amp;&amp; rm -rf /var/lib/apt/lists/*</pre>
+</section>
+
+<section class="bp__detail" id="bp-dockerignore-pflegen" role="dialog" aria-modal="true" aria-labelledby="bp-dockerignore-pflegen-title" tabindex="-1" hidden="">
+  <h3 id="bp-dockerignore-pflegen-title">.dockerignore pflegen</h3>
+  <p>Der Punkt am Ende von <code>docker build .</code> schickt das ganze Verzeichnis an den Dienst – samt <code>.git</code> und <code>node_modules</code>.</p>
+  <pre class="bp__code">.git
+node_modules
+tests
+*.log</pre>
+</section>
+
+<section class="bp__detail" id="bp-sicherheit" role="dialog" aria-modal="true" aria-labelledby="bp-sicherheit-title" tabindex="-1" hidden="">
+  <h2 id="bp-sicherheit-title">Sicherheit</h2>
+  <p class="bp__question">Was kann jemand anfangen, der hineinkommt?</p>
+  <p>Ein Container ist kein Schutzwall. Diese vier Punkte begrenzen, was jemand anfangen kann, der hineinkommt – und halten das heraus, was dort nie stehen sollte.</p>
+</section>
+
+<section class="bp__detail" id="bp-nicht-als-root-laufen" role="dialog" aria-modal="true" aria-labelledby="bp-nicht-als-root-laufen-title" tabindex="-1" hidden="">
+  <h3 id="bp-nicht-als-root-laufen-title">Nicht als root laufen</h3>
+  <p class="bp__badge">oft Startvoraussetzung</p>
+  <p>Standard ist root – ohne Not. Manche Plattformen starten ein Image gar nicht erst, das nur als root läuft.</p>
+  <pre class="bp__code">RUN useradd -m anwendung
+USER anwendung</pre>
+</section>
+
+<section class="bp__detail" id="bp-nur-noetige-ports-nennen" role="dialog" aria-modal="true" aria-labelledby="bp-nur-noetige-ports-nennen-title" tabindex="-1" hidden="">
+  <h3 id="bp-nur-noetige-ports-nennen-title">Nur nötige Ports nennen</h3>
+  <p><code>EXPOSE</code> öffnet nichts, aber es dokumentiert. Eine Liste, die nicht stimmt, ist schlechter als keine.</p>
+  <pre class="bp__code">EXPOSE 8080</pre>
+</section>
+
+<section class="bp__detail" id="bp-regelmaessig-scannen" role="dialog" aria-modal="true" aria-labelledby="bp-regelmaessig-scannen-title" tabindex="-1" hidden="">
+  <h3 id="bp-regelmaessig-scannen-title">Regelmäßig scannen</h3>
+  <p>Ein Scan findet bekannte Schwachstellen in bekannten Paketen – nicht Fehler im eigenen Code und nicht, ob eine Lücke erreichbar ist.</p>
+  <pre class="bp__code">docker scout cves meinimage:1.0.0
+trivy image meinimage:1.0.0</pre>
+</section>
+
+<section class="bp__detail" id="bp-keine-geheimnisse-ins-image" role="dialog" aria-modal="true" aria-labelledby="bp-keine-geheimnisse-ins-image-title" tabindex="-1" hidden="">
+  <h3 id="bp-keine-geheimnisse-ins-image-title">Keine Geheimnisse ins Image</h3>
+  <p>Was einmal in einem Layer steckt, bleibt dort – auch wenn eine spätere Zeile es löscht. Zugangsdaten kommen beim Start dazu.</p>
+  <pre class="bp__code">docker run -e DB_PASSWORT=... meinimage</pre>
+</section>
+
+<section class="bp__detail" id="bp-reproduzierbarkeit" role="dialog" aria-modal="true" aria-labelledby="bp-reproduzierbarkeit-title" tabindex="-1" hidden="">
+  <h2 id="bp-reproduzierbarkeit-title">Reproduzierbarkeit</h2>
+  <p class="bp__question">Kommt morgen dasselbe heraus?</p>
+  <p>Derselbe Bauplan soll morgen dasselbe Ergebnis liefern – und trotzdem altert ein Image, das niemand neu baut. Diese vier Punkte halten beides zusammen.</p>
+</section>
+
+<section class="bp__detail" id="bp-versionen-pinnen" role="dialog" aria-modal="true" aria-labelledby="bp-versionen-pinnen-title" tabindex="-1" hidden="">
+  <h3 id="bp-versionen-pinnen-title">Versionen pinnen</h3>
+  <p class="bp__badge">Grundlage für alles Weitere</p>
+  <p>Ohne Tag zieht der Build, was gerade aktuell ist. Derselbe Bauplan ergibt an zwei Tagen zwei Images – und der Unterschied fällt im Betrieb auf.</p>
+  <pre class="bp__code">FROM node:latest          # nicht so
+FROM node:20.11-alpine    # besser</pre>
+</section>
+
+<section class="bp__detail" id="bp-auch-ohne-aenderung-neu-bauen" role="dialog" aria-modal="true" aria-labelledby="bp-auch-ohne-aenderung-neu-bauen-title" tabindex="-1" hidden="">
+  <h3 id="bp-auch-ohne-aenderung-neu-bauen-title">Auch ohne Änderung neu bauen</h3>
+  <p class="bp__badge">wird am häufigsten vergessen</p>
+  <p>Der Gegenpol zum Pinnen: Ein Image wird schlechter, ohne dass sich etwas ändert, weil seine Bestandteile altern. Ein turnusmäßiger Neubau zieht die Korrekturen mit.</p>
+  <p>Pinnen <strong>und</strong> neu bauen – nicht das eine statt des anderen.</p>
+</section>
+
+<section class="bp__detail" id="bp-layer-reihenfolge-nach-aenderungshaeufigkeit" role="dialog" aria-modal="true" aria-labelledby="bp-layer-reihenfolge-nach-aenderungshaeufigkeit-title" tabindex="-1" hidden="">
+  <h3 id="bp-layer-reihenfolge-nach-aenderungshaeufigkeit-title">Layer-Reihenfolge nach Änderungshäufigkeit</h3>
+  <p>Stabiles zuerst, Wechselndes zuletzt. Sonst wird bei jeder Codeänderung alles neu installiert.</p>
+  <pre class="bp__code">COPY package*.json ./
+RUN npm install
+COPY . .</pre>
+</section>
+
+<section class="bp__detail" id="bp-ein-bauplan-viele-umgebungen" role="dialog" aria-modal="true" aria-labelledby="bp-ein-bauplan-viele-umgebungen-title" tabindex="-1" hidden="">
+  <h3 id="bp-ein-bauplan-viele-umgebungen-title">Ein Bauplan, viele Umgebungen</h3>
+  <p>Dasselbe Image läuft in Entwicklung, Test und Produktion. Was sich unterscheidet, kommt beim Start dazu – sonst ist das Artefakt in Produktion nicht das getestete.</p>
+  <pre class="bp__code">ENV APP_PORT=8080</pre>
+</section>
+
+<section class="bp__detail" id="bp-betrieb" role="dialog" aria-modal="true" aria-labelledby="bp-betrieb-title" tabindex="-1" hidden="">
+  <h2 id="bp-betrieb-title">Betrieb</h2>
+  <p class="bp__question">Kann die Plattform damit arbeiten?</p>
+  <p>Die Plattform startet, stoppt, sammelt Logs und prüft, ob es läuft. Diese vier Punkte sorgen dafür, dass sie das kann, ohne den Container zu kennen.</p>
+</section>
+
+<section class="bp__detail" id="bp-exec-form-fuer-cmd-und-entrypoint" role="dialog" aria-modal="true" aria-labelledby="bp-exec-form-fuer-cmd-und-entrypoint-title" tabindex="-1" hidden="">
+  <h3 id="bp-exec-form-fuer-cmd-und-entrypoint-title">Exec-Form für CMD und ENTRYPOINT</h3>
+  <p>In der Zeichenketten-Form schiebt sich eine Shell davor. Sie schluckt das Stopp-Signal – der Container wird dann nicht beendet, sondern abgeschossen.</p>
+  <pre class="bp__code">CMD node server.js          # nicht so
+CMD ["node", "server.js"]   # besser</pre>
+</section>
+
+<section class="bp__detail" id="bp-ein-zweck-je-container" role="dialog" aria-modal="true" aria-labelledby="bp-ein-zweck-je-container-title" tabindex="-1" hidden="">
+  <h3 id="bp-ein-zweck-je-container-title">Ein Zweck je Container</h3>
+  <p>Webserver, Worker, Datenbank – getrennt. Zusammen lassen sie sich nicht getrennt aktualisieren, skalieren oder neu starten.</p>
+</section>
+
+<section class="bp__detail" id="bp-logs-nach-stdout-und-stderr" role="dialog" aria-modal="true" aria-labelledby="bp-logs-nach-stdout-und-stderr-title" tabindex="-1" hidden="">
+  <h3 id="bp-logs-nach-stdout-und-stderr-title">Logs nach stdout und stderr</h3>
+  <p>Wer in eine Datei schreibt, schreibt in einen Container, den es morgen nicht mehr gibt. Über den Ausgabestrom sammelt die Plattform mit.</p>
+  <pre class="bp__code">/var/log/app.log    # nicht so
+stdout, stderr      # besser</pre>
+</section>
+
+<section class="bp__detail" id="bp-zustand-nach-draussen" role="dialog" aria-modal="true" aria-labelledby="bp-zustand-nach-draussen-title" tabindex="-1" hidden="">
+  <h3 id="bp-zustand-nach-draussen-title">Zustand nach draußen</h3>
+  <p>„Läuft“ heißt nicht „funktioniert“. Ein <code>HEALTHCHECK</code> sagt es selbst; persistente Daten gehören in ein Volume, nicht in den Container.</p>
+  <pre class="bp__code">HEALTHCHECK CMD curl -f \
+  http://localhost:8080/health || exit 1</pre>
+</section>
+</div>
+
+<script>
+  /* Öffnen und Schließen der Erläuterungen. Die Texte stehen im Dokument und
+     werden NICHT erzeugt – sonst fehlten sie im Druck. */
+  (function () {
+    var panels = document.querySelectorAll(".bp__detail");
+    if (!panels.length) return;
+
+    var backdrop = null;
+    var openEl = null;
+    var trigger = null;
+
+    /* Die Adresse trägt den Zustand: `…/uebersicht.html#bp-versionen-pinnen`
+       lässt sich verschicken und als Lesezeichen ablegen. */
+    function setHash(id) {
+      var target = id ? "#" + id : location.pathname + location.search;
+      if (id && location.hash === "#" + id) return;
+      if (!id && !location.hash) return;
+      history.replaceState(null, "", target);
+    }
+
+    function closePanel() {
+      if (!openEl) return;
+      openEl.hidden = true;
+      setHash(null);
+      if (backdrop) { backdrop.remove(); backdrop = null; }
+      if (trigger) { trigger.setAttribute("aria-expanded", "false"); trigger.focus(); }
+      openEl = null;
+      trigger = null;
+    }
+
+    function openPanel(id, button) {
+      var target = document.getElementById(id);
+      if (!target) return;
+      closePanel();
+      backdrop = document.createElement("div");
+      backdrop.className = "bp__backdrop";
+      backdrop.addEventListener("click", closePanel);
+      target.parentNode.insertBefore(backdrop, target);
+      target.hidden = false;
+      openEl = target;
+      trigger = button || null;
+      if (trigger) trigger.setAttribute("aria-expanded", "true");
+      target.scrollTop = 0;
+      target.focus();
+      setHash(id);
+    }
+
+    function applyHash() {
+      var id = (location.hash || "").replace(/^#/, "");
+      var target = id ? document.getElementById(id) : null;
+      if (target && target.classList.contains("bp__detail")) {
+        if (openEl !== target) openPanel(id, document.querySelector("[data-bp-target='" + id + "']"));
+      } else if (openEl) {
+        closePanel();
+      }
+    }
+
+    document.querySelectorAll("[data-bp-target]").forEach(function (button) {
+      button.setAttribute("aria-expanded", "false");
+      button.setAttribute("aria-controls", button.getAttribute("data-bp-target"));
+      button.addEventListener("click", function () {
+        openPanel(button.getAttribute("data-bp-target"), button);
+      });
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closePanel();
+    });
+
+    /* Der Fokus bleibt im geöffneten Kasten. */
+    document.addEventListener("focusin", function (e) {
+      if (openEl && !openEl.contains(e.target)) openEl.focus();
+    });
+
+    window.addEventListener("hashchange", applyHash);
+    applyHash();
+
+    window.addEventListener("beforeprint", closePanel);
+  })();
+</script>
+
 
 
     </main>

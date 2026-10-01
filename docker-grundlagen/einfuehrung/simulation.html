@@ -1,62 +1,4 @@
-<!DOCTYPE html>
-<!--
-  ATVANTAGE-Academy – Layout „simulation“ (Jekyll)
-  ------------------------------------------------
-  Bühne für BEWEGTE Abläufe. Anders als eine Präsentation, die Folien wechselt,
-  zeigt eine Simulation EINEN Schauplatz, der sich Schritt für Schritt verändert:
-  Kästen entstehen, Werte wandern, Pfeile werden gezogen. Der Ablauf lässt sich
-  vorwärts und rückwärts durchgehen, zurücksetzen und automatisch abspielen.
-
-  Optisch ist die Seite an das Layout „presentation“ angelehnt – dieselbe schmale
-  Kopfleiste mit Logo, Titel, QR-Code und Farbschema-Umschalter. Drei Zonen:
-
-    ┌──────────────────────────────────────────────┐
-    │ Kopfleiste  Logo · Titel · Schritt · Werkzeug│
-    ├───────────────────────────────┬──────────────┤
-    │ Bühne (der Inhalt dieser Datei)│ Erklärtext   │
-    │                               │ (je Schritt) │
-    ├───────────────────────────────┴──────────────┤
-    │ Fortschritt + Steuerleiste (⟲ ‹ ▶ Abspielen 1×▴ ›)│
-    └──────────────────────────────────────────────┘
-
-  AUFZEICHNEN: Der Capture-Modus (Taste C oder ?capture in der Adresse) räumt alles
-  weg, was nicht zur Sache gehört – Kopfleiste, Erklärspalte, Fortschritt,
-  Steuerleiste – und blendet den Mauszeiger aus. Die Bühne füllt das Fenster. Der
-  Erklärtext ist dann nicht verloren: Taste T holt ihn als Einblendung (OST) an den
-  unteren Rand zurück, für den Fall, dass beim Aufzeichnen niemand spricht.
-
-  NICHT DRUCKBAR – bewusst. Eine Simulation lebt von der Bewegung; ein Ausdruck
-  wäre ein willkürliches Standbild. Es gibt daher weder Druck-Knopf noch
-  Drucklayout; wer die Seite trotzdem druckt, bekommt den gerade sichtbaren
-  Schritt und den QR-Code als Rückweg zur Online-Fassung.
-
-  Front Matter (alles optional außer `layout`):
-    layout: simulation
-    title:        "…"            → Titel in der Kopfleiste; sonst die erste #-Überschrift
-    description:  "…"            → Meta-Description
-    simulation:
-      aside: false               → rechte Spalte weglassen (Bühne über volle Breite)
-      intro: "…"                 → ein Satz auf der Szenario-Übersicht (nur bei mehreren)
-      speed: 0.5 | 1 | 2 | 5     → Start-Tempo des automatischen Abspielens
-      step:
-        interval: 2500           → Grunddauer je Schritt beim Abspielen (ms)
-
-  MEHRERE SZENARIEN: Meldet die Seite über `registerScenario` mehr als einen
-  Ablauf an, bekommt sie eine Reiterleiste und eine Übersicht als Startbild. Je
-  Szenario liefert die Seite ein eigenes Bühnenbild in einem Container mit
-  `data-avd-academy-sim-scene="«id»"`; sichtbar ist immer genau eines. Mit nur
-  einem Szenario (oder bloßem `registerStep`) ändert sich nichts.
-
-  Der INHALT dieser Seite ist das BÜHNENBILD: die Kulisse (Kästen, Beschriftungen,
-  Container) plus ein <script>, das die Schritte anmeldet. Das Miniframework dazu
-  liefert theme/jekyll/simulation.js als `AvdSimulation` – es wird ABSICHTLICH
-  ohne `defer` geladen, damit ein Inline-<script> im Body es bereits vorfindet.
-
-  Ohne JavaScript bleibt die Seite lesbar: Die Kulisse steht da, Steuerleiste und
-  Erklärspalte bleiben leer – der Ablauf ist eine Zutat, keine Voraussetzung.
-
-  Anleitung und Beispiel: /templates/simulations/.
---><html lang="de">
+<!DOCTYPE html><html lang="de">
 <head>
   <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1"><title>Der Lebenszyklus eines Containers · Containertechnologien (Academy)</title><meta name="description" content="Vom Image in der Registry bis zum gelöschten Container – und was passiert, wenn in der Registry ein neuer Stand liegt."><meta property="og:site_name" content="Containertechnologien (Academy)">
@@ -64,13 +6,35 @@
 <meta property="og:description" content="Vom Image in der Registry bis zum gelöschten Container – und was passiert, wenn in der Registry ein neuer Stand liegt.">
 <meta property="og:type" content="website"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=1790741874">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=1790741874"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/print.css?v=1790741874">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=1790741874" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=1790741874" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=1790741874">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=118a443d"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=2dd7a61e">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=91dc645c">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=4b561b0b">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=da9fc064"><style>
+:where(.avd-academy-guide-main a[href*="docker.com"]) {
+  position: relative;
+  padding-left: 1.35em;
+}
+:where(.avd-academy-guide-main a[href*="docker.com"])::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .18em;
+  width: 1em;
+  height: 1em;
+  background: center / contain no-repeat;
+  background-image: none;
+  background-color: currentColor;
+  mask-image: url("/training-material-container-technologies/assets/icons/docker.svg");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+}
+.avd-academy-linkmark--none :where(.avd-academy-guide-main a[href*="docker.com"]),
+:where(.avd-academy-guide-main a[href*="docker.com"]).avd-academy-linkmark--none { padding-left: 0; }
+</style><link rel="stylesheet" media="print" href="/training-material-container-technologies/theme/academy/print.css?v=aedd1b20">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=c7831634" defer></script>
+<script src="/training-material-container-technologies/theme/jekyll/site.js?v=a9cecc4f" defer></script>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=2b412283">
 <script type="module">
   const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
   const _hlsprachen = ["java", "http", "json", "xml"];
@@ -83,24 +47,8 @@
         .querySelectorAll(_auswahl)
         .forEach((el) => { if (!el.dataset.highlighted) { hljs.highlightElement(el); } });
       _faerben(document);
-
-      /* NACHTRAEGLICH EINGEFUEGTER CODE. Die Hervorhebung laeuft einmal beim Laden.
-         Eine Seite, die ihre Codebloecke per Skript einsetzt - eine Visualisierung,
-         die rohe Nachrichten durchschaltet -, bekam deshalb gar keine Farben und
-         baute sich einen eigenen Hervorheber. Genau die Kopie, die das Theme
-         verhindern soll.
-
-         `AvdHighlight.apply(knoten)` faerbt, was seither dazugekommen ist; `hljs`
-         liegt daneben fuer Faelle, die mehr brauchen. Das Ereignis sagt Seiten, die
-         frueh zeichnen, wann der Haken da ist - die Module laden asynchron. */
       window.AvdHighlight = { hljs, apply: _faerben, languages: _hlsprachen.slice() };
       document.dispatchEvent(new CustomEvent("avd-academy-highlight-ready"));
-
-      /* Statuszeile nach Klasse einfaerben. highlight.js gibt jedem dreistelligen
-         Code dieselbe Klasse `hljs-number` - in einem Mitschnitt ist aber genau das
-         die Stelle, auf die man zuerst sieht: 2xx ist etwas anderes als 4xx.
-         Deshalb hier die einzige eigene Zutat, und bewusst nur diese: Die
-         Statusklassen von HTTP aendern sich nicht, das bleibt stabil. */
       document.querySelectorAll("pre code.language-http .hljs-number").forEach((el) => {
         const code = parseInt(el.textContent, 10);
         if (code >= 100 && code <= 599) {
@@ -112,8 +60,8 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/training-material-container-technologies/theme/atvantage/assets/icon-180.png">
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/simulation.css?v=1790741874"><script src="/training-material-container-technologies/theme/jekyll/simulation.js?v=1790741874"></script>
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=1790741874"></head>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/simulation.css?v=2a72bfdf"><script src="/training-material-container-technologies/theme/jekyll/simulation.js?v=53ebdb2b"></script>
+  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=4a155a65"></head>
 <body class="avd-academy-sim" data-avd-academy-sim data-avd-academy-sim-title="Der Lebenszyklus eines Containers"
       data-avd-academy-sim-speed="1"
       data-avd-academy-sim-step-interval="4000">
