@@ -599,7 +599,14 @@ starten, verschieben oder vervielfältigen. Sie sind hervorgehoben.</p>
   .sw__quer h3 { margin: 0 0 var(--avd-academy-space-2); color: var(--avd-academy-color-headline); }
 
 
-  .sw__bild { margin: var(--avd-academy-space-6) 0 0; overflow-x: auto; }
+  /* DAS SCROLLEN ÜBERNIMMT DER BAUSTEIN DES THEMES (`avd-academy-tablescroll`),
+     hier steht nur noch der Abstand. Begründung: Die Skizze hat eine
+     Mindestbreite, auf einem schmalen Schirm scrollt ihr Rahmen also waagerecht –
+     und ein Scrollbereich braucht einen Tastatur-Haltepunkt, sonst kommt dorthin
+     nur, wer eine Maus hat (axe-Regel `scrollable-region-focusable`). Das Theme
+     setzt ihn selbst, und zwar nur dann, wenn wirklich gescrollt werden muss;
+     im Druck macht es den Rahmen auf, damit nichts abgeschnitten wird. */
+  .sw__bild { margin: var(--avd-academy-space-6) 0 0; }
   .sw__bild svg { display: block; width: 100%; min-width: 34rem; height: auto; }
   .sw__kasten {
     fill: var(--avd-academy-color-bg);
@@ -1354,7 +1361,7 @@ starten, verschieben oder vervielfältigen. Sie sind hervorgehoben.</p>
     und am anderen Ende sitzt meist ein anderes Team.
   </p>
 
-  <div class="sw__bild">
+  <div class="sw__bild avd-academy-tablescroll">
     <svg viewBox="0 0 820 370" role="img" aria-labelledby="sw-bild-titel sw-bild-text">
       <title id="sw-bild-titel">Ein Dienst und seine Schnittstellen</title>
       <desc id="sw-bild-text">Der Bestell-Dienst in der Mitte ist über fünf
