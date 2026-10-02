@@ -1,0 +1,229 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Academy-Theme – Front Matter eines Layouts",
+  "description": "Das Front Matter einer Layout-Datei unter `_layouts/`. Gilt für die mitgelieferten Layouts des Themes UND für ein eigenes Layout eines Repos. Schema-Version 1. Draft-07, weil die IDE-Auflöser diesen Entwurf am verlässlichsten unterstützen. OBEN OFFEN, INNEN GESCHLOSSEN: Ein eigenes Layout darf eigene Schlüssel tragen – wären sie ein Fehler, ginge ein bestehender, grüner Lauf rot. Innerhalb von `switches` ist geschlossen richtig: Welche Schalter es gibt, entscheidet das Theme, und ein Tippfehler dort bliebe sonst stumm.",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "layout": {
+      "type": "string",
+      "description": "Das Layout, auf dem dieses aufbaut – `page` erbt Kopfzeile, Brotkrumen und Hero, `default` gibt den reinen Rahmen. OHNE ANGABE ist es ein EIGENSTÄNDIGES Dokument mit eigenem `<!DOCTYPE html>`, so wie `presentation` und `simulation`.",
+      "examples": [
+        "page",
+        "default"
+      ]
+    },
+    "body_class": {
+      "type": "string",
+      "description": "Zusätzliche Klasse am `<body>` – der CSS-Haken dieses Layouts."
+    },
+    "chrome": {
+      "type": "boolean",
+      "description": "Meta-Leiste und Kopfzeile/TopNav zeigen. NEUTRAL (ohne Angabe): aus."
+    },
+    "breadcrumbs": {
+      "type": "boolean",
+      "description": "Brotkrumen im Hero zeigen. NEUTRAL: aus."
+    },
+    "hero": {
+      "description": "Den Hero zeigen. `slim` ist der schmale Balken. NEUTRAL: aus. WER EINEN HERO HAT, bekommt die H1 aus dem Front-Matter-Feld `title` – auch mit `slim`.",
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "const": "slim",
+          "description": "schmaler Hero-Balken"
+        }
+      ]
+    },
+    "hero_tools": {
+      "type": "boolean",
+      "description": "QR-Code und Drucken-Knopf IM Hero zeigen statt in der Kopfzeile. NEUTRAL: aus."
+    },
+    "sidebar": {
+      "type": "boolean",
+      "description": "Den rechten Bereich zeigen (Inhaltsverzeichnis, Fortschritt, Ressourcen). NEUTRAL: aus."
+    },
+    "duration_tag": {
+      "type": "boolean",
+      "description": "Das Zeit-Tag im Hero zeigen, wenn die Seite `duration` trägt. NEUTRAL: aus."
+    },
+    "numbered_steps": {
+      "type": "boolean",
+      "description": "Arbeitsschritte automatisch nummerieren. NEUTRAL: aus."
+    },
+    "search_index": {
+      "type": "string",
+      "enum": [
+        "full",
+        "meta"
+      ],
+      "default": "full",
+      "description": "Was die Suche von einer Seite dieses Layouts in den Index nimmt. `full`: Titel, Beschreibung, Überschriften und den Text in `<main>`. `meta`: nur Titel und Beschreibung – für Layouts, deren Inhalt ohne seinen Ablauf keine Fundstelle ist oder Lösungen preisgäbe (Präsentation, Simulation, Visualisierung, Wissens-Check). Erbt über die Layout-Kette; NEUTRAL (ohne Angabe in der ganzen Kette): `full`."
+    },
+    "styles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Stylesheets, die NUR für dieses Layout geladen werden – site-relative Pfade. Ein Quiz-Stylesheet auf jeder Seite wäre Ballast für alle anderen."
+    },
+    "scripts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Skripte, die NUR für dieses Layout geladen werden – site-relative Pfade."
+    },
+    "switches": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "WELCHE SCHALTER DIESES LAYOUT AUSLIEST – und mit welcher harten Vorgabe. Was hier fehlt, gibt es in diesem Layout nicht: Der Baustein erscheint nicht, und Konfiguration dazu bleibt wirkungslos. GEERBT WIRD MIT: Jekyll führt das Front Matter der Layout-Kette zusammen, das speziellere Layout gewinnt – ein Layout nennt deshalb nur, was bei ihm ANDERS ist. DIE AUSWAHL IST GESCHLOSSEN: Welche Schalter es gibt, entscheidet das Theme, denn es rendert die Bausteine. Ein eigenes Layout kann keinen erfinden.",
+      "properties": {
+        "sidebar": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Karten der rechten Sidebar. Nur sinnvoll, wenn das Layout `sidebar: true` setzt.",
+          "properties": {
+            "toc": {
+              "type": "object",
+              "additionalProperties": false,
+              "description": "Karte „Auf dieser Seite“ – das Inhaltsverzeichnis.",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "description": "Die harte Vorgabe dieses Layouts – sie gilt, solange weder Site noch Seite etwas sagt. DASS DER SCHLÜSSEL DASTEHT, heißt zugleich: Dieses Layout liest den Schalter aus."
+                }
+              }
+            },
+            "progress": {
+              "type": "object",
+              "additionalProperties": false,
+              "description": "Karte „Fortschritt“ – zählt die Definition-of-Done-Haken einer Übung.",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "description": "Die harte Vorgabe dieses Layouts – sie gilt, solange weder Site noch Seite etwas sagt. DASS DER SCHLÜSSEL DASTEHT, heißt zugleich: Dieses Layout liest den Schalter aus."
+                }
+              }
+            },
+            "resources": {
+              "type": "object",
+              "additionalProperties": false,
+              "description": "Karte „Weiterführende Informationen“ – erscheint ohnehin nur, wenn die Seite `resources` trägt.",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "description": "Die harte Vorgabe dieses Layouts – sie gilt, solange weder Site noch Seite etwas sagt. DASS DER SCHLÜSSEL DASTEHT, heißt zugleich: Dieses Layout liest den Schalter aus."
+                }
+              }
+            }
+          }
+        },
+        "toolbar": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Werkzeuge in Kopfzeile bzw. Hero. Ein Layout ohne Hero und ohne Kopfzeile zeigt keine.",
+          "properties": {
+            "copy": {
+              "type": "object",
+              "additionalProperties": false,
+              "description": "Knopf „Markdown kopieren“ samt verstecktem `<textarea>`.",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "description": "Die harte Vorgabe dieses Layouts – sie gilt, solange weder Site noch Seite etwas sagt. DASS DER SCHLÜSSEL DASTEHT, heißt zugleich: Dieses Layout liest den Schalter aus."
+                }
+              }
+            },
+            "print": {
+              "type": "object",
+              "additionalProperties": false,
+              "description": "Drucken-Knopf DIESER Ansicht.",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "description": "Die harte Vorgabe dieses Layouts – sie gilt, solange weder Site noch Seite etwas sagt. DASS DER SCHLÜSSEL DASTEHT, heißt zugleich: Dieses Layout liest den Schalter aus."
+                }
+              }
+            },
+            "qr": {
+              "type": "object",
+              "additionalProperties": false,
+              "description": "QR-Code auf die Seitenadresse – der Rückweg vom Papier oder vom Beamer aufs eigene Gerät.",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "description": "Die harte Vorgabe dieses Layouts – sie gilt, solange weder Site noch Seite etwas sagt. DASS DER SCHLÜSSEL DASTEHT, heißt zugleich: Dieses Layout liest den Schalter aus."
+                }
+              }
+            },
+            "lang": {
+              "type": "object",
+              "additionalProperties": false,
+              "description": "Sprachumschalter. Er erscheint nur, wo es die Seite in einer anderen Sprache gibt.",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "description": "Die harte Vorgabe dieses Layouts – sie gilt, solange weder Site noch Seite etwas sagt. DASS DER SCHLÜSSEL DASTEHT, heißt zugleich: Dieses Layout liest den Schalter aus."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "VERTRAGSANGABEN – nur für die Layouts DIESES Themes. `bin/theme-contract.rb` erzeugt daraus `contract/theme.json`, die Selbstauskunft im Paket. Ein EIGENES Layout eines Repos braucht den Block nicht: Die Selbstauskunft beschreibt das Theme, nicht die Site.",
+      "required": [
+        "label",
+        "abstract",
+        "heading",
+        "source_assets",
+        "note"
+      ],
+      "properties": {
+        "label": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "de",
+            "en"
+          ],
+          "description": "Beschriftung zum Anzeigen, in beiden Sprachen, die das Theme selbst beschriftet.",
+          "properties": {
+            "de": {
+              "type": "string"
+            },
+            "en": {
+              "type": "string"
+            }
+          }
+        },
+        "abstract": {
+          "type": "boolean",
+          "description": "Oberklasse, von der eigene Layouts erben – eine Seite soll sie nicht tragen."
+        },
+        "heading": {
+          "type": "string",
+          "enum": [
+            "frame",
+            "source"
+          ],
+          "description": "Wer die H1 rendert: `frame` (der Rahmen aus `title`) oder `source` (die Quelle bringt sie mit)."
+        },
+        "source_assets": {
+          "type": "boolean",
+          "description": "Ob dieses Layout ERLAUBT, dass die Quelldatei der Seite eigene `<style>`-, `<script>`- oder `<link>`-Elemente mitbringt – nicht, ob dieses Layout welche mitliefert; dafür gibt es `styles` und `scripts`."
+        },
+        "note": {
+          "type": "string",
+          "description": "Ein Satz, was dieses Layout ist – für Menschen, die die Selbstauskunft lesen."
+        }
+      }
+    }
+  }
+}

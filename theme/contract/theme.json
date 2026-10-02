@@ -1,0 +1,131 @@
+{
+  "$schema": "theme.schema.json",
+  "contract_version": 2,
+  "theme": "@avd-academy-tools/academy-theme",
+  "layouts": [
+    {
+      "name": "default",
+      "label": {
+        "de": "Rahmen",
+        "en": "Frame"
+      },
+      "inherits": null,
+      "abstract": true,
+      "heading": "source",
+      "source_assets": true,
+      "note": "Der reine Rahmen – ohne Kopfzeile, Hero und Sidebar. Eigene Layouts erben von hier."
+    },
+    {
+      "name": "guide",
+      "label": {
+        "de": "Übung oder Anleitung",
+        "en": "Guide"
+      },
+      "inherits": "page",
+      "abstract": false,
+      "heading": "frame",
+      "source_assets": false,
+      "note": "Die Übung – wie `page`, zusätzlich nummerierte Arbeitsschritte."
+    },
+    {
+      "name": "page",
+      "label": {
+        "de": "Seite",
+        "en": "Page"
+      },
+      "inherits": "default",
+      "abstract": false,
+      "heading": "frame",
+      "source_assets": false,
+      "note": "Die gewöhnliche Seite – Kopfzeile, Brotkrumen, Hero, Sidebar."
+    },
+    {
+      "name": "presentation",
+      "label": {
+        "de": "Präsentation",
+        "en": "Presentation"
+      },
+      "inherits": null,
+      "abstract": false,
+      "heading": "source",
+      "source_assets": true,
+      "note": "Der Foliensatz – ein eigenständiges Dokument."
+    },
+    {
+      "name": "quiz",
+      "label": {
+        "de": "Wissens-Check",
+        "en": "Knowledge check"
+      },
+      "inherits": "default",
+      "abstract": false,
+      "heading": "frame",
+      "source_assets": false,
+      "note": "Der Wissens-Check – die Seite trägt nur die Fragen."
+    },
+    {
+      "name": "simulation",
+      "label": {
+        "de": "Simulation",
+        "en": "Simulation"
+      },
+      "inherits": null,
+      "abstract": false,
+      "heading": "source",
+      "source_assets": true,
+      "note": "Der Ablauf zum Durchklicken – ein eigenständiges Dokument."
+    },
+    {
+      "name": "visualization",
+      "label": {
+        "de": "Visualisierung",
+        "en": "Visualization"
+      },
+      "inherits": "default",
+      "abstract": false,
+      "heading": "frame",
+      "source_assets": true,
+      "note": "Die eigenständige Visualisierung – fokussierte, breite Ansicht."
+    }
+  ],
+  "schemas": [
+    {
+      "name": "config",
+      "version": 10,
+      "package_path": "jekyll/schema/config.schema.json",
+      "purpose": "Die `_config.yml` der Site und ihre Overlays."
+    },
+    {
+      "name": "frontmatter",
+      "version": 4,
+      "package_path": "jekyll/schema/frontmatter.schema.json",
+      "purpose": "Die Front-Matter-Felder, die das Theme einer Seite ausliest."
+    },
+    {
+      "name": "layout",
+      "version": 1,
+      "package_path": "jekyll/schema/layout.schema.json",
+      "purpose": "Das Front Matter einer Layout-Datei – die Eigenschaften des Rahmens und die Schalter, die ein Layout ausliest."
+    }
+  ],
+  "contract_files": [
+    {
+      "name": "color-tokens",
+      "version": 1,
+      "package_path": "contract/color-tokens.txt",
+      "purpose": "Welche Variablen des Themes eine Farbe tragen – eine Quelle nimmt ihre Farben daraus, statt sie festzuschreiben."
+    },
+    {
+      "name": "contrast-pairs",
+      "version": 2,
+      "package_path": "contract/contrast-pairs.txt",
+      "purpose": "Die zugesagten Kontrast-Paare nach WCAG 2.2, gültig in hell, dunkel und Druck."
+    },
+    {
+      "name": "markup-contract",
+      "version": 9,
+      "package_path": "contract/markup-contract.txt",
+      "purpose": "Öffentliche Klassen, Variablen und data-Attribute, auf die eigenes Markup und CSS sich verlassen dürfen."
+    }
+  ]
+}

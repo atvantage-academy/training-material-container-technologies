@@ -11,7 +11,7 @@
   },
   "properties": {
     "audiences": {
-      "$ref": "#/definitions/zielgruppen",
+      "$ref": "#/definitions/audience_list",
       "description": "Die Zielgruppen, für die diese Seite gedacht ist. STANDARD: keine Angabe = die Seite erscheint in JEDEM Build. GILT IN: allen – ausgewertet aber NICHT vom Theme, sondern vom zielgruppengefilterten Build: Seiten fremder Zielgruppe landen nicht in der Ausgabe. Welche Werte es gibt, legt das Theme nicht fest; die Site deklariert sie in `audiences` ihrer `_config.yml`, und jede Angabe wird dagegen geprüft. Wer sie benutzt, ohne zu deklarieren, bekommt einen Fehler – eine Angabe ohne prüfbare Menge ist eine Vermutung."
     },
     "breadcrumb": {
@@ -25,7 +25,7 @@
       "description": "Brotkrumen-Steuerung. GILT IN: `page`, `guide` – die Visualisierung blendet die Brotkrumen aus, `presentation` und `simulation` haben keine. STANDARD: der Pfad wird automatisch aus der Ordnerstruktur gebaut.",
       "properties": {
         "label": {
-          "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+          "$ref": "frontmatter.schema.json#/definitions/language_text",
           "description": "Anzeigename DIESES Ordners in den Brotkrumen. Gehört in die `index`-Seite des Ordners und gilt zentral für alle Seiten darunter. STANDARD: der Ordnername. MEHRSPRACHIG: auch als Sprachkarte – der englische Baum beschriftet seine Ordner selbst."
         },
         "ancestors": {
@@ -53,15 +53,15 @@
             ],
             "properties": {
               "title": {
-                "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+                "$ref": "frontmatter.schema.json#/definitions/language_text",
                 "description": "Anzeigename dieser Station. MEHRSPRACHIG: auch als Sprachkarte."
               },
               "url": {
-                "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+                "$ref": "frontmatter.schema.json#/definitions/language_text",
                 "description": "Ziel dieser Station, site-relativ (führender `/`). MEHRSPRACHIG: auch als Sprachkarte. Für Seiten DIESER Site ist `page` der bessere Weg."
               },
               "page": {
-                "$ref": "frontmatter.schema.json#/definitions/seitenverweis"
+                "$ref": "frontmatter.schema.json#/definitions/page_reference"
               }
             }
           }
@@ -95,7 +95,7 @@
       "description": "Zeit in MINUTEN; erscheint als Zeit-Tag im Hero. GILT IN: `page`, `guide`, `visualization` – die eigenständigen Layouts (`presentation`, `simulation`) haben keinen Hero. STANDARD: keine Angabe = kein Tag. Was gemessen wird, hängt an der Art der Seite: bei einer Übung die Bearbeitungszeit, bei einer gewöhnlichen Seite die Lesedauer. Ein Richtwert, keine Vorgabe. Nicht zu verwechseln mit `simulation.step.interval`, das in Millisekunden zählt."
     },
     "folder_slug": {
-      "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+      "$ref": "frontmatter.schema.json#/definitions/language_text",
       "description": "NAME DES ORDNERS in der Adresse – für jede Seite darin. Gehört AUSSCHLIESSLICH in die `index.md` eines Ordners (bzw. `index_«code».md`); in einer gewöhnlichen Seite ist `slug` gemeint. Damit trägt ein Ordner, was im Editor hilft und in der Adresse nichts verloren hat: eine Nummerierung (`03-http/` → `/http-grundlagen/`) oder ein deutscher Name in einer englischen Fassung. EIN TEXT gilt für jede Sprache; eine SPRACHKARTE gibt je Sprache einen eigenen Ordnernamen. Im Nebeneinander-Layout darf ihn stattdessen jede Index-Datei für IHRE Sprache nennen – zwei Angaben zur selben Sprache mit verschiedenem Wert brechen den Build ab. RANGFOLGE: Sprache der Seite, dann eine Angabe für alle Sprachen, dann die Standardsprache, dann der unveränderte Ordnername. NICHT ERLAUBT auf der Wurzel eines Sprachbaums (`en/index.md`).",
       "examples": [
         "http-grundlagen",
@@ -121,17 +121,25 @@
       ]
     },
     "layout": {
-      "type": "string",
       "default": "page",
-      "description": "Layout der Seite. GILT IN: allen. Mitgeliefert: `page` (gewöhnliche Seite), `guide` (Übung mit Schritten, erbt von `page`), `visualization` (Vollflächen-Ansicht), `presentation` (Folien), `simulation` (Ablauf), `quiz` (Wissens-Check) sowie `default` – der reine Rahmen ohne Kopfzeile, Hero und Sidebar. Eigene Layouts sind erlaubt; sie erben über `layout:` in ihrem eigenen Front Matter.",
-      "examples": [
-        "page",
-        "guide",
-        "visualization",
-        "presentation",
-        "simulation",
-        "quiz",
-        "default"
+      "description": "Layout der Seite. GILT IN: allen. STANDARD: `page` – `_config.defaults.yml` setzt es für die ganze Site, eine Seite braucht das Feld also nicht.\n\nOFFENE AUSWAHL: Die Liste nennt die mitgelieferten Layouts, damit die IDE sie vorschlägt – ein EIGENES Layout des Repos ist trotzdem erlaubt und wird nicht abgewiesen. Ein `enum` allein verböte es, und eigene Layouts sind ein zugesagtes Merkmal (siehe Doku „Ein eigenes Layout anlegen“).\n\n`default` ist die OBERKLASSE, von der eigene Layouts erben; eine Seite soll sie nicht tragen. Die Prüfung meldet das als Hinweis – welche Layouts das Theme als `abstract` führt, steht in `contract/theme.json`.",
+      "anyOf": [
+        {
+          "enum": [
+            "page",
+            "guide",
+            "visualization",
+            "quiz",
+            "presentation",
+            "simulation",
+            "default"
+          ],
+          "description": "ein Layout des Themes"
+        },
+        {
+          "type": "string",
+          "description": "ein eigenes Layout des Repos"
+        }
       ]
     },
     "noindex": {
@@ -273,7 +281,7 @@
       "type": "array",
       "description": "Weiterführende Informationen – dieselbe Form wie die Einträge von `nav.items` und `footer.links.items`. Erscheinen als Sidebar-Karte und im Ausdruck als Abschnitt am Textende. GILT IN: `page`, `guide` – die übrigen Layouts haben keine Sidebar. STANDARD: keine Karte.",
       "items": {
-        "$ref": "#/definitions/verweis"
+        "$ref": "#/definitions/link"
       }
     },
     "sidebar": {
@@ -292,7 +300,7 @@
               "description": "Erscheint die Karte? STANDARD: an."
             },
             "title": {
-              "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+              "$ref": "frontmatter.schema.json#/definitions/language_text",
               "description": "Überschrift der Karte. STANDARD: „Auf dieser Seite“. Site-weit unter `components.sidebar.toc.title`, je Seite hier – ein Repo, das seine Übungen anders nennt, soll das auch hier tun können, ohne das Theme anzufassen. Eine leere Zeichenkette gilt NICHT als Angabe; wer die Beschriftung loswerden will, schaltet den Baustein über `enabled` ab. MEHRSPRACHIG: auch als Sprachkarte."
             },
             "open": {
@@ -311,7 +319,7 @@
               "description": "Erscheint die Karte? STANDARD: an in `guide`, sonst aus."
             },
             "title": {
-              "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+              "$ref": "frontmatter.schema.json#/definitions/language_text",
               "description": "Überschrift der Karte. STANDARD: „Fortschritt“. Site-weit unter `components.sidebar.progress.title`, je Seite hier – ein Repo, das seine Übungen anders nennt, soll das auch hier tun können, ohne das Theme anzufassen. Eine leere Zeichenkette gilt NICHT als Angabe; wer die Beschriftung loswerden will, schaltet den Baustein über `enabled` ab. MEHRSPRACHIG: auch als Sprachkarte."
             }
           }
@@ -327,7 +335,7 @@
               "description": "Erscheint die Karte? STANDARD: an."
             },
             "title": {
-              "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+              "$ref": "frontmatter.schema.json#/definitions/language_text",
               "description": "Überschrift der Karte. STANDARD: „Weiterführende Informationen“. Site-weit unter `components.sidebar.resources.title`, je Seite hier – ein Repo, das seine Übungen anders nennt, soll das auch hier tun können, ohne das Theme anzufassen. Eine leere Zeichenkette gilt NICHT als Angabe; wer die Beschriftung loswerden will, schaltet den Baustein über `enabled` ab. MEHRSPRACHIG: auch als Sprachkarte."
             },
             "open": {
@@ -374,7 +382,7 @@
       }
     },
     "slug": {
-      "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+      "$ref": "frontmatter.schema.json#/definitions/language_text",
       "description": "ADRESSSTÜCK DIESER SEITE – entkoppelt die URL vom DATEINAMEN. Benennt NUR diese eine Seite; den Ordner benennt `folder_slug` in dessen `index.md`. AUF EINER INDEX-SEITE NICHT ERLAUBT: Deren Adresse IST der Ordner, ein `slug` schöbe die Datei aus ihm heraus (`/kapitel/einstieg.html` statt `/kapitel/`) – der Ordner hätte dann keine Index-Datei mehr und `/kapitel/` liefe ins Leere. Damit dürfen Ordner tragen, was im Editor hilft und in der Adresse nichts verloren hat – eine Nummerierung (`03-http/` → `/http-grundlagen/`) oder ein deutscher Name in einer englischen Fassung. EIN TEXT GENÜGT und gilt für JEDE Sprache – in einer einsprachigen Unterlage also schlicht für die Standardsprache aus `lang` der Site; eine `i18n`-Konfiguration ist dafür NICHT nötig. Als SPRACHKARTE gibt es je Sprache eine eigene Adresse; das Theme wählt dann nach der Sprache DER SEITE (siehe `lang`), sonst nach der Standardsprache. GILT IN: allen. STANDARD: keiner – dann ist der Datei- bzw. Ordnername die Adresse. NICHT ERLAUBT auf der Wurzel eines Sprachbaums (`en/index.md`): Aus diesem Pfadstück liest das Theme die Sprache jeder Seite ohne `lang`. Ein ausdrückliches `permalink` gewinnt gegen `slug`. Zwei Seiten auf derselben Adresse brechen den Build ab.",
       "examples": [
         "http-grundlagen",
@@ -383,6 +391,66 @@
           "en": "http-basics"
         }
       ]
+    },
+    "scripts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "description": "Skripte, die NUR diese Seite lädt – site-relative Pfade, eingebunden mit `defer`. GILT IN: allen Layouts, die auf `default` aufbauen. STANDARD: keine. WOFÜR: eine Seite, die wirklich eigenes Verhalten mitbringt. Der Weg über das Front Matter ist der einzige erlaubte – ein `<script>` im Seitenkörper verbietet das Layout über `source_assets` (siehe `contract/theme.json`), weil es seitenweit wirkt. NUR WO DAS LAYOUT ES ERLAUBT: Steht in `contract/theme.json` beim Layout `source_assets: false`, ist auch diese Angabe unzulässig. Die Prüfung macht zwischen dem Element im Text und der Deklaration keinen Unterschied – beides lädt."
+    },
+    "search": {
+      "description": "Die Seite in der Suche. `search: disabled` nimmt sie aus dem Index – in einer Indexseite (`index.md`, `index_en.md`, eine Fassung für eine Zielgruppe wie `index-trainer.md` …) den ganzen Ordner samt Unterordnern, in der Sprache dieser Indexseite; darunter lässt sich nichts zurückholen. In einer INDEXSEITE definiert `search: { scope: … }` einen Bereich der Suche für den Ordner samt Unterordnern. Die ID des Bereichs ist die `page_id` der Indexseite – sie ist dafür Pflicht. Gilt nur bei `search.scope_source: index` (Standard). Grundlage ist immer der Ordner, in dem die Datei liegt, nie die Adresse: `slug`, `folder_slug` und `permalink` ändern daran nichts. GILT IN: allen.",
+      "oneOf": [
+        {
+          "const": "disabled",
+          "description": "nicht in der Suche"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "scope"
+          ],
+          "description": "Bereich definieren (nur Indexseiten)",
+          "properties": {
+            "scope": {
+              "description": "Der Bereich, den diese Indexseite definiert. `true`: mit dem `title` der Seite als Namen. Ein Abschnitt: mit eigenem `title` und optional `default`.",
+              "oneOf": [
+                {
+                  "const": true,
+                  "description": "Bereich mit dem Seitentitel"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "description": "Bereich mit Einstellungen",
+                  "properties": {
+                    "title": {
+                      "type": "string",
+                      "description": "Name des Bereichs in der Auswahl, in der Sprache dieser Seite. STANDARD: der `title` der Seite."
+                    },
+                    "default": {
+                      "type": "boolean",
+                      "default": false,
+                      "description": "Diesen Bereich in der Suche vorauswählen. Höchstens ein Bereich der Site darf das tragen, sonst bricht der Build ab; ohne Marke ist „Alle“ vorausgewählt."
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "styles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "description": "Stylesheets, die NUR diese Seite lädt – site-relative Pfade. GILT IN: allen Layouts, die auf `default` aufbauen. STANDARD: keine. Site-weit gilt `styles` in der `_config.yml`, je Layout `styles` in dessen Front Matter; die Angabe hier kommt zuletzt und gewinnt deshalb. NUR WO DAS LAYOUT ES ERLAUBT: Steht in `contract/theme.json` beim Layout `source_assets: false`, ist auch diese Angabe unzulässig – sie lädt genauso wie ein `<link>` im Text. Die Schemaprüfung meldet beides."
     },
     "tags": {
       "type": [
@@ -421,7 +489,7 @@
               "description": "Erscheint der Knopf? STANDARD: an in `guide`, sonst aus. Enthält die Seite Liquid-Anweisungen, entfällt er automatisch (der Rohtext wäre irreführend) – `force` erzwingt ihn trotzdem."
             },
             "title": {
-              "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+              "$ref": "frontmatter.schema.json#/definitions/language_text",
               "description": "Tooltip und Beschriftung für Screenreader. STANDARD: „Markdown kopieren“. Site-weit unter `components.toolbar.copy.title`, je Seite hier – ein Repo, das seine Übungen anders nennt, soll das auch hier tun können, ohne das Theme anzufassen. Eine leere Zeichenkette gilt NICHT als Angabe; wer die Beschriftung loswerden will, schaltet den Baustein über `enabled` ab. MEHRSPRACHIG: auch als Sprachkarte."
             }
           }
@@ -437,7 +505,7 @@
               "description": "Erscheint der Knopf? STANDARD: an."
             },
             "title": {
-              "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+              "$ref": "frontmatter.schema.json#/definitions/language_text",
               "description": "Tooltip und Beschriftung für Screenreader. In der Präsentation lautet die Vorgabe „Drucken (alle Folien)“ – dort druckt der Knopf alle. STANDARD: „Diese Seite drucken“. Site-weit unter `components.toolbar.print.title`, je Seite hier – ein Repo, das seine Übungen anders nennt, soll das auch hier tun können, ohne das Theme anzufassen. Eine leere Zeichenkette gilt NICHT als Angabe; wer die Beschriftung loswerden will, schaltet den Baustein über `enabled` ab. MEHRSPRACHIG: auch als Sprachkarte."
             }
           }
@@ -453,7 +521,7 @@
               "description": "Erscheint der Knopf? STANDARD: an."
             },
             "title": {
-              "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+              "$ref": "frontmatter.schema.json#/definitions/language_text",
               "description": "Tooltip und Beschriftung für Screenreader. STANDARD: „Diese Seite auf Deinem Smartphone öffnen“. Site-weit unter `components.toolbar.qr.title`, je Seite hier – ein Repo, das seine Übungen anders nennt, soll das auch hier tun können, ohne das Theme anzufassen. Eine leere Zeichenkette gilt NICHT als Angabe; wer die Beschriftung loswerden will, schaltet den Baustein über `enabled` ab. MEHRSPRACHIG: auch als Sprachkarte."
             }
           }
@@ -476,14 +544,29 @@
       "type": "array",
       "uniqueItems": true,
       "items": {
-        "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+        "$ref": "frontmatter.schema.json#/definitions/language_text",
         "description": "Ein Thema – Text oder Sprachkarte `{ de: …, en: … }`."
       },
       "description": "Schlagworte, die im Hero als Tags erscheinen. Kurze Substantive, keine Sätze. GILT IN: `page`, `guide`, `visualization` – die eigenständigen Layouts haben keinen Hero. STANDARD: keine Tags."
+    },
+    "hero_image": {
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "NUR DER PFAD – Form und Rahmen bleiben bei ihren Vorgaben."
+        },
+        {
+          "$ref": "#/definitions/hero_image"
+        }
+      ],
+      "description": "GRAFIK NEBEN DER ÜBERSCHRIFT IM HERO – ein Porträt auf einer Personenseite, ein Symbol auf einer Kategorieseite. EIN PFAD genügt; eine KARTE mit `src`, `alt`, `shape` und `frame` bestimmt zusätzlich die Darstellung. GILT IN: allen Layouts mit Hero (`hero` des Layouts gesetzt) und nur, wenn die Seite einen Titel hat – ohne Überschrift gäbe es nichts, woneben die Grafik stünde. STANDARD: keine. AUSDRÜCKLICH NEBEN DER ÜBERSCHRIFT, nicht als Bannerbild über die volle Breite: Das ist ein anderes Gestaltungskonzept mit eigenen Fragen – Textkontrast auf dem Bild, Zuschnitt bei 320 Pixeln, Druck – und bekäme ein eigenes Feld. NICHT GEDRUCKT: Auf Papier kostet eine vollflächige Grafik Toner und trägt nichts bei. NICHT `image`: Das ist das Vorschaubild für geteilte Links (`og:image`) und sagt nichts über die Darstellung DIESER Seite.",
+      "examples": [
+        "/team/img/anna-berger.png"
+      ]
     }
   },
   "definitions": {
-    "zielgruppen": {
+    "audience_list": {
       "type": "array",
       "minItems": 1,
       "uniqueItems": true,
@@ -492,7 +575,7 @@
       },
       "description": "Liste von Zielgruppen. Erlaubt sind die Werte, die die Site in `audiences` ihrer `_config.yml` deklariert."
     },
-    "verweis": {
+    "link": {
       "type": "object",
       "additionalProperties": false,
       "patternProperties": {
@@ -503,22 +586,22 @@
       "description": "Ein Verweis. Dieselbe Form gilt für `resources`, `nav.items` und `footer.links.items` – wer eine kennt, kennt alle. Das Ziel steht entweder als Adresse in `url` oder als `page_id` einer Seite dieser Site in `page`; für interne Ziele ist `page` der bessere Weg.",
       "properties": {
         "title": {
-          "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+          "$ref": "frontmatter.schema.json#/definitions/language_text",
           "description": "Anzeigetext. Bei einem Eintrag mit `icon` optional (dann dient er als Alternativtext), sonst nötig. MEHRSPRACHIG: auch als Sprachkarte `{ de: …, en: … }`."
         },
         "url": {
-          "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+          "$ref": "frontmatter.schema.json#/definitions/language_text",
           "description": "Ziel, site-relativ (führender `/`). Absolute URLs (`://`) öffnen in einem neuen Tab. MEHRSPRACHIG: auch als Sprachkarte `{ de: …, en: … }`."
         },
         "page": {
-          "$ref": "frontmatter.schema.json#/definitions/seitenverweis"
+          "$ref": "frontmatter.schema.json#/definitions/page_reference"
         },
         "icon": {
-          "$ref": "frontmatter.schema.json#/definitions/sprachtext",
+          "$ref": "frontmatter.schema.json#/definitions/language_text",
           "description": "Icon-Pfad, site-relativ. Mit `title` erscheint es davor, ohne `title` allein. Das Theme liefert u. a. `/theme/academy/icons/icon-guide.svg`. OHNE ANGABE entscheidet das Ziel: Ein Eintrag MIT `title`, der auf github.com, linkedin.com, baeldung.com, ein `mailto:` oder eine `.pdf` zeigt, bekommt das passende Icon von selbst; eine eigene Angabe schlägt das immer. MEHRSPRACHIG: auch als Sprachkarte `{ de: …, en: … }`."
         },
         "audiences": {
-          "$ref": "#/definitions/zielgruppen",
+          "$ref": "#/definitions/audience_list",
           "description": "Beschränkt DIESEN Eintrag auf die genannten Zielgruppen; in den übrigen Builds fehlt er. STANDARD: keine Angabe = immer sichtbar. Bleibt in einer Liste kein Eintrag übrig, entfällt der ganze Bereich."
         }
       },
@@ -537,7 +620,7 @@
         }
       ]
     },
-    "sprachtext": {
+    "language_text": {
       "description": "Text oder Adresse – entweder EINE Zeichenkette (gilt für alle Sprachen) oder eine SPRACHKARTE mit einem Eintrag je Sprachcode.",
       "oneOf": [
         {
@@ -553,13 +636,56 @@
         }
       ]
     },
-    "seitenverweis": {
+    "page_reference": {
       "type": "string",
       "description": "Ziel als SEITE DIESER SITE, statt als Adresse. Angegeben wird die Identität der Zielseite: ihre ausdrückliche `page_id` – oder, wenn sie keine hat, ihr DATEINAME ohne Endung (`schnellstart.md` → `schnellstart`). Die ID wird zuerst gesucht. Vorzuziehen gegenüber `url`, wo das Ziel zur Site gehört: Der Verweis löst sich vom Pfad, ein Umbenennen oder Verschieben bricht ihn nicht, und bei mehreren Sprachen bildet das Theme je Sprachbaum die passende Adresse. Schließt `url` aus – genau eines von beiden. Zeigt die Angabe auf keine oder auf mehrere gleichnamige Seiten, ist das ein Fehler.",
       "examples": [
         "theme-overview",
         "quickstart"
       ]
+    },
+    "hero_image": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "src"
+      ],
+      "description": "Die Grafik in der Langform – mit Alternativtext, Form und Rahmen.",
+      "properties": {
+        "src": {
+          "type": "string",
+          "description": "PFAD DER GRAFIK – site-relativ, also ab der Wurzel der Site, nicht ab dem Ordner der Seite. PFLICHT in dieser Form.",
+          "examples": [
+            "/team/img/anna-berger.png"
+          ]
+        },
+        "alt": {
+          "type": "string",
+          "description": "ALTERNATIVTEXT. STANDARD: leer, also DEKORATIV – und das ist auf einer Personenseite richtig: Der Name steht direkt daneben als Überschrift, ein Alternativtext doppelte ihn für Screenreader. Ausdrücklich setzen, wenn die Grafik etwas sagt, das sonst nirgends steht."
+        },
+        "shape": {
+          "type": "string",
+          "enum": [
+            "circle",
+            "rounded",
+            "square"
+          ],
+          "default": "square",
+          "description": "FORM DER GRAFIK. `circle` rund, `rounded` eckig mit abgerundeten Kanten, `square` eckig. STANDARD: `square` – ein Bild, wie es ist; die Vorgabe trifft den allgemeinen Fall, nicht den ersten. UNABHÄNGIG VOM RAHMEN: Ein eckiges Logo kann ihn brauchen, ein rundes Foto ohne ihn auskommen."
+        },
+        "frame": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "RAHMEN UM DIE GRAFIK – eine haarfeine Linie und ein weicher Schatten, die sie vom Hero-Hintergrund abheben.",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": false,
+              "description": "Den Rahmen zeigen. STANDARD: aus."
+            }
+          }
+        }
+      }
     }
   }
 }

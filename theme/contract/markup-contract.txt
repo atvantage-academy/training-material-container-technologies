@@ -1,4 +1,5 @@
 attribut data-avd-academy-demo
+attribut data-avd-academy-search-skip
 attribut data-avd-academy-sim-scene
 attribut data-avd-academy-state
 attribut data-avd-academy-theme
@@ -38,6 +39,7 @@ klasse  avd-academy-doclink--visualization
 klasse  avd-academy-fieldtable
 klasse  avd-academy-fieldtable--wrap
 klasse  avd-academy-fieldtable__layouts
+klasse  avd-academy-fieldtable__nowrap
 klasse  avd-academy-flow
 klasse  avd-academy-fold
 klasse  avd-academy-fold__body
@@ -76,6 +78,12 @@ klasse  avd-academy-guide-hero
 klasse  avd-academy-guide-hero--slim
 klasse  avd-academy-guide-hero__actions
 klasse  avd-academy-guide-hero__crumbs
+klasse  avd-academy-guide-hero__headline
+klasse  avd-academy-guide-hero__image
+klasse  avd-academy-guide-hero__image--circle
+klasse  avd-academy-guide-hero__image--framed
+klasse  avd-academy-guide-hero__image--rounded
+klasse  avd-academy-guide-hero__image--square
 klasse  avd-academy-guide-hero__meta
 klasse  avd-academy-guide-hero__tags
 klasse  avd-academy-guide-layout
@@ -153,6 +161,7 @@ klasse  avd-academy-regie__zeit
 klasse  avd-academy-reveal
 klasse  avd-academy-reveal--info
 klasse  avd-academy-reveal--screen-only
+klasse  avd-academy-reveal--wide
 klasse  avd-academy-reveal__body
 klasse  avd-academy-reveal__close
 klasse  avd-academy-reveal__title

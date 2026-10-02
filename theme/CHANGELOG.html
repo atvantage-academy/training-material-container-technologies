@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/styles.css?v=118a443d"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=2dd7a61e">
 <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=158ed649">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=4b561b0b">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=77b7a486"><style>
+<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=a4e28645">
+<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=bcf4d1b2"><style>
 :where(.avd-academy-guide-main a[href*="docker.com"]) {
   position: relative;
   padding-left: 1.35em;
@@ -31,8 +31,8 @@
 }
 .avd-academy-linkmark--none :where(.avd-academy-guide-main a[href*="docker.com"]),
 :where(.avd-academy-guide-main a[href*="docker.com"]).avd-academy-linkmark--none { padding-left: 0; }
-</style><link rel="stylesheet" media="print" href="/training-material-container-technologies/theme/academy/print.css?v=aedd1b20">
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=19bb6ce8" defer></script>
+</style><link rel="stylesheet" media="print" href="/training-material-container-technologies/theme/academy/print.css?v=a3e87ccf">
+<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=36dd1ae6" defer></script>
 <script src="/training-material-container-technologies/theme/jekyll/site.js?v=a9cecc4f" defer></script>
 <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=2b412283">
 <script type="module">
@@ -61,7 +61,7 @@
 <link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
 
-  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=c4f666f6">
+  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=7c528890">
   <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=4a155a65"></head><body class="avd-academy-guide">
   <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><div class="avd-academy-metanav"><span>ATVANTAGE Academy</span>
   </div>
@@ -77,7 +77,36 @@
         </div>
       </div>
       <a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a>
-  </nav><div class="avd-academy-header__tools"><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
+  </nav><div class="avd-academy-header__tools"><div class="avd-academy-search" data-avd-academy-search hidden
+             data-mode="expand" data-shortcut="double_shift"
+             data-index="/training-material-container-technologies/theme/search/de.json?v=1790944555"
+             data-base="/training-material-container-technologies/">
+          <button type="button" class="avd-academy-tool avd-academy-tool--search" data-avd-academy-search-toggle
+                  aria-expanded="false" aria-controls="avd-academy-search-dialog"
+                  title="Suchen (zweimal Shift)" aria-label="Suchen"><svg viewBox="0 0 24 24" width="1em" height="1em"
+                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"
+                  ><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button>
+          <dialog class="avd-academy-search__dialog" id="avd-academy-search-dialog" aria-label="Suchen">
+            <div class="avd-academy-search__bar" role="search"><label class="avd-academy-search__field avd-academy-search__field--scope" hidden>
+                <span class="avd-academy-search__label">Bereich</span>
+                <select class="avd-academy-search__scope">
+                  <option value="">Alle</option>
+                </select>
+              </label>
+              <label class="avd-academy-search__field avd-academy-search__field--query">
+                <span class="avd-academy-search__label">Suchbegriff</span>
+                <input type="search" class="avd-academy-search__input"
+                       placeholder="Diese Site durchsuchen" autocomplete="off" spellcheck="false"
+                       aria-describedby="avd-academy-search-status">
+              </label>
+              <button type="button" class="avd-academy-tool avd-academy-search__close" data-avd-academy-search-close
+                      title="Suche schließen" aria-label="Suche schließen">✕</button>
+            </div>
+            <p class="avd-academy-search__status" id="avd-academy-search-status" data-avd-academy-search-status role="status"></p>
+            <ul class="avd-academy-search__results" data-avd-academy-search-results aria-label="Suchergebnisse"></ul>
+          </dialog>
+        </div>
+        <script src="/training-material-container-technologies/theme/jekyll/search.js?v=c00ba04e" defer></script><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
                 title="Diese Seite auf Deinem Smartphone öffnen"
                 aria-label="Diese Seite auf Deinem Smartphone öffnen"></button><button type="button" class="avd-academy-tool avd-academy-tool--theme" data-avd-academy-theme-toggle
               title="Farbschema umschalten (hell/dunkel)"
@@ -126,6 +155,480 @@
 inkompatibel gilt und wie eingestuft wird, steht in
 <a href="https://timetoact.ghe.com/AVD-Academy-Tools/academy-theme/blob/main/AGENTS.md"><code>AGENTS.md</code></a>,
 Abschnitt „Theme-Version“.</p>
+
+<hr />
+
+<h2 id="3150">3.15.0</h2>
+
+<h3 id="suche-in-der-kopfzeile">Suche in der Kopfzeile</h3>
+
+<p><strong>Minor.</strong> Rechts in der Kopfzeile steht ein Such-Icon. Ein Klick – oder zweimal Shift –
+öffnet ein Feld, und beim Tippen erscheinen die passenden Seiten der Site, nach Relevanz
+sortiert. Eine Auswahl im Feld grenzt auf einen <strong>Bereich</strong> ein. Gesucht wird nur in der
+eigenen Site und nur in der Sprache der aktuellen Seite.</p>
+
+<p><strong>Es gibt keinen Server.</strong> <code>_plugins/avd-search.rb</code> schreibt beim Bauen einen Index nach
+<code>/theme/search/</code> – je Sprache eine Übersicht, je Bereich eine Datei –, und
+<code>theme/jekyll/search.js</code> lädt ihn erst beim ersten Öffnen. Der Text kommt aus der fertigen
+Seite: Liquid ist aufgelöst, und was eine Zielgruppe nicht sehen soll, ist in ihrer Ausgabe
+gar nicht erst gebaut.</p>
+
+<p><strong>Ohne Angabe ist die Suche an.</strong> Nach dem Update zeigt also jede Site das Icon, die nicht
+ausdrücklich abschaltet:</p>
+
+<pre><code class="language-yaml">search: disabled
+</code></pre>
+
+<p>Ein Abschnitt stellt sie ein – alle Schlüssel optional:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Schlüssel</th>
+      <th>Werte</th>
+      <th>Standard</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>search.display</code></td>
+      <td><code>expand</code> · <code>dialog</code></td>
+      <td><code>expand</code></td>
+    </tr>
+    <tr>
+      <td><code>search.shortcut</code></td>
+      <td><code>double_shift</code> · <code>disabled</code></td>
+      <td><code>double_shift</code></td>
+    </tr>
+    <tr>
+      <td><code>search.case_sensitive</code></td>
+      <td>Ja/Nein</td>
+      <td>nein</td>
+    </tr>
+    <tr>
+      <td><code>search.scope_source</code></td>
+      <td><code>index</code> · <code>nav</code></td>
+      <td><code>index</code></td>
+    </tr>
+    <tr>
+      <td><code>search.preselect</code></td>
+      <td><code>default</code> · <code>current</code> (Bereich der aktuellen Seite)</td>
+      <td><code>default</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Bereiche</strong> definiert die <code>index.md</code> eines Ordners (<code>search: { scope: true }</code>; ID ist ihre
+<code>page_id</code>) – oder, mit <code>scope_source: nav</code>, jeder Eintrag der obersten Ebene der TopNav.
+Höchstens ein Bereich darf <code>default: true</code> tragen, sonst bricht der Build ab. Als Indexseite
+zählt auch eine Fassung für eine Zielgruppe (<code>index-trainer.md</code>). Der Schemaprüfer lässt
+deshalb dieselbe <code>page_id</code> in mehreren Fassungen zu, solange sich ihre <code>audiences</code> nicht
+überschneiden. Die Zuordnung
+folgt dem <strong>Ordner der Datei</strong>, nie der Adresse: <code>slug</code>, <code>folder_slug</code> und <code>permalink</code>
+verschieben eine Seite nicht in einen anderen Bereich.</p>
+
+<p><strong>Nicht im Index:</strong> Seiten mit <code>noindex</code> oder <code>search: disabled</code> – in einer <code>index.md</code> der
+ganze Ordner –, Weiterleitungen der Permalinks und Elemente mit
+<code>data-avd-academy-search-skip</code>, etwa eine Musterlösung. Das Attribut ist neu im Markup
+Contract (Fassung 9).</p>
+
+<p><strong>Neu im Layout-Schema:</strong> <code>search_index</code> (<code>full</code> · <code>meta</code>). <code>presentation</code>, <code>simulation</code>,
+<code>visualization</code> und <code>quiz</code> geben nur Titel und Beschreibung her – ein Wissens-Check verriete
+sonst seine Antworten.</p>
+
+<p><strong>Neue Felder in den Schemas,</strong> ohne neue Fassung (nur Ergänzungen): <code>search</code> in Konfiguration
+und Front Matter, <code>nav.items[].search</code>, <code>search_index</code> im Layout. Neues Icon
+<code>academy/icons/icon-search.svg</code>.</p>
+
+<p><strong>Grenzen:</strong> Über <code>file://</code> und ohne JavaScript bleibt das Icon aus. Teilwörter findet die
+Suche nicht („filter“ findet nicht „Zielgruppenfilter“). Im Ausdruck erscheint sie nie.</p>
+
+<h3 id="eine-seite-darf-im-hero-eine-grafik-zeigen">Eine Seite darf im Hero eine Grafik zeigen</h3>
+
+<p><strong>Minor.</strong> Neu im Front Matter: <strong><code>hero_image</code></strong> – ein Porträt auf einer Personenseite,
+ein Symbol auf einer Kategorieseite. Ein Pfad genügt; eine Karte mit <code>src</code>, <code>alt</code>,
+<code>shape</code> und <code>frame</code> bestimmt zusätzlich die Darstellung.</p>
+
+<pre><code class="language-yaml">hero_image:
+  src: /team/img/anna-berger.png
+  shape: circle          # circle | rounded | square
+  frame:
+    enabled: true
+</code></pre>
+
+<p><strong>Warum es das braucht.</strong> Bis hierher ging eine Grafik neben dem Titel nur, indem die
+Quelle <code>.avd-academy-guide-hero h1::before</code> mit eigenem CSS überschrieb – also das
+INNERE des Heros, über das es keine Zusage gibt. Der Markup Contract nennt
+<code>avd-academy-guide-hero</code> und seine Bereiche, nicht ihr Gefüge; eine Umbauung hätte jede
+solche Seite still zerlegt. Gefunden wurde das in ATLAS, wo zwei Lebenslaufseiten genau
+so ein rundes Porträt bauten.</p>
+
+<p><strong>Form und Rahmen sind ZWEI Einstellungen</strong>, weil sie unabhängig voneinander sind: Ein
+eckiges Logo kann den Rahmen brauchen, ein freigestelltes Symbol gerade nicht. In der
+bisherigen Lösung waren sie zu einer verschmolzen.</p>
+
+<p><strong>Drei Dinge entscheidet das Theme, nicht die Seite:</strong> die Größe (ein Feld dafür wäre der
+Anfang eines Gestaltungsdialekts im Front Matter), das Verhalten bei schmaler Darstellung
+(die Grafik rückt über die Überschrift, statt sie auf wenige Zeichen je Zeile zu quetschen)
+und der Druck (sie wird nicht gedruckt – auf Papier kostet sie Toner und trägt nichts bei).</p>
+
+<p><strong><code>alt</code> ist standardmäßig leer</strong>, also dekorativ: Auf einer Personenseite steht der Name
+direkt daneben als Überschrift, und ein Alternativtext doppelte ihn für Screenreader. Ein
+<code>aria-hidden</code> steht bewusst NICHT daneben – ein leeres <code>alt</code> nimmt das Bild schon aus dem
+Accessibility-Baum.</p>
+
+<p>Die Grafik steht <strong>neben</strong> der Überschrift, nicht als Bannerbild über die volle Breite:
+Das ist ein anderes Gestaltungskonzept mit eigenen Fragen – Textkontrast auf dem Bild,
+Zuschnitt bei 320 Pixeln, Druck – und bekäme ein eigenes Feld.</p>
+
+<p>Markup Contract damit in <strong>Fassung 9</strong>: <code>avd-academy-guide-hero__headline</code>,
+<code>__image</code> und die drei Formen plus <code>--framed</code>. Die Umhüllung entsteht nur mit Bild –
+ohne sie bleibt die H1 ein unmittelbares Kind des Heros wie bisher.</p>
+
+<h3 id="forbidden-versprach-mehr-als-es-hält"><code>forbidden</code> versprach mehr, als es hält</h3>
+
+<p><strong>Patch.</strong> Die Schemabeschreibung zu <code>layouts.overrides.«layout»</code> sagte, <code>forbidden</code>
+lasse „den Bau scheitern”. Das stimmt nur, wo jemand <code>validate.rb</code> vor den Bau stellt –
+weder die ausgelieferte Baukomponente (<code>jekyll/_bin/build.sh</code>) noch die Prüf-Bausteine
+rufen es von sich aus auf. Ein nacktes <code>jekyll build</code> rendert das verbotene Layout
+klaglos. Der Satz nennt jetzt die Prüfung statt des Baus und sagt, was zu tun ist.</p>
+
+<h2 id="3140">3.14.0</h2>
+
+<h3 id="das-paket-gibt-auskunft-über-sich-selbst">Das Paket gibt Auskunft über sich selbst</h3>
+
+<p><strong>Minor.</strong> Wer gegen dieses Theme baut, konnte bisher nicht nachsehen, welche Layouts es
+gibt und was sie sind – das stand nur im Repository, und wer das Paket aus der Registry
+bezieht, hat es nicht. ATLAS führte deshalb eine eigene, geschlossene Typliste, die sich
+mit den Layouts nicht deckte: <code>quiz</code> fehlte dort, <code>page</code> und <code>guide</code> hießen anders, und
+jedes neue Layout hätte dort eine Schemaänderung verlangt.</p>
+
+<p>Neu im Paket liegt <strong><code>contract/theme.json</code></strong>, daneben <strong><code>contract/theme.schema.json</code></strong>,
+das sie beschreibt. Je Layout stehen dort fünf Angaben:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Angabe</th>
+      <th>sagt</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>label</code></td>
+      <td>Beschriftung auf Deutsch und Englisch</td>
+    </tr>
+    <tr>
+      <td><code>inherits</code></td>
+      <td>das Layout, von dem es erbt – <code>null</code> bei einem eigenständigen Dokument</td>
+    </tr>
+    <tr>
+      <td><code>abstract</code></td>
+      <td>ob es nur Oberklasse ist, von der eigene Layouts erben</td>
+    </tr>
+    <tr>
+      <td><code>heading</code></td>
+      <td>wer die H1 rendert: der Rahmen aus <code>title</code> oder die Quelle</td>
+    </tr>
+    <tr>
+      <td><code>source_assets</code></td>
+      <td>ob das Layout <strong>erlaubt</strong>, dass die Quelldatei der Seite eigene Styles und Skripte mitbringt</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Dazu ein Register der übrigen Verträge – Markup Contract, Farb-Tokens,
+Kontrast-Paare und die beiden Schemas – mit Fassung, Pfad im Paket und Zweck. Ein
+Konsument muss ihre Namen damit nicht kennen, sondern findet sie.</p>
+
+<p><strong><code>heading</code> und <code>source_assets</code> sind zwei Angaben und nicht eine</strong>, und das ist der Punkt,
+an dem die naheliegende Lösung nicht trägt. Bei <code>visualization</code> laufen sie auseinander:
+Die Visualisierung bringt ihr eigenes CSS und JS mit (<code>source_assets: true</code>), bekommt ihre
+H1 aber trotzdem vom Rahmen – auch der schmale Hero rendert sie aus <code>title</code>, und eine
+führende H1 im Seitenkörper wird aus dem Dokument entfernt. Ein einziger Wert
+„eingebettet oder eigenständig” müsste sich für eine der beiden Antworten entscheiden
+und wäre für die andere falsch.</p>
+
+<p><strong>Die Zusage:</strong> Ein Layout hinzufügen ist ein Minor. Eines entfernen, umbenennen oder
+seine Einstufung ändern ist ein Major. <code>contract_version</code> zählt bei jeder Änderung
+hoch, auch bei einer Ergänzung.</p>
+
+<p><strong>Einzurichten ist nichts.</strong> Die Datei wird nicht geladen; sie liegt im Paket zum
+Nachlesen, wie der Markup Contract seit 3.0.0.</p>
+
+<h3 id="layout-default-bekommt-einen-hinweis"><code>layout: default</code> bekommt einen Hinweis</h3>
+
+<p><strong>Minor, kein Bruch.</strong> <code>default</code> ist in der Selbstauskunft als <code>abstract</code> eingestuft: Es
+ist die Oberklasse, von der eigene Layouts erben, und keine Seite soll es tragen – ihr
+fehlen Kopfzeile, Brotkrumen, Hero und Sidebar.</p>
+
+<p><code>validate.rb</code> meldet eine solche Seite jetzt als <strong>Hinweis</strong> und nennt Datei und Zeile.
+Der Lauf bleibt grün, und <code>layout: default</code> wirkt unverändert. Aus dem Hinweis wird im
+nächsten Major ein Fehler; bis dahin ist er die Vorwarnung. Wer ihn loswerden will,
+schreibt <code>layout: page</code> – oder lässt das Feld weg, denn <code>page</code> ist die Vorgabe.</p>
+
+<p>Fehlt <code>contract/theme.json</code> neben <code>validate.rb</code> – etwa bei der einzeln veröffentlichten
+Fassung unter <code>/schemas/</code> –, entfällt der Hinweis. Eine Prüfung, die ohne ihre
+Deklaration rät, wäre schlimmer als keine.</p>
+
+<h3 id="ein-layout-sagt-jetzt-selbst-welche-schalter-es-liest">Ein Layout sagt jetzt selbst, welche Schalter es liest</h3>
+
+<p><strong>Minor.</strong> Die Zuständigkeit der <a href="https://timetoact.ghe.com/AVD-Academy-Tools/academy-theme/blob/main/docs/theme/layouts.md#schalter">Schalter</a>
+stand bis hierher als Liste von <strong>Layout-Namen</strong> im Auflöser <code>avd-switch.html</code>. Jetzt
+deklariert jedes Layout sie in seinem eigenen Front Matter, in derselben Form wie
+Konfiguration und Front Matter einer Seite:</p>
+
+<pre><code class="language-yaml"># _layouts/page.html
+switches:
+  sidebar:
+    toc:      { enabled: true }
+    progress: { enabled: false }
+  toolbar:
+    qr: { enabled: true }
+</code></pre>
+
+<p>Geerbt wird mit – <code>guide</code> nennt nur, was bei ihm anders ist als bei <code>page</code>. Was nirgends
+deklariert ist, bleibt stumm, und Konfiguration dazu wirkt nicht; das war vorher auch so.</p>
+
+<p><strong>Was das für ein eigenes Layout ändert.</strong> Bisher konnte es überhaupt keinen Schalter
+lesen: Sein Name stand in keiner Liste des Themes und konnte dort auch nicht stehen. Ein
+eigenes Layout, das von <code>page</code> erbt, rendert die Sidebar – und ihre Karten blieben leer.
+Jetzt deklariert es seine Schalter wie die mitgelieferten, und wer von <code>page</code> aufbaut,
+erbt dessen Schalter mit. Die Doku sagte bis hierher ausdrücklich, das gehe nicht; dieser
+Satz ist weg.</p>
+
+<p><strong>Für die mitgelieferten Layouts ändert sich nichts</strong> – mit einer Ausnahme, die der
+nächste Abschnitt beschreibt. Nachgerechnet am gebauten Stand: Von 111 Seiten unterscheiden
+sich genau die beiden Wissens-Checks.</p>
+
+<h3 id="der-wissens-check-bekommt-qr-code-sprachumschalter-und-drucken-knopf">Der Wissens-Check bekommt QR-Code, Sprachumschalter und Drucken-Knopf</h3>
+
+<p><strong>Minor, Fehlerbehebung.</strong> <code>quiz</code> stand in <strong>keiner</strong> Zuständigkeitsliste – das Layout kam
+hinzu, ohne im Auflöser, im Konfigurations-Schema und in der Doku-Tabelle nachgezogen zu
+werden. Sichtbar war das so: Eine Seite mit <code>layout: quiz</code> rendert einen Hero mit
+Werkzeugen (<code>hero_tools: true</code>), zeigte darin aber nur Farbschema und Link. Auf einer
+zweisprachigen Site fehlte damit auf <strong>jedem</strong> Wissens-Check der Sprachwechsel, und der
+QR-Code – der Rückweg vom Beamer aufs eigene Gerät – fehlte überall.</p>
+
+<p>Der Wissens-Check liest jetzt <code>toolbar.qr</code>, <code>toolbar.lang</code> und <code>toolbar.print</code>, alle drei
+mit Vorgabe <strong>an</strong>, und bekommt seinen Eintrag unter <code>components.layouts.quiz</code>.
+<strong>Kein <code>toolbar.copy</code>:</strong> Die Quelle eines Wissens-Checks sind die Fragen im Front Matter –
+als Markdown kopiert ergäbe das die Lösungen gleich mit.</p>
+
+<p><strong>Was Projekte tun müssen:</strong> nichts. Auf bestehenden Wissens-Checks erscheinen die drei
+Werkzeuge; wer eines davon nicht will, schaltet es wie überall über
+<code>components.layouts.quiz.toolbar.«werkzeug».enabled</code> ab.</p>
+
+<h3 id="die-layout-konfiguration-steht-jetzt-unter-layouts">Die Layout-Konfiguration steht jetzt unter <code>layouts</code></h3>
+
+<p><strong>Minor – <code>components</code> wirkt weiter.</strong> Was je Layout eingestellt wird, stand bisher
+umgekehrt herum: <code>components.layouts.«layout».«gruppe»</code> – Baustein je Layout, und die
+Verfügbarkeit eines Layouts hatte dort überhaupt keinen Platz. Jetzt steht das Layout
+vorn:</p>
+
+<pre><code class="language-yaml">layouts:
+  default_values:
+    unlisted: forbidden            # Positivliste
+    components:
+      toolbar: { qr: { enabled: false } }
+  overrides:
+    page: allowed                  # Kurzform: nur die Verfügbarkeit
+    guide:                         # Objektform: Einstellungen – und damit erlaubt
+      components:
+        sidebar: { resources: { enabled: false } }
+    default: forbidden
+</code></pre>
+
+<table>
+  <thead>
+    <tr>
+      <th>bis 3.13</th>
+      <th>ab 3.14</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>components.«gruppe»</code></td>
+      <td><code>layouts.default_values.components.«gruppe»</code></td>
+    </tr>
+    <tr>
+      <td><code>components.layouts.«layout».«gruppe»</code></td>
+      <td><code>layouts.overrides.«layout».components.«gruppe»</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Stehen beide da, gewinnt das neue Format</strong> – je Ebene, nicht für den ganzen Teilbaum:
+Ein Repo, das nur die site-weite Hälfte umgestellt hat, baut weiter. Die Schemaprüfung
+nennt <code>components</code> als veraltet; entfernt wird es beim nächsten Major (#269).</p>
+
+<h4 id="neu-ein-layout-lässt-sich-verbieten">Neu: Ein Layout lässt sich verbieten</h4>
+
+<p><code>forbidden</code> lässt den Bau scheitern, sobald eine Seite das Layout trägt – mit Datei und
+Zeile. <code>default_values.unlisted: forbidden</code> macht daraus eine <strong>Positivliste</strong>.</p>
+
+<p><strong>Wofür.</strong> Wer <strong>eingereichte</strong> Seiten baut, legt damit fest, welche Layouts er verträgt.
+Das Theme kennt diese Regel nicht und soll sie nicht kennen – es liefert die Layouts und
+ihre Einstufung, die Entscheidung trifft der Konsument in seiner eigenen <code>_config.yml</code>.
+Und ein <strong>neues</strong> Layout im Theme ist unter einer Positivliste nicht automatisch
+zugelassen: Der Konsument entscheidet beim Anheben seiner Theme-Fassung.</p>
+
+<p><strong>Ein Name, den es nicht gibt, ist ein Fehler.</strong> <code>layouts.overrides.guids</code> verbietet
+nichts und stellt nichts ein. Die Prüfung weist ihn ab und nennt die Layouts, die es gibt
+– die des Themes aus <code>contract/theme.json</code> und die aus dem <code>layouts_dir</code> des Repos. Ohne
+diese Prüfung hielte sich eine Site für abgesichert, die es nicht ist.</p>
+
+<h4 id="das-feld-layout-schlägt-die-mitgelieferten-layouts-vor">Das Feld <code>layout</code> schlägt die mitgelieferten Layouts vor</h4>
+
+<p>Im Front-Matter-Schema steht unter <code>layout</code> jetzt eine <strong>offene Auswahl</strong>: Die IDE
+schlägt die Layouts des Themes vor, ein <strong>eigenes</strong> Layout des Repos bleibt trotzdem
+erlaubt. Ein <code>enum</code> allein verböte es, und eigene Layouts sind ein zugesagtes Merkmal.
+<code>bin/theme-contract.rb --check</code> rechnet nach, dass die Auswahl und die Einträge unter
+<code>layouts.overrides</code> dieselben Layouts nennen wie die Selbstauskunft.</p>
+
+<h4 id="die-typnamen-in-den-schemas-sind-englisch">Die Typnamen in den Schemas sind englisch</h4>
+
+<p>Die <code>definitions</code> beider Schemas hießen deutsch oder halb deutsch (<code>sprachtext</code>,
+<code>navEintrag</code>, <code>sidebarSchalter</code>). Sie heißen jetzt <code>language_text</code>, <code>nav_item</code>,
+<code>sidebar_switches</code> und so fort – Bezeichner sind englisch wie überall sonst. <strong>Für
+Konsumenten ändert das nichts:</strong> Die Namen stehen nur innerhalb der Schemadateien, kein
+Feld und keine Adresse heißt anders, und die veröffentlichten älteren Fassungen bleiben
+unberührt. Die Schemafassungen steigen deshalb nicht.</p>
+
+<h3 id="das-front-matter-eines-layouts-bekommt-ein-schema">Das Front Matter eines Layouts bekommt ein Schema</h3>
+
+<p><strong>Minor.</strong> Ein Layout trägt Front Matter wie jede Seite – nur war es als einziges
+ungeprüft. Seit dem vorigen Abschnitt steht dort auch die Deklaration der Schalter, und
+ein Tippfehler darin ist der unangenehmste Fehler, den es hier gibt: Er bricht nichts, er
+<strong>macht nichts</strong>. <code>switchs:</code> statt <code>switches:</code> – der Baustein erscheint einfach nicht.</p>
+
+<p>Neu ausgeliefert wird deshalb <code>jekyll/schema/layout.schema.json</code> (Fassung 1),
+veröffentlicht unter <code>/schemas/layout/1/schema.json</code>. <code>validate.rb</code> prüft damit die
+Dateien in <code>layouts_dir</code>:</p>
+
+<pre><code>_layouts/mein-format.html:31: `switches.toolbar.prnt` unbekanntes Feld `prnt` –
+                             erlaubt sind: copy, lang, print, qr
+</code></pre>
+
+<p><strong>Oben offen, innen geschlossen.</strong> Eigene Schlüssel im Front Matter eines Layouts bleiben
+erlaubt – es ist das Layout des Repos, und wären sie ein Fehler, ginge ein bestehender,
+grüner Lauf rot. Innerhalb von <code>switches</code> ist die Auswahl dagegen geschlossen: Welche
+Schalter es gibt, entscheidet das Theme, denn es rendert die Bausteine.</p>
+
+<p>Fehlt das Schema – etwa bei einer veröffentlichten Ablage älteren Standes –, bleiben die
+Layout-Dateien ungeprüft. Das ist kein Befund, sondern ein älteres Schema.</p>
+
+<p>Die Doku bekommt dazu den <strong>vollständigen Katalog der Schalter</strong> samt ihren
+Voraussetzungen, dazu <code>styles</code>/<code>scripts</code> je Layout und den Hinweis, dass der
+<code>contract:</code>-Block nur den Layouts des Themes gehört.</p>
+
+<p>Das Register der <strong>Selbstauskunft</strong> nennt das neue Schema mit Fassung, Paketpfad und
+Zweck. Gefunden hat das die Prüfung selbst – eine Vertragsdatei mit Fassungsnummer, die
+im Register fehlt, lässt den Lauf scheitern.</p>
+
+<h3 id="ein-angeklicktes-untermenü-blieb-neben-dem-überfahrenen-offen">Ein angeklicktes Untermenü blieb neben dem überfahrenen offen</h3>
+
+<p><strong>Patch.</strong> Am Schreibtisch öffnete sich ein Untermenü beim Überfahren, ein <strong>Klick</strong> auf
+den Gruppen-Schalter hielt es zusätzlich offen – und blieb offen, während nebenan schon
+das nächste aufging. Wer „Design-System” aufklappte, darin „Grundlagen” anklickte und dann
+auf „Referenz” fuhr, hatte <strong>drei</strong> Menüs gleichzeitig stehen.</p>
+
+<p>Die Ursache lag nicht beim Klick-Zustand, sondern beim <strong>Fokus</strong>: Nachgemessen trug das
+Menü <code>data-open=false</code> und <code>:hover=false</code>, aber <code>:focus-within=true</code> – der Klick hatte den
+Schalter fokussiert, und <code>…__group:focus-within &gt; …__submenu</code> hält auf. Die vorhandene
+Übernahme räumte nur <code>data-open</code>.</p>
+
+<p>Eine Übernahme <strong>per Zeiger</strong> nimmt jetzt den Fokus aus der verlassenen Gruppe, und es gibt
+sie auf <strong>jeder</strong> Ebene – bisher nur bei den seitlichen Menüs der dritten, weshalb auch auf
+der obersten Ebene ein geklicktes Menü neben dem überfahrenen stehenblieb.</p>
+
+<p><strong>Im schmalen Layout ändert sich nichts.</strong> Dort öffnet und schließt allein der Klick; ein
+aufgeklapptes Untermenü soll beim Scrollen nicht zugehen, wenn der Zeiger darüberfährt.
+Nachgemessen bei 600 Pixeln: Beide Ebenen bleiben offen wie bisher.</p>
+
+<p><strong>Die Tastatur bleibt unberührt:</strong> Der Fokus öffnet weiterhin, <code>aria-expanded</code> zieht mit,
+und wer sich mit der Tabulatortaste hineinbewegt, löst keine Übernahme aus.</p>
+
+<h3 id="zwei-neue-öffentliche-klassen-für-breite-inhalte">Zwei neue öffentliche Klassen für breite Inhalte</h3>
+
+<p><strong>Minor.</strong> <code>avd-academy-reveal--wide</code> gibt einem Aufklapp-Panel die Breite, die eine
+Vergleichstabelle braucht – die Vorgabe von 780 px bleibt für die häufige
+Info-Schaltfläche mit zwei Sätzen, wo eine lange Zeile schlechter zu lesen wäre.
+<code>avd-academy-fieldtable__nowrap</code> hält eine Spalte zusammen, deren Inhalt umgebrochen wie
+zwei Angaben aussähe (<code>frame</code> / <code>source</code>). <strong>Markup Contract in Fassung 8.</strong></p>
+
+<h3 id="eine-seite-darf-eigene-assets-deklarieren--und-nur-noch-so">Eine Seite darf eigene Assets deklarieren – und nur noch so</h3>
+
+<p><strong>Minor.</strong> Neu im Front Matter: <strong><code>styles</code></strong> und <strong><code>scripts</code></strong>. Das Theme bindet sie im
+<code>&lt;head&gt;</code> ein, Skripte mit <code>defer</code>; die Reihenfolge ist site-weit → je Layout → je Seite.</p>
+
+<p>Damit ist die Zusage <code>source_assets</code> erst einhaltbar. Sie sagt, ob ein Layout <strong>erlaubt</strong>,
+dass die Quelldatei der Seite eigene <code>&lt;style&gt;</code>-, <code>&lt;script&gt;</code>- oder <code>&lt;link&gt;</code>-Elemente
+mitbringt – aber wo sie <code>false</code> steht, gab es bis hierher <strong>keinen</strong> anderen Weg: Eine
+Seite konnte Assets nur als Element im Text einbinden. Eine Regel, die sich nicht
+einhalten lässt, ist keine.</p>
+
+<p><strong>Geprüft werden BEIDE Wege.</strong> Das Element im Text ist der eine; die Deklaration im Front
+Matter ist der andere, und sie lädt genauso. Nur den Text zu prüfen hieße, die unsaubere
+Form zu verbieten und die saubere durchzulassen. Eine <strong>leere</strong> Liste ist keine Angabe.</p>
+
+<p><strong>Dazu neu: <code>scripts</code> in der <code>_config.yml</code></strong> – das Gegenstück zu <code>styles</code>, das es nicht
+gab. Eine Site konnte site-weit CSS nachladen, aber kein JS; wer beides brauchte, schrieb
+ein <code>&lt;script&gt;</code> in den Seitenkörper. Genau das verbietet die neue Regel.</p>
+
+<p><strong>Die Schemaprüfung meldet es jetzt – als Hinweis.</strong> Geprüft wird die <strong>Quelle</strong>, nicht
+das gebaute HTML: Dort stehen auch Elemente, die das Layout beisteuert (der Wissens-Check
+serialisiert seine Fragen in ein <code>&lt;script type="application/json"&gt;</code>), und das ist kein
+Fehler der Quelle. Code-Zäune, Inline-Code und HTML-Kommentare zählen nicht – ohne diese
+Ausnahme meldete die Prüfung in diesem Repository zwölf Seiten, von denen keine einzige
+einen Fehler hatte.</p>
+
+<p><strong>Aus dem Hinweis wird im nächsten Major ein Fehler</strong> (#269). Bestehende Stände haben
+solche Stellen; sie heute rot zu färben wäre ein Bruch.</p>
+
+<p>Die Bausteine-Seite der Doku war der eine echte Fall im Repository: Sie lädt die
+Vorführungs-Assets und tat das bis hierher als <code>&lt;link&gt;</code> im Text – zweimal sogar. Sie
+stehen jetzt <strong>site-weit</strong> in der <code>_config.yml</code>: Ihr Layout ist <code>page</code>, und das erlaubt
+eigene Assets über keinen der beiden Wege.</p>
+
+<p><strong>Die deklarierten Assets werden behandelt wie die des Themes.</strong> Sie laufen durch
+denselben Filter: <code>baseurl</code> davor, Cache-Kennung dahinter, solange
+<code>assets.cache_busting</code> nicht auf <code>none</code> steht. Ein von Hand geschriebenes <code>&lt;link&gt;</code> im
+Seitenkörper bekommt beides nicht – es ist unter einem Unterpfad tot und liefert nach
+jedem Build die alte Datei aus dem Browser-Cache. Das ist der dritte Grund für den Weg
+über das Front Matter, neben der Prüfbarkeit und der Verschiebung durch einen Permalink.</p>
+
+<p><strong><code>presentation</code> und <code>simulation</code> lasen die Angaben gar nicht.</strong> Beide erlauben eigene
+Assets (<code>source_assets: true</code>), banden aber nur <code>site.styles</code> ein – <code>styles</code>/<code>scripts</code> je
+Seite und je Layout sowie das neue site-weite <code>scripts</code> liefen ins Leere, ohne Meldung.
+Die Einbindung steht jetzt einmal in <code>_includes/avd-page-assets.html</code> und wird von allen
+drei Rahmen (<code>default</code>, <code>presentation</code>, <code>simulation</code>) benutzt.</p>
+
+<p><strong>Ein Pfad ohne Datei dahinter wird gemeldet.</strong> <code>styles</code>/<code>scripts</code> sind <strong>site-relativ</strong> –
+sie zählen ab der Wurzel der Site, nicht ab dem Ordner der Seite. Wer <code>demo.css</code> neben die
+Seite legt und so einträgt, bekam <code>/demo.css</code> an der Wurzel: Der Bau lief grün, die Seite
+lud nichts, und niemand sah warum. Liegt eine Datei dieses Namens neben der Seite, sagt
+der Hinweis das ausdrücklich.</p>
+
+<h3 id="die-simulation-zählte-auf-deutsch-auch-auf-einer-englischen-seite">Die Simulation zählte auf Deutsch, auch auf einer englischen Seite</h3>
+
+<p><strong>Patch.</strong> Die Steuerleiste einer Simulation beschriftet Liquid beim Bauen; was erst im
+Browser entsteht, holt <code>simulation.js</code> aus einem Mini-Wörterbuch und liest dazu
+<code>&lt;html lang&gt;</code>. Drei Beschriftungen standen dort nicht, sondern als deutsches Literal im
+Skript: der Zähler „Schritt 4 / 17“, „4 Szenarien“ in der Übersicht und „17 Schritte“ je
+Eintrag darin. Auf einer englischen Seite stand daneben alles andere auf Englisch.</p>
+
+<h3 id="base-eines-permalinks-ließ-die-basisadresse-weg"><code>&lt;base&gt;</code> eines Permalinks ließ die Basisadresse weg</h3>
+
+<p><strong>Patch.</strong> Zieht ein Permalink in der Betriebsart <code>full</code> eine Seite an ihre kurze Adresse,
+setzt der Rahmen ein <code>&lt;base&gt;</code> auf das Ursprungsverzeichnis – damit die relativen Verweise
+<strong>in</strong> der Seite weiter dort auflösen, wo die Dateien liegen: Bilder, Nachbarseiten, ein
+<code>&lt;script src&gt;</code> oder <code>url()</code> in einem eigenen <code>&lt;style&gt;</code>.</p>
+
+<p>Diese Basis stand roh in der Seite, ohne <code>baseurl</code>. Auf einer GitHub-Projektseite
+(<code>…github.io/«repo»/</code>) zeigte sie damit <strong>an der Site vorbei</strong>: aus <code>/«repo»/docs/kurs/</code>
+wurde <code>/docs/kurs/</code>, und jeder relative Verweis der Seite lief ins Leere – still, denn der
+Bau kennt den Unterpfad nicht. Unter Root-Hosting (<code>baseurl: ""</code>) fiel es nicht auf.</p>
 
 <hr />
 
@@ -5946,6 +6449,16 @@ Major-Sprung wird die Liste durchgegangen und geleert.</p>
       <td>3.11.0</td>
       <td>Schlüssel <code>permaid</code> neben <code>perma_id</code> in <code>avd-permalinks.json</code></td>
       <td>aus <code>avd-permalinks.rb</code> entfernen</td>
+    </tr>
+    <tr>
+      <td>3.14.0</td>
+      <td><code>layout: default</code> auf einer Seite ist ein Hinweis, kein Fehler</td>
+      <td>zum Fehler machen und <code>bin/migrate.rb</code> eine Stufe <code>layout: default → page</code> geben</td>
+    </tr>
+    <tr>
+      <td>3.14.0</td>
+      <td><code>components</code> und <code>components.layouts</code> neben <code>layouts</code></td>
+      <td>Rückfall in <code>avd-switch.html</code> und die veralteten Zweige im Config-Schema entfernen; <code>bin/migrate.rb</code> die Stufe geben</td>
     </tr>
   </tbody>
 </table>

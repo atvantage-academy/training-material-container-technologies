@@ -336,6 +336,70 @@ def line_of(path, pointer, offset)
 end
 
 # ---------------------------------------------------------------------------
+# Layout-Konfiguration: verbotene Layouts und unbekannte Namen
+# ---------------------------------------------------------------------------
+# WARUM DAS HIER STEHT UND NICHT IM SCHEMA: Welche Layouts eine Site zulässt, ist keine
+# Festlegung des Themes. Eigene Layouts sind ausdrücklich erlaubt, ein `enum` auf `layout`
+# verböte sie – deshalb steht dort eine OFFENE Auswahl, und die Vollständigkeit kommt aus
+# der Deklaration der Site. Dieselbe Bauart wie bei den Zielgruppen.
+#
+# ZWEI PRÜFUNGEN, EIN GRUND. Eine Positivliste trägt nur, wenn sie auch stimmt:
+#   * Eine Seite mit verbotenem Layout ist ein FEHLER – das ist der Zweck des Eintrags.
+#   * Ein Schlüssel unter `layouts.overrides`, den weder das Theme noch der `layouts_dir`
+#     kennt, ist EBENFALLS ein Fehler. Sonst verböte `guids: forbidden` nichts, und die
+#     Site hielte sich für abgesichert.
+module LayoutRules
+  # Die Layouts des Themes aus der Selbstauskunft im Paket. Fehlt sie, bleibt die Liste
+  # leer und die Namensprüfung entfällt – raten wäre schlimmer als nicht prüfen.
+  def self.theme_layouts
+    path = File.expand_path('../../contract/theme.json', __dir__)
+    return [] unless File.exist?(path)
+
+    layouts = JSON.parse(File.read(path))['layouts']
+    layouts.is_a?(Array) ? layouts.map { |l| l['name'].to_s } : []
+  rescue JSON::ParserError
+    []
+  end
+
+  # Die eigenen Layouts des Repos – was in `layouts_dir` liegt. Gibt es das Verzeichnis
+  # nicht, hat das Repo keine eigenen; dann zählen nur die des Themes.
+  def self.own_layouts(root, configs)
+    dir = '_layouts'
+    configs.each { |data| dir = data['layouts_dir'].to_s if data['layouts_dir'] }
+    full = File.expand_path(dir, root)
+    return [] unless File.directory?(full)
+
+    Dir[File.join(full, '*.html')].map { |f| File.basename(f, '.html') }
+  end
+
+  # Die Einstellungen aus allen Konfigurationen, die spätere gewinnt.
+  def self.settings(configs)
+    unlisted = 'allowed'
+    overrides = {}
+    configs.each do |data|
+      block = data['layouts']
+      next unless block.is_a?(Hash)
+
+      value = block.dig('default_values', 'unlisted')
+      unlisted = value.to_s unless value.nil?
+      o = block['overrides']
+      overrides = overrides.merge(o) if o.is_a?(Hash)
+    end
+    [unlisted, overrides]
+  end
+
+  # `forbidden`, `allowed` – oder die Vorgabe. Ein Eintrag in OBJEKTFORM bedeutet
+  # „erlaubt": Wer ein Layout verbietet, konfiguriert es nicht.
+  def self.availability(name, unlisted, overrides)
+    entry = overrides[name]
+    return unlisted if entry.nil?
+    return entry.to_s if entry.is_a?(String)
+
+    'allowed'
+  end
+end
+
+# ---------------------------------------------------------------------------
 # Zielgruppen: deklarierte Werte gegen benutzte Werte
 # ---------------------------------------------------------------------------
 # WARUM DAS HIER STEHT UND NICHT IM SCHEMA: Welche Zielgruppen es gibt, ist keine
@@ -421,14 +485,14 @@ end
 # Liste von Namen kann das nicht wissen.
 #
 # Das Schema weiss es: Jedes sprachfähige Feld verweist auf
-# `frontmatter.schema.json#/definitions/sprachtext`. Der Durchlauf unten laeuft deshalb
+# `frontmatter.schema.json#/definitions/language_text`. Der Durchlauf unten laeuft deshalb
 # durch Wert UND Schema gleichzeitig und prüft genau dort, wo eine Sprachkarte erlaubt
 # ist. Wer ein Feld sprachfaehig macht, aendert nur das Schema – die Prüfung folgt.
 #
 # DERSELBE DURCHLAUF FINDET AUCH DIE SEITENVERWEISE (`page: «id»`). Ein Durchlauf, zwei
 # Befunde – und aus demselben Grund schemagetrieben: Ein Schluessel `page` kann anderswo
 # etwas anderes bedeuten (`defaults` traegt `layout: page` als WERT). Gesammelt wird nur,
-# was im Schema als `seitenverweis` deklariert ist.
+# was im Schema als `page_reference` deklariert ist.
 class SchemaWalk
   attr_reader :page_links
 
@@ -462,15 +526,15 @@ class SchemaWalk
       (fragment || '').split('/').reject(&:empty?).each { |t| below = below.is_a?(Hash) ? below[t] : nil }
       return if below.nil?
       # DER TREFFER: eine Sprachkarte an dieser Stelle erlaubt, und der Wert ist eine.
-      # ZWEI DEFINITIONEN, DIESELBE CODE-PRÜFUNG: `sprachtext` faellt bei einer
-      # fehlenden Sprache auf die Standardsprache zurueck, `sprachpfad` bricht ab
+      # ZWEI DEFINITIONEN, DIESELBE CODE-PRÜFUNG: `language_text` faellt bei einer
+      # fehlenden Sprache auf die Standardsprache zurueck, `language_path` bricht ab
       # (das entscheidet das Plugin, nicht dieser Validator). Ein nicht deklarierter
       # Code ist in BEIDEN Faellen ein Tippfehler, und den findet diese Stelle.
-      if %w[sprachtext sprachpfad].any? { |n| ref.end_with?("/definitions/#{n}") } && value.is_a?(Hash)
+      if %w[language_text language_path].any? { |n| ref.end_with?("/definitions/#{n}") } && value.is_a?(Hash)
         check_codes(value, path)
         return
       end
-      if ref.end_with?('/definitions/seitenverweis') && value.is_a?(String)
+      if ref.end_with?('/definitions/page_reference') && value.is_a?(String)
         @page_links << [path.join('.'), value]
         return
       end
@@ -656,6 +720,10 @@ paths = {
   frontmatter: fm_schema || File.join(schema_dir, 'frontmatter.schema.json'),
   config: cfg_schema || File.join(schema_dir, 'config.schema.json')
 }
+# Das Layout-Schema ist OPTIONAL und steht deshalb nicht in `paths`: Es kam mit 3.14.0
+# dazu, und eine veroeffentlichte Ablage aelteren Standes hat es nicht. Fehlt es, bleiben
+# die Layout-Dateien ungeprueft – das ist kein Befund, sondern ein aelteres Schema.
+layout_schema = File.join(schema_dir, 'layout.schema.json')
 paths.each do |role, path|
   next if File.exist?(path)
   warn "FEHLER: Das #{role == :config ? 'Konfigurations' : 'Front-Matter'}-Schema fehlt: #{path}"
@@ -698,6 +766,90 @@ configs = [File.join(root, '_config.yml')] if configs.empty?
 messages = []
 # Veraltete, aber gueltige Felder: ein HINWEIS am Ende, kein Verstoss.
 veraltet = []
+
+# ABSTRAKTE LAYOUTS – Seiten, die eine Oberklasse als Layout tragen.
+#
+# WARUM NICHT ALS `enum` IM SCHEMA: Eigene Layouts sind ausdrücklich erlaubt
+# (docs/theme/layouts.md). Ein `enum` auf `layout` verböte sie. Geprüft wird deshalb
+# nur gegen die Namen, die das THEME selbst führt – dieselbe Bauart wie bei den
+# Zielgruppen: offener Typ im Schema, Abgleich gegen eine Deklaration.
+#
+# DIE DEKLARATION IST `contract/theme.json`, die Selbstauskunft des Pakets. Sie liegt
+# im Paket neben dieser Datei; fehlt sie – etwa weil `validate.rb` als einzelne Datei
+# unter `/schemas/` veröffentlicht wurde –, entfällt der Hinweis. Er ist eine
+# Vorwarnung und keine Regel, und eine Prüfung, die ohne ihre Deklaration rät, wäre
+# schlimmer als keine.
+#
+# ES IST EIN HINWEIS, KEIN FEHLER. `layout: default` ist bis heute gültig und in der
+# Doku als Wahl beschrieben; daraus einen Fehler zu machen ist ein Bruch und gehört in
+# den nächsten Major (#269). Bis dahin ist diese Meldung die Vorwarnung.
+def abstract_layouts
+  path = File.expand_path('../../contract/theme.json', __dir__)
+  return [] unless File.exist?(path)
+
+  layouts = JSON.parse(File.read(path))['layouts']
+  return [] unless layouts.is_a?(Array)
+
+  layouts.select { |l| l['abstract'] }.map { |l| l['name'].to_s }
+rescue JSON::ParserError
+  []
+end
+
+abstract_names = abstract_layouts
+abstrakt = []
+
+# EIGENE STYLES UND SKRIPTE IN DER QUELLE – erlaubt sie das Layout?
+#
+# `source_assets` in der Selbstauskunft beantwortet genau das. Steht dort `false`, gehoert
+# in die QUELLE der Seite kein `<style>`, `<script>` oder `<link>`: Ein solches Element
+# wirkt SEITENWEIT, nicht an der Stelle, an der es steht - es ueberschreibt Theme-Regeln
+# dort, wo niemand hinsieht, und faellt erst im dunklen Schema, im Druck oder bei 320
+# Pixeln auf.
+#
+# GEPRUEFT WIRD DIE QUELLE, NICHT DAS GEBAUTE HTML. Im Ergebnis stehen auch Elemente, die
+# das LAYOUT beisteuert - der Wissens-Check etwa serialisiert seine Fragen in ein
+# `<script type="application/json">`. Das ist kein Fehler der Quelle, und eine Pruefung am
+# Ergebnis koennte beides nicht auseinanderhalten.
+#
+# WAS NICHT ZAEHLT: Code-Zaeune, Inline-Code und HTML-Kommentare. Eine Doku-Seite, die
+# `<link rel="stylesheet">` als BEISPIEL zeigt, bindet nichts ein. Ohne diese Ausnahme
+# meldete die Pruefung in diesem Repository zwoelf Seiten, von denen keine einzige einen
+# Fehler hatte (gemessen).
+#
+# ES IST EIN HINWEIS, KEIN FEHLER – wie beim abstrakten Layout. Bestehende Staende haben
+# solche Stellen, und sie rot zu faerben waere ein Bruch. Scharf wird es im naechsten
+# Major (#269).
+def source_assets_erlaubt
+  path = File.expand_path('../../contract/theme.json', __dir__)
+  return {} unless File.exist?(path)
+
+  layouts = JSON.parse(File.read(path))['layouts']
+  return {} unless layouts.is_a?(Array)
+
+  layouts.map { |l| [l['name'].to_s, l['source_assets']] }.to_h
+rescue JSON::ParserError
+  {}
+end
+
+def ohne_code(text)
+  t = text.gsub(/^(```|~~~).*?^\1/m, '')   # Code-Zaeune
+  t = t.gsub(/<!--.*?-->/m, '')             # HTML-Kommentare
+  t = t.gsub(/``.+?``/m, '')                # doppelte Inline-Spannen
+  t.gsub(/`[^`\n]*`/, '')                  # einfache Inline-Spannen
+end
+
+assets_erlaubt = source_assets_erlaubt
+fremde_assets = []
+
+# DEKLARIERTE ASSETS, DIE ES NICHT GIBT – `styles:`/`scripts:` zeigen ins Leere.
+# WARUM DAS EINE EIGENE PRÜFUNG BRAUCHT: Die Pfade sind SITE-RELATIV, nicht
+# seitenrelativ. `relative_url` setzt den Schrägstrich davor, und aus `demo.css`
+# neben der Seite wird `/demo.css` an der Wurzel. Der Bau läuft grün durch, die
+# Seite lädt nichts, und niemand sieht warum. Eine Verschiebung durch einen
+# Permalink ändert daran nichts – wurzel-absolute Adressen fasst die `<base>`
+# nicht an; genau deshalb ist die Site-Relativität die richtige Wahl, und genau
+# deshalb muss die Verwechslung auffallen.
+tote_assets = []
 
 # --- _config.yml ---------------------------------------------------------
 excluded = []
@@ -753,6 +905,55 @@ config_data.each do |display, cfg, data|
     messages << "#{display}#{line ? ":#{line}" : ''}: `#{field}` #{text}"
   end
   maps.page_links.each { |field, id| links << [display, cfg, 0, field, id] }
+  # SITE-WEITE ASSETS, gleiche Prüfung wie je Seite. Ein Pfad ODER eine Liste.
+  %w[styles scripts].each do |feld|
+    Array(data[feld]).each do |eintrag|
+      pfad = eintrag.to_s
+      next if pfad.empty? || pfad.match?(%r{\A(?:[a-z][a-z0-9+.-]*:)?//})
+      datei = File.join(root, pfad.sub(%r{\A/}, '').split('?').first.to_s)
+      next if File.file?(datei)
+      line = line_of(cfg, "/#{feld}", 0)
+      tote_assets << ["#{display}#{line ? ":#{line}" : ''}", feld, pfad, false]
+    end
+  end
+end
+
+# --- Layout-Konfiguration ------------------------------------------------
+alle_konfigurationen = config_data.map { |_, _, data| data }
+layout_unlisted, layout_overrides = LayoutRules.settings(alle_konfigurationen)
+bekannte_layouts = LayoutRules.theme_layouts
+eigene_layouts = LayoutRules.own_layouts(root, alle_konfigurationen)
+
+# Nur prüfen, wenn die Selbstauskunft des Themes gelesen werden konnte: Ohne sie wäre
+# jeder Name „unbekannt", und die Meldung zeigte auf die Konfiguration statt auf die
+# fehlende Datei.
+unless bekannte_layouts.empty?
+  # Was das Repo ZUSÄTZLICH mitbringt. In diesem Repository zeigt `layouts_dir` auf die
+  # Layouts des Themes selbst – ohne den Abzug stünde jeder Name doppelt in der Meldung.
+  eigene_layouts -= bekannte_layouts
+  erlaubte_namen = (bekannte_layouts + eigene_layouts).uniq
+  config_data.each do |display, cfg, data|
+    %w[layouts components].each do |wurzel|
+      namen = if wurzel == 'layouts'
+                data.dig('layouts', 'overrides')
+              else
+                data.dig('components', 'layouts')
+              end
+      next unless namen.is_a?(Hash)
+
+      pfad = wurzel == 'layouts' ? 'layouts.overrides' : 'components.layouts'
+      namen.each_key do |name|
+        next if erlaubte_namen.include?(name.to_s)
+
+        line = line_of(cfg, '/' + wurzel, 0)
+        messages << "#{display}#{line ? ":#{line}" : ''}: `#{pfad}.#{name}` nennt kein " \
+                    'Layout. Das Theme liefert ' \
+                    "#{bekannte_layouts.sort.join(', ')}" \
+                    "#{eigene_layouts.empty? ? '' : "; eigene: #{eigene_layouts.sort.join(', ')}"}. " \
+                    'Ein Name, den es nicht gibt, stellt nichts ein und verbietet nichts.'
+      end
+    end
+  end
 end
 
 # Die Standardsprache MUSS mit deklariert sein – sonst hätte der Wurzelbaum keine
@@ -763,6 +964,39 @@ if language_codes.any? && !language_codes.include?(default_language)
                'mit in die Deklaration – ihr Sprachbaum ist die Wurzel der Site.'
 end
 
+# --- Front Matter der LAYOUT-Dateien -------------------------------------
+# WOFUER: Ein Layout deklariert unter `switches:`, welche Bausteine es traegt. Ein
+# Tippfehler dort bleibt stumm – der Baustein erscheint einfach nicht, und niemand
+# erfaehrt, warum. Dasselbe gilt fuer die Eigenschaften des Rahmens (`hero`, `sidebar`).
+#
+# GEPRUEFT WIRD `layouts_dir` DES REPOS, nicht das Theme im Paket: Dort liegen die
+# eigenen Layouts (und, wenn das Repo den dokumentierten Weg geht, Kopien der
+# mitgelieferten). Ein Repo ohne eigenes Verzeichnis hat nichts zu pruefen.
+layout_dateien = 0
+if File.exist?(layout_schema)
+  layout_dir = '_layouts'
+  config_data.each { |_, _, data| layout_dir = data['layouts_dir'].to_s if data['layouts_dir'] }
+  voll = File.expand_path(layout_dir, root)
+  if File.directory?(voll)
+    Dir[File.join(voll, '*.html')].sort.each do |datei|
+      data, errors = front_matter(datei)
+      rel = datei.sub(/\A#{Regexp.escape(root)}\/?/, '')
+      if errors
+        messages << "#{rel}: #{errors}"
+        next
+      end
+      next if data.nil?
+
+      layout_dateien += 1
+      validator.reset_deprecations
+      validator.check_all(data, validator.document(layout_schema), layout_schema).each do |f|
+        line = line_of(datei, f[:pointer], 1)
+        messages << "#{rel}#{line ? ":#{line}" : ''}: #{f[:pointer].empty? ? '' : "`#{f[:pointer].sub(%r{\A/}, '').gsub('/', '.')}` "}#{f[:text]}"
+      end
+    end
+  end
+end
+
 # --- Front Matter aller Seiten und Collection-Dokumente ------------------
 # Die Collections stehen erst hier fest: Sie können in einem Overlay erklärt werden,
 # und gelesen sind alle Konfigurationen erst nach der Schleife oben.
@@ -770,6 +1004,8 @@ collections = collection_dirs(config_data.map { |_, _, data| data })
 pages = 0
 collection_pages = 0
 translations = {}
+# Zielgruppen je Datei – für Fassungen derselben Seite (siehe unten). `nil` heißt: alle.
+page_audiences = {}
 filenames = {}
 without_language = []
 # Braucht diese Site das Adressen-Plugin? Zwei Anzeichen, beide allein am QUELLTEXT
@@ -855,11 +1091,55 @@ Dir.glob(File.join(root, '**', '*.{md,markdown,html}')).sort.each do |path|
   if data.is_a?(Hash) && data['page_id'].is_a?(String)
     used_ids << data['page_id']
     (translations[[page_language, data['page_id']]] ||= []) << rel
+    page_audiences[rel] = data['audiences'].is_a?(Array) ? data['audiences'].map(&:to_s) : nil
   end
   filename = File.basename(rel).sub(/\.(md|markdown|html?)\z/i, '')
   (filenames[[page_language, filename]] ||= []) << rel
 
   next if data.nil?
+  seiten_layout = data['layout'].to_s
+  unless seiten_layout.empty?
+    if LayoutRules.availability(seiten_layout, layout_unlisted, layout_overrides) == 'forbidden'
+      line = line_of(path, '/layout', 1)
+      messages << "#{rel}#{line ? ":#{line}" : ''}: `layout: #{seiten_layout}` ist in der " \
+                  'Konfiguration dieser Site verboten ' \
+                  "(#{layout_overrides.key?(seiten_layout) ? "`layouts.overrides.#{seiten_layout}`" : '`layouts.default_values.unlisted`'})."
+    end
+  end
+  if assets_erlaubt[seiten_layout.empty? ? 'page' : seiten_layout] == false
+    lay = seiten_layout.empty? ? 'page' : seiten_layout
+    roh = File.read(path)
+    koerper = roh.start_with?("---\n") ? roh.split(/^---\s*$/, 3)[2].to_s : roh
+    gefunden = ohne_code(koerper).scan(/<(style|script|link)\b/i).flatten.map(&:downcase).uniq.sort
+    # BEIDE WEGE, NICHT NUR EINER. Das Element im Text ist der eine; die DEKLARATION im
+    # Front Matter ist der andere, und sie laedt genauso. Wer nur den Text pruefte,
+    # verboete die unsaubere Form und liesse die saubere durch - das waere willkuerlich.
+    # Eine LEERE Liste ist keine Angabe und deshalb in Ordnung.
+    %w[styles scripts].each do |feld|
+      gefunden << "`#{feld}`" if Array(data[feld]).any?
+    end
+    fremde_assets << [rel, lay, gefunden.uniq.sort] unless gefunden.empty?
+  end
+  # DEKLARIERTE ASSETS GEGEN DAS DATEISYSTEM. Unabhängig davon, ob das Layout sie
+  # erlaubt: Ein Pfad, hinter dem keine Datei liegt, ist in jedem Fall falsch.
+  %w[styles scripts].each do |feld|
+    Array(data[feld]).each do |eintrag|
+      pfad = eintrag.to_s
+      next if pfad.empty? || pfad.match?(%r{\A(?:[a-z][a-z0-9+.-]*:)?//})
+      next if pfad.start_with?('{{', '{%')
+      datei = File.join(root, pfad.sub(%r{\A/}, '').split('?').first.to_s)
+      next if File.file?(datei)
+      # NEBEN DER SEITE GESUCHT: Liegt dort eine Datei dieses Namens, war es keine
+      # Schreibweise, sondern die Verwechslung – dann sagt der Hinweis das auch.
+      daneben = File.file?(File.expand_path(pfad, File.dirname(path)))
+      line = line_of(path, "/#{feld}", 1)
+      tote_assets << ["#{rel}#{line ? ":#{line}" : ''}", feld, pfad, daneben]
+    end
+  end
+  if abstract_names.include?(data['layout'].to_s)
+    line = line_of(path, '/layout', 1)
+    abstrakt << ["#{rel}#{line ? ":#{line}" : ''}", data['layout'].to_s]
+  end
   validator.reset_deprecations
   validator.check_all(data, validator.document(paths[:frontmatter]), paths[:frontmatter]).each do |f|
     line = line_of(path, f[:pointer], 1)
@@ -929,6 +1209,16 @@ end
 # entscheidet die Sortierung des Dateisystems. Das fällt beim Bauen nicht auf.
 translations.each do |(language, id), files|
   next if files.size < 2
+  # FASSUNGEN DERSELBEN SEITE FÜR VERSCHIEDENE ZIELGRUPPEN dürfen dieselbe ID tragen –
+  # dieselbe Regel, nach der sie dieselbe Adresse tragen dürfen: Gefiltert wird vor
+  # Jekyll, jede Ausgabe sieht nur eine davon. Ein Konflikt ist es erst, wenn sich die
+  # `audiences` zweier Dateien überschneiden; ohne Angabe ist eine Datei in jeder Ausgabe.
+  overlap = files.combination(2).any? do |a, b|
+    x = page_audiences[a]
+    y = page_audiences[b]
+    x.nil? || y.nil? || !(x & y).empty?
+  end
+  next unless overlap
   messages << "#{files.first}: `page_id` `#{id}` kommt in der Sprache " \
                "`#{language}` mehrfach vor (#{files.join(', ')}). Je Sprache darf es zu " \
                'einer ID nur EINE Seite geben – sonst ist weder bestimmt, wohin der ' \
@@ -1020,6 +1310,63 @@ unless veraltet.empty?
   end
 end
 
+# EIGENE STYLES/SKRIPTE, WO DAS LAYOUT SIE NICHT ERLAUBT – gesammelt je Layout.
+unless fremde_assets.empty?
+  fremde_assets.group_by { |_, lay, _| lay }.each do |lay, treffer|
+    stellen = treffer.map(&:first)
+    arten = treffer.flat_map { |_, _, a| a }.uniq.sort
+    beispiele = stellen.first(3).join(', ')
+    rest = stellen.size - [stellen.size, 3].min
+    benannt = arten.map { |a| a.start_with?('`') ? a : "<#{a}>" }.join(', ')
+    warn "HINWEIS: #{stellen.size} Seite(n) mit `layout: #{lay}` bringen eigene Assets mit " \
+         "(#{benannt}). Dieses Layout erlaubt das nicht – `source_assets: false` in " \
+         'contract/theme.json. Ein Skript kann das Dokument verändern, ein Stylesheet wirkt ' \
+         'seitenweit und überschreibt Theme-Regeln an Stellen, die niemand im Blick hat.'
+    warn '         Das gilt für BEIDE Wege: das Element im Text und die Angabe `styles:` ' \
+         'bzw. `scripts:` im Front Matter. Braucht die Seite wirklich eigene Darstellung ' \
+         'oder eigenes Verhalten, ist es das falsche Layout.'
+    warn "         z. B. #{beispiele}#{rest.positive? ? " (und #{rest} weitere)" : ''}"
+    warn ''
+  end
+end
+
+# DEKLARIERTE ASSETS OHNE DATEI – je Pfad gesammelt, nicht je Seite: Derselbe
+# falsche Pfad steht meist in mehreren Seiten, und die Ursache ist eine.
+unless tote_assets.empty?
+  tote_assets.group_by { |_, feld, pfad, _| [feld, pfad] }.each do |(feld, pfad), treffer|
+    stellen = treffer.map(&:first)
+    beispiele = stellen.first(3).join(', ')
+    rest = stellen.size - [stellen.size, 3].min
+    warn "HINWEIS: `#{feld}: #{pfad}` zeigt auf keine Datei – #{stellen.size} Stelle(n). " \
+         'Die Seite lädt dort nichts, und der Bau bleibt trotzdem grün.'
+    if treffer.any? { |_, _, _, daneben| daneben }
+      warn "         NEBEN DER SEITE liegt eine Datei dieses Namens. `#{feld}` ist " \
+           'SITE-RELATIV, nicht seitenrelativ: Der Pfad zählt ab der Wurzel der Site, ' \
+           'nicht ab dem Ordner der Seite. Schreibe ihn von der Wurzel aus.'
+    end
+    warn "         z. B. #{beispiele}#{rest.positive? ? " (und #{rest} weitere)" : ''}"
+    warn ''
+  end
+end
+
+# EIN ABSTRAKTES LAYOUT AUF EINER SEITE – gesammelt je Layoutname, nicht je Stelle;
+# dieselbe Form wie die beiden Hinweise darüber und aus demselben Grund.
+unless abstrakt.empty?
+  abstrakt.group_by { |_, name| name }.each do |name, treffer|
+    stellen = treffer.map(&:first)
+    beispiele = stellen.first(3).join(', ')
+    rest = stellen.size - [stellen.size, 3].min
+    warn "HINWEIS: `layout: #{name}` auf #{stellen.size} Seite(n). Dieses Layout ist die " \
+         'OBERKLASSE, von der eigene Layouts erben – eine Seite soll es nicht tragen. Ihr ' \
+         'fehlen Kopfzeile, Brotkrumen, Hero und Sidebar.'
+    warn '         Stattdessen `layout: page` schreiben (oder das Layout weglassen – es ist ' \
+         'die Vorgabe). Wer wirklich einen eigenen Rahmen braucht, legt ein eigenes Layout ' \
+         'an, das davon erbt.'
+    warn "         z. B. #{beispiele}#{rest.positive? ? " (und #{rest} weitere)" : ''}"
+    warn ''
+  end
+end
+
 if messages.empty?
   aud = audiences.uniq.empty? ? 'keine Zielgruppen deklariert' : "Zielgruppen: #{audiences.uniq.join(', ')}"
   lng = language_codes.empty? ? 'einsprachig' : "Sprachen: #{language_codes.join(', ')}"
@@ -1027,7 +1374,8 @@ if messages.empty?
   # Meldung ansehen, dass sie mit geprüft wurde – und nicht raten müssen, ob die Zahl
   # sie enthält.
   from_collections = collection_pages.zero? ? '' : " (darunter #{collection_pages} aus Collections)"
-  puts "Schema #{version}: #{configs.size} Konfiguration(en) und #{pages} Seite(n)#{from_collections} geprüft, #{aud}, #{lng} – keine Verstöße."
+  lay = layout_dateien.zero? ? '' : ", #{layout_dateien} Layout(s)"
+  puts "Schema #{version}: #{configs.size} Konfiguration(en) und #{pages} Seite(n)#{from_collections}#{lay} geprüft, #{aud}, #{lng} – keine Verstöße."
   exit 0
 end
 

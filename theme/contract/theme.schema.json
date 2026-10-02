@@ -1,0 +1,106 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Academy-Theme – Selbstauskunft",
+  "description": "Beschreibt `theme.json`, die Selbstauskunft des ATVANTAGE Academy Theme: welche Layouts es gibt, was sie sind, und welche Verträge daneben im Paket liegen. Die Datei liegt im npm-Paket und wird von `bin/theme-contract.rb` erzeugt. Draft-07, weil die IDE-Auflöser diesen Entwurf am verlässlichsten unterstützen.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_version", "theme", "layouts", "schemas", "contract_files"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Verweis auf dieses Schema. Relativ, weil es im Paket neben der Datei liegt – eine veröffentlichte Adresse entsteht erst beim Deploy und läge hinter dem GHE-Login."
+    },
+    "contract_version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Fassung DIESER Datei, unabhängig von der Theme-Version. Steigt bei jeder inhaltlichen Änderung, auch bei einer Ergänzung: Ein Konsument soll daran erkennen, ob sein Stand noch der aktuelle ist."
+    },
+    "theme": {
+      "type": "string",
+      "description": "Name des npm-Pakets, das diese Datei beschreibt. Die VERSION steht nicht hier – sie steht in der `package.json` daneben, und zwei Stellen driften."
+    },
+    "layouts": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "description": "Alle Layouts, die das Theme mitliefert – vollständig, aus `jekyll/_layouts/` abgeleitet. Ein Layout hinzufügen ist ein Minor; eines entfernen, umbenennen oder seine Einstufung ändern ein Major.",
+      "items": { "$ref": "#/definitions/layout" }
+    },
+    "schemas": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Die JSON-Schemas, gegen die das Theme Front Matter und Konfiguration prüft.",
+      "items": { "$ref": "#/definitions/contract_file" }
+    },
+    "contract_files": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Die übrigen Vertragsdateien im Paket. Sie sind Zeilenlisten: je Zeile ein Name, Kommentarzeilen beginnen mit `#`.",
+      "items": { "$ref": "#/definitions/contract_file" }
+    }
+  },
+  "definitions": {
+    "layout": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Ein Layout des Themes. ALLE Angaben sind Pflicht – es gibt keine Standardwerte, weil ein fehlender Schlüssel sonst dreierlei heißen könnte: nicht gesetzt, auf den Standard gesetzt, oder diese Fassung kennt ihn nicht.",
+      "required": ["name", "label", "inherits", "abstract", "heading", "source_assets", "note"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Der Wert, den eine Seite in ihrem Front Matter unter `layout` schreibt."
+        },
+        "label": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["de", "en"],
+          "description": "Beschriftung zum Anzeigen. Die Sprachen sind hier geschlossen, weil das Theme genau diese beiden selbst beschriftet; was eine SITE an Sprachen führt, ist eine andere Frage und steht in deren `i18n.languages`.",
+          "properties": {
+            "de": { "type": "string" },
+            "en": { "type": "string" }
+          }
+        },
+        "inherits": {
+          "type": ["string", "null"],
+          "description": "Das Layout, von dem dieses erbt (`layout:` in seinem eigenen Front Matter), oder `null` für ein eigenständiges Dokument mit eigenem `<!DOCTYPE html>`."
+        },
+        "abstract": {
+          "type": "boolean",
+          "description": "OBERKLASSE: Eigene Layouts dürfen davon erben, eine Seite soll es nicht tragen. Betrifft nur Layouts des Themes; was eine einzelne Site darüber hinaus zulässt oder verbietet, steht in ihrer `_config.yml`."
+        },
+        "heading": {
+          "type": "string",
+          "enum": ["frame", "source"],
+          "description": "Wer die H1 der Seite rendert. `frame`: das Theme, aus dem Front-Matter-Feld `title` – eine führende H1 im Seitenkörper wird dabei aus dem Dokument entfernt, damit der Titel genau einmal darin steht. `source`: die Quelle bringt sie mit."
+        },
+        "source_assets": {
+          "type": "boolean",
+          "description": "Ob das Layout ERLAUBT, dass die Quelldatei der Seite eigene `<style>`-, `<script>`- oder `<link>`-Elemente mitbringt – das Markdown, das die Autorin schreibt. NICHT zu verwechseln damit, dass ein LAYOUT Assets mitliefert; das sind `styles`/`scripts` in seinem Front Matter. `false` heißt: Die Gestaltung kommt aus dem Theme. Die Angabe ist getrennt von `heading`, weil beide bei derselben Seite auseinanderlaufen können – eine Visualisierung bringt eigenes CSS mit, bekommt ihre H1 aber vom Rahmen."
+        },
+        "note": {
+          "type": "string",
+          "description": "Ein Satz, was dieses Layout ist – für Menschen, die die Datei lesen."
+        }
+      }
+    },
+    "contract_file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "package_path", "purpose"],
+      "description": "Eine Vertragsdatei im Paket, mit ihrer eigenen Fassungsnummer.",
+      "properties": {
+        "name": { "type": "string", "description": "Kurzname ohne Endung." },
+        "version": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Fassung DIESER Datei. Jede Liste zählt eigenständig – die Fassungen entwickeln sich unabhängig voneinander und von der Theme-Version."
+        },
+        "package_path": {
+          "type": "string",
+          "description": "Pfad im npm-Paket, relativ zu dessen Wurzel. KEINE URL: Die veröffentlichten Adressen entstehen erst beim Deploy und liegen hinter dem GHE-Login; der Paketpfad stimmt immer."
+        },
+        "purpose": { "type": "string", "description": "Wofür die Datei da ist." }
+      }
+    }
+  }
+}
