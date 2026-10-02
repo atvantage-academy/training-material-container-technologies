@@ -15,6 +15,27 @@ Abschnitt „Theme-Version“.
 
 ---
 
+## 3.15.2
+
+### Die Topics einer Seite zählen in der Suche mit
+
+**Patch.** Sie zählten bisher **gar nicht**. Die Tags stehen im Hero, und der liegt
+außerhalb von `<main>` – gelesen hat der Indexer aber nur `<main>`. Wer „Open Graph“
+suchte, fand die so verschlagwortete Seite nicht, obwohl die Angabe genau dafür da ist.
+Allein in dieser Doku standen **elf** Topics nirgends im Index.
+
+Gelesen werden sie jetzt direkt aus dem Front Matter statt aus dem HTML. Das hat einen
+zweiten Vorteil: Sie zählen auch dort, wo der Text NICHT in den Index geht – eine
+Visualisierung oder ein Wissens-Check ist damit über sein Thema auffindbar, ohne dass
+Schritte oder Antworten in den Index wandern.
+
+**Gewichtet zwischen `h1` und `h2`.** Ein Topic ist ein absichtlich gesetztes Schlagwort
+und wiegt deshalb mehr als eine Zwischenüberschrift. Über die `h1` geht es nicht: Topics
+sind kurz und oft allgemein, ein Kapiteltitel sagt genauer, wovon die Seite handelt.
+
+Der Index wächst dadurch um die Topics selbst – an dieser Doku gemessen von 408 781 auf
+410 905 Byte, also ein halbes Prozent.
+
 ## 3.15.1
 
 ### Die Suche gewichtet Überschriften nach ihrer Ebene

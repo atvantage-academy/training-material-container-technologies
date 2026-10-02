@@ -79,7 +79,7 @@
       <a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a>
   </nav><div class="avd-academy-header__tools"><div class="avd-academy-search" data-avd-academy-search hidden
              data-mode="expand" data-shortcut="double_shift"
-             data-index="/training-material-container-technologies/theme/search/de.json?v=1790946161"
+             data-index="/training-material-container-technologies/theme/search/de.json?v=1790949864"
              data-base="/training-material-container-technologies/">
           <button type="button" class="avd-academy-tool avd-academy-tool--search" data-avd-academy-search-toggle
                   aria-expanded="false" aria-controls="avd-academy-search-dialog"
@@ -106,7 +106,7 @@
             <ul class="avd-academy-search__results" data-avd-academy-search-results aria-label="Suchergebnisse"></ul>
           </dialog>
         </div>
-        <script src="/training-material-container-technologies/theme/jekyll/search.js?v=912d74e7" defer></script><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
+        <script src="/training-material-container-technologies/theme/jekyll/search.js?v=f70d18fa" defer></script><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
                 title="Diese Seite auf Deinem Smartphone öffnen"
                 aria-label="Diese Seite auf Deinem Smartphone öffnen"></button><button type="button" class="avd-academy-tool avd-academy-tool--theme" data-avd-academy-theme-toggle
               title="Farbschema umschalten (hell/dunkel)"
@@ -157,6 +157,27 @@ inkompatibel gilt und wie eingestuft wird, steht in
 Abschnitt „Theme-Version“.</p>
 
 <hr />
+
+<h2 id="3152">3.15.2</h2>
+
+<h3 id="die-topics-einer-seite-zählen-in-der-suche-mit">Die Topics einer Seite zählen in der Suche mit</h3>
+
+<p><strong>Patch.</strong> Sie zählten bisher <strong>gar nicht</strong>. Die Tags stehen im Hero, und der liegt
+außerhalb von <code>&lt;main&gt;</code> – gelesen hat der Indexer aber nur <code>&lt;main&gt;</code>. Wer „Open Graph“
+suchte, fand die so verschlagwortete Seite nicht, obwohl die Angabe genau dafür da ist.
+Allein in dieser Doku standen <strong>elf</strong> Topics nirgends im Index.</p>
+
+<p>Gelesen werden sie jetzt direkt aus dem Front Matter statt aus dem HTML. Das hat einen
+zweiten Vorteil: Sie zählen auch dort, wo der Text NICHT in den Index geht – eine
+Visualisierung oder ein Wissens-Check ist damit über sein Thema auffindbar, ohne dass
+Schritte oder Antworten in den Index wandern.</p>
+
+<p><strong>Gewichtet zwischen <code>h1</code> und <code>h2</code>.</strong> Ein Topic ist ein absichtlich gesetztes Schlagwort
+und wiegt deshalb mehr als eine Zwischenüberschrift. Über die <code>h1</code> geht es nicht: Topics
+sind kurz und oft allgemein, ein Kapiteltitel sagt genauer, wovon die Seite handelt.</p>
+
+<p>Der Index wächst dadurch um die Topics selbst – an dieser Doku gemessen von 408 781 auf
+410 905 Byte, also ein halbes Prozent.</p>
 
 <h2 id="3151">3.15.1</h2>
 
