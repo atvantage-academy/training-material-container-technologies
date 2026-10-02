@@ -15,6 +15,27 @@ Abschnitt „Theme-Version“.
 
 ---
 
+## 3.15.1
+
+### Die Suche gewichtet Überschriften nach ihrer Ebene
+
+**Patch.** Gewichtet wurde schon vorher – Titel vor Überschriften vor Beschreibung vor
+Fließtext. Alle Überschriften lagen dabei aber in **einem** Feld: Ein Treffer in einer `h3`
+zählte so viel wie einer in einer `h2`. Die Gliederung sagt aber etwas darüber, wie zentral
+ein Begriff für die Seite ist.
+
+Der Indexer schreibt die Ebenen jetzt getrennt, und `search.js` wiegt sie verschieden: `h1`
+über der Beschreibung, `h2` darunter, `h3` nochmals darunter – alle drei deutlich über dem
+Fließtext. Neu konfigurierbar ist nichts; die Index-Dateien erzeugt und liest das Theme
+selbst, beide reisen im selben Paket.
+
+**Der Index wird davon nicht größer.** Leere Überschriftenfelder fallen jetzt ganz aus der
+Datei, statt als `"j":""` durch jeden Browser zu wandern – gemessen an dieser Doku: 408 791
+Byte vorher, 408 781 danach, bei drei Ebenen statt einer.
+
+Nebenbei zählt eine Überschrift nur noch, wenn ihr schließendes Tag zur Ebene passt;
+`<h2>…</h3>` galt vorher als Überschrift.
+
 ## 3.15.0
 
 ### Suche in der Kopfzeile

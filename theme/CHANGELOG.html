@@ -79,7 +79,7 @@
       <a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a>
   </nav><div class="avd-academy-header__tools"><div class="avd-academy-search" data-avd-academy-search hidden
              data-mode="expand" data-shortcut="double_shift"
-             data-index="/training-material-container-technologies/theme/search/de.json?v=1790944555"
+             data-index="/training-material-container-technologies/theme/search/de.json?v=1790946161"
              data-base="/training-material-container-technologies/">
           <button type="button" class="avd-academy-tool avd-academy-tool--search" data-avd-academy-search-toggle
                   aria-expanded="false" aria-controls="avd-academy-search-dialog"
@@ -106,7 +106,7 @@
             <ul class="avd-academy-search__results" data-avd-academy-search-results aria-label="Suchergebnisse"></ul>
           </dialog>
         </div>
-        <script src="/training-material-container-technologies/theme/jekyll/search.js?v=c00ba04e" defer></script><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
+        <script src="/training-material-container-technologies/theme/jekyll/search.js?v=912d74e7" defer></script><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
                 title="Diese Seite auf Deinem Smartphone öffnen"
                 aria-label="Diese Seite auf Deinem Smartphone öffnen"></button><button type="button" class="avd-academy-tool avd-academy-tool--theme" data-avd-academy-theme-toggle
               title="Farbschema umschalten (hell/dunkel)"
@@ -157,6 +157,27 @@ inkompatibel gilt und wie eingestuft wird, steht in
 Abschnitt „Theme-Version“.</p>
 
 <hr />
+
+<h2 id="3151">3.15.1</h2>
+
+<h3 id="die-suche-gewichtet-überschriften-nach-ihrer-ebene">Die Suche gewichtet Überschriften nach ihrer Ebene</h3>
+
+<p><strong>Patch.</strong> Gewichtet wurde schon vorher – Titel vor Überschriften vor Beschreibung vor
+Fließtext. Alle Überschriften lagen dabei aber in <strong>einem</strong> Feld: Ein Treffer in einer <code>h3</code>
+zählte so viel wie einer in einer <code>h2</code>. Die Gliederung sagt aber etwas darüber, wie zentral
+ein Begriff für die Seite ist.</p>
+
+<p>Der Indexer schreibt die Ebenen jetzt getrennt, und <code>search.js</code> wiegt sie verschieden: <code>h1</code>
+über der Beschreibung, <code>h2</code> darunter, <code>h3</code> nochmals darunter – alle drei deutlich über dem
+Fließtext. Neu konfigurierbar ist nichts; die Index-Dateien erzeugt und liest das Theme
+selbst, beide reisen im selben Paket.</p>
+
+<p><strong>Der Index wird davon nicht größer.</strong> Leere Überschriftenfelder fallen jetzt ganz aus der
+Datei, statt als <code>"j":""</code> durch jeden Browser zu wandern – gemessen an dieser Doku: 408 791
+Byte vorher, 408 781 danach, bei drei Ebenen statt einer.</p>
+
+<p>Nebenbei zählt eine Überschrift nur noch, wenn ihr schließendes Tag zur Ebene passt;
+<code>&lt;h2&gt;…&lt;/h3&gt;</code> galt vorher als Überschrift.</p>
 
 <h2 id="3150">3.15.0</h2>
 
