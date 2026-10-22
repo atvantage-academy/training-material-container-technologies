@@ -1,0 +1,77 @@
+/* Skriptorium: in der Schicht skr.components – skriptorium/guide-layout.css. */
+@layer skr.tokens, skr.base, skr.components, skr.theme, skr.extensions;
+@layer skr.components {
+[data-skr-layouts~="skriptorium.guide"] .skr-guide-main { counter-reset: skr-guide-step; }
+/* Überschriften h3 IN der Definition of Done gliedern sie nach Aufgaben – sie sind keine
+   Schritte und zählen nicht mit. */
+[data-skr-layouts~="skriptorium.guide"] .skr-guide-main h3:not(.skr-guide-done h3) {
+  counter-increment: skr-guide-step;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+[data-skr-layouts~="skriptorium.guide"] .skr-guide-main h3:not(.skr-guide-done h3)::before {
+  content: counter(skr-guide-step);
+  flex: none;
+  width: 40px; height: 40px;
+  border-radius: var(--skr-radius, 5px);
+  background: var(--skr-color-primary);
+  color: var(--skr-color-primary-contrast);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 1.125rem; font-weight: 600;
+}
+@media (max-width: 768px) {
+  [data-skr-layouts~="skriptorium.guide"] .skr-guide-main h3:not(.skr-guide-done h3)::before { width: 32px; height: 32px; font-size: 1rem; }
+}
+
+/* --- Definition of Done ----------------------------------------------------
+   Aus `definition_of_done` im Front Matter oder von Hand im Inhalt
+   (`<div class="skr-guide-done" markdown="1">`): eine Fläche mit Überschrift und
+   Aufgabenliste. Ihre Kästchen zählen im Fortschritt mit. */
+.skr-guide-done {
+  background: var(--skr-color-bg-subtle);
+  border-left: 4px solid var(--skr-color-accent);
+  border-radius: 0 var(--skr-radius, 5px) var(--skr-radius, 5px) 0;
+  padding: var(--skr-space-3) var(--skr-space-4);
+  margin-block: var(--skr-space-4);
+}
+.skr-guide-done > h2 { margin-top: 0; }
+.skr-guide-done > h3 { margin-block: var(--skr-space-3) var(--skr-space-2); }
+.skr-guide-done > :last-child { margin-bottom: 0; }
+
+/* --- Karte „Fortschritt“ ----------------------------------------------------
+   Form und Beschriftung wie die übrigen Karten der Seitenleiste; hier nur ihr Inhalt. */
+.skr-guide-progress__bar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--skr-border-soft);
+  overflow: hidden;
+}
+.skr-guide-progress__fill {
+  height: 100%;
+  width: 0;
+  background: var(--skr-color-accent);
+  transition: width .2s;
+}
+.skr-guide-progress__text {
+  margin-top: var(--skr-space-2);
+  font-size: 1.0625rem;
+  color: var(--skr-color-headline);
+}
+/* Alles erledigt: ein grüner Haken neben dem Text – Balken und Text bleiben. */
+.skr-guide-progress.is-complete .skr-guide-progress__text {
+  display: flex; align-items: center; gap: 8px;
+}
+.skr-guide-progress.is-complete .skr-guide-progress__text::after {
+  content: ""; flex: none; width: 20px; height: 20px;
+  background-color: var(--skr-color-success);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+/* Schmal entfällt die Karte: Auf einem Telefon liest man einen Abschnitt, man arbeitet
+   keine Checkliste ab – und über dem Text wäre sie die erste Information, die niemand
+   gesucht hat. */
+@media (max-width: 960px) {
+  .skr-guide-sidebar > .skr-guide-progress { display: none; }
+}
+}

@@ -1,0 +1,26 @@
+/* Skriptorium: in der Schicht skr.tokens – extensions/didaktikon/tokens.css. */
+@layer skr.tokens, skr.base, skr.components, skr.theme, skr.extensions;
+@layer skr.tokens {
+:root {
+  --skr-didaktikon-tone-1: light-dark(#303e4f, color-mix(in srgb, #303e4f 45%, #fff));
+  --skr-didaktikon-tone-2: light-dark(#ff5401, color-mix(in srgb, #ff5401 60%, #fff));
+  --skr-didaktikon-tone-3: light-dark(#c9a227, color-mix(in srgb, #c9a227 60%, #fff));
+  --skr-didaktikon-tone-4: light-dark(#7a6fb3, color-mix(in srgb, #7a6fb3 55%, #fff));
+  --skr-didaktikon-tone-alert: light-dark(#c62828, color-mix(in srgb, #c62828 55%, #fff));
+  --skr-didaktikon-tone-1-ink: color-mix(in srgb, var(--skr-didaktikon-tone-1) 45%, var(--skr-color-ink));
+  --skr-didaktikon-tone-2-ink: color-mix(in srgb, var(--skr-didaktikon-tone-2) 45%, var(--skr-color-ink));
+  --skr-didaktikon-tone-3-ink: color-mix(in srgb, var(--skr-didaktikon-tone-3) 45%, var(--skr-color-ink));
+  --skr-didaktikon-tone-4-ink: color-mix(in srgb, var(--skr-didaktikon-tone-4) 45%, var(--skr-color-ink));
+  --skr-didaktikon-tone-alert-ink: color-mix(in srgb, var(--skr-didaktikon-tone-alert) 45%, var(--skr-color-ink));
+}
+
+@media print {
+  :root {
+    --skr-didaktikon-tone-1: #303e4f !important;
+    --skr-didaktikon-tone-2: #ff5401 !important;
+    --skr-didaktikon-tone-3: #c9a227 !important;
+    --skr-didaktikon-tone-4: #7a6fb3 !important;
+    --skr-didaktikon-tone-alert: #c62828 !important;
+  }
+}
+}

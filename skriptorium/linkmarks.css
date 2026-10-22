@@ -1,0 +1,155 @@
+/* Erzeugt vom Skriptorium: die Linkmarken dieser Unterlage (linkmarks). */
+@layer skr.tokens, skr.base, skr.components, skr.theme, skr.extensions;
+@layer skr.components {
+:where(.skr-guide-main a[href*="github.com"]),
+:where(.skr-guide-main a[href*=".ghe.com"]),
+.skr-linkmark--github,
+:where(.skr-guide-main a[href*="github.io"]),
+:where(.skr-guide-main a[href*=".pages."][href*=".ghe.com"]),
+.skr-linkmark--github-pages,
+:where(.skr-guide-main a[href*="linkedin.com"]),
+.skr-linkmark--linkedin,
+:where(.skr-guide-main a[href*="baeldung.com"]),
+.skr-linkmark--baeldung,
+:where(.skr-guide-main a[href^="mailto:"]),
+.skr-linkmark--mail,
+:where(.skr-guide-main a[href$=".pdf"]),
+.skr-linkmark--pdf,
+:where(.skr-guide-main a:is([href^="http:"], [href^="https:"]):not([href*="github.com"], [href*=".ghe.com"], [href*="github.io"], [href*=".pages."][href*=".ghe.com"], [href*="linkedin.com"], [href*="baeldung.com"], [href^="mailto:"], [href$=".pdf"], [href*=".docker.com"], [class*="skr-linkmark--"], .skr-doclink, .skr-btn, :has(> img), :has(> svg))),
+.skr-linkmark--web,
+:where(.skr-guide-main a[href*=".docker.com"]),
+.skr-linkmark--docker {
+  position: relative;
+  padding-left: 1.35em;
+}
+:where(.skr-guide-main a[href*="github.com"])::before,
+:where(.skr-guide-main a[href*=".ghe.com"])::before,
+.skr-linkmark--github::before,
+:where(.skr-guide-main a[href*="github.io"])::before,
+:where(.skr-guide-main a[href*=".pages."][href*=".ghe.com"])::before,
+.skr-linkmark--github-pages::before,
+:where(.skr-guide-main a[href*="linkedin.com"])::before,
+.skr-linkmark--linkedin::before,
+:where(.skr-guide-main a[href*="baeldung.com"])::before,
+.skr-linkmark--baeldung::before,
+:where(.skr-guide-main a[href^="mailto:"])::before,
+.skr-linkmark--mail::before,
+:where(.skr-guide-main a[href$=".pdf"])::before,
+.skr-linkmark--pdf::before,
+:where(.skr-guide-main a:is([href^="http:"], [href^="https:"]):not([href*="github.com"], [href*=".ghe.com"], [href*="github.io"], [href*=".pages."][href*=".ghe.com"], [href*="linkedin.com"], [href*="baeldung.com"], [href^="mailto:"], [href$=".pdf"], [href*=".docker.com"], [class*="skr-linkmark--"], .skr-doclink, .skr-btn, :has(> img), :has(> svg)))::before,
+.skr-linkmark--web::before,
+:where(.skr-guide-main a[href*=".docker.com"])::before,
+.skr-linkmark--docker::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .18em;
+  width: 1em;
+  height: 1em;
+  background: center / contain no-repeat;
+}
+:where(.skr-guide-main a[href*="github.com"])::before,
+:where(.skr-guide-main a[href*=".ghe.com"])::before,
+.skr-linkmark--github::before {
+  background-image: url("../skriptorium/icons/icon-github.svg");
+  mask-image: url("../skriptorium/icons/icon-github.svg");
+}
+:where(.skr-guide-main a[href*="github.io"])::before,
+:where(.skr-guide-main a[href*=".pages."][href*=".ghe.com"])::before,
+.skr-linkmark--github-pages::before {
+  background-image: url("../skriptorium/icons/icon-github-pages.svg");
+  mask-image: url("../skriptorium/icons/icon-github-pages.svg");
+}
+:where(.skr-guide-main a[href*="linkedin.com"])::before,
+.skr-linkmark--linkedin::before {
+  background-image: url("../skriptorium/icons/icon-linkedin.svg");
+  mask-image: url("../skriptorium/icons/icon-linkedin.svg");
+}
+:where(.skr-guide-main a[href*="baeldung.com"])::before,
+.skr-linkmark--baeldung::before {
+  background-image: url("../skriptorium/icons/icon-baeldung.svg");
+  mask-image: url("../skriptorium/icons/icon-baeldung.svg");
+}
+:where(.skr-guide-main a[href^="mailto:"])::before,
+.skr-linkmark--mail::before {
+  background-image: url("../skriptorium/icons/icon-mail.svg");
+  mask-image: url("../skriptorium/icons/icon-mail.svg");
+}
+:where(.skr-guide-main a[href$=".pdf"])::before,
+.skr-linkmark--pdf::before {
+  background-image: url("../skriptorium/icons/icon-pdf.svg");
+  mask-image: url("../skriptorium/icons/icon-pdf.svg");
+}
+:where(.skr-guide-main a:is([href^="http:"], [href^="https:"]):not([href*="github.com"], [href*=".ghe.com"], [href*="github.io"], [href*=".pages."][href*=".ghe.com"], [href*="linkedin.com"], [href*="baeldung.com"], [href^="mailto:"], [href$=".pdf"], [href*=".docker.com"], [class*="skr-linkmark--"], .skr-doclink, .skr-btn, :has(> img), :has(> svg)))::before,
+.skr-linkmark--web::before {
+  background-image: url("../skriptorium/icons/icon-web.svg");
+  mask-image: url("../skriptorium/icons/icon-web.svg");
+}
+:where(.skr-guide-main a[href*=".docker.com"])::before,
+.skr-linkmark--docker::before {
+  background-image: url("../assets/icons/docker.svg");
+  mask-image: url("../assets/icons/docker.svg");
+}
+@supports (mask-image: none) {
+:where(.skr-guide-main a[href*="github.com"])::before,
+:where(.skr-guide-main a[href*=".ghe.com"])::before,
+.skr-linkmark--github::before,
+:where(.skr-guide-main a[href*="github.io"])::before,
+:where(.skr-guide-main a[href*=".pages."][href*=".ghe.com"])::before,
+.skr-linkmark--github-pages::before,
+:where(.skr-guide-main a[href*="linkedin.com"])::before,
+.skr-linkmark--linkedin::before,
+:where(.skr-guide-main a[href*="baeldung.com"])::before,
+.skr-linkmark--baeldung::before,
+:where(.skr-guide-main a[href^="mailto:"])::before,
+.skr-linkmark--mail::before,
+:where(.skr-guide-main a[href$=".pdf"])::before,
+.skr-linkmark--pdf::before,
+:where(.skr-guide-main a:is([href^="http:"], [href^="https:"]):not([href*="github.com"], [href*=".ghe.com"], [href*="github.io"], [href*=".pages."][href*=".ghe.com"], [href*="linkedin.com"], [href*="baeldung.com"], [href^="mailto:"], [href$=".pdf"], [href*=".docker.com"], [class*="skr-linkmark--"], .skr-doclink, .skr-btn, :has(> img), :has(> svg)))::before,
+.skr-linkmark--web::before,
+:where(.skr-guide-main a[href*=".docker.com"])::before,
+.skr-linkmark--docker::before {
+  background-image: none;
+  background-color: currentColor;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+}
+}
+.skr-linkmark--none :where(.skr-guide-main a[href*="github.com"]),
+:where(.skr-guide-main a[href*="github.com"]).skr-linkmark--none,
+.skr-linkmark--none :where(.skr-guide-main a[href*=".ghe.com"]),
+:where(.skr-guide-main a[href*=".ghe.com"]).skr-linkmark--none,
+.skr-linkmark--none .skr-linkmark--github,
+.skr-linkmark--github.skr-linkmark--none,
+.skr-linkmark--none :where(.skr-guide-main a[href*="github.io"]),
+:where(.skr-guide-main a[href*="github.io"]).skr-linkmark--none,
+.skr-linkmark--none :where(.skr-guide-main a[href*=".pages."][href*=".ghe.com"]),
+:where(.skr-guide-main a[href*=".pages."][href*=".ghe.com"]).skr-linkmark--none,
+.skr-linkmark--none .skr-linkmark--github-pages,
+.skr-linkmark--github-pages.skr-linkmark--none,
+.skr-linkmark--none :where(.skr-guide-main a[href*="linkedin.com"]),
+:where(.skr-guide-main a[href*="linkedin.com"]).skr-linkmark--none,
+.skr-linkmark--none .skr-linkmark--linkedin,
+.skr-linkmark--linkedin.skr-linkmark--none,
+.skr-linkmark--none :where(.skr-guide-main a[href*="baeldung.com"]),
+:where(.skr-guide-main a[href*="baeldung.com"]).skr-linkmark--none,
+.skr-linkmark--none .skr-linkmark--baeldung,
+.skr-linkmark--baeldung.skr-linkmark--none,
+.skr-linkmark--none :where(.skr-guide-main a[href^="mailto:"]),
+:where(.skr-guide-main a[href^="mailto:"]).skr-linkmark--none,
+.skr-linkmark--none .skr-linkmark--mail,
+.skr-linkmark--mail.skr-linkmark--none,
+.skr-linkmark--none :where(.skr-guide-main a[href$=".pdf"]),
+:where(.skr-guide-main a[href$=".pdf"]).skr-linkmark--none,
+.skr-linkmark--none .skr-linkmark--pdf,
+.skr-linkmark--pdf.skr-linkmark--none,
+.skr-linkmark--none :where(.skr-guide-main a:is([href^="http:"], [href^="https:"]):not([href*="github.com"], [href*=".ghe.com"], [href*="github.io"], [href*=".pages."][href*=".ghe.com"], [href*="linkedin.com"], [href*="baeldung.com"], [href^="mailto:"], [href$=".pdf"], [href*=".docker.com"], [class*="skr-linkmark--"], .skr-doclink, .skr-btn, :has(> img), :has(> svg))),
+:where(.skr-guide-main a:is([href^="http:"], [href^="https:"]):not([href*="github.com"], [href*=".ghe.com"], [href*="github.io"], [href*=".pages."][href*=".ghe.com"], [href*="linkedin.com"], [href*="baeldung.com"], [href^="mailto:"], [href$=".pdf"], [href*=".docker.com"], [class*="skr-linkmark--"], .skr-doclink, .skr-btn, :has(> img), :has(> svg))).skr-linkmark--none,
+.skr-linkmark--none .skr-linkmark--web,
+.skr-linkmark--web.skr-linkmark--none,
+.skr-linkmark--none :where(.skr-guide-main a[href*=".docker.com"]),
+:where(.skr-guide-main a[href*=".docker.com"]).skr-linkmark--none,
+.skr-linkmark--none .skr-linkmark--docker,
+.skr-linkmark--docker.skr-linkmark--none { padding-left: 0; }
+}

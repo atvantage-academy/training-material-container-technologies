@@ -1,0 +1,1794 @@
+/* Skriptorium: in der Schicht skr.components – skriptorium/components.css. */
+@layer skr.tokens, skr.base, skr.components, skr.theme, skr.extensions;
+@layer skr.components {
+.skr-btn {
+  display: inline-flex; align-items: center; gap: var(--skr-space-2);
+  font: inherit; font-weight: 500;
+  padding: 11px 26px;
+  border-radius: var(--button-radius, 4px);
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.skr-btn--primary { background: var(--button-bg); color: var(--button-text); }
+.skr-btn--primary:hover,
+.skr-btn--primary:focus-visible { background: var(--button-bg-hover); color: var(--button-text); }
+/* Outline-Variante (z. B. Theme-Umschalter) */
+.skr-btn--ghost { background: transparent; color: var(--skr-color-headline); border-color: var(--skr-color-border); }
+.skr-btn--ghost:hover { border-color: var(--skr-color-headline); }
+
+/* Kopier-Buttons als kompakte Icon-Buttons: Icon = Klemmbrett (echtes SVG per
+   CSS-Mask in currentColor – KEIN Emoji). „Kopieren“/„Kopiert!“ nur als Tooltip
+   (title) und aria-label; nach dem Kopieren wechselt das Icon per .is-copied auf
+   einen Haken. */
+.skr-copy, .skr-copy-md { padding: 7px; gap: 0; line-height: 0; }
+.skr-copy::before, .skr-copy-md::before {
+  content: ""; display: block; width: 18px; height: 18px;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.skr-copy.is-copied::before, .skr-copy-md.is-copied::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+          mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+}
+
+/* --- Seitenwerkzeuge: EINE Knopfform, vier Standorte ----------------------
+   QR-Code, Farbschema, Drucken, Vollbild sind überall dieselben Knöpfe – sie
+   stehen nur an verschiedenen Stellen (Kopfzeile bei gewöhnlichen Seiten,
+   Titelband bei Layouts mit `hero_tools`, Kopfleiste bei der Präsentation und
+   eigenständigen Layouts). Gerendert von
+   skriptorium/layouts/_partials/skriptorium/tools.html.
+
+   AUSSEHEN KOMMT VOM CONTAINER, nicht vom Knopf: Kantenlänge, Textfarbe und
+   Zeichengröße stehen in drei Variablen, die die umgebende Gruppe setzt. Deshalb
+   funktioniert derselbe Knopf auf der weißen Kopfzeile wie auf der dunklen
+   Kopfleiste der Präsentation, ohne eine Klasse je Standort. Die Vorgaben sind
+   die der Doku-Seiten; presentation.css und die Stylesheets eigenständiger
+   Layouts schrauben sie um.
+
+   Bis Theme 2.x trugen die Knöpfe zusätzlich `skr-theme-toggle` und
+   `skr-print-btn`. Beide sind mit 3.0 entfallen; wer sie in seiner
+   assets/custom.css selektiert, schreibt auf `.skr-tool--theme` bzw.
+   `.skr-tool--print` um. */
+.skr-tool {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: var(--skr-tool-size, 34px);
+  height: var(--skr-tool-size, 34px);
+  padding: 0;
+  border: 1px solid var(--skr-color-border);
+  border-radius: var(--button-radius, 4px);
+  background: transparent;
+  color: var(--skr-tool-ink, var(--skr-color-headline));
+  font: inherit;
+  font-size: var(--skr-tool-glyph, 18px);
+  line-height: 1;
+  cursor: pointer;
+  transition: color .15s, border-color .15s;
+}
+.skr-tool:hover,
+.skr-tool:focus-visible {
+  color: var(--skr-tool-ink-hover, var(--skr-color-headline));
+  border-color: currentColor;
+}
+
+/* Sprachumschalter – der einzige Werkzeugknopf mit TEXT statt Zeichen: Er trägt den
+   Sprachcode der Zielsprache („EN“). Ein Globus-Symbol sagt „irgendeine Sprache“,
+   zwei Buchstaben sagen WELCHE – und zwar ohne Grafik, ohne Menü und in jeder Sprache
+   verständlich. Gerendert von skriptorium/layouts/_partials/skriptorium/tools.html, je anderer Sprache
+   ein Knopf.
+
+   ES IST EIN `<a>`, kein `<button>`: Der Wechsel ist eine Navigation und soll ohne
+   JavaScript, im neuen Tab und für Suchmaschinen funktionieren. Deshalb hier die
+   beiden Eigenschaften, die ein Link von sich aus mitbringt und die die Knopfform
+   nicht vorsieht: keine Unterstreichung, Farbe vom Knopf statt vom Linktext.
+
+   ZWEI ZEICHEN BRAUCHEN WENIGER GRÖSSE als ein Glyph: Bei der Zeichengröße der
+   übrigen Werkzeuge (18px) stießen sie an den Rand. Abgeleitet wird sie aus derselben
+   Variablen, damit der Knopf in der Präsentation mitschrumpft. */
+.skr-tool--lang {
+  text-decoration: none;
+  color: var(--skr-tool-ink, var(--skr-color-headline));
+  font-size: calc(var(--skr-tool-glyph, 18px) * 0.66);
+  font-weight: 600;
+  letter-spacing: .02em;
+}
+
+/* Drucken – kompakter Icon-Button wie die Kopier-Buttons: Icon als CSS-Maske in
+   currentColor, KEIN Emoji. Beschriftung nur als Tooltip und aria-label.
+   Verdrahtet von client.js ([data-skr-print]) bzw. presentation.js
+   ([data-skr-present-print]); im Ausdruck ausgeblendet (print.css). */
+.skr-tool--print::before {
+  content: ""; display: block; width: 18px; height: 18px;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 6 2 18 2 18 9'/%3E%3Cpath d='M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2'/%3E%3Crect x='6' y='14' width='12' height='8'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 6 2 18 2 18 9'/%3E%3Cpath d='M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2'/%3E%3Crect x='6' y='14' width='12' height='8'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* Der Kopier-Button IM Code-Block (`pre > button`, absolut oben rechts – gesetzt in
+   client.js) erscheint erst beim Überfahren des Blocks. Dauerhaft sichtbar
+   verdeckt er das rechte Ende der ersten Code-Zeile.
+
+   Bewusst `opacity` statt `display: none`: Der Button bleibt im Baum und damit für
+   Screenreader und die Tabulator-Reihenfolge erhalten. `:focus-within` blendet ihn
+   ein, sobald er den Fokus bekommt – sonst müssten Tastaturnutzer einen
+   unsichtbaren Button anspringen. `.is-copied` bleibt sichtbar, damit die
+   Haken-Rückmeldung nicht verschwindet, wenn die Maus den Block sofort verlässt.
+
+   Betrifft nur den Code-Button: `.skr-copy-md` im Hero steht nicht in einem
+   `pre` und bleibt unverändert. Die Transition neutralisiert
+   `prefers-reduced-motion` global (base.css). */
+/* LAGE: oben rechts im Block, über die Stellschrauben `--skr-copy-top` und
+   `--skr-copy-right` (stabil) – kein `style` des Skripts steht dagegen. */
+pre:has(> .skr-copy) { position: relative; }
+pre > .skr-copy {
+  position: absolute;
+  top: var(--skr-copy-top, 0.5rem);
+  right: var(--skr-copy-right, 0.5rem);
+}
+pre > .skr-copy { opacity: 0; transition: opacity 120ms ease-in-out; }
+pre:hover > .skr-copy,
+pre:focus-within > .skr-copy,
+pre > .skr-copy.is-copied { opacity: 1; }
+
+/* Ohne Hover-Fähigkeit (Touch) gibt es kein Überfahren – dort dauerhaft sichtbar,
+   sonst wäre der Button unerreichbar. Muss NACH der Basisregel stehen: gleiche
+   Spezifität (0,1,1), es entscheidet die Quellordnung. */
+@media (hover: none) {
+  pre > .skr-copy { opacity: 1; }
+}
+
+/* --- QR-Code der Seiten-URL (Ergänzung des Kerns) -------------------------
+   Steht neben dem Drucken- bzw. Kopieren-Button und ist genauso groß wie dieser
+   (`--skr-qr-size`, vom Kontext gesetzt: 34 px in der Hero-Meta-Zeile,
+   2 rem in der Präsentations-Kopfleiste).
+
+   In Button-Größe ist ein QR-Code NICHT scannbar – ein Modul wäre etwa ein Pixel
+   breit. Er ist hier nur das Zeichen des Knopfs. Den scannbaren Code zeigt ein
+   Klick in einem Popup in der Mitte der Seite, darunter die Adresse, die er trägt
+   (client.js baut es, gestaltet in site.css).
+
+   DER KNOPF WÄCHST NICHT MEHR. Bis 4.1 vergrößerte er sich beim Überfahren aus
+   seiner Ecke über die Nachbarn – gemeldet als störend, sobald die Maus nur
+   vorbeifuhr. Überfahren und Tastaturfokus zeigen jetzt wie bei den übrigen
+   Werkzeugknöpfen nur den Rahmen.
+
+   `--skr-qr-now` ist die Kantenlänge der Fläche und folgt der Größe; `-pad` und
+   `-shadow` stellt die Präsentation je Ort um.
+
+   Aufbau (`client.js` hängt die Fläche und das SVG ein):
+     button.skr-qr            Schaltfläche in Button-Größe, [hidden] bis fertig
+       span.skr-qr__box       weiße Fläche mit Rahmen
+         svg                          Ruhezone + Module                             */
+.skr-qr {
+  --skr-qr-size: var(--skr-tool-size, 34px);   /* Kantenlänge (= Icon-Button) */
+  --skr-qr-now: var(--skr-qr-size);
+  --skr-qr-pad: 2px;
+  --skr-qr-shadow: none;
+  position: relative;
+  flex: none;
+  width: var(--skr-qr-size);
+  height: var(--skr-qr-size);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--skr-tool-ink, var(--skr-color-headline));
+  cursor: pointer;
+}
+/* Das Layout liefert den Platzhalter als [hidden]; ohne diese Regel gewönne die
+   `width`/`height`-Regel oben über dem `display: none` des Browser-Stylesheets. */
+.skr-qr[hidden] { display: none; }
+
+.skr-qr__box {
+  display: block;
+  box-sizing: border-box;
+  width: var(--skr-qr-now);
+  height: var(--skr-qr-now);
+  padding: var(--skr-qr-pad);
+  box-shadow: var(--skr-qr-shadow);
+  background: var(--skr-color-primary-contrast);
+  border: 1px solid var(--skr-color-border);
+  border-radius: var(--skr-radius);
+  transition: border-color .15s;
+}
+/* Wie `.skr-tool`: Überfahren und Tastaturfokus zeigen den Rahmen. */
+.skr-qr:hover .skr-qr__box,
+.skr-qr:focus-visible .skr-qr__box {
+  border-color: currentColor;
+}
+.skr-qr__box svg { display: block; width: 100%; height: 100%; }
+/* Immer dunkel auf hell – unabhängig vom Farbschema. Ein invertierter QR-Code
+   (hell auf dunkel) wird von vielen Scannern nicht gelesen. Beide Token haben keine
+   Dark-Variante, ein Sonderfall für das dunkle Schema ist nicht nötig. */
+.skr-qr__box svg rect { fill: var(--skr-color-primary-contrast); }
+.skr-qr__box svg path { fill: var(--skr-color-primary-dark); }
+
+/* --- Dokumentlinks (`skr-doclink`) ------------------------------------------
+   Ein Verweis, dem die ART seines Ziels vorangestellt ist: Präsentation, Übersicht –
+   und was Extensions an Arten mitbringen. Gesetzt vom Bau (ein Listenpunkt aus
+   genau einem Verweis bekommt die Art seines Ziels) oder von Hand
+   (`{: .skr-doclink .skr-doclink--«art»}`).
+
+   HIER STEHEN NUR FORM UND FARBE. Welche Arten es gibt, ihr Icon und ihre
+   Bezeichnung erzeugt der Bau je Unterlage in `doclinks.css`: Je Art setzt er
+   `--skr-doclink-icon` (das Icon als Maske), schaltet das Zeichen ein und gibt dem
+   Symbol je Sprache die Bezeichnung als Alternativtext. Das Icon ist einfarbig;
+   seine Farbe kommt aus den Token, jedes Theme färbt es also mit.
+
+   DAS SYMBOL IN ZWEI SCHICHTEN: die KACHEL als Hintergrundfarbe
+   (`--skr-doclink-tile`) und darüber das ZEICHEN – das Icon als Maske in
+   `--skr-doclink-glyph`. `::after` liegt per `order` und negativem Rand genau auf
+   `::before`; beide richten sich gleich an der Grundlinie aus. Im dunklen Schema
+   liefe die Kachel mit dem Seitenhintergrund zusammen, deshalb der feine Ring.
+   Gedruckt erscheint das Symbol, weil print.css `print-color-adjust: exact`
+   global setzt. */
+.skr-doclink {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--skr-space-2);
+}
+.skr-doclink::before,
+.skr-doclink::after {
+  flex: none;
+  width: 1.05rem;
+  height: 1.05rem;
+  border-radius: 3px;
+  transform: translateY(.15rem);
+}
+.skr-doclink::before {
+  content: "";
+  order: -2;
+  background: var(--skr-doclink-tile);
+  box-shadow: 0 0 0 1px var(--skr-color-border);
+}
+/* Ohne `content`: Das Zeichen erscheint erst, wenn doclinks.css die Art kennt. */
+.skr-doclink::after {
+  order: -1;
+  margin-left: calc(-1.05rem - var(--skr-space-2));
+  background: var(--skr-doclink-glyph);
+  mask: var(--skr-doclink-icon) center / contain no-repeat;
+}
+
+/* --- Linkmarken (`skr-linkmark`) ------------------------------------
+   EIN ICON VOR EINEM VERWEIS, ABGELEITET AUS SEINEM ZIEL. Wer auf ein Repository,
+   ein Profil oder ein PDF verweist, soll das SEHEN, bevor er klickt.
+
+   DIE MARKEN STEHEN IN DER KONFIGURATION (`linkmarks`, Vorgaben in
+   skriptorium.defaults.yml; Theme und Unterlage ergänzen sie). Das Stylesheet dazu
+   erzeugt der Bau (/skriptorium/linkmarks.css, adapter/hugo/project.mjs): je Marke ein
+   Muster über `href` im Inhalt bei Spezifität null (`:where()`), die Klasse
+   `skr-linkmark--«name»`, die sie erzwingt, die Rückfallmarke für jeden übrigen Verweis
+   nach draußen und das Icon als Maske in der Farbe des Verweises (`currentColor`; ein
+   über `url()` geladenes SVG kennt die Farbe der Seite nicht).
+
+   DER PLATZ STEHT AM VERWEIS, DAS ICON DARÜBER (absolut positioniert): So bricht der
+   Browser nie zwischen Marke und erstem Wort um.
+
+   Hier bleibt allein das Abschalten: `skr-linkmark--none` am Verweis oder an einem
+   Vorfahren nimmt die Marke weg – ein ganzer Abschnitt lässt sich so beruhigen. Den Platz
+   nimmt das erzeugte Stylesheet mit weg.                                      */
+.skr-linkmark--none a::before,
+a.skr-linkmark--none::before { content: none; }
+
+/* --- Callouts / Hinweisboxen (Ergänzung des Kerns; das Theme setzt keine) -- */
+.skr-callout {
+  border-left: 4px solid var(--skr-color-info);
+  background: var(--skr-color-bg-subtle);
+  border-radius: 0 var(--skr-radius) var(--skr-radius) 0;
+  padding: var(--skr-space-3) var(--skr-space-4);
+  margin-block: var(--skr-space-4);
+}
+.skr-callout--info    { border-color: var(--skr-color-info); }
+.skr-callout--success { border-color: var(--skr-color-success); }
+.skr-callout--warning { border-color: var(--skr-color-warning); }
+.skr-callout--danger  { border-color: var(--skr-color-danger); }
+.skr-callout__title { font-weight: 600; margin-bottom: var(--skr-space-1); }
+
+/* --- Karten / Kacheln (Card: graue Fläche, Headline im Akzent, Link) ------ */
+.skr-card {
+  display: flex; flex-direction: column;
+  background: var(--skr-color-bg-subtle);
+  border-radius: var(--radius-dark, 6px);
+  padding: 28px 28px 24px;
+}
+.skr-card h2, .skr-card h3, .skr-card h4, .skr-card h5 {
+  color: var(--skr-color-accent-text);   /* Überschriften der Karten in der Akzentschrift */
+  margin-top: 0;
+  margin-bottom: var(--skr-space-3);
+}
+/* Letztes Element bündig, ohne Zusatzabstand. Empfohlenes Muster: die
+   Karten-Überschrift IST der Link (Anwendungsdokumentation, Bausteine);
+   ein separater „Mehr dazu →“/„Loslegen →“-CTA-Absatz ist nicht mehr nötig. */
+.skr-card > :last-child { margin-bottom: 0; }
+.skr-card a {
+  color: var(--skr-color-accent-text);
+  font-weight: 500;
+  text-decoration: none;
+}
+.skr-card a:hover { text-decoration: underline; }
+/* Verlinkte Card-Headline: sieht aus wie die Headline, nur klickbar. */
+.skr-card h2 a, .skr-card h3 a,
+.skr-card h4 a, .skr-card h5 a { color: inherit; font-weight: inherit; }
+
+/* --- Aufdeckbarer Inhalt (Ergänzung des Kerns) -----------------------------
+   Ein Titel, der wie ein Link aussieht; der Inhalt erscheint erst auf Klick,
+   mittig über der Seite. Wofür: Material, das den Lesefluss unterbrechen würde,
+   aber greifbar bleiben soll – Musterlösungen, Legenden, Abgrenzungstabellen,
+   Hintergrund zu einer Entscheidung.
+
+   AUFGEBAUT AUF `<details>`, nicht auf einem Klick-Handler. Das ist Absicht:
+   Ohne JavaScript bleibt es ein normaler Aufklapper, und der Inhalt ist
+   erreichbar. Ein Popup, das nur mit JS existiert, verliert im Fehlerfall
+   Schulungsinhalt – und genau das darf nicht passieren.
+
+   Die mittige Darstellung macht CSS allein (`[open]`), nicht das Skript: Der
+   native Umschalter von `<details>` schaltet `[open]`, daran hängen Overlay und
+   Panel. client.js ergänzt nur die Bequemlichkeiten, die `<details>` nicht
+   mitbringt: Klick daneben und ESC schließen, und ein Rahmen um den Inhalt
+   (`__body`), damit Panel und Overlay getrennt liegen.
+
+   IM AUSDRUCK steht der Inhalt EINGEBETTET an seiner Stelle in der Seite, auch
+   wenn er zu ist – auf Papier gibt es kein Aufdecken, und ein Ausdruck mit
+   Lücken ist wertlos. Wer das für einzelne Stellen nicht will (Musterlösungen
+   neben der Übung!), setzt zusätzlich `--screen-only`.               */
+.skr-reveal { margin: var(--skr-space-4) 0; }
+.skr-reveal > summary {
+  display: inline-flex; align-items: center; gap: var(--skr-space-2);
+  width: fit-content;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--skr-color-accent-text);
+  border-bottom: 1px dashed currentColor;
+  list-style: none;             /* Standard-Dreieck weg (Firefox) */
+}
+.skr-reveal > summary::-webkit-details-marker { display: none; }
+.skr-reveal > summary::before {
+  content: ""; flex: none; width: 1rem; height: 1rem;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-4.5-4.5'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-4.5-4.5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.skr-reveal > summary:hover,
+.skr-reveal > summary:focus-visible { border-bottom-style: solid; }
+
+/* --- Variante `--info`: kompakte Schaltfläche statt Titelzeile ---------------
+   Für Stellen ohne Platz für einen Titel – eine Tabellenzelle, das Ende einer
+   Zeile. Die Auslösung ist ein runder Knopf mit Info-Zeichen; der Titel steckt
+   als visuell verborgener Text im `summary` und ist damit NICHT weg: Screenreader
+   lesen ihn, und client.js übernimmt ihn als Überschrift des Panels.
+
+       <details class="skr-reveal skr-reveal--info" markdown="1">
+       <summary><span class="skr-visually-hidden">«Titel»</span></summary>
+       …
+       </details>
+
+   Das Zeichen ist eine CSS-Maske in `currentColor`, kein Emoji – ein Emoji sieht
+   je Plattform anders aus, lässt sich nicht einfärben und folgt der Schriftgröße
+   nicht. Ohne `margin`, damit der Knopf in einer Tabellenzeile nicht ausbricht. */
+.skr-reveal--info { display: inline-block; margin: 0; vertical-align: middle; }
+/* NEBEN EINEM `<code>` SITZT DER KNOPF ZU TIEF. `middle` richtet an der Mitte der
+   Textzeile aus; eine Code-Auszeichnung hat durch ihren Innenabstand eine hoehere Box,
+   deren Mitte darueber liegt - gemessen 13px Versatz. An der Grundlinie stimmt es
+   (gemessen: 2px Rest). Nur fuer diesen Nachbarn, damit der Knopf im Fliesstext bleibt,
+   wo er ist. */
+code + .skr-reveal--info { vertical-align: baseline; }
+.skr-reveal--info > summary {
+  width: 1.4rem; height: 1.4rem; padding: 0; gap: 0;
+  justify-content: center;
+  border-bottom: 0; border-radius: 999px;
+  background: color-mix(in srgb, var(--skr-color-accent) 16%, transparent);
+}
+.skr-reveal--info > summary:hover,
+.skr-reveal--info > summary:focus-visible {
+  border-bottom: 0;
+  background: color-mix(in srgb, var(--skr-color-accent) 34%, transparent);
+}
+.skr-reveal--info > summary::before {
+  width: .95rem; height: .95rem;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 2a10 10 0 100 20 10 10 0 000-20zm0 2a8 8 0 110 16 8 8 0 010-16zm-1.1 6.4h2.2v7h-2.2zm0-4h2.2v2.2h-2.2z'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 2a10 10 0 100 20 10 10 0 000-20zm0 2a8 8 0 110 16 8 8 0 010-16zm-1.1 6.4h2.2v7h-2.2zm0-4h2.2v2.2h-2.2z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* Abdunkelung hinter dem Panel. Sie sitzt am `details` selbst, damit kein
+   zusätzliches Element nötig ist – der Klick darauf schließt (client.js). */
+.skr-reveal[open]::before {
+  content: ""; position: fixed; inset: 0; z-index: 60;
+  background: rgba(2, 6, 23, .6);
+}
+
+/* Das Panel: mittig, begrenzt in Breite und Höhe, innen scrollbar. Ohne das
+   Skript (kein `__body`) greift dieselbe Regel für die direkten Kinder – dann
+   liegt der Inhalt ebenfalls mittig, nur ohne eigene Fläche pro Block. */
+.skr-reveal[open] > .skr-reveal__body {
+  position: fixed; inset: 0; margin: auto; z-index: 61;
+  /* `height: fit-content` ist nötig, nicht Kosmetik: Mit `inset: 0` sind oben UND
+     unten gesetzt, dadurch streckt sich das Panel bei `height: auto` über die
+     ganze Höhe – ein kurzer Inhalt stünde in einem fast leeren Kasten. */
+  width: min(92vw, 780px); height: fit-content; max-height: 85vh; overflow: auto;
+  padding: var(--skr-space-6);
+  background: var(--skr-color-bg);
+  color: var(--skr-color-ink);
+  border: 1px solid var(--skr-color-border);
+  border-radius: var(--radius-dark, 6px);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .35);
+}
+/* `--wide`: ein breiteres Panel fuer BREITEN Inhalt - eine Vergleichstabelle mit
+   mehreren Spalten steht in 780px entweder gequetscht oder im Scrollbereich, und
+   beides nimmt ihr genau das, wofuer man sie oeffnet. Die Vorgabe bleibt schmal:
+   Fuer die haeufige Info-Schaltflaeche mit zwei Saetzen waere eine lange Zeile
+   schlechter zu lesen, nicht besser. */
+.skr-reveal--wide[open] > .skr-reveal__body { width: min(96vw, 1180px); }
+.skr-reveal__body > :first-child { margin-top: 0; }
+.skr-reveal__body > :last-child { margin-bottom: 0; }
+/* Der Titel wird im Panel wiederholt, damit sichtbar bleibt, was man geöffnet
+   hat – gesetzt von client.js aus dem `summary`. */
+.skr-reveal__title {
+  margin: 0 0 var(--skr-space-4);
+  font-size: 1.05rem;
+  padding-bottom: var(--skr-space-2);
+  border-bottom: 1px solid var(--skr-color-border);
+}
+/* Schließen-Kreuz oben rechts im Panel (client.js). */
+.skr-reveal__close {
+  position: absolute; top: var(--skr-space-3); right: var(--skr-space-3);
+  border: 0; background: transparent; color: inherit;
+  font-size: 1.5rem; line-height: 1; cursor: pointer; padding: 0 .2rem;
+  /* Mindestens 24x24 - darunter verlangt WCAG 2.5.8 freien Abstand ringsum, den
+     ein Kreuz in der Ecke eines Panels nicht hat. Das Zeichen bleibt gleich groß;
+     nur die anklickbare Flaeche waechst. */
+  min-width: 24px; min-height: 24px;
+}
+
+/* --- Badge / Chip --------------------------------------------------------- */
+.skr-badge {
+  display: inline-block; font-size: var(--skr-fs-sm); font-weight: 500;
+  padding: 0.1em 0.7em; border-radius: 999px;
+  background: var(--skr-color-bg); border: 1px solid var(--skr-color-border);
+  color: var(--skr-color-headline);
+}
+
+/* =============================================================================
+   Header + Footer (in JEDER Unterlage identisch)
+   ============================================================================= */
+
+/* --- Meta-Navigation (schmale Leiste über dem Header) --------------------- */
+.skr-metanav {
+  background: var(--skr-metanav-bg);
+  color: var(--skr-metanav-text);
+  font-size: 0.875rem;
+  display: flex;
+  gap: 24px;
+  padding: 6px max(24px, calc((100% - var(--skr-page-width, 1180px)) / 2));
+}
+.skr-metanav a { color: inherit; text-decoration: none; }
+.skr-metanav a:hover { color: var(--skr-color-accent-text); }
+
+/* --- Header: weiß, sticky ------------------------------------------------ */
+/* Stellschrauben für Themes (stabil): Fläche `--skr-topbar-bg` (tokens.css), Farbschema
+   `--skr-header-scheme`, Schrift `--skr-header-text` und – beim Überfahren und am
+   aktuellen Eintrag – `--skr-header-text-active`, Linie darunter
+   `--skr-header-nav-underline` (`text-decoration`, etwa `underline 2px`) mit
+   `--skr-header-nav-underline-offset`. Ein eigenes Farbschema gilt für alles in der
+   Kopfzeile: Navigation, Untermenüs, Werkzeuge, Burger-Menü. */
+.skr-header {
+  color-scheme: var(--skr-header-scheme, inherit);
+  color: var(--skr-header-text, inherit);
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; gap: 32px;
+  height: var(--topnav-height, 72px);
+  padding: 0 max(24px, calc((100% - var(--skr-page-width, 1180px)) / 2));
+  background: var(--skr-topbar-bg);
+  border-bottom: 1px solid var(--skr-border-soft);
+}
+.skr-header__brand { display: inline-flex; align-items: center; text-decoration: none; }
+.skr-header__logo { height: var(--skr-logo-height); width: auto; display: block; }
+/* WORTMARKE JE FARBSCHEMA: Hat die Marke eine eigene für das dunkle Schema
+   (`brand.logo.dark`), steht sie als zweites Bild daneben und tauscht die helle aus –
+   nach der Systemeinstellung oder der Wahl des Umschalters (`data-skr-theme`).
+   Gedruckt wird immer die helle. Gilt in Kopfzeile, Folien und eigenständigen Layouts. */
+.skr-logo--dark { display: none !important; }
+@media screen and (prefers-color-scheme: dark) {
+  :root:not([data-skr-theme="light"]) .skr-logo--light { display: none !important; }
+  :root:not([data-skr-theme="light"]) .skr-logo--dark { display: block !important; }
+}
+@media screen {
+  :root[data-skr-theme="dark"] .skr-logo--light { display: none !important; }
+  :root[data-skr-theme="dark"] .skr-logo--dark { display: block !important; }
+}
+
+/* GEFÄRBTE WORTMARKE – nur mit `brand.logo.tint`. Ein <img> lädt das SVG als EIGENES
+   Dokument: Dort sind weder die Tokens der Seite noch `currentColor` noch
+   `data-skr-theme` sichtbar. Eine Farbe im SVG selbst wäre ein zweiter Handwert neben
+   `--skr-accent-base`.
+
+   Deshalb liegt die gefärbte Fassung als MASKE auf einem <span> NEBEN dem Bild. Nicht
+   auf dem Bild: Gemessen trägt die Maske dort nicht – weder `content: ""` noch
+   `content: none` noch `-webkit-mask` entfernen den Bildinhalt, das Original malt
+   darüber. Auf einem nicht ersetzten Element trägt sie.
+
+   Weil der span keine Eigengröße hat, kommt das Verhältnis von außen: Der Adapter liest
+   es aus der SVG-Datei (`viewBox`, sonst `width` und `height`) oder nimmt
+   `brand.logo.ratio`.
+
+   Der span ist STANDARDMÄSSIG UNSICHTBAR und das <img> sichtbar: Kann der Browser keine
+   Masken, bleibt es beim unveränderten Bild. */
+.skr-header__logo-mask { display: none; }
+
+@supports (mask: url("#x") no-repeat) {
+  .skr-header__logo-mask ~ .skr-header__logo,
+  .skr-header__logo:has(~ .skr-header__logo-mask) { display: none; }
+  .skr-header__logo-mask {
+    display: block;
+    height: var(--skr-logo-height);
+    aspect-ratio: var(--skr-logo-ratio);
+    background-color: var(--skr-color-accent);
+    mask-repeat: no-repeat;
+    mask-position: left center;
+    mask-size: contain;
+  }
+}
+/* WORTMARKE EIGENSTÄNDIGER LAYOUTS – der Baustein skr/logo setzt `skr-logo` und
+   `skr-logo-mask` neben die Klassen seines Blocks. Wechsel und Färbung wie in der
+   Kopfzeile; die Höhe setzt das Layout an seinen Klassen (`skr-«block»__logo`, `__logo-mask`).
+   Ohne Angabe gilt `--skr-logo-height`. */
+.skr-logo { height: var(--skr-logo-height); width: auto; display: block; flex: 0 0 auto; }
+.skr-logo-mask { display: none; }
+@supports (mask: url("#x") no-repeat) {
+  .skr-logo-mask ~ .skr-logo,
+  .skr-logo:has(~ .skr-logo-mask) { display: none; }
+  .skr-logo-mask {
+    display: block;
+    flex: 0 0 auto;
+    height: var(--skr-logo-height);
+    aspect-ratio: var(--skr-logo-ratio);
+    background-color: var(--skr-color-accent);
+    mask-repeat: no-repeat;
+    mask-position: left center;
+    mask-size: contain;
+  }
+}
+.skr-header__nav { margin-left: auto; display: flex; align-items: center; gap: 26px; flex-wrap: wrap; }
+
+/* --- Rollen der Navigation (`nav.roles`) -------------------------------------------
+   Ein Umschalter aus Segmenten vor der Leiste: die gewählte Rolle im Akzent gefüllt, die
+   übrigen ruhig. Er bleibt auch schmal sichtbar – er bestimmt, was der Burger zeigt. Die
+   Wahl ist eine Gruppe von Optionsfeldern (role="radio"), mit Pfeiltasten bedienbar. */
+.skr-header__roles {
+  display: inline-flex; flex: none; align-items: center; gap: 2px;
+  margin-left: var(--skr-space-4, 1rem); padding: 3px;
+  border: 1px solid var(--skr-color-border); border-radius: 999px;
+  background: var(--skr-color-bg-subtle);
+}
+.skr-header__role {
+  border: 0; border-radius: 999px; padding: 0.3rem 0.85rem;
+  background: none; color: var(--skr-color-ink-muted);
+  font: inherit; font-size: 0.875rem; font-weight: 600; line-height: 1.2;
+  white-space: nowrap; cursor: pointer;
+  transition: background-color var(--skr-transition, 160ms ease), color var(--skr-transition, 160ms ease);
+}
+.skr-header__role:hover { color: var(--skr-color-ink); }
+.skr-header__role[aria-checked="true"] { background: var(--skr-color-accent); color: var(--skr-color-accent-contrast); }
+.skr-header__role:focus-visible { outline: 2px solid var(--skr-color-accent); outline-offset: 2px; }
+@media (max-width: 600px) {
+  .skr-header__roles { margin-left: var(--skr-space-2, 0.5rem); }
+  .skr-header__role { padding: 0.25rem 0.6rem; font-size: 0.8125rem; }
+}
+@media print { .skr-header__roles { display: none; } }
+
+/* --- Anhang der Wortmarke (`badge.label`, sonst Titel der Site) -----------------
+   Durch einen Strich abgesetzt. Er WEICHT ALS ERSTES: Sein hoher Schrumpffaktor lässt
+   ihn kleiner werden, bevor Wortmarke oder Kennzeichen nachgeben, und schmal
+   (Burger-Menü) entfällt er ganz. Der Abstand der Kopfzeile (32 px) ist halbiert,
+   damit er zur Wortmarke gehört. */
+/* Schriftfamilie des Anhangs: `--skr-header-label-font` (stabil). */
+.skr-header__label {
+  font-family: var(--skr-header-label-font, inherit);
+  flex: 0 1000 auto;
+  min-width: 0;
+  margin-left: -16px;
+  padding-left: 16px;
+  border-left: 1px solid color-mix(in srgb, currentColor 45%, transparent);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 24px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (max-width: 600px) {
+  .skr-header__label { display: none; }
+}
+/* --- Kennzeichen des Themes (`badge` in theme.yml) ------------------------------
+   Neben der Wortmarke, näher an ihr als der Abstand der Kopfzeile (32 px), damit es
+   zur Marke gehört und nicht zur Navigation. Es SCHRUMPFT NICHT: Wird es eng, gibt die
+   Wortmarke nach. Ein langer Text endet an der Höchstbreite mit Auslassung. Farben aus
+   den Stellschrauben `--skr-badge-bg` und `--skr-badge-text` (tokens.css), Typografie aus
+   `--skr-badge-font`, `--skr-badge-weight`, `--skr-badge-letter-spacing` und
+   `--skr-badge-transform` (stabil, ohne Angabe wie hier). */
+.skr-header__badge {
+  flex: 0 0 auto;
+  max-width: min(16em, 40vw);
+  margin-left: -16px;
+  display: inline-block;
+  padding: 0 8px;
+  border-radius: var(--radius, 4px);
+  background: var(--skr-badge-bg);
+  color: var(--skr-badge-text);
+  font-family: var(--skr-badge-font, inherit);
+  font-size: 0.875rem;
+  font-weight: var(--skr-badge-weight, 600);
+  letter-spacing: var(--skr-badge-letter-spacing, normal);
+  text-transform: var(--skr-badge-transform, none);
+  line-height: 24px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Schmal steht es dichter an der Wortmarke: Bei 320 px zählt jedes Pixel der Zeile. */
+@media (max-width: 600px) {
+  .skr-header__badge { margin-left: -24px; padding: 0 6px; }
+}
+/* Als Verweis unterstrichen – Farbe allein kennzeichnet keinen Verweis. */
+a.skr-header__badge { text-decoration: underline; text-underline-offset: 2px; }
+a.skr-header__badge:hover { color: var(--skr-badge-text); text-decoration-thickness: 2px; }
+a.skr-header__badge:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.skr-header__nav a {
+  text-decoration: none; font-weight: 500; font-size: 1.0625rem;
+  color: var(--skr-header-text, var(--skr-color-headline));
+}
+.skr-header__nav a:hover,
+.skr-header__nav a[aria-current="page"] { color: var(--skr-header-text-active, var(--skr-color-accent-text)); }
+/* Nur Verweise der ersten Ebene, nicht der Schalter eines Untermenüs: Sein Pfeil erbte
+   die Linie. */
+.skr-header__nav > a:hover,
+.skr-header__nav > a[aria-current="page"] {
+  text-decoration: var(--skr-header-nav-underline, none);
+  text-underline-offset: var(--skr-header-nav-underline-offset, auto);
+}
+
+.skr-header__burger { display: none; }
+
+/* --- Werkzeuge in der Kopfzeile ------------------------------------------
+   Kleine Gruppe am rechten Rand: QR-Code der Seitenadresse + Farbschema-
+   Umschalter, beide gleich groß.
+
+   Sie sitzt BEWUSST außerhalb von `__nav`: Das Nav klappt auf schmalen
+   Viewports in den Burger und ist im Ausdruck ausgeblendet. Beides soll für die
+   Werkzeuge nicht gelten – der Umschalter ist auf dem Handy so erreichbar wie
+   am Schreibtisch, und der QR-Code bleibt im Ausdruck stehen (print.css). */
+.skr-header__tools {
+  display: flex; align-items: center; gap: var(--skr-space-2);
+  flex: none;
+}
+
+/* Die Knöpfe darin sind die Seitenwerkzeuge (`.skr-tool`, oben im
+   Button-Abschnitt). Sie brauchen hier KEINE Variablen: Die Vorgaben der
+   Komponente – 34 px, Überschriftenfarbe – sind genau der Kopfzeilen-Look, und der
+   QR-Code daneben ist ebenso groß. */
+
+@media (max-width: 600px) {
+  /* NEBEN DER WORTMARKE, nicht am rechten Rand. Im Markup steht der Knopf direkt
+     hinter ihr; ohne `margin-left: auto` bleibt er dort. Den Rechtsschub
+     uebernehmen die Werkzeuge. */
+  .skr-header__burger { display: inline-flex; flex: none; margin-left: var(--skr-space-3); }
+  .skr-header__nav {
+    display: none;
+    position: absolute; top: 100%; left: 0; right: 0;
+    flex-direction: column; align-items: flex-start;
+    gap: var(--skr-space-3);
+    margin-left: 0;
+    padding: var(--skr-space-4) max(24px, calc((100% - var(--skr-page-width, 1180px)) / 2));
+    background: var(--skr-topbar-bg);
+    border-bottom: 1px solid var(--skr-border-soft);
+    box-shadow: var(--skr-shadow-2);
+    z-index: 50;
+  }
+  .skr-header__nav[data-open] { display: flex; }
+
+  /* Reihenfolge am rechten Rand: erst die Werkzeuge, dann der Burger. Im Markup
+     steht die Gruppe nach dem Nav; ohne `order` landete sie rechts vom Burger und
+     der Burger mitten in der Zeile. Der Rechtsschub wandert deshalb von ihm zu
+     den Werkzeugen – die Regel muss NACH der Burger-Regel oben stehen. */
+  .skr-header__tools { margin-left: auto; }
+}
+
+/* --- Header-Untermenü: Dropdown (breit) / aufklappbar (schmal) ------------ */
+.skr-header__group { position: relative; display: inline-flex; }
+.skr-header__grouptoggle {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: none; border: 0; padding: 0; cursor: pointer;
+  font: inherit; font-weight: 500; font-size: 1.0625rem;
+  color: var(--skr-color-headline);
+}
+.skr-header__grouptoggle:hover,
+/* Auch hier der Kind-Selektor: Mit dem Nachfahren faerbte sich beim Fokus in der
+   ersten Ebene der Schalter der dritten gleich mit ein - zwei hervorgehobene
+   Eintraege, obwohl nur einer den Fokus hat. */
+.skr-header__group:focus-within > .skr-header__grouptoggle { color: var(--skr-color-accent-text); }
+/* `flex: none`: Der Pfeil schrumpft nie. Die laengste Beschriftung bestimmt die Breite des
+   Menues, und ihr Pfeil fiel sonst auf 0px - die Gruppe sah aus wie ein Verweis (gemessen). */
+.skr-header__caret { display: inline-flex; flex: none; font-size: 0.6875rem; line-height: 1; }
+/* Icon vor dem Titel einer Karte (`<img class="skr-linkicon">`). Quadratische
+   Quellbilder werden – wie Profilbilder – KREISRUND dargestellt (quadratisch +
+   border-radius 50% + object-fit: cover). */
+.skr-linkicon {
+  width: 1.15em; height: 1.15em; vertical-align: -0.2em;
+  display: inline-block; object-fit: cover; border-radius: 50%; flex: none;
+  margin-right: 0.5em;   /* Abstand zwischen Icon und Text (Titel folgt als Textknoten) */
+}
+/* Weiterführende Verweise der Seitenleiste: eine Zeile je Verweis. */
+.skr-guide-side__links a { display: flex; align-items: center; gap: 0.5rem; }
+.skr-header__submenu {
+  display: none; position: absolute; top: 100%; left: 0;
+  min-width: 210px; margin-top: 8px; padding: 8px 0;
+  flex-direction: column;
+  background: var(--skr-topbar-bg);
+  border: 1px solid var(--skr-border-soft);
+  border-radius: var(--skr-radius);
+  box-shadow: var(--skr-shadow-2);
+  z-index: 60;
+}
+/* Unsichtbare Hover-Brücke über die Lücke (margin-top) zwischen Toggle und
+   Untermenü. GROSSZÜGIG überlappend (nicht exakt 8px), damit der :hover beim
+   Runterfahren der Maus garantiert NICHT abreißt – auch kein Sub-Pixel-Spalt durch
+   Rahmen/Padding. Das Untermenü bleibt so im :hover der Gruppe. */
+.skr-header__submenu::before {
+  content: ""; position: absolute; left: 0; right: 0;
+  top: -14px; height: 18px; pointer-events: auto;
+}
+/* NUR DAS EIGENE UNTERMENUE, nicht alles darunter. Der Nachfahren-Selektor
+   traf beim Ueberfahren der ersten Ebene AUCH die Menues der dritten - sie
+   standen damit offen, bevor jemand den Eintrag der zweiten beruehrt hatte.
+   Mit `>` oeffnet jede Gruppe genau ihr eigenes Menue; die dritte Ebene
+   erscheint erst, wenn ihre eigene Gruppe Hover oder Fokus hat. */
+.skr-header__group:hover > .skr-header__submenu,
+.skr-header__group:focus-within > .skr-header__submenu,
+.skr-header__submenu[data-open] { display: flex; }
+.skr-header__submenu a {
+  padding: 8px 20px; font-size: 1rem; font-weight: 500;
+  /* Einzeilig; nur ein seitliches Menue, das auf keiner Seite Platz hat, schaltet per
+     Skript auf Umbruch (chooseSide in client.js). */
+  white-space: var(--skr-submenu-wrap, nowrap);
+  text-decoration: none; color: var(--skr-color-headline);
+}
+.skr-header__submenu a:hover,
+.skr-header__submenu a[aria-current="page"] { color: var(--skr-color-accent-text); background: var(--skr-color-bg-subtle); }
+
+@media (max-width: 600px) {
+  /* Im Burger-Menü: Gruppe als volle Breite, Untermenü statisch eingerückt,
+     NUR per Klick (data-open) aufklappbar – kein Hover. */
+  .skr-header__group { width: 100%; }
+  .skr-header__grouptoggle { width: 100%; justify-content: space-between; }
+  .skr-header__submenu {
+    position: static; min-width: 0; margin: 6px 0 0; padding: 0 0 0 14px;
+    border: 0; border-radius: 0; box-shadow: none; background: transparent;
+  }
+  /* Hover/Fokus dürfen hier NICHT aufklappen — aber sie dürfen ein per Klick
+     geöffnetes Untermenü auch nicht zuhalten. Ohne das `:not([data-open])` gewinnt
+     `…__group:focus-within …__submenu` (Spezifität 0,3,0) gegen
+     `…__submenu[data-open]` (0,2,0): Der Klick auf den Toggle setzt zwar
+     `data-open`, gibt dem Button aber gleichzeitig den Fokus — die Gruppe matcht
+     `:focus-within`, `display: none` bleibt, und das Menü klappt nie auf. */
+
+  /* --- Im Burger: die Hoehe traegt die Bewegung ---------------------------- *
+     Hier klappt nichts auf, hier WAECHST etwas - und man muss sehen, dass das eine
+     Menue zugeht, waehrend das andere aufgeht.
+
+     GEMACHT MIT DER GITTERZEILE, nicht mit `max-height`. Der erste Versuch stand
+     auf `max-height: 150vh` fuer offen und 0 fuer zu: Beim Zuklappen faellt der
+     Wert dann erst durch 150 Bildschirmhoehen, bevor er die echte Hoehe
+     unterschreitet - sichtbar wird nur das letzte Zehntel, und das sieht aus wie
+     ein Sprung (gemessen: nach 80 ms bereits geschlossen). `0fr` -> `1fr` rechnet
+     mit der WIRKLICHEN Hoehe und braucht dafuer kein zusaetzliches Element.
+
+     Das Klappfeld bekommt eine Hoehengrenze und scrollt - sonst raegte ein tiefes
+     Menue auf dem Handy unter den Bildschirmrand.
+
+     `visibility` schaltet verzoegert: erst nach der Bewegung unsichtbar, beim
+     Oeffnen sofort. So ist nichts mit der Tastatur erreichbar, was zu ist.       */
+  .skr-header__nav {
+      max-height: calc(100dvh - 4.5rem); overflow-y: auto; overscroll-behavior: contain;
+}
+  .skr-header__nav .skr-header__group {
+      display: grid; /* `minmax(0, …)` ist noetig: `0fr` allein ist die Kurzform fuer
+     `minmax(auto, 0fr)`, und das `auto` haelt die Zeile auf der Mindesthoehe des
+     Inhalts - gemessen blieben 12px Innenabstand stehen statt null. */
+  grid-template-rows: auto minmax(0, 0fr);
+      transition: grid-template-rows 220ms ease;
+}
+  .skr-header__nav .skr-header__group:has(> .skr-header__submenu[data-open]) {
+      grid-template-rows: auto minmax(0, 1fr);
+}
+  .skr-header__submenu {
+      display: flex; min-height: 0; overflow: hidden;
+      opacity: 0; visibility: hidden; transform: none;
+      margin-top: 0; max-height: none;
+      padding-top: 0; padding-bottom: 0;
+      transition: opacity 140ms ease, padding-top 220ms ease,
+                  padding-bottom 220ms ease, visibility 0s linear 220ms;
+}
+  .skr-header__submenu[data-open] {
+      opacity: 1; visibility: visible;
+      padding-top: 6px; padding-bottom: 6px;
+      transition: opacity 180ms ease, padding-top 220ms ease,
+                  padding-bottom 220ms ease, visibility 0s;
+}
+  /* Der seitliche Pfeil zeigt hier nach unten und dreht wie der große. */
+  .skr-header__grouptoggle--sub[aria-expanded="true"] > .skr-header__caret--side {
+      transform: rotate(180deg);
+}
+}
+
+/* --- TopNav: drei Ebenen, eingebettete Gruppen, Burger ------------------- *
+   Die Regeln oben tragen Ebene 1 und 2. Hier kommt dazu:
+     - Ebene 3 als seitlich ausfahrendes Menue (rechts, sonst links)
+     - eingebettete Gruppen mit Querstrich (`__set`)
+     - die Burger-Fassung fuer BEIDE Faelle: schmaler Viewport (Media Query oben)
+       und zu volle Leiste (`--compact`, gesetzt aus der Anzahl oder gemessen)   */
+
+/* --- Eingebettete Gruppe -------------------------------------------------- */
+/* Ein Eintrag mit `menu: embedded` bleibt IM Menue und wird durch einen Strich
+   abgetrennt. Der Strich sitzt oben an der Gruppe, nicht zwischen je zwei
+   Eintraegen: So trennt er die Gruppe vom Vorherigen, ohne die Eintraege
+   untereinander zu zerschneiden. Die erste Gruppe im Menue bekommt keinen -
+   dort ist nichts zu trennen. */
+.skr-header__set { display: flex; flex-direction: column; }
+.skr-header__set + .skr-header__set,
+.skr-header__submenu > a + .skr-header__set,
+.skr-header__submenu > .skr-header__group + .skr-header__set {
+  margin-top: 6px; padding-top: 6px;
+  border-top: 1px solid var(--skr-border-soft);
+}
+/* Und andersherum: Was NACH einer Gruppe kommt, ist wieder etwas anderes. */
+.skr-header__set + a,
+.skr-header__set + .skr-header__group {
+  margin-top: 6px; padding-top: 6px;
+  border-top: 1px solid var(--skr-border-soft);
+}
+.skr-header__setlabel {
+  position: relative;
+  margin: 0; padding: 4px 20px 6px;
+  font-size: 0.75rem; font-weight: var(--skr-fw-bold, 700);
+  letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--skr-color-ink-muted);
+}
+/* EINE ZWEITE, LEISERE LINIE - zwischen der Ueberschrift und ihren Kindern.
+   Ohne sie unterschied nur die Schriftart Gruppe von Eintrag, und das traegt
+   nicht. Sie ist ausdruecklich NICHT der Trenner von oben und unten: Der laeuft
+   durch die volle Breite und schneidet die Gruppe aus dem Menue heraus; diese
+   hier haelt links und rechts Abstand und gliedert nur INNERHALB der Gruppe.
+   Deshalb auch duenner getoent statt derselben Farbe. */
+.skr-header__setlabel::after {
+  content: ""; position: absolute; bottom: 0; left: 14px; right: 14px;
+  border-bottom: 1px solid color-mix(in srgb, var(--skr-border-soft) 55%, transparent);
+}
+/* Die Ueberschrift IST der buendelnde Eintrag. Hat er ein Ziel, ist sie ein Link -
+   dann muss sie sich auch wie einer anfuehlen. Die Basisregel fuer Menue-Links
+   (`__submenu a`) wuerde sie sonst zur gewoehnlichen Zeile machen; der
+   Kompound-Selektor haelt die Ueberschriftenform. */
+.skr-header__submenu a.skr-header__setlabel--link {
+  padding: 4px 20px 2px; font-size: 0.75rem; text-decoration: none;
+  color: var(--skr-color-ink-muted);
+}
+.skr-header__submenu a.skr-header__setlabel--link:hover,
+.skr-header__submenu a.skr-header__setlabel--link[aria-current="page"] {
+  color: var(--skr-color-accent-text); background: none; text-decoration: underline;
+}
+
+/* --- Ebene 3: seitlich ---------------------------------------------------- */
+.skr-header__group--sub { display: flex; width: 100%; }
+.skr-header__grouptoggle--sub {
+  width: 100%; justify-content: space-between;
+  padding: 8px 20px; font-size: 1rem; text-align: left;
+  /* Einzeilig wie die Verweise daneben. Das Menue haengt absolut an einer schmalen
+     Gruppe der Leiste und ist so breit wie sein breitester nicht umbrechender Eintrag;
+     ohne diese Zeile brach der Schalter an jedem Leerzeichen um (gemessen). */
+  white-space: var(--skr-submenu-wrap, nowrap);
+  /* So breit wie der Inhalt, mindestens wie das Menue: Das Menue bemass sich sonst ohne den
+     Pfeil, die laengste Gruppe ragte heraus und ihr Pfeil stand weiter rechts (gemessen). */
+  width: max-content; min-width: 100%;
+}
+.skr-header__grouptoggle--sub:hover { color: var(--skr-color-accent-text); background: var(--skr-color-bg-subtle); }
+.skr-header__caret--side { margin-left: 8px; }
+
+.skr-header__submenu--side {
+  top: 0; left: 100%; margin-top: -8px; margin-left: 2px;
+}
+/* Kein Platz nach rechts? Dann nach links. Die Klasse setzt das Skript beim
+   Oeffnen - CSS allein kann den Rand des Fensters nicht messen. */
+.skr-header__submenu--side.skr-header__submenu--flip {
+  left: auto; right: 100%; margin-left: 0; margin-right: 2px;
+}
+/* Die Hover-Bruecke der ersten Ebene liegt OBEN; fuer das seitliche Menue muss sie
+   zur Seite - sonst reißt der Hover auf dem Weg nach rechts ab. */
+.skr-header__submenu--side::before {
+  top: 0; bottom: 0; height: auto; left: -6px; right: auto; width: 8px;
+}
+.skr-header__submenu--side.skr-header__submenu--flip::before {
+  left: auto; right: -6px;
+}
+
+/* --- Kurze Menues: Dreiecke statt Scrollbalken ------------------------------
+   Ein Aufklappmenue zeigt hoechstens `nav.settings.scrollable.visible_items` Zeilen.
+   Hat es mehr – oder passt es nicht ins Fenster –, setzt das Skript `--scroll` und eine
+   Hoechsthoehe und stellt oben und unten je ein Dreieck dazu (initNavLayout in
+   client.js). Die Dreiecke stehen IM Fluss und kleben per `sticky` am Rand: So
+   nehmen sie Platz ein, statt Zeilen zu verdecken, und brauchen keinen Wrapper, der
+   die Kind-Selektoren der Menues (`__submenu > a`) braechen.
+
+   NUR AM SCHREIBTISCH: Im Burger ist das Menue ein Akkordeon in der Seite – dort
+   scrollt die Seite selbst. */
+.skr-header__scroll { display: none; }
+@media (min-width: 601px) {
+  .skr-header:not(.skr-header--compact) .skr-header__submenu--scroll {
+    overflow-y: auto; overscroll-behavior: contain;
+    padding-block: 0;
+    scrollbar-width: none;
+  }
+  .skr-header:not(.skr-header--compact) .skr-header__submenu--scroll::-webkit-scrollbar { display: none; }
+  .skr-header:not(.skr-header--compact) .skr-header__submenu--scroll > .skr-header__scroll {
+    display: flex; align-items: center; justify-content: center; flex: none;
+    position: sticky; z-index: 1; height: 20px;
+    background: var(--skr-topbar-bg);
+    color: var(--skr-color-headline);
+    font-size: 0.6875rem; line-height: 1;
+    cursor: default; user-select: none;
+  }
+  .skr-header:not(.skr-header--compact) .skr-header__submenu--scroll > .skr-header__scroll--up { top: 0; }
+  .skr-header:not(.skr-header--compact) .skr-header__submenu--scroll > .skr-header__scroll--down { bottom: 0; }
+  /* Am Rand gibt es nichts mehr zu holen: ausgegraut. Ein inaktives Bedienelement ist
+     von der Kontrastanforderung ausgenommen (WCAG 2.2, 1.4.11). */
+  .skr-header:not(.skr-header--compact) .skr-header__scroll[aria-disabled="true"] {
+    color: var(--skr-color-ink-muted); opacity: 0.45;
+  }
+  /* `overflow` schneidet die Hover-Bruecke des Menues (`::before`) ab. Fuer ein
+     scrollendes Menue der zweiten Ebene uebernimmt der Schalter darueber: Seine
+     Bruecke ueberspannt die Luecke von oben. */
+  .skr-header:not(.skr-header--compact) .skr-header__group--scrollt > .skr-header__grouptoggle { position: relative; }
+  .skr-header:not(.skr-header--compact) .skr-header__group--scrollt > .skr-header__grouptoggle::after {
+    content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 14px;
+  }
+}
+
+/* --- Burger-Fassung ------------------------------------------------------- *
+   Gilt fuer schmale Viewports UND fuer `--compact`. Beide Zustaende erzeugen
+   dieselbe Oberflaeche: eine Spalte, jede Ebene ein Akkordeon, jede Ebene etwas
+   staerker abgesetzt. Die Media Query oben deckt den ersten Fall bereits ab; hier
+   steht, was zusaetzlich fuer `--compact` gilt und was BEIDE brauchen.          */
+/* `flex: none` - ohne das schrumpft der Knopf im engen Kopf auf 25 px Breite bei
+   34 px Hoehe (gemessen bei 390 px Fensterbreite) und ist kein Quadrat mehr. */
+.skr-header--compact .skr-header__burger { display: inline-flex; flex: none; margin-left: var(--skr-space-3); }
+.skr-header--compact .skr-header__nav {
+  display: none;
+  position: absolute; top: 100%; left: 0; right: 0;
+  flex-direction: column; align-items: stretch;
+  gap: var(--skr-space-3);
+  margin-left: 0;
+  padding: var(--skr-space-4) max(24px, calc((100% - var(--skr-page-width, 1180px)) / 2));
+  background: var(--skr-topbar-bg);
+  border-bottom: 1px solid var(--skr-border-soft);
+  box-shadow: var(--skr-shadow-2);
+  z-index: 50;
+}
+.skr-header--compact .skr-header__nav[data-open] { display: flex; }
+.skr-header--compact .skr-header__tools { margin-left: auto; }
+
+/* Am SCHREIBTISCH muss das aufgeklappte Menue nicht die volle Breite nehmen -
+   eine Spalte, die ueber 1200 px laeuft, liest sich schlecht. Auf dem Handy nimmt
+   es sie, weil es dort nichts Schmaleres gibt. */
+@media (min-width: 601px) {
+  /* UNTER DEM BURGER, nicht am rechten Rand. Solange der Knopf rechts sass, war
+     `right: 0` richtig; seit er neben der Wortmarke steht, klappte das Feld an
+     der falschen Stelle auf. Der linke Rand ist derselbe wie der des
+     Seiteninhalts - dort steht auch der Knopf. */
+  .skr-header--compact .skr-header__nav {
+    left: var(--skr-nav-left, max(24px, calc((100% - var(--skr-page-width, 1180px)) / 2)));
+    right: auto; width: min(420px, calc(100vw - 48px));
+    border: 1px solid var(--skr-border-soft);
+    border-radius: 0 0 var(--skr-radius) var(--skr-radius);
+    padding: var(--skr-space-4);
+  }
+}
+
+/* Die Akkordeon-Regeln fuer BEIDE Faelle. Der Block der Media Query oben bleibt
+   stehen; dies hier ergaenzt ihn um `--compact`. */
+.skr-header--compact .skr-header__group { width: 100%; }
+.skr-header--compact .skr-header__grouptoggle { width: 100%; justify-content: space-between; }
+.skr-header--compact .skr-header__submenu {
+  position: static; min-width: 0; margin: 6px 0 0;
+  /* NUR WAAGERECHT. Senkrecht faehrt der Abstand mit der Bewegung; eine
+     Kurzform hier setzte ihn wieder auf 6px, und die geschlossene Zeile
+     behielt 12px Hoehe statt null (gemessen). */
+  padding-left: 12px; padding-right: 0;
+  border: 0; border-radius: 0; box-shadow: none;
+  /* JEDE EBENE ETWAS STAERKER ABGESETZT - so ist ohne Einrueckung allein
+     erkennbar, dass man in einem Untermenue steht. */
+  background: color-mix(in srgb, var(--skr-color-ink) 5%, transparent);
+  border-left: 2px solid var(--skr-border-soft);
+}
+
+/* --- Im Burger: die Hoehe traegt die Bewegung ---------------------------- *
+   Hier klappt nichts auf, hier WAECHST etwas - und man muss sehen, dass das eine
+   Menue zugeht, waehrend das andere aufgeht.
+
+   GEMACHT MIT DER GITTERZEILE, nicht mit `max-height`. Der erste Versuch stand
+   auf `max-height: 150vh` fuer offen und 0 fuer zu: Beim Zuklappen faellt der
+   Wert dann erst durch 150 Bildschirmhoehen, bevor er die echte Hoehe
+   unterschreitet - sichtbar wird nur das letzte Zehntel, und das sieht aus wie
+   ein Sprung (gemessen: nach 80 ms bereits geschlossen). `0fr` -> `1fr` rechnet
+   mit der WIRKLICHEN Hoehe und braucht dafuer kein zusaetzliches Element.
+
+   Das Klappfeld bekommt eine Hoehengrenze und scrollt - sonst raegte ein tiefes
+   Menue auf dem Handy unter den Bildschirmrand.
+
+   `visibility` schaltet verzoegert: erst nach der Bewegung unsichtbar, beim
+   Oeffnen sofort. So ist nichts mit der Tastatur erreichbar, was zu ist.       */
+.skr-header--compact .skr-header__nav {
+  max-height: calc(100dvh - 4.5rem); overflow-y: auto; overscroll-behavior: contain;
+}
+.skr-header--compact .skr-header__nav .skr-header__group {
+  display: grid; /* `minmax(0, …)` ist noetig: `0fr` allein ist die Kurzform fuer
+     `minmax(auto, 0fr)`, und das `auto` haelt die Zeile auf der Mindesthoehe des
+     Inhalts - gemessen blieben 12px Innenabstand stehen statt null. */
+  grid-template-rows: auto minmax(0, 0fr);
+  transition: grid-template-rows 220ms ease;
+}
+.skr-header--compact .skr-header__nav .skr-header__group:has(> .skr-header__submenu[data-open]) {
+  grid-template-rows: auto minmax(0, 1fr);
+}
+.skr-header--compact .skr-header__submenu {
+  display: flex; min-height: 0; overflow: hidden;
+  opacity: 0; visibility: hidden; transform: none;
+  margin-top: 0; max-height: none;
+  padding-top: 0; padding-bottom: 0;
+  transition: opacity 140ms ease, padding-top 220ms ease,
+              padding-bottom 220ms ease, visibility 0s linear 220ms;
+}
+.skr-header--compact .skr-header__submenu[data-open] {
+  opacity: 1; visibility: visible;
+  padding-top: 6px; padding-bottom: 6px;
+  transition: opacity 180ms ease, padding-top 220ms ease,
+              padding-bottom 220ms ease, visibility 0s;
+}
+/* Der seitliche Pfeil zeigt hier nach unten und dreht wie der große. */
+.skr-header--compact .skr-header__grouptoggle--sub[aria-expanded="true"] > .skr-header__caret--side {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 600px) {
+  /* Ebene 3 faehrt hier NICHT zur Seite aus - sie klappt auf wie Ebene 2. */
+  .skr-header__submenu--side {
+    top: auto; left: auto; right: auto; margin: 6px 0 0; margin-left: 0;
+  }
+  .skr-header__submenu--side::before { display: none; }
+  /* KEIN `display: block` - die Gruppe ist hier ein Gitter (siehe Bewegung
+     weiter oben). Mit `block` kollabierte die Zeile nicht, und ein geschlossenes
+     Untermenue belegte weiter seinen Platz: gemessen 180px unsichtbarer Raum. */
+  .skr-header__group--sub { width: 100%; }
+  .skr-header__grouptoggle--sub { width: 100%; padding: 8px 0; white-space: normal; }
+  .skr-header__caret--side { transform: rotate(90deg); }
+  .skr-header__submenu {
+    background: color-mix(in srgb, var(--skr-color-ink) 5%, transparent);
+    border-left: 2px solid var(--skr-border-soft);
+    padding-left: 12px; padding-right: 0;
+  }
+  .skr-header__setlabel { padding-left: 0; }
+  .skr-header__setlabel::after { left: 0; right: 8px; }
+  .skr-header__submenu a { white-space: normal; padding-left: 0; padding-right: 0; }
+}
+.skr-header--compact .skr-header__submenu--side {
+  top: auto; left: auto; right: auto; margin: 6px 0 0; margin-left: 0;
+}
+.skr-header--compact .skr-header__submenu--side::before { display: none; }
+.skr-header--compact .skr-header__group--sub { width: 100%; }
+.skr-header--compact .skr-header__grouptoggle--sub { width: 100%; padding: 8px 0; white-space: normal; }
+.skr-header--compact .skr-header__caret--side { transform: rotate(90deg); }
+.skr-header--compact .skr-header__setlabel { padding-left: 0; }
+.skr-header--compact .skr-header__setlabel::after { left: 0; right: 8px; }
+.skr-header--compact .skr-header__submenu a { white-space: normal; padding-left: 0; padding-right: 0; }
+
+/* Ohne JavaScript bleibt die Messung aus; die Anzahl-Regel greift trotzdem, weil
+   sie aus der Vorlage kommt. Der Burger selbst braucht JavaScript - deshalb steht die
+   Leiste ohne Skript in ihrer gewoehnlichen Form, auch wenn sie umbricht. Ein
+   Menue, das sich nicht oeffnen laesst, waere schlechter als ein Umbruch. */
+
+/* --- Bewegung beim Auf- und Zuklappen ------------------------------------ *
+   WARUM UEBERHAUPT: Im Burger sprang ein Menue auf und ein anderes zu, im selben
+   Bild. Gemeldet als „ich erkenne nicht, dass das eine zuklappt und das andere
+   aufgeht" - und genau das leistet eine kurze Bewegung: Sie zeigt, WAS sich
+   veraendert hat, nicht nur DASS etwas anders ist.
+
+   Die globale Regel in base.css setzt bei `prefers-reduced-motion` jede Dauer auf
+   0,01ms. Hier steht deshalb keine eigene Ausnahme - sie gilt schon.            */
+
+/* Der Pfeil dreht sich. Das allein traegt schon viel: Er sagt den Zustand an,
+   auch wenn das Menue selbst gerade ausserhalb des Blickfelds aufgeht. */
+.skr-header__caret {
+  transition: transform var(--skr-transition, 160ms ease);
+}
+.skr-header__grouptoggle[aria-expanded="true"] > .skr-header__caret { transform: rotate(180deg); }
+
+/* --- Am Schreibtisch: kurz einblenden und heranrutschen ------------------- */
+/* `display` ist nicht animierbar - `allow-discrete` schaltet es am ENDE der
+   Rueckblende und am ANFANG der Einblende. `@starting-style` liefert den Wert,
+   von dem aus eingeblendet wird; ohne ihn beginnt der Uebergang beim Zielwert
+   und man sieht nichts. Kann eine Engine beides nicht, erscheint das Menue
+   schlicht sofort - der alte Zustand. */
+.skr-header__submenu {
+  opacity: 0; transform: translateY(-4px);
+  transition: opacity 140ms ease, transform 140ms ease,
+              display 140ms allow-discrete;
+}
+.skr-header__group:hover > .skr-header__submenu,
+.skr-header__group:focus-within > .skr-header__submenu,
+.skr-header__submenu[data-open] { opacity: 1; transform: none; }
+@starting-style {
+  .skr-header__group:hover > .skr-header__submenu,
+  .skr-header__group:focus-within > .skr-header__submenu,
+  .skr-header__submenu[data-open] { opacity: 0; transform: translateY(-4px); }
+}
+/* Das seitliche Menue kommt von der Seite, nicht von oben - aus der Richtung,
+   in die es auch aufgeht. */
+.skr-header__submenu--side { transform: translateX(-4px); }
+.skr-header__submenu--side.skr-header__submenu--flip { transform: translateX(4px); }
+@starting-style {
+  .skr-header__group:hover > .skr-header__submenu--side,
+  .skr-header__group:focus-within > .skr-header__submenu--side,
+  .skr-header__submenu--side[data-open] { opacity: 0; transform: translateX(-4px); }
+}
+
+/* --- Footer (dunkle Fläche) ---------------------------------------------- */
+.skr-footer {
+  margin-top: var(--skr-space-16);
+  padding: var(--skr-space-8) max(24px, calc((100% - var(--skr-page-width, 1180px)) / 2));
+  background: var(--skr-color-primary);
+  color: var(--skr-color-primary-contrast);
+  font-size: var(--skr-fs-sm);
+}
+.skr-footer__grid {
+  max-width: var(--skr-page-width); margin-inline: auto;
+  display: grid; gap: var(--skr-space-6);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+.skr-footer a { color: #fff; }
+/* MINDESTENS 24 PIXEL HOCH (WCAG 2.5.8): Die Verweise im Fußbereich stehen als
+   Liste untereinander, getrennt nur durch `<br>` - bei 16 Pixel Zeilenhoehe ist
+   jeder Treffer ein Streifen, den man auf einem Telefon kaum sicher trifft. Die
+   Schrift bleibt gleich groß; groesser wird nur die anklickbare Flaeche, und
+   die Zeilen ruecken so weit auseinander, dass sich die Flaechen nicht
+   ueberlappen. Die Zeile mit Impressum und Datenschutz ist davon ausgenommen:
+   Dort stehen die Verweise IM Satz, und dafuer kennt das Kriterium eine
+   Ausnahme. */
+.skr-footer__grid p { line-height: 2; }
+.skr-footer__grid p a {
+  display: inline-block; min-height: 24px; padding-block: 4px;
+}
+.skr-footer a:hover { color: var(--skr-color-accent); }
+.skr-footer__legal { margin-top: var(--skr-space-6); text-align: center; color: rgba(255, 255, 255, 0.7); }
+
+/* --- Aufklappbarer Abschnitt (`skr-fold`) --------------------------
+   Ein Abschnitt, der sich an seiner Stelle auf- und zuklappen laesst – im Gegensatz
+   zu `skr-reveal`, das seinen Inhalt als Panel ueber die Seite legt. Hier
+   bleibt alles im Fluss, nur die Hoehe aendert sich.
+
+   Baut auf `<details>`/`<summary>`: Auf- und Zuklappen, Tastaturbedienung und die
+   ARIA-Semantik bringt der Browser mit – ohne eine Zeile JavaScript. Das Dreieck
+   ersetzen wir durch ein eigenes Zeichen, das der Textfarbe folgt.
+
+   Im Ausdruck ist ein zugeklappter Abschnitt sinnlos: Papier kennt kein Klicken.
+   print.css klappt deshalb alles auf (siehe dort). */
+.skr-fold > summary {
+  display: flex; align-items: center; gap: 8px;
+  cursor: pointer;
+  list-style: none;
+}
+.skr-fold > summary::-webkit-details-marker { display: none; }
+.skr-fold > summary::after {
+  content: ""; flex: none; margin-left: auto;
+  width: .7rem; height: .7rem;
+  background-color: currentColor;
+  transition: transform .15s ease;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 16 4 8h16z'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 16 4 8h16z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.skr-fold:not([open]) > summary::after { transform: rotate(-90deg); }
+.skr-fold > summary:focus-visible { outline: 2px solid var(--skr-color-accent); outline-offset: 3px; }
+/* Der Inhalt bekommt Abstand zum Titel – im Fluss, nicht als Panel. */
+.skr-fold[open] > .skr-fold__body { margin-top: 1rem; }
+
+/* --- Feldtabelle (`skr-fieldtable`) --------------------------------
+   Eine Tabelle, deren erste Spalte NAMEN traegt – YAML-Schluessel, Optionen,
+   Feldpfade. Solche Namen darf man nicht umbrechen: `sidebar.toc.open_threshold`
+   ueber drei Zeilen verteilt liest sich nicht mehr als ein Name, und wer sie
+   abtippt, uebernimmt den Umbruch mit.
+
+   Die erste Spalte bekommt deshalb `nowrap` und damit so viel Breite, wie ihr
+   laengster Name braucht; der Rest teilt sich, was uebrig bleibt. Damit das
+   aufgeht, muss die Bedeutungsspalte KURZ gehalten werden – mehr Erklaerung
+   gehoert in eine Info-Schaltflaeche (`skr-reveal--info`).
+
+   Die globale Tabellenregel bricht lange Namen notfalls mitten im Wort
+   (`overflow-wrap`); hier wird sie fuer die erste Spalte zurueckgenommen. */
+.skr-fieldtable th:first-child,
+.skr-fieldtable td:first-child {
+  white-space: nowrap;
+  width: 1%;                 /* so schmal wie moeglich – `nowrap` setzt die Untergrenze */
+}
+.skr-fieldtable td:first-child code { overflow-wrap: normal; }
+/* AUCH IN DEN UEBRIGEN SPALTEN bricht ein Bezeichner nicht in sich um: `"auto"` oder
+   `skr.supportedLanguages` in Stuecken liest sich nicht mehr als EIN Name, und
+   wer ihn abtippt, uebernimmt den Umbruch. Zwischen zwei Code-Stuecken bricht die Zeile
+   weiter an Leerzeichen. Reicht der Platz nicht, scrollt die Tabelle in ihrem eigenen
+   Bereich (`skr-tablescroll`), nie die Seite. */
+.skr-fieldtable td code { overflow-wrap: normal; white-space: nowrap; }
+/* `--wrap`: Die erste Spalte darf umbrechen – aber nur an Leerzeichen, nie im Namen.
+   Fuer Tabellen, deren erste Zelle NEBEN dem Namen noch etwas traegt (einen Alias
+   etwa). Ohne das stuende die Spalte so breit wie Name PLUS Zusatz, und der Rest der
+   Zeile muesste sich den Rest teilen. `overflow-wrap: normal` oben gilt weiter, die
+   Namen selbst bleiben also ganz. */
+.skr-fieldtable--wrap td:first-child { white-space: normal; }
+.skr-fieldtable th,
+.skr-fieldtable td { vertical-align: top; }
+/* Die Info-Schaltflaeche sitzt am Ende des Textes, nicht in einer eigenen Spalte:
+   eine Spalte mehr waere genau die Breite, die hier fehlt. */
+.skr-fieldtable .skr-reveal--info { margin-left: 6px; }
+/* Spalte „Layouts“: die Layouts als ihre Symbole – dieselben wie in der Navigation.
+   Ausgeschriebene Layoutnamen brauchten dort mehr Platz als die Bedeutung; der Name
+   steht im `title` (Tooltip) und im `alt` (Screenreader), geht also nicht verloren. */
+/* `__nowrap`: eine Spalte, die NICHT umbrechen darf - etwa eine Werteliste wie
+   `frame` / `source` samt Info-Schaltflaeche. Umgebrochen liest sie sich wie zwei
+   Angaben statt einer. Die Tabelle steht im Scrollbereich, die Seite bleibt also
+   auch bei 320 Pixeln ohne waagerechtes Scrollen. */
+.skr-fieldtable__nowrap { white-space: nowrap; }
+/* ABER NICHT IM AUFKLAPP-PANEL. Es steht `position: fixed`, bleibt im DOM aber ein
+   Nachfahre der Zelle und erbt deren `nowrap` - der Erklaertext lief dann in einer
+   einzigen Zeile aus dem Panel heraus und war zur Haelfte nicht zu lesen. */
+.skr-fieldtable__nowrap .skr-reveal__body { white-space: normal; }
+.skr-fieldtable__layouts {
+  white-space: nowrap;
+  width: 1%;                 /* so schmal wie moeglich – `nowrap` setzt die Untergrenze:
+                                die Spalte wird so breit wie ihre breiteste Zelle und
+                                nimmt der Bedeutungsspalte keinen Platz weg. */
+}
+.skr-fieldtable__layouts .skr-linkicon { margin-right: .2em; }
+.skr-fieldtable__layouts .skr-linkicon:last-child { margin-right: 0; }
+
+/* --- Waagerechter Scrollbereich fuer eine Tabelle (`skr-tablescroll`) ---
+   Letzte Rettung, wenn die Mindestbreiten aller Spalten zusammen breiter sind als
+   die Spalte, in der die Tabelle steht: Dann schiebt der Browser Inhalte, die nicht
+   schrumpfen koennen – Bilder etwa –, ueber die Zellgrenze, und die Tabelle sieht
+   kaputt aus. Mit einem eigenen Scrollbereich bleibt sie ganz, und nur SIE scrollt;
+   die Seite selbst bekommt niemals einen waagerechten Balken. */
+.skr-tablescroll { overflow-x: auto; }
+.skr-tablescroll > table { margin: 0; }
+/* Seit `initScrollAreas()` den Rahmen selbst setzt, liegt JEDE Tabelle darin.
+   Auf Papier gibt es kein Scrollen: Dort muss der Rahmen aufgehen, sonst schneidet
+   der Druck die rechten Spalten ab. Der Tastatur-Haltepunkt entfaellt dort ebenso. */
+@media print {
+  .skr-tablescroll { overflow-x: visible; }
+}
+
+/* ===========================================================================
+   ZEILE FÜR ZEILE ERKLÄREN (`skr-walkthrough`)
+   ---------------------------------------------------------------------------
+   Eine rohe HTTP-Nachricht, ein OpenAPI-Dokument, ein Stück Code: Jede Zeile ist
+   anklickbar und klappt ihre Erklärung auf. Die Konstruktion kam in einem
+   einzigen Schulungs-Repo DREIMAL selbst gebaut vor (A-013, A-016) – jedes Mal
+   mit denselben drei Fehlern.
+
+   GRUNDLAGE IST `<details name="…">`, wie bei Reitern und Reveal. Der Browser
+   schaltet exklusiv (eine Erklärung zur Zeit), bringt Tastaturbedienung und
+   `aria-expanded` von sich aus mit, und ohne JavaScript bleibt alles erreichbar.
+   Ein nachgebauter Klick-Handler hatte in den Eigenbauten weder das eine noch
+   das andere.
+
+   WAS DIE EIGENBAUTEN FALSCH HATTEN, und was hier deshalb festgelegt ist:
+
+   1. `min-height: 24px` an der Zeile. Eine Zeile Monospace mit knappem
+      Innenabstand kommt auf 22-24 Pixel; WCAG 2.5.8 verlangt 24. Und weil die
+      Zeilen unmittelbar aneinanderliegen, greift die Ausnahme „genug Platz
+      ringsum" gerade nicht - gemessen 32 Stellen in einem Repo.
+   2. Die Fläche ist die ZURÜCKGENOMMENE Seitenfläche, nicht der dunkle
+      Codeblock. Auf dunklem Grund kippen die Akzent- und Statusfarben, die in so
+      einer Nachricht vorkommen (gemessen 2,1:1).
+   3. Der Marker links zeigt den Zustand mit FORM, nicht nur mit Farbe: Er dreht
+      sich beim Öffnen. Farbe allein trägt nicht (1.4.1).
+   =========================================================================== */
+
+/* Der Klassenname steht zweimal - siehe die Begründung beim Reiter-Baustein:
+   Der Flussrhythmus in guide.css hat dieselbe Spezifität und lädt später. */
+.skr-walkthrough.skr-walkthrough {
+  margin: var(--skr-space-6) 0;
+  border: 1px solid var(--skr-color-border);
+  border-radius: var(--skr-radius);
+  background: var(--skr-color-bg-subtle);
+  overflow-x: auto;                 /* lange Zeilen scrollen IM Baustein */
+  overscroll-behavior-x: contain;
+}
+
+.skr-walkthrough__line { border-bottom: 1px solid var(--skr-color-border); }
+.skr-walkthrough__line:last-child { border-bottom: 0; }
+
+.skr-walkthrough__line > summary {
+  display: flex;
+  align-items: baseline;
+  gap: var(--skr-space-2);
+  min-height: 24px;                 /* WCAG 2.5.8 - siehe oben */
+  padding: 0.2rem var(--skr-space-3);
+  font-family: var(--skr-font-mono);
+  font-size: var(--skr-fs-sm);
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  list-style: none;                 /* Standard-Dreieck weg (Firefox) */
+}
+.skr-walkthrough__line > summary::-webkit-details-marker { display: none; }
+
+/* Der Marker: eine Form, die sich dreht - nicht nur eine Farbe. Als Maske in der
+   Farbe des Markers, nicht als Schriftzeichen: Das kennt nicht jede Schrift. */
+.skr-walkthrough__line > summary::before {
+  content: "";
+  flex: none;
+  align-self: flex-start; width: 1ch; height: 1lh;
+  background-color: var(--skr-color-ink-muted);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 5l7 7-7 7'/%3E%3C/svg%3E") center / 0.8em no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 5l7 7-7 7'/%3E%3C/svg%3E") center / 0.8em no-repeat;
+  transition: var(--skr-transition, transform 0.15s ease);
+}
+.skr-walkthrough__line[open] > summary::before { transform: rotate(90deg); }
+
+.skr-walkthrough__line > summary:hover { background: var(--skr-color-accent-soft); }
+.skr-walkthrough__line[open] > summary {
+  background: var(--skr-color-accent-soft);
+  border-left-color: var(--skr-color-accent);
+}
+
+/* Ein hervorgehobenes Stück der Zeile - Methode, Statuscode, Schlüssel. */
+.skr-walkthrough__mark {
+  font-weight: var(--skr-fw-bold, 600);
+  color: var(--skr-color-accent-ink);
+}
+
+.skr-walkthrough__note {
+  margin: 0;
+  padding: var(--skr-space-3) var(--skr-space-4);
+  border-left: 3px solid var(--skr-color-accent);
+  background: var(--skr-color-bg);
+  font-size: var(--skr-fs-sm);
+}
+.skr-walkthrough__note > :first-child { margin-top: 0; }
+.skr-walkthrough__note > :last-child { margin-bottom: 0; }
+
+/* ===========================================================================
+   TABS – ein langer Leitfaden in schaltbaren Abschnitten
+   ---------------------------------------------------------------------------
+   GRUNDLAGE IST `<details name="…">`, nicht ein Klick-Handler. Der Browser
+   schaltet damit von sich aus exklusiv: Oeffnet man eines, schließen die
+   anderen. Ohne JavaScript ist es ein Akkordeon, in dem jeder Inhalt erreichbar
+   bleibt - dieselbe Zusage wie beim Reveal-Baustein.
+
+   `client.js` ERGAENZT den Tab-Streifen: Es baut aus den `<summary>` eine
+   Leiste und blendet die Zusammenfassungen aus. Fehlt das Skript, sieht man das
+   Akkordeon; es fehlt nichts.
+
+   WARUM NICHT REIN MIT CSS: Ein echter Tab-Streifen braucht die Beschriftungen
+   getrennt von den Inhalten - eine Leiste oben, darunter eine gemeinsame
+   Flaeche. In `<details>` steckt jede Beschriftung in ihrem eigenen Element.
+   `display: contents` am `<details>` wuerde sie herausloesen, zerlegt aber in
+   mehreren Browsern die Auf-/Zu-Mechanik selbst.
+   =========================================================================== */
+
+/* OBEN MEHR LUFT ALS UNTEN. Die Reiterleiste ist ein Bedienelement, kein
+   Absatz - sie braucht sichtbaren Abstand zu dem, was ueber ihr steht, sonst
+   liest sie sich als Fortsetzung des vorigen Textes. */
+/* DER KLASSENNAME STEHT ZWEIMAL, mit Absicht. Der Flussrhythmus
+   `.skr-guide-main > * + *` in guide.css hat DIESELBE Spezifitaet wie
+   ein einfacher Klassenselektor (0-1-0) - und guide.css laedt spaeter als diese
+   Datei. Bei Gleichstand gewinnt das Spaetere, der eigene Abstand kaeme also nie
+   an. Die Dopplung hebt auf 0-2-0 und entscheidet die Sache unabhaengig von der
+   Ladereihenfolge. Nicht wegraeumen. */
+.skr-tabs.skr-tabs {
+  margin: var(--skr-space-12, 3rem) 0 var(--skr-space-6, 1.5rem);
+}
+
+/* --- Ohne JavaScript: Akkordeon ------------------------------------------- */
+.skr-tabs__panel { border-top: 1px solid var(--skr-color-border); }
+.skr-tabs__panel:last-of-type { border-bottom: 1px solid var(--skr-color-border); }
+.skr-tabs__panel > summary {
+  cursor: pointer; list-style: none;
+  padding: var(--skr-space-3, 0.75rem) 0;
+  font-weight: var(--skr-fw-bold, 600);
+}
+.skr-tabs__panel > summary::-webkit-details-marker { display: none; }
+/* Das Dreieck als Maske in der Akzentfarbe – kein Schriftzeichen (das kennt nicht jede
+   Schrift); dieselbe Form wie die Pfeile der Navigation (glyph.html). */
+.skr-tabs__panel > summary::before {
+  content: ""; display: inline-block; width: 1.2em; height: 1em; vertical-align: -0.125em;
+  background-color: var(--skr-color-accent-text);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5v14l9-7z'/%3E%3C/svg%3E") left center / 0.75em no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5v14l9-7z'/%3E%3C/svg%3E") left center / 0.75em no-repeat;
+  transition: transform var(--skr-transition, 160ms ease);
+}
+.skr-tabs__panel[open] > summary::before { transform: rotate(90deg); }
+
+/* --- Mit JavaScript: Tab-Streifen ----------------------------------------- */
+/* Die Klasse setzt das Skript, erst wenn die Leiste steht. Ohne sie greift
+   nichts hiervon - die Seite faellt also nicht in einen halben Zustand. */
+.skr-tabs--enhanced > .skr-tabs__panel { border: 0; }
+.skr-tabs--enhanced > .skr-tabs__panel > summary { display: none; }
+
+/* EIN RAHMEN UM DAS GANZE, KEINE FLAECHEN DARIN. Der Kasten mit seinem Schatten
+   fasst Leiste und Inhalt zu einem Bedienelement zusammen; deshalb braucht
+   drinnen nichts mehr eine eigene Fuellung, um zusammenzugehoeren. Nur die
+   --enhanced-Fassung bekommt ihn: Das Akkordeon ohne JavaScript ist eine Liste
+   und soll auch wie eine aussehen. */
+.skr-tabs--enhanced {
+  border: 1px solid var(--skr-color-border);
+  border-radius: var(--skr-radius-lg, 6px);
+  /* Zwei Lagen: die enge aus dem Token fuer die Kante, eine weiche darunter fuer
+     die Tiefe. Beide in neutralem Grau und NICHT aus einer Textfarbe gemischt -
+     im dunklen Schema kippt die ins Helle, und ein heller Schatten ist ein
+     Leuchten. */
+  box-shadow: var(--skr-shadow-1), 0 6px 18px rgba(26, 38, 39, 0.07);
+}
+
+/* DIE LEISTE BRICHT NIE UM, SIE ROLLT. Mit `flex-wrap: wrap` legten sich fuenf
+   Beschriftungen in einer Inhaltsspalte untereinander - und ein umgebrochener
+   Reiterstreifen ohne Flaeche sieht aus wie eine Liste von Titeln. Genau so wurde
+   er gemeldet. Rollen ist die einzige Form, die bei jeder Breite ein Streifen
+   bleibt. */
+/* Waagerecht oben. Sie ROLLT, statt umzubrechen: Mit `flex-wrap: wrap` legten
+   sich fuenf Beschriftungen in einer Inhaltsspalte untereinander, und das las
+   sich als Liste von Titeln statt als Bedienelement. */
+.skr-tabs__bar {
+  display: flex; flex-wrap: nowrap; gap: 0;
+  overflow-x: auto; overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  margin-bottom: 0;
+  padding: 0 var(--skr-space-2, 0.5rem);
+  /* Die einzige Linie im Inneren: Sie trennt Bedienung von Inhalt. */
+  border-bottom: 1px solid var(--skr-color-border);
+}
+
+/* --- Zu schmal fuer alle Reiter: nur der gewaehlte, Rest hinter dem Burger ---
+   AB WANN, ENTSCHEIDET DIE MESSUNG, NICHT EINE PIXELGRENZE. Wie viel Platz die
+   Leiste braucht, haengt an Anzahl UND Laenge der Beschriftungen - eine feste
+   Breakpoint-Zahl waere bei zwei kurzen Reitern zu frueh und bei sechs langen zu
+   spaet. Das Skript vergleicht deshalb die natuerliche Breite mit der
+   verfuegbaren und setzt `--compact`.
+
+   WARUM NICHT WEITER ROLLEN: Die Leiste rollt (siehe oben) und bleibt damit bei
+   jeder Breite ein Streifen. Nur sieht man bei 320px vom dritten Reiter nichts
+   mehr und ahnt auch nicht, dass es ihn gibt - eine waagerechte Rollleiste in
+   einem Kasten wird uebersehen. Sichtbar bleibt deshalb der GEWAEHLTE; dass es
+   weitere gibt, sagt der Burger.
+
+   DER BURGER STEHT NEBEN DER LEISTE, NICHT DARIN. `role="tablist"` erwartet
+   `role="tab"` als Kinder; ein Knopf dazwischen ist ein Verstoss, den axe meldet
+   (`aria-required-children`). Deshalb der Rahmen `__nav` um beide - und die
+   trennende Linie wandert an ihn, damit sie ueber die ganze Breite laeuft. */
+.skr-tabs__nav {
+  display: flex; align-items: stretch;
+  border-bottom: 1px solid var(--skr-color-border);
+}
+.skr-tabs__nav > .skr-tabs__bar { flex: 1 1 auto; min-width: 0; border-bottom: 0; }
+
+/* Ausserhalb von `--compact` gibt es ihn nicht - kein Knopf, der nichts tut. */
+.skr-tabs__more { display: none; }
+.skr-tabs--compact .skr-tabs__more {
+  display: inline-flex; flex: none;
+  align-self: center;
+  /* RECHTS, UND ZWAR IN BEIDEN ZUSTAENDEN. Zugeklappt schiebt ihn die Leiste
+     (`flex: 1 1 auto`) von selbst dorthin. Aufgeklappt wandert die Leiste in die
+     zweite Zeile (`order: 2`), und er stuende allein links - also dort, wo er
+     gerade NICHT war. Ein Knopf, der beim Druck seinen Platz wechselt, verliert
+     den Finger, der ihn gedrueckt hat. `margin-left: auto` haelt ihn fest. */
+  margin: 0 var(--skr-space-2, 0.5rem) 0 auto;
+}
+
+/* ZUGEKLAPPT: nur der gewaehlte Reiter. Die uebrigen sind `display: none` und
+   damit auch fuer Hilfstechnik weg - genau wie bei einer Hauptnavigation hinter
+   dem Burger. Erreichbar bleiben sie ueber den Knopf, der sie einblendet. */
+.skr-tabs--compact .skr-tabs__bar { overflow-x: hidden; }
+.skr-tabs--compact .skr-tabs__tab[aria-selected="false"] { display: none; }
+
+/* AUFGEKLAPPT: alle untereinander. Bei dieser Breite ist eine Spalte die einzige
+   Form, in der fuenf Beschriftungen lesbar nebeneinander stehen - waagerecht
+   waeren sie wieder eine Rollleiste, und dann haette der Burger nichts gebracht. */
+.skr-tabs--compact.skr-tabs--menu-open .skr-tabs__nav {
+  flex-wrap: wrap;
+}
+.skr-tabs--compact.skr-tabs--menu-open .skr-tabs__bar {
+  flex-direction: column; flex-basis: 100%; order: 2;
+  padding-bottom: var(--skr-space-2, 0.5rem);
+}
+.skr-tabs--compact.skr-tabs--menu-open .skr-tabs__tab[aria-selected="false"] {
+  display: block;
+}
+/* In der Spalte trennt die Wahl kein Unterstrich mehr - er liefe ueber die
+   ganze Zeile und saehe aus wie eine Trennlinie. Ein Balken am Anfang der Zeile
+   zeigt dasselbe, ohne sich als Trenner zu lesen. */
+.skr-tabs--compact.skr-tabs--menu-open .skr-tabs__tab {
+  text-align: left; border-bottom: 0;
+  border-left: 3px solid transparent;
+}
+.skr-tabs--compact.skr-tabs--menu-open .skr-tabs__tab[aria-selected="true"] {
+  border-left-color: var(--skr-color-accent);
+}
+
+/* DIE WAHL ZEIGT EIN UNTERSTRICH, KEINE FLAECHE. Die Akzentfarbe steckt in
+   Linie und Schrift - alles aus Tokens, damit es mit dem Farbschema kippt und
+   bei einer anderen Schulungsfarbe richtig bleibt. Die durchsichtige Linie am
+   nicht gewaehlten Reiter ist kein Rest: Sie haelt den Platz, sonst ruecken
+   beim Umschalten alle Beschriftungen um drei Pixel. */
+.skr-tabs__tab {
+  appearance: none; cursor: pointer; position: relative;
+  background: transparent;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  padding: 0.7rem 1.15rem;
+  color: var(--skr-color-ink);
+  font: inherit; font-weight: var(--skr-fw-bold, 600);
+  white-space: nowrap;
+  transition: color var(--skr-transition, 160ms ease),
+              border-color var(--skr-transition, 160ms ease);
+}
+.skr-tabs__tab:hover {
+  color: var(--skr-color-accent-ink);
+  border-bottom-color: color-mix(in srgb, var(--skr-color-accent) 35%, transparent);
+}
+.skr-tabs__tab[aria-selected="true"] {
+  color: var(--skr-color-accent-ink);
+  border-bottom-color: var(--skr-color-accent);
+}
+.skr-tabs__tab:focus-visible {
+  outline: 2px solid var(--skr-color-accent); outline-offset: 2px;
+}
+/* Wer Bewegung abbestellt hat, bekommt keine. */
+@media (prefers-reduced-motion: reduce) {
+  .skr-tabs__tab { transition: none; }
+}
+
+/* Der Inhalt braucht nur noch Innenabstand - den Zusammenhalt leistet der
+   Rahmen um das Ganze. */
+.skr-tabs--enhanced > .skr-tabs__panel[open] {
+  padding: var(--skr-space-6, 1.5rem);
+}
+/* DAS UNSICHTBARE `summary` ZAEHLT TROTZDEM ALS GESCHWISTER. Im Reiterstreifen
+   ist es `display: none`; die Eulenregel des Rhythmus sieht es dennoch und gibt
+   dem ersten sichtbaren Element einen Blockabstand - der zum Innenabstand des
+   Panels hinzukaeme. Gemessen: 24 px Padding plus 25,6 px Marge ueber dem ersten
+   Absatz. Im Akkordeon-Zustand (ohne `--enhanced`) ist das `summary` sichtbar,
+   und dort gehoert der Abstand hin; deshalb greift diese Regel nur hier. */
+.skr-tabs--enhanced > .skr-tabs__panel > summary + * { margin-top: 0; }
+
+/* --- Reiter links statt oben (`--side`) ----------------------------------- *
+   WOFUER: Beschriftungen, die ganze Saetze sind. Der waagerechte Streifen
+   rollt und bricht nie um - bei sieben Saetzen waere er unbedienbar. Links
+   untereinander darf jede Beschriftung umbrechen und trotzdem lesbar bleiben.
+
+   Es ist dieselbe Komponente, nur anders angeordnet: dasselbe Markup, dasselbe
+   Skript, dieselben Anker, dieselben Druckregeln. Nur diese Datei weiß davon.  */
+
+/* Leiste in Spalte 1, ALLE Panels in Spalte 2 - ausdruecklich gesetzt und nicht
+   dem Fluss ueberlassen. Ein geschlossenes `<details>` ist im Gitter weiterhin
+   ein Element und bekaeme sonst eine eigene Zelle; die Panels wanderten dann
+   treppenfoermig nach unten, obwohl nur eines sichtbar ist. */
+.skr-tabs--enhanced.skr-tabs--side {
+  display: grid;
+  grid-template-columns: minmax(12rem, 18rem) minmax(0, 1fr);
+}
+.skr-tabs--side > .skr-tabs__bar    { grid-area: 1 / 1; }
+.skr-tabs--side > .skr-tabs__panel  { grid-area: 1 / 2; }
+
+.skr-tabs--side > .skr-tabs__bar {
+  flex-direction: column;
+  overflow-x: visible;
+  padding: var(--skr-space-2, 0.5rem) 0;
+  border-bottom: 0;
+  border-right: 1px solid var(--skr-color-border);
+}
+
+/* Die Wahl wandert von der Unter- an die linke Kante - sonst alles wie oben.
+   `white-space: normal` ist hier der Punkt: Waagerecht darf nichts umbrechen,
+   senkrecht MUSS es. */
+.skr-tabs--side > .skr-tabs__bar > .skr-tabs__tab {
+  text-align: left;
+  white-space: normal;
+  border-bottom: 0;
+  border-left: 3px solid transparent;
+  transition: color var(--skr-transition, 160ms ease),
+              border-color var(--skr-transition, 160ms ease);
+}
+.skr-tabs--side > .skr-tabs__bar > .skr-tabs__tab:hover {
+  border-left-color: color-mix(in srgb, var(--skr-color-accent) 35%, transparent);
+}
+.skr-tabs--side > .skr-tabs__bar > .skr-tabs__tab[aria-selected="true"] {
+  border-left-color: var(--skr-color-accent);
+}
+
+/* Schmal ist eine Seitenspalte keine: Unter dieser Breite bliebe fuer den Text
+   nichts uebrig. Dann steht die Leiste wieder oben - untereinander, nicht als
+   Streifen, denn die langen Beschriftungen sind ja der Grund fuer `--side`. */
+@media (max-width: 768px) {
+  .skr-tabs--enhanced.skr-tabs--side { display: block; }
+  .skr-tabs--side > .skr-tabs__bar {
+    border-right: 0;
+    border-bottom: 1px solid var(--skr-color-border);
+  }
+}
+
+
+/* ===========================================================================
+   AKKORDEON (`skr-accordion`)
+   ---------------------------------------------------------------------------
+   Ueberschriften werden zu Klappbereichen. Der Autor schreibt gewoehnliches
+   Markdown in einen Kasten; das Skript baut daraus Knoepfe und Bereiche und
+   setzt erst danach `--enhanced`.
+
+   OHNE DIESE KLASSE PASSIERT HIER NICHTS. Das ist die ganze Absicherung: Ohne
+   JavaScript steht ein gewoehnliches Dokument da, vollstaendig und lesbar. Kein
+   `display: none` ausserhalb von `--enhanced`.
+
+   ABGRENZUNG ZU DEN REITERN: Dort schreibt der Autor `<details>` und bekommt
+   einen Streifen; hier bleibt die Gliederung des Dokuments stehen und bekommt
+   eine Bedienung. Beides exklusiv, beides aus demselben Grund - eine lange
+   Seite soll nicht in ganzer Laenge dastehen.
+   =========================================================================== */
+
+/* Der eigene Abstand im Textfluss - der Klassenname steht ZWEIMAL, wie bei den
+   Reitern. Begruendung dort: Der Flussrhythmus `.skr-guide-main > * + *`
+   hat dieselbe Spezifitaet (0-1-0) und laedt spaeter; die Dopplung hebt auf
+   0-2-0 und entscheidet es unabhaengig von der Ladereihenfolge. */
+.skr-accordion.skr-accordion {
+  margin: var(--skr-space-8, 2rem) 0 var(--skr-space-6, 1.5rem);
+}
+
+/* Eine Linie je Bereich - dieselbe Sprache wie das Akkordeon der Reiter ohne
+   JavaScript. Kein Rahmen um das Ganze: Die Bereiche stehen IM Text und sollen
+   nicht wie ein eingesetztes Bedienfeld wirken. */
+.skr-accordion--enhanced > :is(h2, h3, h4, h5, h6) {
+  margin: 0;
+  border-top: 1px solid var(--skr-color-border);
+}
+.skr-accordion--enhanced > :is(h2, h3, h4, h5, h6):last-child,
+.skr-accordion--enhanced > .skr-accordion__region:last-child {
+  border-bottom: 1px solid var(--skr-color-border);
+}
+
+/* DER KNOPF FUELLT DIE UEBERSCHRIFT. Er erbt Schriftgroesse und -gewicht der
+   Ebene, in der er steht - eine `###`-Liste sieht damit aus wie `###` und nicht
+   wie eine Reihe gleicher Knoepfe. `width: 100%` macht die ganze Zeile
+   anklickbar; die Zielgroesse (WCAG 2.5.8) ist ueber den Innenabstand ohnehin
+   weit ueberschritten. */
+.skr-accordion__toggle {
+  appearance: none; cursor: pointer;
+  display: flex; align-items: baseline; gap: 0.6rem;
+  width: 100%; text-align: left;
+  background: transparent; border: 0; border-radius: 0;
+  padding: var(--skr-space-3, 0.75rem) 0;
+  color: inherit; font: inherit;
+  /* MITSCROLLEN BRAUCHT LUFT. Der Header klebt oben; ohne diesen Rand landet
+     der gewaehlte Kopf beim Springen darunter und ist nicht zu sehen. */
+  scroll-margin-top: calc(var(--topnav-height, 72px) + 1rem);
+}
+.skr-accordion__toggle:hover { color: var(--skr-color-accent-ink); }
+.skr-accordion__toggle:focus-visible {
+  outline: 2px solid var(--skr-color-accent); outline-offset: -2px;
+}
+
+/* Das Dreieck zeigt den Zustand an - dasselbe Zeichen und dieselbe Drehung wie
+   bei Reitern und Fold, damit „aufklappbar“ auf jeder Seite gleich aussieht.
+   `flex: none` haelt es bei langen Ueberschriften in der ersten Zeile. */
+.skr-accordion__toggle::before {
+  content: ""; flex: none; align-self: flex-start; width: 0.75em; height: 1lh;
+  background-color: var(--skr-color-accent-text);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5v14l9-7z'/%3E%3C/svg%3E") center / 0.75em no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5v14l9-7z'/%3E%3C/svg%3E") center / 0.75em no-repeat;
+  transition: transform var(--skr-transition, 160ms ease);
+}
+.skr-accordion__toggle[aria-expanded="true"]::before { transform: rotate(90deg); }
+
+/* DIE BEWEGUNG - dieselbe Bauart wie im Burger-Menue, aus demselben Grund:
+   `0fr` -> `1fr` rechnet mit der WIRKLICHEN Hoehe. Ein `max-height`-Ansatz
+   faellt beim Zuklappen erst durch den zu grossen Wert, bevor etwas passiert;
+   sichtbar wird nur das letzte Zehntel, und das sieht aus wie ein Sprung.
+
+   `minmax(0, 0fr)` und nicht `0fr`: Letzteres ist die Kurzform fuer
+   `minmax(auto, 0fr)`, und das `auto` haelt die Zeile auf der Mindesthoehe des
+   Inhalts - gemessen blieb der Innenabstand stehen statt null.
+
+   `visibility` schaltet verzoegert: erst nach der Bewegung unsichtbar, beim
+   Oeffnen sofort. So laeuft der Fokus nicht in einen Bereich, der zu ist.
+
+   Die globale Regel in base.css setzt bei `prefers-reduced-motion` jede Dauer
+   auf 0,01 ms - hier steht deshalb keine eigene Ausnahme. */
+.skr-accordion__region {
+  display: grid;
+  grid-template-rows: minmax(0, 0fr);
+  transition: grid-template-rows 220ms ease;
+}
+.skr-accordion__region.is-open { grid-template-rows: minmax(0, 1fr); }
+
+.skr-accordion__body {
+  min-height: 0; overflow: hidden;
+  visibility: hidden;
+  padding-bottom: 0;
+  transition: padding-bottom 220ms ease, visibility 0s linear 220ms;
+}
+.skr-accordion__region.is-open > .skr-accordion__body {
+  visibility: visible;
+  padding-bottom: var(--skr-space-4, 1rem);
+  transition: padding-bottom 220ms ease, visibility 0s;
+}
+.skr-accordion__body > :first-child { margin-top: 0; }
+.skr-accordion__body > :last-child { margin-bottom: 0; }
+
+/* Ein Akkordeon IM Akkordeon ruecken wir ein - sonst steht die zweite Ebene auf
+   derselben Kante wie die erste, und die Schachtelung ist nicht zu sehen. Die
+   Linie links sagt dasselbe noch einmal fuer den, der nur den Rand wahrnimmt. */
+.skr-accordion .skr-accordion.skr-accordion {
+  margin: var(--skr-space-2, 0.5rem) 0;
+  padding-left: var(--skr-space-4, 1rem);
+  border-left: 2px solid var(--skr-border-soft);
+}
+
+/* --- Raster für Karten (`skr-grid`) ---------------------------------
+   HIER UND NICHT IN site.css: Das Raster ist ein Baustein im Inhalt – die Doku
+   schickt Autor:innen ausdrücklich dorthin, um Karten zu gruppieren. Bausteine im
+   Inhalt stehen in dieser Datei.
+
+   Mehrspaltiges Flow-Raster (Flexbox statt starrem Grid). Basisbreite 320px;
+   die Kacheln einer Zeile wachsen gleichmäßig auf die verfügbare Breite. */
+.skr-grid {
+  margin-top: var(--skr-space-8);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--skr-space-6);
+}
+.skr-grid > * { flex: 1 1 320px; }   /* min. 320px, wachsen zum Füllen der Zeile */
+
+/* Kachel-Variante: feste Breite, annähernd quadratisch (Verhältnis max. 3:2).
+   Anders als das Standard-Raster wachsen die Kacheln NICHT auf die Zeilenbreite –
+   sie behalten ihre Breite und stehen linksbündig nebeneinander. */
+.skr-grid--tiles { justify-content: flex-start; }
+.skr-grid--tiles > * {
+  flex: 0 0 300px;      /* feste Breite */
+  max-width: 300px;
+  min-height: 200px;    /* 300×200 = 3:2 (flachster Fall); mehr Inhalt → quadratischer */
+}
+
+/* Smartphone: einspaltig mit voller Breite. Breakpoint 600px (gängige Grenze
+   zwischen Smartphone-Hochformat und größer). */
+@media (max-width: 600px) {
+  .skr-grid > * { flex-basis: 100%; }
+  .skr-grid--tiles > * { flex-basis: 100%; max-width: none; min-height: 0; }
+}
+
+
+/* =============================================================================
+   DRUCK-KONTAKTZEILE – Bildschirmseite
+   -----------------------------------------------------------------------------
+   Die Zeile selbst (E-Mail + Website aus dem Kontakt, Ersatz für den Footer) wird in
+   `print.css` gesetzt. Dass sie auf dem BILDSCHIRM verschwindet, muss dagegen
+   hier stehen: `print.css` wird mit `media="print"` geladen und ist am Bildschirm
+   gar nicht aktiv. Stünde die Regel dort, erschiene die Zeile auf jeder Seite.
+   ============================================================================= */
+.skr-print-contact { display: none; }
+
+/* RUHIGER ZUSTAND fuer Screenshots: `skr.freezeMotion()` (client.js) setzt
+   `data-skr-motion-frozen` am <html>. Dann steht alles still – keine Animation,
+   kein Uebergang, kein weiches Scrollen. Ein Zustand fuer Werkzeuge, nicht fuer
+   Leser; deshalb mit `!important` ueber jede Einzelregel hinweg. */
+:root[data-skr-motion-frozen] *,
+:root[data-skr-motion-frozen] *::before,
+:root[data-skr-motion-frozen] *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+}

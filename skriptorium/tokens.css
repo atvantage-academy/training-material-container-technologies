@@ -1,0 +1,329 @@
+/* Skriptorium: in der Schicht skr.tokens – skriptorium/tokens.css. */
+@layer skr.tokens, skr.base, skr.components, skr.theme, skr.extensions;
+@layer skr.tokens {
+:root {
+  /* --- Markenfarben: Aliase auf das Theme (keine eigenen Werte!) --------- */
+  --skr-color-primary:         var(--skr-slate);       /* dunkle Flächen: Fußbereich, Sprunglink */
+  /* Kräftigste dunkle Fläche, in BEIDEN Farbschemata dunkel: Codeblöcke im Inhalt,
+     Module des QR-Codes. */
+  --skr-color-primary-dark:    var(--skr-ink);
+  --skr-color-primary-contrast:var(--skr-white);       /* Schrift auf den dunklen Flächen */
+  /* Schalter: mit `--skr-accent-base` die Ableitung, sonst der Akzent ohne Ableitung
+     (`--skr-orange`). Das Standard-Theme setzt `--skr-orange` nicht; der Rückfall auf
+     Slate greift nur, wenn ein Theme den Grundton zurücknimmt, ohne einen Akzent zu
+     nennen. */
+  --skr-color-accent:          var(--skr-accent-from-base, var(--skr-orange, var(--skr-slate)));
+  /* Der Akzent als SCHRIFT. Ohne eigene Angabe der Akzent selbst; ein Theme, dessen
+     Akzent als Schrift nicht trägt (helles Gelb), setzt hier einen dunkleren Ton –
+     Linien, Rahmen und Flächen behalten den Akzent. */
+  --skr-color-accent-text:     var(--skr-color-accent);
+  /* Weiche Akzentfläche. Gemischt wird in die Seitenfläche statt in festes #fff,
+     damit die Mischung auch einer überschriebenen Seitenfläche folgt. */
+  /* Im Dark-Theme mit 22 %: gegen die dunkle Seitenfläche gemischt trüge die helle
+     Mischung keinen hellen Text (1,02:1). */
+  --skr-color-accent-soft:     light-dark(
+                                         color-mix(in srgb, var(--skr-color-accent) 12%, var(--skr-color-bg)),
+                                         color-mix(in srgb, var(--skr-color-accent) 22%, var(--skr-color-bg)));
+  /* Text auf Akzentfläche. Der feste Wert ist nur der Rückfall für Engines ohne
+     relative Farbsyntax; darunter leitet ein @supports-Block ihn aus dem Akzent
+     ab (siehe „Text auf Akzentfläche“ weiter unten). */
+  --skr-color-accent-contrast: var(--skr-white);
+
+  /* --- Verweisfarbe ----------------------------------------------------------
+     Verweise tragen den Akzent als Schrift; base.css liest beide Token. Ein Theme,
+     dessen Verweise anders aussehen sollen als die übrige Akzentschrift, setzt sie
+     mit `:root` um. */
+  --skr-color-link:       var(--skr-color-accent-text);
+  --skr-color-link-hover: var(--skr-color-link);
+
+  /* --- Neutrale / Flächenfarben (theme-fähig) -----------------------------
+     `light-dark(«hell», «dunkel»)` – beide Werte an EINER Stelle, geschaltet über
+     `color-scheme` (siehe „Farbschema“ unten). Die hellen Werte kommen aus
+     dem Theme. Das dunkle Schema setzt der Kern selbst, an den Neutraltönen
+     des Themes (Ink/Slate) orientiert. Deshalb liegen alle umschaltbaren
+     Oberflächen als eigene Token des Kerns vor. */
+  --skr-color-ink:        light-dark(var(--skr-anthracite), #e8edee);  /* Fließtext */
+  --skr-color-ink-muted:  light-dark(var(--skr-gray-footer), #9fb0b3); /* sekundärer Text */
+  --skr-color-headline:   light-dark(var(--skr-ink), #f3f6f6);         /* Überschriften */
+  --skr-color-bg:         light-dark(var(--skr-white), #14201f);       /* Seitenfläche */
+  --skr-color-bg-subtle:  light-dark(var(--skr-gray-card), #1f2c2b);   /* Karten/erhöhte Flächen */
+  --skr-color-border:     light-dark(color-mix(in srgb, var(--skr-slate) 18%, #fff),
+                                             color-mix(in srgb, #fff 14%, #1f2c2b));
+  --skr-border-soft:      light-dark(#e6e8ea, color-mix(in srgb, #fff 12%, #1f2c2b)); /* Hairlines */
+  --skr-hero-bg:          var(--skr-hero-bg-from-base,
+                                      light-dark(var(--skr-blue-light), var(--skr-slate)));
+  --skr-topbar-bg:        light-dark(var(--skr-white), #16211f);       /* Kopfzeile */
+  --skr-metanav-bg:       light-dark(var(--skr-gray-metanav), #101a18); /* Meta-Nav */
+  /* gray-footer trägt auf der Fläche der Meta-Navigation AA für Kleintext. */
+  --skr-metanav-text:     light-dark(var(--skr-gray-footer), #93a5a2);
+  --skr-code-bg:          light-dark(var(--skr-gray-card), #24332f);   /* Inline-Code, Code außerhalb des Inhalts */
+  /* Codeblöcke im Inhalt sind in BEIDEN Farbschemata dunkel – die Syntax-Hervorhebung
+     (highlight.css) ist ein dunkles Schema. */
+  --skr-code-block-bg:    var(--skr-color-primary-dark);
+  --skr-code-block-text:  #eef1f2;
+  /* Kennzeichen des Themes neben der Wortmarke (`badge` in theme.yml). */
+  --skr-badge-bg:         var(--skr-color-ink);
+  --skr-badge-text:       var(--skr-color-bg);
+
+  /* --- Statusfarben: Danger aus dem Theme; Success/Warning ergänzt der Kern
+     (das Theme definiert nur Danger). Info = Slate. ------------------------ */
+  --skr-color-info:     var(--skr-slate);
+  --skr-color-success:  #2f855a;
+  --skr-color-warning:  #c9a227;
+  --skr-color-danger:   var(--skr-red);
+
+  /* --- Kategoriale Füllpalette für Diagramme und Kategorien (Ergänzung des Kerns;
+     das Theme setzt keine). Füllung 1 ist die dunkle Fläche, Füllung 2 der Akzent. */
+  --skr-fill-1: var(--skr-color-primary);
+  --skr-fill-2: var(--skr-color-accent);
+  --skr-fill-3: #c9a227;
+  --skr-fill-4: #7a6fb3;
+  /* Füllflächen. Hell sind es Pastelltöne für dunklen Text. Im Dark-Theme ist der
+     Text hell (`--skr-color-ink` = #e8edee) – auf #DDE4EE ergäbe das 1,08:1
+     und auf #f6ecc4 glatte 1,00:1, also Schrift, die schlicht nicht da ist. Wer eine
+     Fläche damit füllt und den Text in `currentColor` setzt – der naheliegende Weg
+     für ein Inline-SVG – bekäme genau das.
+
+     Dunkel abgeleitet wird aus der zu Weiß hin AUFGEHELLTEN Füllung, nicht aus der
+     rohen: Füllung 1 (Slate) ist selbst so dunkel, dass sie in die Seitenfläche
+     hineingemischt kaum von ihr abstände. Eigene Farbwerte kommen nicht hinzu.
+
+     Der Anteil von 18 % ist gegen beide Textfarben gerechnet: Bei 26 % fiel
+     Sekundärtext auf drei von vier Füllungen durch AA (3,98–4,53:1). Bei 18 % trägt
+     auch er: ink 9,33–10,21:1, ink-muted 4,90–5,36:1. Der Preis ist ein schwächerer
+     Abstand zur Seitenfläche (1,39–1,52:1 statt 1,64–1,87:1); die Kategorie trägt
+     ohnehin auch der Strich `--skr-fill-N`. */
+  --skr-fill-1-bg: light-dark(var(--skr-blue-light),
+                                      color-mix(in srgb, color-mix(in srgb, var(--skr-fill-1) 45%, #fff) 18%, var(--skr-color-bg)));
+  --skr-fill-2-bg: light-dark(color-mix(in srgb, var(--skr-fill-2) 18%, #fff),
+                                      color-mix(in srgb, color-mix(in srgb, var(--skr-fill-2) 60%, #fff) 18%, var(--skr-color-bg)));
+  --skr-fill-3-bg: light-dark(#f6ecc4,
+                                      color-mix(in srgb, color-mix(in srgb, var(--skr-fill-3) 60%, #fff) 18%, var(--skr-color-bg)));
+  --skr-fill-4-bg: light-dark(#e5e1f4,
+                                      color-mix(in srgb, color-mix(in srgb, var(--skr-fill-4) 55%, #fff) 18%, var(--skr-color-bg)));
+
+  /* --- Dokumentlinks: Kachel und Zeichen (components.css) -----------------
+     Das Icon einer Art ist einfarbig und liegt als Maske auf der Kachel. Beide
+     Farben folgen der Marke; ein Theme setzt sie um – für alle Arten oder je Art
+     an `.skr-doclink--«art»`. */
+  --skr-doclink-tile:  var(--skr-color-primary);
+  --skr-doclink-glyph: var(--skr-color-primary-contrast);
+
+  /* --- Typografie: Familie aus dem Theme; modulare Skala aus dem Kern. ---- */
+  --skr-font-sans:  var(--font-family, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif);
+  --skr-font-mono:  "Consolas", "SF Mono", ui-monospace, monospace;
+
+  /* Die Grundschrift gehört dem Browser; das Theme rechnet über `rem` weiter. */
+  --skr-lh-body:      var(--text-line-height, 1.6);
+  --skr-lh-heading:   1.2;
+  --skr-fw-normal:    var(--text-weight, 400);
+  --skr-fw-medium:    var(--headline-weight-content, 600);
+  --skr-fw-bold:      var(--headline-weight, 600);
+
+  /* Modulare Skala (fluid) – vollständig, auch wo der Kern einen Schritt nicht selbst
+     liest: Extensions wählen daraus. */
+  --skr-fs-sm:   clamp(0.82rem, 0.8rem + 0.1vw, 0.9rem);
+  --skr-fs-base: 1rem;
+  --skr-fs-md:   clamp(1.1rem,  1rem + 0.4vw, 1.25rem);
+  --skr-fs-lg:   clamp(1.4rem,  1.2rem + 0.8vw, 1.8rem);
+  --skr-fs-xl:   clamp(1.9rem,  1.5rem + 1.6vw, 2.6rem);
+  --skr-fs-2xl:  clamp(2.4rem,  1.8rem + 2.6vw, 3.6rem);
+
+  /* --- Abstände (8px-Raster; die Abstände des Themes sind sektionsbezogen) */
+  --skr-space-1: 0.25rem;  --skr-space-2: 0.5rem;   --skr-space-3: 0.75rem;
+  --skr-space-4: 1rem;     --skr-space-6: 1.5rem;   --skr-space-8: 2rem;
+  --skr-space-12: 3rem;    --skr-space-16: 4rem;
+
+  /* --- Radien, Schatten: am Theme orientiert ------------------------------ */
+  --skr-radius-sm: 4px;
+  --skr-radius:    var(--radius, 4px);       /* Theme: kleine Radien */
+  --skr-radius-lg: var(--radius-dark, 6px);
+  --skr-shadow-1:  0 1px 2px rgba(26, 38, 39, 0.08);
+  --skr-shadow-2:  var(--shadow, 0 0 8px rgb(0 0 0 / 0.25));
+
+  /* --- Layout (aus dem Kern) --------------------------------------------- */
+  --skr-page-width:   1180px;
+  /* Höhe der Wortmarke; die Breite folgt ihrem Seitenverhältnis. Die Kopfleiste
+     der Präsentation ist knapper und hat eine eigene Stellschraube. */
+  --skr-logo-height:         22px;
+  --skr-present-logo-height: var(--skr-logo-height);
+
+
+  /* --- Vordergrundfassungen: dieselbe Farbe, aber als SCHRIFT ------------
+     Eine Farbe der Palette ist als Fläche gedacht. Als Schrift trägt sie nicht:
+     `--skr-color-danger` auf der Seitenfläche ergibt 4,39:1 im Light- und
+     3,81:1 im Dark-Theme, auf `-bg-subtle` 3,75:1 bzw. 3,29:1. Das Theme selbst
+     benutzt Danger nur als RAHMEN (Callout, Fehler-Tafel) – dort ist es richtig,
+     und deshalb ist es lange nicht aufgefallen. Sobald ein Repo eine Fehlermeldung
+     schreibt statt sie zu umranden, fehlte ein Token, das trägt.
+
+     Warum Tokens und nicht nur eine dokumentierte Rezeptur: Im Inline-SVG steht
+     `fill="var(…)"`. Dort lässt sich nichts zusammenmischen – man kann nur auf ein
+     Token zeigen. Genau an diesen Stellen sind die gemeldeten Fälle durchgefallen,
+     während dieselben Projekte es im CSS selbst lösen konnten.
+
+     Eine Regel für alle: 45 % Farbe in den Fließtext. Weil
+     `--skr-color-ink` mit dem Farbschema kippt, trägt derselbe Ausdruck in
+     beiden – im Light-Theme dunkelt er ab, im Dark-Theme hellt er auf. Deshalb
+     stehen diese Tokens auch nur EINMAL hier und nicht in den Dark-Blöcken.
+
+     ZUSAGE: AA (4,5:1) auf `--skr-color-bg` und `--skr-color-bg-subtle`
+     in beiden Schemata. NICHT zugesagt auf den Füllflächen `--skr-fill-*-bg`.
+     Text auf einer Füllfläche nimmt `--skr-color-ink` oder
+     `--skr-color-ink-muted`. */
+  --skr-color-danger-ink:  color-mix(in srgb, var(--skr-color-danger) 45%, var(--skr-color-ink));
+  --skr-color-success-ink: color-mix(in srgb, var(--skr-color-success) 45%, var(--skr-color-ink));
+  --skr-color-warning-ink: color-mix(in srgb, var(--skr-color-warning) 45%, var(--skr-color-ink));
+  --skr-color-accent-ink: color-mix(in srgb, var(--skr-color-accent) 45%, var(--skr-color-ink));
+  /* Info ist Slate und damit im dunklen Schema selbst dunkel: Es wird dort erst zu
+     Weiß hin aufgehellt, dann gemischt. */
+  --skr-color-info-ink:   color-mix(in srgb, light-dark(var(--skr-color-info), color-mix(in srgb, var(--skr-color-info) 45%, #fff)) 45%, var(--skr-color-ink));
+
+
+  /* --- Schulungsfarbe aus EINEM Wert ------------------------------------
+     Ein Schulungs-Repo trägt laut Vorgabe eine eigene Akzentfarbe. Bisher hiess
+     das VIER Handwerte: Akzent und Hero-Band, je für Light und Dark, wobei der
+     Dark-Wert doppelt steht (Attribut- und `prefers-color-scheme`-Block). Das
+     geht schief, und zwar unbemerkt: In einem Repo wurde ein Wert geändert und
+     drei nicht – die Unterlage trug Blau im Light- und Grün im Dark-Modus. Der
+     Build zeigt immer nur einen Modus, also meldet ihn nichts.
+
+     Schlimmer noch: Von drei frei gewählten Schulungsfarben lag JEDE in einem
+     der beiden Modi unter AA, ohne dass es jemand wusste – gemessen 3,03:1
+     (Blau, Light), 3,26:1 (Grün, Dark) und 2,52:1 (Violett, Dark).
+
+     Deshalb: Das Repo gibt nur noch den FARBTON an, die HELLIGKEIT kommt aus
+     dem Theme. `--skr-color-ink` und `-bg` kippen mit dem Farbschema,
+     also fallen Light und Dark aus DERSELBEN Formel – und der Kontrast hängt am
+     Mischanteil statt am Zufall. Nach der Ableitung: 5,38 / 6,10 / 8,06:1 im
+     Light- und 7,54 / 7,33 / 4,92:1 im Dark-Theme.
+
+     Zwei Schritte, weil eine relative Farbe nur EINE Ursprungsfarbe hat, wir
+     aber aus zweien etwas brauchen: `color-mix` setzt die modusrichtige
+     Helligkeit und nimmt dabei Buntheit (die Textfarbe ist fast neutral),
+     `oklch(from …) calc(c * 3)` dreht sie wieder auf. `in oklab`, NICHT
+     `in oklch`: Die polare Mischung interpoliert auch den Farbwinkel und zieht
+     die Farbe Richtung Textfarbe.
+
+     NICHT auf ein kräftiges Orange anwenden. Gemessen wird es dadurch
+     SCHLECHTER (5,19 → 4,18:1 im Dark) und zu reinem Rot – der Farbwinkel des
+     Orange verträgt den Buntheits-Anschlag nicht. Ein solcher Akzent wird nicht
+     abgeleitet; ohne `--skr-accent-base` bleibt alles wie bisher.
+
+     Angeschlossen ist es hier, nicht im Repo. Ein Ausdruck, der ein NICHT
+     gesetztes Token liest, wird beim Rechnen ungültig – und genau das nutzen
+     Akzent und Hero-Band als Schalter: `var(--…-from-base, «bisher»)` nimmt den
+     Rückfall, solange keine Basis gesetzt ist. Ein Repo schreibt deshalb nur:
+
+       :root { --skr-accent-base: «hex»; }
+
+     Und die Regel, die man nicht sieht: WER DANEBEN EINEN
+     `[data-skr-theme="dark"]`- ODER `prefers-color-scheme`-BLOCK
+     SCHREIBT, HEBELT DIE ABLEITUNG AUS. Ein solcher Block gewinnt gegen die
+     Formel und friert genau einen Modus auf einen Handwert ein. Farbe ändern
+     heißt: `--skr-accent-base` ändern, sonst nichts. */
+  --skr-accent-from-base:  var(--skr-accent-base);
+  --skr-hero-bg-from-base: color-mix(in oklab, var(--skr-accent-base) 12%, var(--skr-color-bg));
+
+
+  /* --- Vertikaler Rhythmus, gemeinsam fuer BEIDE Inhaltsspalten -----------
+     Das Theme fuehrte dafuer zwei Systeme: Die gewoehnliche Seite hat eine
+     Hierarchie (Abstand vor einem Abschnitt, kleiner Abstand zwischen Bloecken,
+     fast keiner NACH einer Ueberschrift - dadurch bindet sie an ihren Text). Die
+     Guide-Spalte hatte `display: flex; gap: 3.5rem` und damit gar keine: Ein
+     `gap` behandelt alle Bloecke gleich.
+
+     Gemessen an einer Guide-Seite ergab das 60px zwischen einer Ueberschrift und
+     ihrem eigenen ersten Absatz - und ebenso 60px zum vorigen Absatz. Die
+     Ueberschrift gehoerte optisch zu nichts. Zwischen zwei Ueberschriften ohne
+     Text dazwischen waren es 84px.
+
+     Beide Spalten lesen jetzt dieselben drei Masse. Wer den Rhythmus einer
+     Unterlage anpassen will, setzt sie um - und muss nicht mehr die Klassen des
+     Themes ueberschreiben, was bei jeder Aenderung hier bricht. */
+  --skr-rhythm-block:      1.6rem;   /* zwischen zwei Bloecken im Fluss */
+  --skr-rhythm-section:    3.75rem;  /* vor einer h2 - eine neue Abschnittsebene */
+  --skr-rhythm-subsection: 2.5rem;   /* vor einer h3 und tiefer */
+  --skr-rhythm-heading:    1.5rem;  /* NACH einer Ueberschrift - knapper als
+     der Blockabstand, damit die Ueberschrift an ihrem Text haengt und nicht frei
+     zwischen zwei Abschnitten schwebt. KNAPPER HEISST WIRKSAM KNAPPER: Bis 2.43.0
+     stand hier 0.25rem und kam nie an, weil der Wert mit dem margin-top der
+     Flussregel KOLLABIERT - gemessen waren es beide Male 17,6 px, und die gemeinte
+     Bindung gab es schlicht nicht. Die Flussregel nimmt Ueberschriften jetzt aus
+     (guide.css), erst dadurch entscheidet dieser Wert wirklich. */
+
+  --skr-transition: 160ms ease;
+}
+
+/* Die Buntheits-Korrektur braucht relative Farbsyntax. Fehlt sie, bleibt es bei
+   der rohen Basisfarbe – das ist der Zustand, den die Repos heute ohnehin haben,
+   und damit ein Rückfall und kein Bruch. Warum @supports und nicht zwei
+   Deklarationen: Custom Properties nehmen beim Parsen jede Zeichenfolge an, die
+   zweite gewinnt immer, und eine Engine ohne die Syntax lässt die Farbe erst
+   beim Rechnen ungültig werden – das Ergebnis wäre Schwarz, nicht der Rückfall. */
+@supports (color: oklch(from red l c h)) {
+  :root {
+    --skr-accent-from-base:
+      oklch(from color-mix(in oklab, var(--skr-accent-base) 55%, var(--skr-color-ink)) l calc(c * 3) h);
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   Farbschema – EINE Stelle für Hell und Dunkel
+   -----------------------------------------------------------------------------
+   Jedes umschaltbare Token trägt beide Werte als `light-dark(«hell», «dunkel»)`.
+   Welcher gilt, entscheidet `color-scheme`: ohne Wahl die Systemeinstellung, eine
+   ausdrückliche Wahl per `data-skr-theme` hat Vorrang – auch helles Theme
+   bei dunklem System. Der Druck erzwingt hell (print.css). Zwei Listen derselben
+   Dunkel-Werte – eine für die Systemeinstellung, eine für das Attribut – liefen
+   auseinander, ohne dass ein Build es zeigt; deshalb gibt es nur diese eine.
+
+   Nebenwirkung, gewollt: Bildlaufleisten und Formularelemente des Browsers folgen
+   jetzt ebenfalls dem Farbschema. Voraussetzung ist `light-dark()` (Chrome und
+   Edge 123, Firefox 120, Safari 17.5).
+   ----------------------------------------------------------------------------- */
+:root { color-scheme: light dark; }
+:root[data-skr-theme="light"] { color-scheme: light; }
+:root[data-skr-theme="dark"] { color-scheme: dark; }
+
+/* -----------------------------------------------------------------------------
+   Text auf Akzentfläche – aus dem Akzent abgeleitet
+   -----------------------------------------------------------------------------
+   `--skr-color-accent-contrast` ist das Token für Schrift, die AUF der
+   Akzentfarbe steht (Hover-Zustand der Knöpfe, Sprechblase der Präsentation und
+   was Extensions auf den Akzent setzen). Es stand fest auf
+   Weiß – und Weiß trägt auf einem kräftigen Orange nur gut 3:1. Für Kleintext verlangt
+   WCAG 2.1 AA 4,5:1; Beschriftungen auf `--skr-fs-sm`
+   (≈13 px) sind Kleintext. Der Auslieferungszustand war also schon im
+   Light-Theme unter AA, nicht erst im Dark-Theme.
+
+   Verschärft hat es sich, sobald ein Projekt einen eigenen, helleren Akzent
+   setzt: Weiß auf einem hellen Grün ergibt 1,9:1. Ein Kippen im Dark-Block hätte
+   das nicht behoben – der Akzent des Themes wechselt zwischen den Schemata gar
+   nicht, der Fehler steht in beiden.
+
+   Deshalb wird der Wert nicht gesetzt, sondern ABGELEITET: Ist der Akzent hell,
+   wird die Schrift schwarz, ist er dunkel, bleibt sie weiß. `clamp()` macht aus
+   der Helligkeit einen harten Schalter (der große Faktor treibt alles über bzw.
+   unter die Grenzen), Chroma 0 nimmt dem Ergebnis die Farbe. Die Schwelle 0,58
+   ist nicht geschätzt: Über 60 000 Zufallsfarben geprüft, trennt sie schwarz und
+   weiß am zuverlässigsten (≈2 % suboptimal; bei 0,62 waren es 9,5 %).
+
+   Damit kann kein Projekt den Knopf mehr unlesbar machen, indem es nur den
+   Akzent überschreibt – genau der Fehler, der das hier ausgelöst hat.
+
+   Das @supports-Gate ist NICHT schmückend. Zwei Deklarationen hintereinander
+   (erst Weiß, dann die abgeleitete) tragen hier nicht: Custom Properties nehmen
+   beim Parsen jede Zeichenfolge an, die zweite gewinnt also immer, und eine
+   Engine ohne relative Farbsyntax lässt `color` erst beim Rechnen ungültig
+   werden – das Ergebnis ist SCHWARZ, nicht der Rückfall auf Weiß. Auf einem
+   dunklen Akzent wäre das exakt der Fehler, der hier behoben wird. Mit dem Gate
+   bleibt es bei Weiß wie bisher. (In Chrome nachgemessen, beide Varianten.)
+   ----------------------------------------------------------------------------- */
+@supports (color: oklch(from red l c h)) {
+  :root {
+    --skr-color-accent-contrast:
+      oklch(from var(--skr-color-accent) clamp(0, (l - 0.58) * -1e5, 1) 0 h);
+  }
+}
+}

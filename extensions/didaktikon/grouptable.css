@@ -1,0 +1,167 @@
+/* Skriptorium: in der Schicht skr.extensions – extensions/didaktikon/grouptable.css. */
+@layer skr.tokens, skr.base, skr.components, skr.theme, skr.extensions;
+@layer skr.extensions {
+.skr-didaktikon-grouptable th,
+.skr-didaktikon-grouptable td { vertical-align: top; }
+
+/* Gruppenkopf: farbiger Streifen links, zweite Zeile (z. B. eine Spanne) klein
+   darunter. `white-space: nowrap` hält die Spalte schmal. */
+.skr-didaktikon-grouptable__group {
+  white-space: nowrap;
+  border-left: 6px solid var(--skr-didaktikon-grouptable-tone, var(--skr-color-border));
+}
+/* Die zweite Zeile ist über das Token gedämpft, nicht über `opacity`: Durchscheinende
+   Schrift hält ihren Kontrast nur auf Weiß, auf dem getönten Grund einer internen Site
+   nicht (#375). Im Signalton bleibt sie in dessen `-ink`-Fassung (siehe unten). */
+.skr-didaktikon-grouptable__group small { display: block; font-weight: 400; color: var(--skr-color-ink-muted); }
+.skr-didaktikon-grouptable__group--tone-1 { --skr-didaktikon-grouptable-tone: var(--skr-didaktikon-tone-1); }
+.skr-didaktikon-grouptable__group--tone-2 { --skr-didaktikon-grouptable-tone: var(--skr-didaktikon-tone-2); }
+.skr-didaktikon-grouptable__group--tone-3 { --skr-didaktikon-grouptable-tone: var(--skr-didaktikon-tone-3); }
+.skr-didaktikon-grouptable__group--tone-4 { --skr-didaktikon-grouptable-tone: var(--skr-didaktikon-tone-4); }
+/* Signalton: für Gruppen, die außerhalb des regulären Rasters liegen. Hier färbt
+   er auch die Schrift – die Zeile soll auffallen, nicht bloß markiert sein.
+   Als SCHRIFT die `-ink`-Fassung: Der rohe Ton ist als Fläche gerechnet und trug
+   im Light-Theme nur 4,39:1 (gefunden von `skriptorium/checks/contrast.rb`). Der
+   Streifen behält den vollen Ton – er ist Fläche, nicht Schrift. */
+.skr-didaktikon-grouptable__group--tone-alert {
+  --skr-didaktikon-grouptable-tone: var(--skr-didaktikon-tone-alert);
+  color: var(--skr-didaktikon-tone-alert-ink);
+}
+.skr-didaktikon-grouptable__group--tone-alert small { color: inherit; }
+
+/* Schmale Zahlenspalte: rechtsbündig, nie umbrechend – so stehen die Werte
+   untereinander und die Spalte bleibt so breit wie ihr längster Wert. */
+.skr-didaktikon-grouptable__num { white-space: nowrap; text-align: right; }
+
+/* Rechtsbündige Schlusszeile einer Inhaltszelle – etwa für einen Verweis, der
+   nicht mitten im Text hängen soll. */
+.skr-didaktikon-grouptable__link { display: block; text-align: right; }
+
+/* Aktionsspalte am ZEILENENDE – die Alternative zu `…__link`. Wofür: Wenn jede
+   Zeile ein Ziel hat, das man ansteuern soll (ein Modul, ein Vorgang, ein Detail),
+   geht der Verweis IN der Inhaltszelle unter. Er beginnt dort in jeder Zeile an
+   einer anderen Stelle und sieht aus wie ein Teil des Textes. Als eigene, letzte
+   Spalte steht er in jeder Zeile an DERSELBEN Stelle und ist so hoch wie die
+   Zeile – groß genug, um ihn zu treffen, ohne zu zielen.
+
+   `…__link` bleibt für den anderen Fall: ein Verweis, der zum Satz gehört.
+
+   Getönt wird nur, wo auch ein Ziel dahintersteht (`:has(a)`) – Zeilen ohne Ziel
+   und Fortsetzungszeilen bleiben unbemalt. Ohne `:has()`-Unterstützung entfällt
+   nur die Tönung, der Link bleibt.
+
+   Das Zeichen kommt als CSS-Maske in `currentColor`, NICHT als Emoji: Ein ▶️
+   erscheint je Plattform anders (auf manchen blau), lässt sich nicht einfärben
+   und wächst nicht mit der Schrift. Die Zelle braucht deshalb kein Zeichen im
+   Markup – nur eine für Screenreader lesbare Beschriftung. */
+.skr-didaktikon-grouptable__action {
+  width: 1%;        /* nur so breit wie ihr Inhalt */
+  padding: 0;       /* die Fläche füllt die Zelle, nicht das Polster */
+  text-align: center;
+}
+.skr-didaktikon-grouptable__action:has(a) {
+  background: color-mix(in srgb, var(--skr-color-accent) 16%, transparent);
+}
+.skr-didaktikon-grouptable__action:has(a):hover {
+  background: color-mix(in srgb, var(--skr-color-accent) 34%, transparent);
+}
+/* Der Link füllt die Zelle über die ganze Zeilenhöhe – die Farbfläche IST die
+   Schaltfläche. Fällt `height: 100%` in einer Tabellenzelle aus, trägt die Zelle
+   die Tönung weiterhin selbst. */
+.skr-didaktikon-grouptable__action a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 2.25rem;
+  padding: 0 var(--skr-space-3);
+  color: var(--skr-color-accent-text);
+  text-decoration: none;
+}
+.skr-didaktikon-grouptable__action a::before {
+  content: "";
+  flex: none;
+  width: 1.1em; height: 1.1em;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5.5v13l11-6.5z'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5.5v13l11-6.5z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* Zwischenraum und freier Raum tragen DIESELBE Schraffur: beides ist Zeit bzw.
+   Platz, der nicht mit Inhalt belegt ist – einmal zwischen den Gruppen, einmal
+   innerhalb einer. Die Schraffur kommt aus dem Textton und funktioniert damit in
+   Light wie Dark, ohne eigenen Farbwert. */
+.skr-didaktikon-grouptable__gap td,
+.skr-didaktikon-grouptable__free td {
+  opacity: .8;
+  background-image: repeating-linear-gradient(135deg,
+    transparent 0 6px,
+    color-mix(in srgb, var(--skr-color-ink) 14%, transparent) 6px 12px);
+}
+/* Der Zwischenraum läuft über die volle Breite (ein `td` mit `colspan`) und ist
+   zurückhaltender gesetzt als eine Inhaltszeile. */
+.skr-didaktikon-grouptable__gap td {
+  padding: var(--skr-space-1) var(--skr-space-3);
+  font-size: var(--skr-fs-sm);
+  text-align: center;
+}
+/* Freier Raum steht INNERHALB einer Gruppe: Der Gruppenkopf daneben gehört noch
+   zur Gruppe und bleibt deshalb unschraffiert. */
+.skr-didaktikon-grouptable__free .skr-didaktikon-grouptable__group {
+  background-image: none;
+  opacity: 1;
+}
+
+/* Ankündigung, dass das Raster verlassen wird: volle Breite, Signalfarbe, oben
+   abgesetzt – die Grenze soll sichtbar überschritten werden. */
+.skr-didaktikon-grouptable__alert td {
+  padding: var(--skr-space-1) var(--skr-space-3);
+  font-size: var(--skr-fs-sm);
+  font-weight: 600;
+  /* Schrift in der `-ink`-Fassung, Linie im vollen Ton – siehe oben. */
+  color: var(--skr-didaktikon-tone-alert-ink);
+  border-top: 2px solid var(--skr-didaktikon-tone-alert);
+}
+
+/* Legende zur Tabelle – erklärt die Töne und die Schraffur. Eigenständig
+   verwendbar, auch mehrfach über mehreren Tabellen. */
+/* DER EIGENE ABSTAND GEHT DEM FLUSSRHYTHMUS DES KERNS VOR (`.skr-guide-main > * + *`):
+   Der Bau legt dieses Stylesheet in die Kaskadenschicht `skr.extensions`, und die geht
+   dem Kern vor – gleich wie spezifisch seine Regel ist. Ein einfacher Klassenselektor
+   genügt. */
+.skr-didaktikon-grouptable__legend {
+  display: flex; flex-wrap: wrap;
+  gap: var(--skr-space-1) var(--skr-space-4);
+  margin: var(--skr-space-2) 0 var(--skr-space-4);
+  font-size: var(--skr-fs-sm);
+}
+.skr-didaktikon-grouptable__legend-key { display: inline-flex; align-items: center; gap: var(--skr-space-1); }
+.skr-didaktikon-grouptable__legend-key::before {
+  content: ""; width: .55rem; height: 1rem;
+  border-radius: var(--skr-radius-sm);
+  background: var(--skr-didaktikon-grouptable-tone, var(--skr-color-border));
+}
+.skr-didaktikon-grouptable__legend-key--tone-1 { --skr-didaktikon-grouptable-tone: var(--skr-didaktikon-tone-1); }
+.skr-didaktikon-grouptable__legend-key--tone-2 { --skr-didaktikon-grouptable-tone: var(--skr-didaktikon-tone-2); }
+.skr-didaktikon-grouptable__legend-key--tone-3 { --skr-didaktikon-grouptable-tone: var(--skr-didaktikon-tone-3); }
+.skr-didaktikon-grouptable__legend-key--tone-4 { --skr-didaktikon-grouptable-tone: var(--skr-didaktikon-tone-4); }
+.skr-didaktikon-grouptable__legend-key--tone-alert { --skr-didaktikon-grouptable-tone: var(--skr-didaktikon-tone-alert); }
+/* Schlüssel für Zwischenraum/freien Raum: dieselbe Schraffur wie in der Tabelle,
+   nur feiner, damit sie im kleinen Feld erkennbar bleibt. */
+.skr-didaktikon-grouptable__legend-key--gap::before {
+  background: transparent;
+  background-image: repeating-linear-gradient(135deg,
+    transparent 0 3px,
+    color-mix(in srgb, var(--skr-color-ink) 45%, transparent) 3px 6px);
+  border: 1px solid var(--skr-color-border);
+}
+
+
+/* Die Aktionsspalte entfällt auf Papier: Eine Fläche zum Anklicken ist dort sinnlos,
+   und leer getönt wäre sie nur ein Farbklecks. Zeilen über die volle Breite tragen
+   ein `colspan`, das die verbleibenden Spalten überschreitet – das ist unkritisch,
+   Browser kappen es. */
+@media print {
+  .skr-didaktikon-grouptable__action { display: none !important; }
+}
+}

@@ -1,0 +1,16 @@
+/* Skriptorium: in der Schicht skr.theme – themes/didaktikon/theme.css. */
+@layer skr.tokens, skr.base, skr.components, skr.theme, skr.extensions;
+@layer skr.theme {
+:root {
+  /* Der Grundton: Academy-Blau. */
+  --skr-accent-base: #0198FF;
+  /* Schrift im Akzent – Verweise, der aktive Menüpunkt, das Inhaltsverzeichnis – folgt dem
+     abgeleiteten Akzent. Das Basis-Theme ATVANTAGE setzt hier ein dunkleres Orange, weil
+     das Marken-Orange als Schrift nicht trägt; der abgeleitete Akzent trägt in beiden
+     Schemata, also gilt er selbst. */
+  --skr-color-accent-text: var(--skr-color-accent);
+}
+
+/* Akzentstreifen unter der Kopfzeile – deutliches Erkennungsmerkmal. */
+.skr-header { border-bottom: 3px solid var(--skr-color-accent); }
+}

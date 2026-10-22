@@ -1,0 +1,58 @@
+/* Skriptorium: in der Schicht skr.theme – themes/default/theme.css. */
+@layer skr.tokens, skr.base, skr.components, skr.theme, skr.extensions;
+/* --- Grundstile --------------------------------------------------------------
+   In der Schicht des Grundstils (`skr.base`), unter den Bausteinen des Kerns: Eine Regel
+   für `h1` oder `a` soll den Titel im Titelband oder einen Knopf nicht umgestalten. Alles
+   andere dieser Datei liegt in der Schicht der Themes und geht dem Kern vor. */
+@layer skr.base {
+  body { margin: 0; font-family: var(--font-family); font-size: var(--text-size); font-weight: var(--text-weight); line-height: var(--text-line-height); }
+  h1, h2, h3, h4, h5, h6 { font-family: var(--font-family); font-weight: var(--headline-weight); line-height: 1.2; margin: 0 0 0.5em; }
+  h1 { font-size: var(--h1-base); } h2 { font-size: var(--h2-base); } h3 { font-size: var(--h3-base); } h5 { font-size: var(--h5-base); }
+  p { margin: 0 0 var(--paragraph-spacing); }
+  a { text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  ::selection { background: var(--skr-color-accent); color: var(--skr-color-accent-contrast); }
+}
+@layer skr.theme {
+:root {
+  /* Palette */
+  --skr-anthracite: #2b3338;   /* Fließtext */
+  --skr-ink: #1f2a30;          /* Überschriften */
+  --skr-slate: #33424d;        /* dunkle Flächen */
+  --skr-white: #ffffff;
+  --skr-blue-light: #e3e8ec;   /* abgesetzte Flächen */
+  --skr-gray-card: #eeeeee;
+  --skr-gray-metanav: #f4f4f4;
+  --skr-gray-footer: #5c6166;
+  --skr-red: #c62828;
+
+  /* Akzent: nur der Grundton – das Skriptorium leitet daraus den Akzent für beide
+     Farbschemata ab, mit tragfähigem Kontrast. Ein Theme, das den Akzent ohne Ableitung
+     vorgibt, nimmt den Grundton zurück (`initial`) und setzt `--skr-orange`. */
+  --skr-accent-base: #0f6e7a;
+
+  /* Schrift */
+  --font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --text-size: 1.0625rem;
+  --text-size-hero: 1.25rem;
+  --text-weight: 400;
+  --text-line-height: 1.6;
+  --paragraph-spacing: 1rem;
+  --h1-base: 34px;
+  --h2-base: 23px;
+  --h3-base: 19px;
+  --h5-base: 19px;
+  --headline-weight: 600;
+  --headline-weight-content: 600;
+
+  /* Form */
+  --topnav-height: 72px;
+  --shadow: 0 0 8px rgb(0 0 0 / 0.25);
+  --radius: 4px;
+  --radius-dark: 6px;
+  --button-bg: #2b3338;
+  --button-text: #ffffff;
+  --button-bg-hover: #444e54;
+  --button-radius: 4px;
+}
+}

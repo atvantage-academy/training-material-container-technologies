@@ -1,675 +1,552 @@
-<!DOCTYPE html><html lang="de" data-avd-academy-effects="page-transitions translucent-header reading-progress">
+<!DOCTYPE html>
+<html lang="de" data-skr-effects="page-transitions translucent-header reading-progress">
 <head>
   <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>
-(function () {
-  try {
-    var t = localStorage.getItem("avd-academy-theme");
-    if (t === "dark" || t === "light") document.documentElement.setAttribute("data-avd-academy-theme", t);
-  } catch (e) {}
-  addEventListener("unhandledrejection", function (e) {
-    var r = e.reason;
-    if (r && r.name === "InvalidStateError" && /ViewTransition opt-in disabled/.test(r.message || "")) e.preventDefault();
-  });
-})();
-</script><title>Wissens-Check: Docker-Grundlagen · Containertechnologien (Academy)</title><meta name="description" content="Siebzehn Fragen als Rückblick auf zwei Tage – zum Abschluss im Kurs und danach beliebig oft allein."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta name="skr-root" content="../">
+<script src="../skriptorium/skr.js?v=dfcd09dd"></script>
+<title>Wissens-Check: Docker-Grundlagen · Containertechnologien (Academy)</title>
+<meta name="description" content="Siebzehn Fragen als Rückblick auf zwei Tage – zum Abschluss im Kurs und danach beliebig oft allein.">
+
+<meta property="og:site_name" content="Containertechnologien (Academy)">
 <meta property="og:title" content="Wissens-Check: Docker-Grundlagen">
 <meta property="og:description" content="Siebzehn Fragen als Rückblick auf zwei Tage – zum Abschluss im Kurs und danach beliebig oft allein.">
-<meta property="og:type" content="website"><link rel="preload" href="/training-material-container-technologies/theme/academy/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/fonts.css?v=d37c8ecb"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/tokens/colors.css?v=b0afc83e">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/tokens/typography.css?v=1b512d1a">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/tokens/spacing.css?v=ffc57a80">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/tokens/components.css?v=fb3020a8">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/tokens/base.css?v=01ad66fa"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=e7c08f24">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=32c1897e">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=60856a0a">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=63868197"><style>
-:where(.avd-academy-guide-main a[href*="docker.com"]) {
-  position: relative;
-  padding-left: 1.35em;
-}
-:where(.avd-academy-guide-main a[href*="docker.com"])::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: .18em;
-  width: 1em;
-  height: 1em;
-  background: center / contain no-repeat;
-  background-image: none;
-  background-color: currentColor;
-  mask-image: url("/training-material-container-technologies/assets/icons/docker.svg");
-  mask-repeat: no-repeat;
-  mask-position: center;
-  mask-size: contain;
-}
-.avd-academy-linkmark--none :where(.avd-academy-guide-main a[href*="docker.com"]),
-:where(.avd-academy-guide-main a[href*="docker.com"]).avd-academy-linkmark--none { padding-left: 0; }
-</style><link rel="stylesheet" media="print" href="/training-material-container-technologies/theme/academy/print.css?v=fa38b084">
-<meta name="generator" content="ATVANTAGE Academy Theme 4.5.4">
-<script type="application/json" id="avd-academy-build-info">{"theme":"4.5.4","schemas":{"config":"1.3.0","frontmatter":"1.1.0","layout":"1.0.0"},"audience":"learner","languages":["de"],"internal":false}</script><script type="application/json" id="avd-academy-page-info">{"pageId":null,"language":"de","url":"/training-material-container-technologies/docker-grundlagen/wissens-check-docker-grundlagen.html","title":"Wissens-Check: Docker-Grundlagen","layout":"page","description":"Siebzehn Fragen als Rückblick auf zwei Tage – zum Abschluss im Kurs und danach beliebig oft allein.","duration":null,"topics":null,"languages":["de"],"clientApi":"full","defaultLanguage":"de","siteIndex":"/training-material-container-technologies/theme/site.json"}</script>
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=b1738f9e" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=514cf6b3" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/search-trail.js?v=c7eb3d26" data-avd-academy-search-trail
-        data-base="/training-material-container-technologies/" data-index="/training-material-container-technologies/theme/search/de.json?v=1792670141" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=2b412283">
-<script type="module">
-  const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
-  const _hlsprachen = ["java", "http", "json", "xml"];
-  Promise.all([import(_hlbase + "core.min.js"), ..._hlsprachen.map((s) => import(_hlbase + s + ".min.js"))])
-    .then(([core, ...grammatiken]) => {
-      const hljs = core.default;
-      _hlsprachen.forEach((s, i) => hljs.registerLanguage(s, grammatiken[i].default));
-      const _auswahl = _hlsprachen.map((s) => "pre code.language-" + s).join(",");
-      const _faerben = (wurzel) => (wurzel || document)
-        .querySelectorAll(_auswahl)
-        .forEach((el) => { if (!el.dataset.highlighted) { hljs.highlightElement(el); } });
-      _faerben(document);
-      window.AvdHighlight = { hljs, apply: _faerben, languages: _hlsprachen.slice() };
-      document.dispatchEvent(new CustomEvent("avd-academy-highlight-ready"));
-      document.querySelectorAll("pre code.language-http .hljs-number").forEach((el) => {
-        const code = parseInt(el.textContent, 10);
-        if (code >= 100 && code <= 599) {
-          el.classList.add("avd-academy-http-status--" + Math.floor(code / 100) + "xx");
-        }
-      });
-    });
-</script>
-<link rel="apple-touch-icon" sizes="180x180" href="/training-material-container-technologies/theme/atvantage/assets/icon-180.png">
-<link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
-<link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
+<meta property="og:type" content="website">
+<link rel="preload" href="../themes/atvantage/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../themes/default/theme.css?v=b795c99c">
+<link rel="stylesheet" href="../themes/atvantage/fonts.css?v=0f189d71">
+<link rel="stylesheet" href="../themes/atvantage/tokens/colors.css?v=8ed47a94">
+<link rel="stylesheet" href="../themes/atvantage/tokens/typography.css?v=6445d4d3">
+<link rel="stylesheet" href="../themes/atvantage/tokens/spacing.css?v=58e35278">
+<link rel="stylesheet" href="../themes/atvantage/tokens/components.css?v=3fcd65a3">
+<link rel="stylesheet" href="../themes/atvantage/tokens/base.css?v=b47b1e2d">
+<link rel="stylesheet" href="../themes/atvantage/theme.css?v=e7026433">
+<link rel="stylesheet" href="../themes/didaktikon/theme.css?v=4a593b58">
+<link rel="stylesheet" href="../skriptorium/tokens.css?v=e74fbfe2">
+<link rel="stylesheet" href="../extensions/didaktikon/tokens.css?v=5966d76a">
+<link rel="stylesheet" href="../skriptorium/base.css?v=86e37c43">
+<link rel="stylesheet" href="../skriptorium/components.css?v=b86ac9ad">
+<link rel="stylesheet" href="../skriptorium/doclinks.css?v=2ef23515">
+<link rel="stylesheet" href="../skriptorium/linkmarks.css?v=31148a87">
+<link rel="stylesheet" href="../skriptorium/site.css?v=d11b6ac6">
+<link rel="stylesheet" href="../skriptorium/logo.css?v=43a7fbaf">
+<link rel="stylesheet" href="../skriptorium/guide.css?v=d99cc970">
+<link rel="stylesheet" media="print" href="../skriptorium/print.css?v=856e77e0">
+<meta name="generator" content="Skriptorium 1.5.0">
+<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"1.0.0"}],"internal":false,"languages":["de"],"skriptorium":"1.5.0","theme":"didaktikon","themes":[{"name":"didaktikon","version":"1.0.0"},{"name":"atvantage","version":"1.0.0"},{"name":"default","version":"1.5.0"}]}</script>
+<script type="application/json" id="skr-page-info">{"clientApi":"full","defaultLanguage":"de","description":"Siebzehn Fragen als Rückblick auf zwei Tage – zum Abschluss im Kurs und danach beliebig oft allein.","duration":null,"fields":null,"language":"de","languages":["de"],"layout":"skriptorium.page","pageId":null,"runtimeFragments":null,"siteIndex":"/skriptorium/site.json","title":"Wissens-Check: Docker-Grundlagen","topics":null,"url":"/docker-grundlagen/wissens-check-docker-grundlagen.html"}</script>
+<script type="application/json" id="skr-texts">{"didaktikon.capture":"Capture-Modus","didaktikon.captureExit":"beenden","didaktikon.captureText":"Text einblenden","didaktikon.crosswordAcross":"Waagerecht","didaktikon.crosswordCellAcross":"{number} waagerecht, Buchstabe {position}","didaktikon.crosswordCellDown":"{number} senkrecht, Buchstabe {position}","didaktikon.crosswordDown":"Senkrecht","didaktikon.crosswordHintLetter":"Tipp: Buchstabe","didaktikon.crosswordHintWord":"Tipp: Wort","didaktikon.crosswordRestart":"Neu beginnen","didaktikon.crosswordRestartText":"Deine Eingaben in diesem Rätsel werden gelöscht.","didaktikon.crosswordRestartTitle":"Kreuzworträtsel neu beginnen?","didaktikon.crosswordReveal":"Auflösen","didaktikon.crosswordRevealText":"Alle Felder werden ausgefüllt.","didaktikon.crosswordRevealTitle":"Kreuzworträtsel auflösen?","didaktikon.crosswordSolution":"Lösungswort","didaktikon.crosswordSolutionCell":"Lösungswort, Buchstabe {position}","didaktikon.crosswordSolved":"Gelöst – alle Begriffe stimmen.","didaktikon.doclinkCrossword":"Kreuzworträtsel","didaktikon.doclinkExercise":"Übung","didaktikon.doclinkQuiz":"Wissens-Check","didaktikon.doclinkSimulation":"Simulation","didaktikon.doclinkVisualization":"Visualisierung","didaktikon.exerciseObjectives":"Lernziele","didaktikon.exerciseQuestionsDone":"Du hast die Kontrollfragen beantwortet","didaktikon.exerciseReflectiveQuestions":"Reflexionsfragen","didaktikon.quizAgain":"Noch einmal","didaktikon.quizCorrect":"Richtig.","didaktikon.quizCorrectCount":"{count} richtig","didaktikon.quizCorrectWouldBe":"Richtig wäre gewesen:","didaktikon.quizDone":"Fertig","didaktikon.quizEvaluate":"Auswertung","didaktikon.quizNext":"Weiter","didaktikon.quizProgress":"Fortschritt","didaktikon.quizQuestionOf":"Frage {current} von {total}","didaktikon.quizRestart":"Neu beginnen","didaktikon.quizRestartText":"Deine Antworten in diesem Wissens-Check werden gelöscht.","didaktikon.quizRestartTitle":"Wissens-Check neu beginnen?","didaktikon.quizResult":"{correct} von {total} richtig","didaktikon.quizResultLong":"{correct} von {total} Fragen richtig","didaktikon.quizWrong":"Nicht ganz.","didaktikon.scenarios":"Szenarien","didaktikon.simAllScenarios":"Alle Szenarien (Taste 0)","didaktikon.simControls":"Simulation steuern","didaktikon.simNext":"Schritt vor (→)","didaktikon.simNextAria":"Schritt vor","didaktikon.simOverview":"Übersicht","didaktikon.simPause":"Pause (Leertaste)","didaktikon.simPauseAria":"Pause","didaktikon.simPlay":"Abspielen (Leertaste)","didaktikon.simPlayAria":"Abspielen","didaktikon.simPrev":"Schritt zurück (←)","didaktikon.simPrevAria":"Schritt zurück","didaktikon.simPrintHint":"Diese Simulation lebt von der Bewegung. Auf Papier steht nur der gerade sichtbare Schritt – der QR-Code oben führt zurück zur laufenden Fassung.","didaktikon.simReset":"Zurück auf Anfang (Taste R)","didaktikon.simResetAria":"Zurück auf Anfang","didaktikon.simScenarioCount":"{count} Szenarien","didaktikon.simScenarioKey":"{title} (Taste {number})","didaktikon.simScenarioTitle":"Szenario {number}","didaktikon.simSpeed":"Tempo wählen (Taste T)","didaktikon.simSpeedAria":"Tempo wählen","didaktikon.simSpeedMenu":"Tempo","didaktikon.simStepCount":"{count} Schritte","didaktikon.simStepCountOne":"{count} Schritt","didaktikon.simStepCounter":"Schritt {current} / {total}","didaktikon.speedFast":"zügig","didaktikon.speedNormal":"normal","didaktikon.speedSlow":"langsam","didaktikon.speedTurbo":"im Zeitraffer","didaktikon.speedValue":"{speed}×","didaktikon.stepNote":"Erklärung zum aktuellen Schritt"}</script>
 
-  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=590fafce">
-<style>@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }</style>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/page-transitions.css?v=83436606">
-  <link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/quiz.css?v=c1260d38">
-  <script src="/training-material-container-technologies/theme/jekyll/quiz.js?v=993192e8" defer></script>
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=4a155a65"></head><body class="avd-academy-guide">
-<div class="avd-academy-reading-progress" aria-hidden="true"></div>
-  <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><div class="avd-academy-metanav"><span>ATVANTAGE Academy</span>
-  </div>
+<script src="../skriptorium/client.js?v=82492cae" defer></script>
+<script src="../skriptorium/site.js?v=6472c794" defer></script>
+<script src="../skriptorium/search-trail.js?v=31279378" data-skr-search-trail
+        data-base="../" data-index="../skriptorium/search/de.json?v=07ea62a4" defer></script>
+<link rel="stylesheet" href="../skriptorium/highlight.css?v=f8a3fc05">
+<script type="module" src="../skriptorium/highlight.js?v=0b2d40aa" data-skr-highlight="[&#34;bash&#34;,&#34;dockerfile&#34;,&#34;python&#34;,&#34;sql&#34;,&#34;yaml&#34;]"></script>
+<link rel="apple-touch-icon" sizes="180x180" href="../themes/atvantage/assets/icon-180.png">
+<link rel="icon" sizes="32x32" href="../themes/atvantage/assets/icon-32.png">
+<link rel="icon" sizes="16x16" href="../themes/atvantage/assets/icon-16.png">
 
-  <header class="avd-academy-header"
-        data-avd-academy-menu-visible="7" data-avd-academy-menu-speed="1.0" data-avd-academy-header><a class="avd-academy-header__brand" href="/training-material-container-technologies/" aria-label="Startseite"><img class="avd-academy-header__logo" src="/training-material-container-technologies/assets/logo-schulung.svg" alt="ATVANTAGE Academy"><span class="avd-academy-header__logo-mask" role="img" aria-label="ATVANTAGE Academy"
-          style="--avd-academy-logo-src: url('/training-material-container-technologies/assets/logo-schulung.svg'); --avd-academy-logo-ratio: 260 / 24;"></span><img class="avd-academy-header__mark" src="/training-material-container-technologies/theme/atvantage/assets/icon-180.png" alt="">
-  </a><button class="avd-academy-tool avd-academy-header__burger" data-avd-academy-nav-toggle="#avd-academy-main-nav"
-          aria-label="Navigation umschalten" aria-expanded="false">☰</button><nav class="avd-academy-header__nav" id="avd-academy-main-nav">
-      <a href="/training-material-container-technologies/">Start</a><div class="avd-academy-header__group" data-avd-academy-menu>
-        <button type="button" class="avd-academy-header__grouptoggle"
-                aria-expanded="false" aria-haspopup="true">Allgemeines<span class="avd-academy-header__caret" aria-hidden="true">▾</span></button>
-        <div class="avd-academy-header__submenu" role="menu">
-          <a role="menuitem" href="/training-material-container-technologies/shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a>
+  <style>@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }</style>
+  <link rel="stylesheet" href="../skriptorium/page-transitions.css?v=716872f0">
+
+<link rel="stylesheet" href="../extensions/didaktikon/quiz.css?v=500bf6e8">
+<script src="../extensions/didaktikon/payload.js?v=9c4edff8" defer></script>
+<script src="../extensions/didaktikon/quiz.js?v=a94adb6b" defer></script>
+
+
+</head><body class="skr-guide skr-guide--sidebar-empty" data-skr-layout="skriptorium.page" data-skr-layouts="skriptorium.page" data-skr-lang="de" data-skr-audience="learner">
+<div class="skr-reading-progress" aria-hidden="true"></div>
+  <a class="skr-skip-link" href="#skr-content">Zum Inhalt springen</a>
+  <div class="skr-metanav"><span>ATVANTAGE Academy</span></div>
+  <header class="skr-header"
+        data-skr-menu-visible="7" data-skr-menu-speed="1" data-skr-header>
+  <a class="skr-header__brand" href="../" aria-label="Startseite"><img class="skr-header__logo" src="../themes/didaktikon/assets/logo-schulung.svg" alt="ATVANTAGE Academy"><span class="skr-header__logo-mask" role="img" aria-label="ATVANTAGE Academy" data-skr-logo-mask></span><img class="skr-header__mark" src="../themes/atvantage/assets/icon-180.png" alt="">
+  </a>
+  <button class="skr-tool skr-header__burger" data-skr-nav-toggle="#skr-main-nav"
+          aria-label="Navigation umschalten" aria-expanded="false"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  <nav class="skr-header__nav" id="skr-main-nav">
+      <a href="../">Start</a>
+      <div class="skr-header__group" data-skr-menu>
+        <button type="button" class="skr-header__grouptoggle"
+                aria-expanded="false" aria-haspopup="true">Allgemeines<span class="skr-header__caret" aria-hidden="true"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path fill="currentColor" stroke="none" d="M5 8h14l-7 9z"/></svg></span></button>
+        <div class="skr-header__submenu" role="menu">
+          <a role="menuitem" href="../shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a>
         </div>
       </div>
-      <a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a>
-  </nav><div class="avd-academy-header__tools"><div class="avd-academy-search" data-avd-academy-search hidden
-             data-mode="expand" data-shortcut="double_shift"
-             data-index="/training-material-container-technologies/theme/search/de.json?v=1792670141"
-             data-base="/training-material-container-technologies/">
-          <button type="button" class="avd-academy-tool avd-academy-tool--search" data-avd-academy-search-toggle
-                  aria-expanded="false" aria-controls="avd-academy-search-dialog"
-                  title="Suchen (zweimal Shift)" aria-label="Suchen"><svg viewBox="0 0 24 24" width="1em" height="1em"
-                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"
-                  ><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button>
-          <dialog class="avd-academy-search__dialog" id="avd-academy-search-dialog" aria-label="Suchen">
-            <div class="avd-academy-search__bar" role="search"><label class="avd-academy-search__field avd-academy-search__field--scope" hidden>
-                <span class="avd-academy-search__label">Bereich</span>
-                <select class="avd-academy-search__scope">
-                  <option value="">Alle</option>
-                </select>
-              </label>
-              <label class="avd-academy-search__field avd-academy-search__field--query">
-                <span class="avd-academy-search__label">Suchbegriff</span>
-                <input type="search" class="avd-academy-search__input"
-                       placeholder="Diese Site durchsuchen" autocomplete="off" spellcheck="false"
-                       aria-describedby="avd-academy-search-status">
-              </label>
-              <button type="button" class="avd-academy-tool avd-academy-search__close" data-avd-academy-search-close
-                      title="Suche schließen" aria-label="Suche schließen">✕</button>
-            </div>
-            <p class="avd-academy-search__status" id="avd-academy-search-status" data-avd-academy-search-status role="status"></p>
-            <ul class="avd-academy-search__results" data-avd-academy-search-results aria-label="Suchergebnisse"></ul>
-          </dialog>
-        </div>
-        <script src="/training-material-container-technologies/theme/jekyll/search.js?v=4b72be9e" defer></script><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
-                title="Diese Seite auf Deinem Smartphone öffnen"
-                aria-label="Diese Seite auf Deinem Smartphone öffnen"></button><button type="button" class="avd-academy-tool avd-academy-tool--theme" data-avd-academy-theme-toggle
-              title="Farbschema umschalten (hell/dunkel)"
-              aria-label="Dunkles Farbschema">◐</button></div>
+      <a href="../docker-grundlagen/">Docker-Grundlagen</a>
+  </nav>
+  <div class="skr-header__tools">
+<div class="skr-search" data-skr-search hidden
+     data-mode="expand" data-shortcut="double_shift"
+     data-index="../skriptorium/search/de.json?v=07ea62a4"
+     data-base="../">
+  <button type="button" class="skr-tool skr-tool--search" data-skr-search-toggle
+          aria-expanded="false" aria-controls="skr-search-dialog"
+          title="Suchen (zweimal Umschalt)" aria-label="Suchen"><svg viewBox="0 0 24 24" width="1em" height="1em"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"
+          ><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button>
+  <dialog class="skr-search__dialog" id="skr-search-dialog" aria-label="Suchen">
+    <div class="skr-search__bar" role="search"><label class="skr-search__field skr-search__field--scope" hidden>
+        <span class="skr-search__label">Bereich</span>
+        <select class="skr-search__scope">
+          <option value="">Alle</option>
+        </select>
+      </label>
+      <label class="skr-search__field skr-search__field--query">
+        <span class="skr-search__label">Suchbegriff</span>
+        <input type="search" class="skr-search__input"
+               placeholder="Diese Site durchsuchen" autocomplete="off" spellcheck="false"
+               aria-describedby="skr-search-status">
+      </label>
+      <button type="button" class="skr-tool skr-search__close" data-skr-search-close
+              title="Suche schließen" aria-label="Suche schließen"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <p class="skr-search__status" id="skr-search-status" data-skr-search-status role="status"></p>
+    <ul class="skr-search__results" data-skr-search-results aria-label="Suchergebnisse"></ul>
+  </dialog>
+</div>
+<script src="../skriptorium/search.js?v=07b9ef3e" defer></script>
+<button type="button" class="skr-qr" data-skr-qr hidden
+        title="Diese Seite auf Deinem Smartphone öffnen"
+        aria-label="Diese Seite auf Deinem Smartphone öffnen"></button>
+<button type="button" class="skr-tool skr-tool--theme" data-skr-theme-toggle
+        title="Farbschema umschalten (hell/dunkel)"
+        aria-label="Dunkles Farbschema"><svg viewBox="0 0 24 24" width="1em" height="1em"
+        fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"
+        ><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+</div>
 </header>
-<section class="avd-academy-guide-hero"
-           aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a><span>/</span><span aria-current="page">Wissens-Check: Docker-Grundlagen</span></nav><div class="avd-academy-guide-hero__meta">
-      <div class="avd-academy-guide-hero__tags">
-      </div>
-      <div class="avd-academy-guide-hero__actions">
-      </div>
-    </div><h1 id="avd-academy-page-title">Wissens-Check: Docker-Grundlagen</h1>
-  </section><div class="avd-academy-guide-layout">
-    <main class="avd-academy-guide-main" id="avd-academy-content">
+<section class="skr-guide-hero"
+         aria-labelledby="skr-page-title"><nav class="skr-guide-hero__crumbs" aria-label="Brotkrumen"><a href="../docker-grundlagen/">Docker-Grundlagen</a><span>/</span><span aria-current="page">Wissens-Check: Docker-Grundlagen</span></nav>
 
+  <div class="skr-guide-hero__meta">
+    <div class="skr-guide-hero__tags">
+    </div>
+    <div class="skr-guide-hero__actions">
+    </div>
+  </div><h1 id="skr-page-title">Wissens-Check: Docker-Grundlagen</h1>
+</section>
+
+  <div class="skr-guide-layout">
+    <main class="skr-guide-main" id="skr-content">
 <p>Siebzehn Fragen als Rückblick auf zwei Tage. Sie prüfen, was Du <strong>wiedererkennst</strong> –
 das ist weniger, als Du kannst, und mehr, als Du glaubst. Es gibt keine Note und
 keine Auswertung im Kurs; die Antworten siehst nur Du.</p>
-
 <p>Lies bei jeder Antwort auch die Begründung, wenn Du danebengegriffen hast. Sie ist
 der eigentliche Inhalt dieser Seite.</p>
-
-<div class="avd-academy-quiz" id="wissens-check">
-<script type="text/plain" data-avd-academy-payload>eyJodG1sIjoiXG5cbiAgPG9sPlxuICAgIDxsaT5cbiAgICAgIDxwPlp3ZWkgQmVncmlmZmUsIGRpZSBpbSBBbGx0YWcgb2Z0IGR1cmNoZWluYW5kZXJnZWhlbi48L3A+XG5cbiAgICAgIDxwPldhcyB1bnRlcnNjaGVpZGV0IGVpbiBEb2NrZXItSW1hZ2Ugdm9uIGVpbmVtIERvY2tlci1Db250YWluZXI/PC9wPlxuXG4gICAgICA8dWwgY2xhc3M9XCJ0YXNrLWxpc3RcIj5cbiAgICAgICAgPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbiAgICAgICAgICA8cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiBjaGVja2VkPVwiY2hlY2tlZFwiIC8+RGFzIEltYWdlIGlzdCBkZXIgQmF1cGxhbiwgZGVyIENvbnRhaW5lciBlaW5lIGxhdWZlbmRlIEF1c3Byw6RndW5nIGRhdm9uLjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+R2VuYXUg4oCTIHdpZSBLbGFzc2UgdW5kIE9iamVrdC4gQXVzIGVpbmVtIEltYWdlIGVudHN0ZWhlbiBiZWxpZWJpZyB2aWVsZSBDb250YWluZXIuPC9wPlxuICAgICAgICAgIDwvYmxvY2txdW90ZT5cbiAgICAgICAgPC9saT5cbiAgICAgICAgPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbiAgICAgICAgICA8cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiAvPkRhcyBJbWFnZSBsw6R1ZnQgaW0gVm9yZGVyZ3J1bmQsIGRlciBDb250YWluZXIgbMOkdWZ0IGltIEhpbnRlcmdydW5kIHdlaXRlci48L3A+XG5cbiAgICAgICAgICA8YmxvY2txdW90ZT5cbiAgICAgICAgICAgIDxwPlZvcmRlci0gdW5kIEhpbnRlcmdydW5kIHN0ZXVlcnN0IER1IGJlaW0gU3RhcnQgbWl0IDxjb2RlPi1kPC9jb2RlPi4gTWl0IGRlbSBVbnRlcnNjaGllZCBoYXQgZGFzIG5pY2h0cyB6dSB0dW4uPC9wPlxuICAgICAgICAgIDwvYmxvY2txdW90ZT5cbiAgICAgICAgPC9saT5cbiAgICAgICAgPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbiAgICAgICAgICA8cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiAvPkRhcyBJbWFnZSBsaWVndCBpbiBkZXIgUmVnaXN0cnksIGRlciBDb250YWluZXIgbGllZ3QgbG9rYWwgYXVmIGRlciBQbGF0dGUuPC9wPlxuXG4gICAgICAgICAgPGJsb2NrcXVvdGU+XG4gICAgICAgICAgICA8cD5FaW4gSW1hZ2UgbGllZ3QgbmFjaCBkZW0gPGNvZGU+cHVsbDwvY29kZT4gZWJlbmZhbGxzIGxva2FsLiBEZXIgT3J0IGlzdCBuaWNodCBkYXMgVW50ZXJzY2hlaWRlbmRlLjwvcD5cbiAgICAgICAgICA8L2Jsb2NrcXVvdGU+XG4gICAgICAgIDwvbGk+XG4gICAgICAgIDxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG4gICAgICAgICAgPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgLz5EYXMgSW1hZ2UgZW50aMOkbHQgbnVyIGRpZSBBbndlbmR1bmcsIGRlciBDb250YWluZXIgenVzw6R0emxpY2ggZGFzIEJldHJpZWJzc3lzdGVtLjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+VW1nZWtlaHJ0OiBEYXMgSW1hZ2UgYnJpbmd0IGRpZSBVbWdlYnVuZyBtaXQuIERlbiBLZXJuIHRlaWxlbiBzaWNoIGFsbGUgQ29udGFpbmVyIG1pdCBkZW0gSG9zdC48L3A+XG4gICAgICAgICAgPC9ibG9ja3F1b3RlPlxuICAgICAgICA8L2xpPlxuICAgICAgPC91bD5cbiAgICA8L2xpPlxuICAgIDxsaT5cbiAgICAgIDxwPkRpZXNlbGJlIEFud2VuZHVuZyBzb2xsIGluIEVudHdpY2tsdW5nLCBUZXN0IHVuZCBQcm9kdWt0aW9uIHVudGVyc2NoaWVkbGljaCBhcmJlaXRlbi48L3A+XG5cbiAgICAgIDxwPldpZSBzb2xsdGUgZWluZSAxMi1GYWN0b3ItQXBwIGxhdXQgRmFrdG9yIElJSSAo4oCeQ29uZmln4oCcKSBpaHJlIEtvbmZpZ3VyYXRpb24gYmVrb21tZW4/PC9wPlxuXG4gICAgICA8dWwgY2xhc3M9XCJ0YXNrLWxpc3RcIj5cbiAgICAgICAgPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbiAgICAgICAgICA8cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiBjaGVja2VkPVwiY2hlY2tlZFwiIC8+QXVzIFVtZ2VidW5nc3ZhcmlhYmxlbiwgZGllIGJlaW0gU3RhcnQgdm9uIGF1w59lbiBnZXNldHp0IHdlcmRlbi48L3A+XG5cbiAgICAgICAgICA8YmxvY2txdW90ZT5cbiAgICAgICAgICAgIDxwPlJpY2h0aWcuIFNvIGJsZWlidCBkYXNzZWxiZSBJbWFnZSDDvGJlcmFsbCBnbGVpY2gg4oCTIG51ciBkaWUgVW1nZWJ1bmcgw6RuZGVydCBzaWNoLjwvcD5cbiAgICAgICAgICA8L2Jsb2NrcXVvdGU+XG4gICAgICAgIDwvbGk+XG4gICAgICAgIDxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG4gICAgICAgICAgPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgLz5BdXMgZWluZXIgS29uZmlndXJhdGlvbnNkYXRlaSwgZGllIGJlaW0gQmF1ZW4gZmVzdCBpbnMgSW1hZ2Uga29waWVydCB3aXJkLjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+RGFubiBicmF1Y2hzdCBEdSBqZSBVbWdlYnVuZyBlaW4gZWlnZW5lcyBJbWFnZSDigJMgdW5kIGtlaW5lcyBkYXZvbiBpc3QgZGFzIGdldGVzdGV0ZS48L3A+XG4gICAgICAgICAgPC9ibG9ja3F1b3RlPlxuICAgICAgICA8L2xpPlxuICAgICAgICA8bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuICAgICAgICAgIDxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiIC8+QXVzIEtvbW1hbmRvemVpbGVucGFyYW1ldGVybiwgZGllIGJlaW0gU3RhcnQgZGVzIENvbnRhaW5lcnMgw7xiZXJnZWJlbiB3ZXJkZW4uPC9wPlxuXG4gICAgICAgICAgPGJsb2NrcXVvdGU+XG4gICAgICAgICAgICA8cD5Nw7ZnbGljaCwgYWJlciBuaWNodCBkZXIgMTItRmFjdG9yLVdlZzogVW1nZWJ1bmdzdmFyaWFibGVuIHNpbmQgc3ByYWNoLSB1bmQgc3lzdGVtbmV1dHJhbC48L3A+XG4gICAgICAgICAgPC9ibG9ja3F1b3RlPlxuICAgICAgICA8L2xpPlxuICAgICAgICA8bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuICAgICAgICAgIDxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiIC8+QXVzIGVpbmVyIHplbnRyYWxlbiBEYXRlbmJhbmssIGRpZSBqZWRlciBEaWVuc3QgYmVpIGplZGVyIEFuZnJhZ2UgYWJmcmFndC48L3A+XG5cbiAgICAgICAgICA8YmxvY2txdW90ZT5cbiAgICAgICAgICAgIDxwPkRhcyB3w6RyZSBlaW5lIHp1c8OkdHpsaWNoZSBBYmjDpG5naWdrZWl0IHVuZCBlaW4gZ2VtZWluc2FtZXIgQXVzZmFsbHB1bmt0IGbDvHIgYWxsZSBEaWVuc3RlLjwvcD5cbiAgICAgICAgICA8L2Jsb2NrcXVvdGU+XG4gICAgICAgIDwvbGk+XG4gICAgICA8L3VsPlxuICAgIDwvbGk+XG4gICAgPGxpPlxuICAgICAgPHA+RHUgd2lsbHN0IGVpbmVuIENvbnRhaW5lciBpbSBIaW50ZXJncnVuZCBzdGFydGVuIHVuZCBpaG0gZWluZW4gZmVzdGVuIE5hbWVuIGdlYmVuLjwvcD5cblxuICAgICAgPHA+V2VsY2hlciBBdWZydWYgaXN0IGRhZsO8ciBkZXIgcmljaHRpZ2U/PC9wPlxuXG4gICAgICA8dWwgY2xhc3M9XCJ0YXNrLWxpc3RcIj5cbiAgICAgICAgPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbiAgICAgICAgICA8cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiBjaGVja2VkPVwiY2hlY2tlZFwiIC8+ZG9ja2VyIHJ1biAtZCDigJNuYW1lIG1laW5lLWFwcCBuZ2lueDwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+UmljaHRpZzogPGNvZGU+LWQ8L2NvZGU+IGzDtnN0IHZvbSBUZXJtaW5hbCwgPGNvZGU+LS1uYW1lPC9jb2RlPiB2ZXJnaWJ0IGRlbiBOYW1lbiwgbWl0IGRlbSBEdSBpaG4gc3DDpHRlciBhbnNwcmljaHN0LjwvcD5cbiAgICAgICAgICA8L2Jsb2NrcXVvdGU+XG4gICAgICAgIDwvbGk+XG4gICAgICAgIDxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG4gICAgICAgICAgPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgLz5kb2NrZXIgcnVuIOKAk25hbWUgLWQgbWVpbmUtYXBwIG5naW54PC9wPlxuXG4gICAgICAgICAgPGJsb2NrcXVvdGU+XG4gICAgICAgICAgICA8cD48Y29kZT4tLW5hbWU8L2NvZGU+IGVyd2FydGV0IGRlbiBOYW1lbiBkaXJla3QgZGFoaW50ZXIuIEhpZXIgd8O8cmRlIDxjb2RlPi1kPC9jb2RlPiBhbHMgTmFtZSBnZWxlc2VuLjwvcD5cbiAgICAgICAgICA8L2Jsb2NrcXVvdGU+XG4gICAgICAgIDwvbGk+XG4gICAgICAgIDxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG4gICAgICAgICAgPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgLz5kb2NrZXIgc3RhcnQgLWQg4oCTbmFtZSBtZWluZS1hcHAgbmdpbng8L3A+XG5cbiAgICAgICAgICA8YmxvY2txdW90ZT5cbiAgICAgICAgICAgIDxwPjxjb2RlPnN0YXJ0PC9jb2RlPiBzdGFydGV0IGVpbmVuIHZvcmhhbmRlbmVuIENvbnRhaW5lciB1bmQgbGVndCBrZWluZW4gbmV1ZW4gYXVzIGVpbmVtIEltYWdlIGFuLjwvcD5cbiAgICAgICAgICA8L2Jsb2NrcXVvdGU+XG4gICAgICAgIDwvbGk+XG4gICAgICAgIDxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG4gICAgICAgICAgPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgLz5kb2NrZXIgY3JlYXRlIC1kIOKAk25hbWUgbWVpbmUtYXBwIG5naW54PC9wPlxuXG4gICAgICAgICAgPGJsb2NrcXVvdGU+XG4gICAgICAgICAgICA8cD48Y29kZT5jcmVhdGU8L2NvZGU+IGxlZ3QgZGVuIENvbnRhaW5lciBudXIgYW4uIE9obmUgPGNvZGU+c3RhcnQ8L2NvZGU+IGzDpHVmdCBlciBuaWNodCDigJMgPGNvZGU+LWQ8L2NvZGU+IGJld2lya3QgaGllciBuaWNodHMuPC9wPlxuICAgICAgICAgIDwvYmxvY2txdW90ZT5cbiAgICAgICAgPC9saT5cbiAgICAgIDwvdWw+XG4gICAgPC9saT5cbiAgICA8bGk+XG4gICAgICA8cD5JbSBEb2NrZXJmaWxlIHN0ZWhlbiBBbndlaXN1bmdlbiwgZGllIHp1IHVudGVyc2NoaWVkbGljaGVuIFplaXRwdW5rdGVuIHdpcmtlbi48L3A+XG5cbiAgICAgIDxwPldlbGNoZSBBbndlaXN1bmcgYmVzdGltbXQsIHdhcyBiZWltIDxzdHJvbmc+U3RhcnRlbjwvc3Ryb25nPiBlaW5lcyBDb250YWluZXJzIGF1c2dlZsO8aHJ0IHdpcmQ/PC9wPlxuXG4gICAgICA8dWwgY2xhc3M9XCJ0YXNrLWxpc3RcIj5cbiAgICAgICAgPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbiAgICAgICAgICA8cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiBjaGVja2VkPVwiY2hlY2tlZFwiIC8+Q01EIGJlemllaHVuZ3N3ZWlzZSBFTlRSWVBPSU5UIOKAkyBiZWlkZSB3aXJrZW4genVyIFN0YXJ0emVpdC48L3A+XG5cbiAgICAgICAgICA8YmxvY2txdW90ZT5cbiAgICAgICAgICAgIDxwPlJpY2h0aWcuIDxjb2RlPkVOVFJZUE9JTlQ8L2NvZGU+IGlzdCBkYXMgUHJvZ3JhbW0sIDxjb2RlPkNNRDwvY29kZT4gbGllZmVydCBkZXNzZW4gU3RhbmRhcmRhcmd1bWVudGUuPC9wPlxuICAgICAgICAgIDwvYmxvY2txdW90ZT5cbiAgICAgICAgPC9saT5cbiAgICAgICAgPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbiAgICAgICAgICA8cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiAvPlJVTiDigJMgZGllIEFud2Vpc3VuZyBmw7xocnQgZGVuIGFuZ2VnZWJlbmVuIEJlZmVobCBpbSBDb250YWluZXIgYXVzLjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+PGNvZGU+UlVOPC9jb2RlPiBsw6R1ZnQgYmVpbSA8c3Ryb25nPkJhdWVuPC9zdHJvbmc+IHVuZCB2ZXLDpG5kZXJ0IGRhcyBJbWFnZS4gQmVpbSBTdGFydCBwYXNzaWVydCBkYW1pdCBuaWNodHMgbWVoci48L3A+XG4gICAgICAgICAgPC9ibG9ja3F1b3RlPlxuICAgICAgICA8L2xpPlxuICAgICAgICA8bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuICAgICAgICAgIDxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiIC8+RU5WIOKAkyBkaWUgQW53ZWlzdW5nIHNldHp0IGRpZSBVbWdlYnVuZywgaW4gZGVyIGRlciBTdGFydCBhYmzDpHVmdC48L3A+XG5cbiAgICAgICAgICA8YmxvY2txdW90ZT5cbiAgICAgICAgICAgIDxwPjxjb2RlPkVOVjwvY29kZT4gc2V0enQgbnVyIFN0YW5kYXJkd2VydGUgZsO8ciBWYXJpYWJsZW4uIFdhcyBhdXNnZWbDvGhydCB3aXJkLCBsZWd0IHNpZSBuaWNodCBmZXN0LjwvcD5cbiAgICAgICAgICA8L2Jsb2NrcXVvdGU+XG4gICAgICAgIDwvbGk+XG4gICAgICAgIDxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG4gICAgICAgICAgPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgLz5FWFBPU0Ug4oCTIGRpZSBBbndlaXN1bmcgc3RhcnRldCBkZW4gRGllbnN0IGF1ZiBkZW0gZ2VuYW5udGVuIFBvcnQuPC9wPlxuXG4gICAgICAgICAgPGJsb2NrcXVvdGU+XG4gICAgICAgICAgICA8cD48Y29kZT5FWFBPU0U8L2NvZGU+IGlzdCByZWluZSBEb2t1bWVudGF0aW9uIGltIEltYWdlLiBFcyBzdGFydGV0IG5pY2h0cyB1bmQgw7ZmZm5ldCBuaWNodHMuPC9wPlxuICAgICAgICAgIDwvYmxvY2txdW90ZT5cbiAgICAgICAgPC9saT5cbiAgICAgIDwvdWw+XG4gICAgPC9saT5cbiAgICA8bGk+XG4gICAgICA8cD5EdSBiYXVzdCBlaW4gSW1hZ2UgbWl0IDxjb2RlPmRvY2tlciBpbWFnZSBidWlsZCAuPC9jb2RlPiB1bmQgdmVyZ2lzc3QgZGVuIFBhcmFtZXRlciA8Y29kZT4tdDwvY29kZT4uPC9wPlxuXG4gICAgICA8cD5XZWxjaGVuIE5hbWVuIHRyw6RndCBkYXMgSW1hZ2UgZGFuYWNoIOKAkyB1bmQgd2FydW0gaXN0IGRhcyB1bnByYWt0aXNjaD88L3A+XG5cbiAgICAgIDx1bCBjbGFzcz1cInRhc2stbGlzdFwiPlxuICAgICAgICA8bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuICAgICAgICAgIDxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiIGNoZWNrZWQ9XCJjaGVja2VkXCIgLz5HYXIga2VpbmVuIOKAkyBlcyBlcnNjaGVpbnQgYWxzIDxjb2RlPiZsdDtub25lJmd0OzwvY29kZT4gdW5kIGlzdCBudXIgcGVyIElEIGFuc3ByZWNoYmFyLjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+UmljaHRpZy4gTmFjaCBkZW0gZHJpdHRlbiBCdWlsZCBvaG5lIDxjb2RlPi10PC9jb2RlPiBoYXN0IER1IGRyZWkgbmFtZW5sb3NlIEltYWdlcyAo4oCeZGFuZ2xpbmfigJwpLjwvcD5cbiAgICAgICAgICA8L2Jsb2NrcXVvdGU+XG4gICAgICAgIDwvbGk+XG4gICAgICAgIDxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG4gICAgICAgICAgPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgLz5EZW4gTmFtZW4gZGVzIFZlcnplaWNobmlzc2VzLCBpbiBkZW0gZGFzIERvY2tlcmZpbGUgZ2VyYWRlIGxpZWd0LjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+RG9ja2VyIGxpZXN0IGF1cyBkZW0gVmVyemVpY2huaXMgZGVuIEJhdS1Lb250ZXh0LCBhYmVyIG5pZW1hbHMgZWluZW4gSW1hZ2VuYW1lbi48L3A+XG4gICAgICAgICAgPC9ibG9ja3F1b3RlPlxuICAgICAgICA8L2xpPlxuICAgICAgICA8bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuICAgICAgICAgIDxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiIC8+RGVuIE5hbWVuIGRlcyBCYXNpcy1JbWFnZXMgYXVzIGRlciA8Y29kZT5GUk9NPC9jb2RlPi1aZWlsZSBtaXQgZGVtIFRhZyA8Y29kZT5sYXRlc3Q8L2NvZGU+LjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+RGFubiB3w7xyZGVzdCBEdSBkYXMgQmFzaXMtSW1hZ2Ugw7xiZXJzY2hyZWliZW4uIERhcyBwYXNzaWVydCBhdXNkcsO8Y2tsaWNoIG5pY2h0LjwvcD5cbiAgICAgICAgICA8L2Jsb2NrcXVvdGU+XG4gICAgICAgIDwvbGk+XG4gICAgICAgIDxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG4gICAgICAgICAgPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgLz5FaW5lbiB6dWbDpGxsaWcgZXJ6ZXVndGVuIE5hbWVuLCBzbyB3aWUgQ29udGFpbmVyIGlobiBiZWltIFN0YXJ0IGJla29tbWVuLjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+WnVmYWxsc25hbWVuIGJla29tbWVuIG51ciBDb250YWluZXIuIEltYWdlcyBibGVpYmVuIG9obmUgPGNvZGU+LXQ8L2NvZGU+IHNjaGxpY2h0IG5hbWVubG9zLjwvcD5cbiAgICAgICAgICA8L2Jsb2NrcXVvdGU+XG4gICAgICAgIDwvbGk+XG4gICAgICA8L3VsPlxuICAgIDwvbGk+XG4gICAgPGxpPlxuICAgICAgPHA+RWluIHZvbGxzdMOkbmRpZ2VyIEltYWdlbmFtZSBsYXV0ZXQgPGNvZGU+cmVnaXN0cnkuZXhhbXBsZS5jb20vdGVhbS9hcHA6MS40LjI8L2NvZGU+LjwvcD5cblxuICAgICAgPHA+V2FzIGJlemVpY2huZXQgZGFiZWkgZGVyIFRlaWwgPGNvZGU+dGVhbS9hcHA8L2NvZGU+PzwvcD5cblxuICAgICAgPHVsIGNsYXNzPVwidGFzay1saXN0XCI+XG4gICAgICAgIDxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG4gICAgICAgICAgPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgY2hlY2tlZD1cImNoZWNrZWRcIiAvPkRhcyBSZXBvc2l0b3J5IOKAkyBkZW4gUGxhdHogZsO8ciBlaW4gSW1hZ2UgaW4gdmllbGVuIFN0w6RuZGVuLjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+UmljaHRpZy4gRGllIHZlcnNjaGllZGVuZW4gU3TDpG5kZSBkYXJpbiB1bnRlcnNjaGVpZGVzdCBEdSDDvGJlciBkaWUgVGFncy48L3A+XG4gICAgICAgICAgPC9ibG9ja3F1b3RlPlxuICAgICAgICA8L2xpPlxuICAgICAgICA8bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuICAgICAgICAgIDxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiIC8+RGllIFJlZ2lzdHJ5IOKAkyBkZW4gRGllbnN0LCBkZXIgZGllIEltYWdlcyBzcGVpY2hlcnQgdW5kIGF1c2xpZWZlcnQuPC9wPlxuXG4gICAgICAgICAgPGJsb2NrcXVvdGU+XG4gICAgICAgICAgICA8cD5EaWUgUmVnaXN0cnkgc3RlaHQgZGF2b3I6IDxjb2RlPnJlZ2lzdHJ5LmV4YW1wbGUuY29tPC9jb2RlPi4gU2llIGlzdCBkZXIgU2VydmVyLCBuaWNodCBkZXIgUGxhdHouPC9wPlxuICAgICAgICAgIDwvYmxvY2txdW90ZT5cbiAgICAgICAgPC9saT5cbiAgICAgICAgPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbiAgICAgICAgICA8cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiAvPkRlbiBUYWcg4oCTIGRpZSBLZW5uemVpY2hudW5nIGVpbmVzIGJlc3RpbW10ZW4gU3RhbmRlcyBkZXMgSW1hZ2VzLjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+RGVyIFRhZyBzdGVodCBoaW50ZXIgZGVtIERvcHBlbHB1bmt0OiA8Y29kZT4xLjQuMjwvY29kZT4uIEVyIGJlemVpY2huZXQgZWluZW4gU3RhbmQuPC9wPlxuICAgICAgICAgIDwvYmxvY2txdW90ZT5cbiAgICAgICAgPC9saT5cbiAgICAgICAgPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbiAgICAgICAgICA8cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiAvPkRlbiBMYXllciDigJMgZGllIFNjaGljaHQsIGF1cyBkZXIgZGFzIEltYWdlIGJlaW0gQmF1ZW4gZW50c3RhbmRlbiBpc3QuPC9wPlxuXG4gICAgICAgICAgPGJsb2NrcXVvdGU+XG4gICAgICAgICAgICA8cD5MYXllciBoYWJlbiBrZWluZSBOYW1lbiB1bmQgdGF1Y2hlbiBpbSBJbWFnZW5hbWVuIGFuIGtlaW5lciBTdGVsbGUgYXVmLjwvcD5cbiAgICAgICAgICA8L2Jsb2NrcXVvdGU+XG4gICAgICAgIDwvbGk+XG4gICAgICA8L3VsPlxuICAgIDwvbGk+XG4gICAgPGxpPlxuICAgICAgPHA+SW4gZWluZW0gQ29udGFpbmVyIGzDpHVmdCBlaW5lIERhdGVuYmFuay4gRGVyIENvbnRhaW5lciB3aXJkIGdlbMO2c2NodCB1bmQgbmV1IGFuZ2VsZWd0LjwvcD5cblxuICAgICAgPHA+V2FzIHBhc3NpZXJ0IG1pdCBkZW4gRGF0ZW4g4oCTIHVuZCB3aWUgdmVyaGluZGVyc3QgRHUgZGVuIFZlcmx1c3Q/PC9wPlxuXG4gICAgICA8dWwgY2xhc3M9XCJ0YXNrLWxpc3RcIj5cbiAgICAgICAgPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbiAgICAgICAgICA8cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiBjaGVja2VkPVwiY2hlY2tlZFwiIC8+U2llIHNpbmQgd2VnLiBFaW4gVm9sdW1lIGFuIGRlciBEYXRlbmFibGFnZSBow6R0dGUgc2llIMO8YmVybGViZW4gbGFzc2VuLjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+UmljaHRpZy4gRGVyIFNjaHJlaWJiZXJlaWNoIGdlaMO2cnQgZGVtIENvbnRhaW5lciB1bmQgc3RpcmJ0IG1pdCBpaG0uPC9wPlxuICAgICAgICAgIDwvYmxvY2txdW90ZT5cbiAgICAgICAgPC9saT5cbiAgICAgICAgPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbiAgICAgICAgICA8cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiAvPlNpZSBibGVpYmVuIGltIEltYWdlIGVyaGFsdGVuLCBzb2Zlcm4gRHUgZXMgdm9yaGVyIG5ldSBnZWJhdXQgaGFzdC48L3A+XG5cbiAgICAgICAgICA8YmxvY2txdW90ZT5cbiAgICAgICAgICAgIDxwPkVpbiBJbWFnZSBpc3QgdW52ZXLDpG5kZXJsaWNoLiBXYXMgZWluIENvbnRhaW5lciBzY2hyZWlidCwga29tbXQgZG9ydCBuaWUgYW4uPC9wPlxuICAgICAgICAgIDwvYmxvY2txdW90ZT5cbiAgICAgICAgPC9saT5cbiAgICAgICAgPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbiAgICAgICAgICA8cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiAvPlNpZSBibGVpYmVuIGVyaGFsdGVuLCB3ZWlsIERvY2tlciBkZW4gU2NocmVpYmJlcmVpY2ggYXV0b21hdGlzY2ggc2ljaGVydC48L3A+XG5cbiAgICAgICAgICA8YmxvY2txdW90ZT5cbiAgICAgICAgICAgIDxwPkVzIGdpYnQga2VpbmUgYXV0b21hdGlzY2hlIFNpY2hlcnVuZy4gT2huZSBWb2x1bWUgaXN0IG1pdCA8Y29kZT5ybTwvY29kZT4gYWxsZXMgd2VnLjwvcD5cbiAgICAgICAgICA8L2Jsb2NrcXVvdGU+XG4gICAgICAgIDwvbGk+XG4gICAgICAgIDxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG4gICAgICAgICAgPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgLz5TaWUgc2luZCB3ZWcuIE51ciBlaW4gZXJuZXV0ZXMgPGNvZGU+ZG9ja2VyIGNvbW1pdDwvY29kZT4gaMOkdHRlIHNpZSByZXR0ZW4ga8O2bm5lbi48L3A+XG5cbiAgICAgICAgICA8YmxvY2txdW90ZT5cbiAgICAgICAgICAgIDxwPjxjb2RlPmNvbW1pdDwvY29kZT4gZnJpZXJ0IGVpbmVuIFN0YW5kIGlucyBJbWFnZSBlaW4g4oCTIGFscyBCZXRyaWVic3dlZyBpc3QgZGFzIG5pY2h0IHZvcmdlc2VoZW4uPC9wPlxuICAgICAgICAgIDwvYmxvY2txdW90ZT5cbiAgICAgICAgPC9saT5cbiAgICAgIDwvdWw+XG4gICAgPC9saT5cbiAgICA8bGk+XG4gICAgICA8cD5ad2VpIENvbnRhaW5lciBzdGVoZW4genVzYW1tZW4gaW4gZWluZW0gc2VsYnN0IGFuZ2VsZWd0ZW4gTmV0endlcmsuPC9wPlxuXG4gICAgICA8cD5XaWUgZXJyZWljaHQgZGVyIGVpbmUgQ29udGFpbmVyIGRlbiBhbmRlcmVuPzwvcD5cblxuICAgICAgPHVsIGNsYXNzPVwidGFzay1saXN0XCI+XG4gICAgICAgIDxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG4gICAgICAgICAgPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgY2hlY2tlZD1cImNoZWNrZWRcIiAvPsOcYmVyIHNlaW5lbiBDb250YWluZXItTmFtZW4sIGRlbiBEb2NrZXIgaW0gTmV0endlcmsgYXVmbMO2c3QuPC9wPlxuXG4gICAgICAgICAgPGJsb2NrcXVvdGU+XG4gICAgICAgICAgICA8cD5SaWNodGlnLiBHZW5hdSBkZXNoYWxiIGlzdCA8Y29kZT4tLW5hbWU8L2NvZGU+IGtlaW5lIEtvc21ldGlrLCBzb25kZXJuIGRpZSBBZHJlc3NlLjwvcD5cbiAgICAgICAgICA8L2Jsb2NrcXVvdGU+XG4gICAgICAgIDwvbGk+XG4gICAgICAgIDxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG4gICAgICAgICAgPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgLz7DnGJlciA8Y29kZT5sb2NhbGhvc3Q8L2NvZGU+IHVuZCBkZW4gUG9ydCwgZGVuIGRlciBhbmRlcmUgQ29udGFpbmVyIGJlbGVndCBoYXQuPC9wPlxuXG4gICAgICAgICAgPGJsb2NrcXVvdGU+XG4gICAgICAgICAgICA8cD48Y29kZT5sb2NhbGhvc3Q8L2NvZGU+IGlzdCBpbSBDb250YWluZXIgZXIgc2VsYnN0LiBEZXIgYW5kZXJlIGlzdCBkYXLDvGJlciBuaWNodCBlcnJlaWNoYmFyLjwvcD5cbiAgICAgICAgICA8L2Jsb2NrcXVvdGU+XG4gICAgICAgIDwvbGk+XG4gICAgICAgIDxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG4gICAgICAgICAgPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgLz7DnGJlciBkaWUgSVAtQWRyZXNzZSBkZXMgSG9zdHMgdW5kIGRlbiB2ZXLDtmZmZW50bGljaHRlbiBQb3J0LjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+RGFzIGdpbmdlLCBpc3QgYWJlciBkZXIgVW13ZWcgbmFjaCBkcmF1w59lbiDigJMgdW5kIGRpZSBBZHJlc3NlIMOkbmRlcnQgc2ljaCBzdMOkbmRpZy48L3A+XG4gICAgICAgICAgPC9ibG9ja3F1b3RlPlxuICAgICAgICA8L2xpPlxuICAgICAgICA8bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuICAgICAgICAgIDxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiIC8+w5xiZXIgZ2FyIG5pY2h0czogQ29udGFpbmVyIHNpbmQgZ3J1bmRzw6R0emxpY2ggdm9uZWluYW5kZXIgYWJnZXNjaG90dGV0LjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+SW0gZ2VtZWluc2FtZW4gTmV0endlcmsgc2luZCBzaWUgZXMgbmljaHQuIEdlbmF1IGRhZsO8ciBsZWdzdCBEdSBlaW5lcyBhbi48L3A+XG4gICAgICAgICAgPC9ibG9ja3F1b3RlPlxuICAgICAgICA8L2xpPlxuICAgICAgPC91bD5cbiAgICA8L2xpPlxuICAgIDxsaT5cbiAgICAgIDxwPkVpbmUgVW1nZWJ1bmcgYmVzdGVodCBhdXMgRGF0ZW5iYW5rLCBXZWJzZXJ2ZXIgdW5kIEFud2VuZHVuZyBtaXQgVm9sdW1lcyB1bmQgTmV0endlcmsuPC9wPlxuXG4gICAgICA8cD5Xb21pdCBzdGFydGVzdCBEdSBhbGxlIGRyZWkgbWl0IGVpbmVtIGVpbnppZ2VuIEJlZmVobD88L3A+XG5cbiAgICAgIDx1bCBjbGFzcz1cInRhc2stbGlzdFwiPlxuICAgICAgICA8bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuICAgICAgICAgIDxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiIGNoZWNrZWQ9XCJjaGVja2VkXCIgLz5NaXQgRG9ja2VyIENvbXBvc2UgdW5kIGVpbmVyIERhdGVpLCBkaWUgYWxsZSBTZXJ2aWNlcyBiZXNjaHJlaWJ0LjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+UmljaHRpZy4gQ29tcG9zZSBsZWd0IE5ldHp3ZXJrIHVuZCBWb2x1bWVzIGdsZWljaCBtaXQgYW4uPC9wPlxuICAgICAgICAgIDwvYmxvY2txdW90ZT5cbiAgICAgICAgPC9saT5cbiAgICAgICAgPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbiAgICAgICAgICA8cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiAvPk1pdCA8Y29kZT5kb2NrZXIgcnVuPC9jb2RlPiwgZGVtIER1IGFsbGUgZHJlaSBJbWFnZXMgaGludGVyZWluYW5kZXIgw7xiZXJnaWJzdC48L3A+XG5cbiAgICAgICAgICA8YmxvY2txdW90ZT5cbiAgICAgICAgICAgIDxwPjxjb2RlPmRvY2tlciBydW48L2NvZGU+IHN0YXJ0ZXQgZ2VuYXUgZWluZW4gQ29udGFpbmVyIGF1cyBnZW5hdSBlaW5lbSBJbWFnZS48L3A+XG4gICAgICAgICAgPC9ibG9ja3F1b3RlPlxuICAgICAgICA8L2xpPlxuICAgICAgICA8bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuICAgICAgICAgIDxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiIC8+TWl0IGVpbmVtIERvY2tlcmZpbGUsIGRhcyBkaWUgZHJlaSBJbWFnZXMgYWxzIFN0dWZlbiB6dXNhbW1lbmZhc3N0LjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+RWluIERvY2tlcmZpbGUgYmVzY2hyZWlidCwgd2llIGVpbiBJbWFnZSBlbnRzdGVodCDigJMgbmljaHQsIHdhcyB6dXNhbW1lbiBsw6R1ZnQuPC9wPlxuICAgICAgICAgIDwvYmxvY2txdW90ZT5cbiAgICAgICAgPC9saT5cbiAgICAgICAgPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbiAgICAgICAgICA8cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiAvPk1pdCA8Y29kZT5kb2NrZXIgbmV0d29yayBjcmVhdGU8L2NvZGU+LCBkYXMgYWxsZSBDb250YWluZXIgZGFyaW4gZ2VtZWluc2FtIHN0YXJ0ZXQuPC9wPlxuXG4gICAgICAgICAgPGJsb2NrcXVvdGU+XG4gICAgICAgICAgICA8cD5EZXIgQmVmZWhsIGxlZ3QgbnVyIGRhcyBOZXR6d2VyayBhbi4gU3RhcnRlbiBtdXNzdCBEdSB3ZWl0ZXJoaW4gc2VsYnN0LjwvcD5cbiAgICAgICAgICA8L2Jsb2NrcXVvdGU+XG4gICAgICAgIDwvbGk+XG4gICAgICA8L3VsPlxuICAgIDwvbGk+XG4gICAgPGxpPlxuICAgICAgPHA+SW4gZWluZXIgQ29tcG9zZS1EYXRlaSBzdGVodCBiZWkgZGVyIEFud2VuZHVuZyA8Y29kZT5kZXBlbmRzX29uOiBbZGF0ZW5iYW5rXTwvY29kZT4uPC9wPlxuXG4gICAgICA8cD5XYXMgZ2FyYW50aWVydCBkaWVzZSBBbmdhYmUg4oCTIHVuZCB3YXMgbmljaHQ/PC9wPlxuXG4gICAgICA8dWwgY2xhc3M9XCJ0YXNrLWxpc3RcIj5cbiAgICAgICAgPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbiAgICAgICAgICA8cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiBjaGVja2VkPVwiY2hlY2tlZFwiIC8+RGllIFN0YXJ0cmVpaGVuZm9sZ2UsIGFiZXIgbmljaHQsIGRhc3MgZGllIERhdGVuYmFuayBzY2hvbiBiZXJlaXQgaXN0LjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+UmljaHRpZy4gRGVyIENvbnRhaW5lciBsw6R1ZnQg4oCTIG9iIGRlciBEaWVuc3QgYW50d29ydGV0LCB3ZWnDnyBDb21wb3NlIG5pY2h0LjwvcD5cbiAgICAgICAgICA8L2Jsb2NrcXVvdGU+XG4gICAgICAgIDwvbGk+XG4gICAgICAgIDxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG4gICAgICAgICAgPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgLz5EYXNzIGRpZSBEYXRlbmJhbmsgbMOkdWZ0IHVuZCBWZXJiaW5kdW5nZW4gYW5uaW1tdCwgYmV2b3IgZGllIEFwcCBzdGFydGV0LjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+RGFzIGxlaXN0ZXQgZXJzdCA8Y29kZT5jb25kaXRpb246IHNlcnZpY2VfaGVhbHRoeTwvY29kZT4genVzYW1tZW4gbWl0IGVpbmVtIDxjb2RlPmhlYWx0aGNoZWNrPC9jb2RlPi48L3A+XG4gICAgICAgICAgPC9ibG9ja3F1b3RlPlxuICAgICAgICA8L2xpPlxuICAgICAgICA8bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuICAgICAgICAgIDxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiIC8+RGFzcyBkaWUgQW53ZW5kdW5nIG5ldSBzdGFydGV0LCBzb2JhbGQgZGllIERhdGVuYmFuayBuZXUgZ2VzdGFydGV0IHd1cmRlLjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+RWluZW4gc29sY2hlbiBOZXVzdGFydCBsw7ZzdCA8Y29kZT5kZXBlbmRzX29uPC9jb2RlPiBuaWNodCBhdXMuIEVzIHdpcmt0IG51ciBiZWltIEhvY2hmYWhyZW4uPC9wPlxuICAgICAgICAgIDwvYmxvY2txdW90ZT5cbiAgICAgICAgPC9saT5cbiAgICAgICAgPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbiAgICAgICAgICA8cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiAvPkRhc3MgYmVpZGUgQ29udGFpbmVyIGltIHNlbGJlbiBOZXR6d2VyayBzdGVoZW4gdW5kIGVpbmFuZGVyIGVycmVpY2hlbi48L3A+XG5cbiAgICAgICAgICA8YmxvY2txdW90ZT5cbiAgICAgICAgICAgIDxwPkRhcyB0dXQgQ29tcG9zZSBvaG5laGluIGbDvHIgYWxsZSBTZXJ2aWNlcyDigJMgZGFmw7xyIGJyYXVjaHQgZXMgZGllIEFuZ2FiZSBuaWNodC48L3A+XG4gICAgICAgICAgPC9ibG9ja3F1b3RlPlxuICAgICAgICA8L2xpPlxuICAgICAgPC91bD5cbiAgICA8L2xpPlxuICAgIDxsaT5cbiAgICAgIDxwPkVpbiBQcm96ZXNzIGltIENvbnRhaW5lciBsw6R1ZnQsIGFudHdvcnRldCBhYmVyIGF1ZiBrZWluZSBBbmZyYWdlIG1laHIuPC9wPlxuXG4gICAgICA8cD5Xb3p1IGRpZW50IGluIGRpZXNlciBMYWdlIGVpbiA8Y29kZT5IRUFMVEhDSEVDSzwvY29kZT4gaW0gRG9ja2VyZmlsZT88L3A+XG5cbiAgICAgIDx1bCBjbGFzcz1cInRhc2stbGlzdFwiPlxuICAgICAgICA8bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuICAgICAgICAgIDxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiIGNoZWNrZWQ9XCJjaGVja2VkXCIgLz5EYXMgSW1hZ2Ugc2FndCBzZWxic3QsIHdpZSBtYW4gcHLDvGZ0LCBvYiBlcyB0YXRzw6RjaGxpY2ggYXJiZWl0ZXQuPC9wPlxuXG4gICAgICAgICAgPGJsb2NrcXVvdGU+XG4gICAgICAgICAgICA8cD5SaWNodGlnLiDigJ5Mw6R1ZnTigJwgdW5kIOKAnmZ1bmt0aW9uaWVydOKAnCBzaW5kIHp3ZWkgdmVyc2NoaWVkZW5lIEF1c3NhZ2VuLjwvcD5cbiAgICAgICAgICA8L2Jsb2NrcXVvdGU+XG4gICAgICAgIDwvbGk+XG4gICAgICAgIDxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG4gICAgICAgICAgPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgLz5FciBzdGFydGV0IGRlbiBDb250YWluZXIgYXV0b21hdGlzY2ggbmV1LCBzb2JhbGQgZGVyIFByb3plc3MgZW5kZXQuPC9wPlxuXG4gICAgICAgICAgPGJsb2NrcXVvdGU+XG4gICAgICAgICAgICA8cD5EYXMgTmV1c3RhcnRlbiByZWdlbHQgZGllIE5ldXN0YXJ0LVJpY2h0bGluaWUgb2RlciBkaWUgUGxhdHRmb3JtLCBuaWNodCBkZXIgSGVhbHRoY2hlY2suPC9wPlxuICAgICAgICAgIDwvYmxvY2txdW90ZT5cbiAgICAgICAgPC9saT5cbiAgICAgICAgPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbiAgICAgICAgICA8cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiAvPkVyIHByw7xmdCBiZWltIEJhdWVuLCBvYiBhbGxlIEFiaMOkbmdpZ2tlaXRlbiBpbSBJbWFnZSB2b3JoYW5kZW4gc2luZC48L3A+XG5cbiAgICAgICAgICA8YmxvY2txdW90ZT5cbiAgICAgICAgICAgIDxwPkVyIGzDpHVmdCB6dXIgTGF1ZnplaXQgaW0gZmVydGlnZW4gQ29udGFpbmVyLCBuaWNodCB3w6RocmVuZCBkZXMgQmF1ZW5zLjwvcD5cbiAgICAgICAgICA8L2Jsb2NrcXVvdGU+XG4gICAgICAgIDwvbGk+XG4gICAgICAgIDxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG4gICAgICAgICAgPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgLz5FciBtZWxkZXQgYW4gZGllIFJlZ2lzdHJ5IHp1csO8Y2ssIG9iIGRhcyBJbWFnZSBmZWhsZXJmcmVpIGdlem9nZW4gd3VyZGUuPC9wPlxuXG4gICAgICAgICAgPGJsb2NrcXVvdGU+XG4gICAgICAgICAgICA8cD5NaXQgZGVyIFJlZ2lzdHJ5IGhhdCBlciBuaWNodHMgenUgdHVuLiBTaWUgc2llaHQgbmllIGVpbmVuIGxhdWZlbmRlbiBDb250YWluZXIuPC9wPlxuICAgICAgICAgIDwvYmxvY2txdW90ZT5cbiAgICAgICAgPC9saT5cbiAgICAgIDwvdWw+XG4gICAgPC9saT5cbiAgICA8bGk+XG4gICAgICA8cD5EdSBmw7xocnN0IDxjb2RlPmRvY2tlciBjb250YWluZXIgc3RvcCBtZWluZS1hcHA8L2NvZGU+IGF1cyB1bmQgc3VjaHN0IGRlbiBDb250YWluZXIgYW5zY2hsaWXDn2VuZC48L3A+XG5cbiAgICAgIDxwPldhcnVtIGVyc2NoZWludCBlciBpbiA8Y29kZT5kb2NrZXIgY29udGFpbmVyIGxzPC9jb2RlPiBuaWNodCBtZWhyPzwvcD5cblxuICAgICAgPHVsIGNsYXNzPVwidGFzay1saXN0XCI+XG4gICAgICAgIDxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG4gICAgICAgICAgPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgY2hlY2tlZD1cImNoZWNrZWRcIiAvPldlaWwgZGVyIEJlZmVobCBudXIgbGF1ZmVuZGUgQ29udGFpbmVyIHplaWd0IOKAkyBtaXQgPGNvZGU+LWE8L2NvZGU+IHNpZWhzdCBEdSBpaG4gd2llZGVyLjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+UmljaHRpZy4gRXIgaXN0IGFuZ2VoYWx0ZW4sIG5pY2h0IGdlbMO2c2NodDogQWxsZSDDhG5kZXJ1bmdlbiBzaW5kIG5vY2ggZGEuPC9wPlxuICAgICAgICAgIDwvYmxvY2txdW90ZT5cbiAgICAgICAgPC9saT5cbiAgICAgICAgPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbiAgICAgICAgICA8cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiAvPldlaWwgPGNvZGU+c3RvcDwvY29kZT4gZGVuIENvbnRhaW5lciBzYW10IHNlaW5lcyBTY2hyZWliYmVyZWljaHMgZW5kZ8O8bHRpZyBlbnRmZXJudC48L3A+XG5cbiAgICAgICAgICA8YmxvY2txdW90ZT5cbiAgICAgICAgICAgIDxwPkVudGZlcm5lbiB0dXQgPGNvZGU+cm08L2NvZGU+LiBOYWNoIDxjb2RlPnN0b3A8L2NvZGU+IGV4aXN0aWVydCBlciB3ZWl0ZXIsIG51ciBlYmVuIGFuZ2VoYWx0ZW4uPC9wPlxuICAgICAgICAgIDwvYmxvY2txdW90ZT5cbiAgICAgICAgPC9saT5cbiAgICAgICAgPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbiAgICAgICAgICA8cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiAvPldlaWwgYW5nZWhhbHRlbmUgQ29udGFpbmVyIGF1dG9tYXRpc2NoIGluIGRpZSBSZWdpc3RyeSB6dXLDvGNrZ2VzY2hyaWViZW4gd2VyZGVuLjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+SW4gZGllIFJlZ2lzdHJ5IGdlbGFuZ2VuIG51ciBJbWFnZXMsIHVuZCBhdWNoIGRpZSBudXIgZHVyY2ggZWluZW4gPGNvZGU+cHVzaDwvY29kZT4uPC9wPlxuICAgICAgICAgIDwvYmxvY2txdW90ZT5cbiAgICAgICAgPC9saT5cbiAgICAgICAgPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbiAgICAgICAgICA8cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiAvPldlaWwgZGVyIE5hbWUgbmFjaCBkZW0gQW5oYWx0ZW4gZnJlaWdlZ2ViZW4gdW5kIGRlciBFaW50cmFnIGdlbMO2c2NodCB3aXJkLjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+RGVyIE5hbWUgYmxlaWJ0IGJlbGVndCDigJMgZGVzaGFsYiBzY2hlaXRlcnQgZWluIHp3ZWl0ZXIgQ29udGFpbmVyIG1pdCBnbGVpY2hlbSBOYW1lbi48L3A+XG4gICAgICAgICAgPC9ibG9ja3F1b3RlPlxuICAgICAgICA8L2xpPlxuICAgICAgPC91bD5cbiAgICA8L2xpPlxuICAgIDxsaT5cbiAgICAgIDxwPkVpbiBUZWFtIMO8YmVybGVndCwgQW53ZW5kdW5nIHVuZCBEYXRlbmJhbmsgZ2VtZWluc2FtIGluIGVpbmVtIENvbnRhaW5lciB6dSBiZXRyZWliZW4uPC9wPlxuXG4gICAgICA8cD5XYXMgc3ByaWNodCBhbSBkZXV0bGljaHN0ZW4gZGFnZWdlbj88L3A+XG5cbiAgICAgIDx1bCBjbGFzcz1cInRhc2stbGlzdFwiPlxuICAgICAgICA8bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuICAgICAgICAgIDxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiIGNoZWNrZWQ9XCJjaGVja2VkXCIgLz5CZWlkZSBow6R0dGVuIGRlbnNlbGJlbiBMZWJlbnN6eWtsdXMgdW5kIGxpZcOfZW4gc2ljaCBuaWNodCBnZXRyZW5udCBlcnNldHplbi48L3A+XG5cbiAgICAgICAgICA8YmxvY2txdW90ZT5cbiAgICAgICAgICAgIDxwPlJpY2h0aWcuIEtlaW4gZ2V0cmVubnRlcyBBa3R1YWxpc2llcmVuLCBrZWluIGdldHJlbm50ZXMgU2thbGllcmVuLCBlaW4gTG9nLVN0cm9tLjwvcD5cbiAgICAgICAgICA8L2Jsb2NrcXVvdGU+XG4gICAgICAgIDwvbGk+XG4gICAgICAgIDxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG4gICAgICAgICAgPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgLz5FaW4gQ29udGFpbmVyIGthbm4gdGVjaG5pc2NoIGltbWVyIG51ciBlaW5lbiBlaW56aWdlbiBQcm96ZXNzIGF1c2bDvGhyZW4uPC9wPlxuXG4gICAgICAgICAgPGJsb2NrcXVvdGU+XG4gICAgICAgICAgICA8cD5UZWNobmlzY2ggZ2VodCBtZWhyIGFscyBlaW5lci4gRXMgaXN0IGVpbmUgRW50d3VyZnNyZWdlbCwga2VpbmUgQmVncmVuenVuZy48L3A+XG4gICAgICAgICAgPC9ibG9ja3F1b3RlPlxuICAgICAgICA8L2xpPlxuICAgICAgICA8bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuICAgICAgICAgIDxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiIC8+RGF0ZW5iYW5rZW4gbGFzc2VuIHNpY2ggaW4gQ29udGFpbmVybiBncnVuZHPDpHR6bGljaCBuaWNodCBzaW5udm9sbCBiZXRyZWliZW4uPC9wPlxuXG4gICAgICAgICAgPGJsb2NrcXVvdGU+XG4gICAgICAgICAgICA8cD5MYXNzZW4gc2llIHNpY2ggc2VociB3b2hsIOKAkyBtaXQgZWluZW0gVm9sdW1lIGbDvHIgZGllIGRhdWVyaGFmdGVuIERhdGVuLjwvcD5cbiAgICAgICAgICA8L2Jsb2NrcXVvdGU+XG4gICAgICAgIDwvbGk+XG4gICAgICAgIDxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG4gICAgICAgICAgPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgLz5EYXMgZ2VtZWluc2FtZSBJbWFnZSB3w7xyZGUgZGllIHp1bMOkc3NpZ2UgTWF4aW1hbGdyw7bDn2UgZWluZXIgUmVnaXN0cnkgc3ByZW5nZW4uPC9wPlxuXG4gICAgICAgICAgPGJsb2NrcXVvdGU+XG4gICAgICAgICAgICA8cD5FaW5lIHNvbGNoZSBHcmVuemUgZ2lidCBlcyBpbiBkZXIgUHJheGlzIG5pY2h0LiBEaWUgR3LDtsOfZSBpc3QgbmljaHQgZGFzIEFyZ3VtZW50LjwvcD5cbiAgICAgICAgICA8L2Jsb2NrcXVvdGU+XG4gICAgICAgIDwvbGk+XG4gICAgICA8L3VsPlxuICAgIDwvbGk+XG4gICAgPGxpPlxuICAgICAgPHA+QXVmIGVpbmVyIFBsYXR0Zm9ybSB3ZXJkZW4gQ29udGFpbmVyIGxhdWZlbmQgYmVlbmRldCwgdmVyc2Nob2JlbiB1bmQgbmV1IGdlc3RhcnRldC48L3A+XG5cbiAgICAgIDxwPldlbGNoZSBFaWdlbnNjaGFmdCBtdXNzIGVpbmUgQW53ZW5kdW5nIGRhZsO8ciBtaXRicmluZ2VuPzwvcD5cblxuICAgICAgPHVsIGNsYXNzPVwidGFzay1saXN0XCI+XG4gICAgICAgIDxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG4gICAgICAgICAgPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgY2hlY2tlZD1cImNoZWNrZWRcIiAvPlp1c3RhbmRzbG9zaWdrZWl0IOKAkyB6d2lzY2hlbiB6d2VpIEFuZnJhZ2VuIGJsZWlidCBuaWNodHMgaW0gU3BlaWNoZXIuPC9wPlxuXG4gICAgICAgICAgPGJsb2NrcXVvdGU+XG4gICAgICAgICAgICA8cD5SaWNodGlnLiBOdXIgd2FzIGVyc2V0emJhciBpc3QsIGthbm4gZGllIFBsYXR0Zm9ybSB2ZXJzY2hpZWJlbiB1bmQgdmVydmllbGZhY2hlbi48L3A+XG4gICAgICAgICAgPC9ibG9ja3F1b3RlPlxuICAgICAgICA8L2xpPlxuICAgICAgICA8bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuICAgICAgICAgIDxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiIC8+RWluIG3DtmdsaWNoc3Qga2xlaW5lcyBJbWFnZSwgZGFtaXQgZGFzIFZlcnNjaGllYmVuIHNjaG5lbGwgZ2VudWcgYWJsw6R1ZnQuPC9wPlxuXG4gICAgICAgICAgPGJsb2NrcXVvdGU+XG4gICAgICAgICAgICA8cD5EaWUgR3LDtsOfZSBoaWxmdCBiZWltIFRlbXBvLCDDpG5kZXJ0IGFiZXIgbmljaHRzIGFuIGRlciBFcnNldHpiYXJrZWl0LjwvcD5cbiAgICAgICAgICA8L2Jsb2NrcXVvdGU+XG4gICAgICAgIDwvbGk+XG4gICAgICAgIDxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG4gICAgICAgICAgPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgLz5FaW5lbiBIZWFsdGhjaGVjaywgZGFtaXQgZGllIFBsYXR0Zm9ybSBkZW4gWnVzdGFuZCBqZWRlcnplaXQgYWJmcmFnZW4ga2Fubi48L3A+XG5cbiAgICAgICAgICA8YmxvY2txdW90ZT5cbiAgICAgICAgICAgIDxwPlNlaHIgbsO8dHpsaWNoIOKAkyBhYmVyIGVyIG1lbGRldCBudXIuIEVyc2V0emJhciBtYWNodCBlciBkaWUgQW53ZW5kdW5nIG5pY2h0LjwvcD5cbiAgICAgICAgICA8L2Jsb2NrcXVvdGU+XG4gICAgICAgIDwvbGk+XG4gICAgICAgIDxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG4gICAgICAgICAgPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgLz5FaW5lIGVpZ2VuZSBTaXR6dW5nc3ZlcndhbHR1bmcsIGRpZSBqZWRlbiBDb250YWluZXIgZ2V6aWVsdCB3aWVkZXJmaW5kZXQuPC9wPlxuXG4gICAgICAgICAgPGJsb2NrcXVvdGU+XG4gICAgICAgICAgICA8cD5HZW5hdSBkYXMgd8OkcmUgZGVyIEZlaGxlcjogU2llIGJpbmRldCBOdXR6ZXIgYW4gZWluZW4gYmVzdGltbXRlbiBDb250YWluZXIuPC9wPlxuICAgICAgICAgIDwvYmxvY2txdW90ZT5cbiAgICAgICAgPC9saT5cbiAgICAgIDwvdWw+XG4gICAgPC9saT5cbiAgICA8bGk+XG4gICAgICA8cD5JbiBQcm9kdWt0aW9uIGzDpHVmdCA8Y29kZT5hbndlbmR1bmc6bGF0ZXN0PC9jb2RlPi4gSGV1dGUgTmFjaHQgaXN0IGV0d2FzIGthcHV0dGdlZ2FuZ2VuLjwvcD5cblxuICAgICAgPHA+V2VsY2hlcyBWb3JnZWhlbiBow6R0dGUgZGllIEZlaGxlcnN1Y2hlIMO8YmVyaGF1cHQgZXJzdCBtw7ZnbGljaCBnZW1hY2h0PzwvcD5cblxuICAgICAgPHVsIGNsYXNzPVwidGFzay1saXN0XCI+XG4gICAgICAgIDxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG4gICAgICAgICAgPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgY2hlY2tlZD1cImNoZWNrZWRcIiAvPkZlc3RlIFZlcnNpb25zLVRhZ3MgdmVyw7ZmZmVudGxpY2hlbiB1bmQgaW0gQmV0cmllYiBkYXJhdWYgdmVyd2Vpc2VuLjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+UmljaHRpZy4gTnVyIGVpbiB1bnZlcsOkbmRlcmxpY2hlciBUYWcgc2FndCwgd2VsY2hlciBTdGFuZCBnZXN0ZXJuIGxpZWYuPC9wPlxuICAgICAgICAgIDwvYmxvY2txdW90ZT5cbiAgICAgICAgPC9saT5cbiAgICAgICAgPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbiAgICAgICAgICA8cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiAvPkRhcyBUYWcgPGNvZGU+bGF0ZXN0PC9jb2RlPiBuYWNoIGplZGVtIFB1c2ggenVzw6R0emxpY2ggbWl0IGVpbmVtIERhdHVtIHZlcnNlaGVuLjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+RGFzIERhdHVtIGFtIGJld2VnbGljaGVuIFRhZyBoaWxmdCBuaWNodDogRXIgemVpZ3QgdHJvdHpkZW0gaW1tZXIgYXVmcyBOZXVlc3RlLjwvcD5cbiAgICAgICAgICA8L2Jsb2NrcXVvdGU+XG4gICAgICAgIDwvbGk+XG4gICAgICAgIDxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG4gICAgICAgICAgPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgLz5EaWUgUmVnaXN0cnkgc28gZWluc3RlbGxlbiwgZGFzcyBzaWUgamVkZW4gUHVzaCBhdXRvbWF0aXNjaCBhdWZiZXdhaHJ0LjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+QXVmYmV3YWhydCB3aXJkIGRlciBTdGFuZCBvaG5laGluLiBPaG5lIFRhZyBrYW5uc3QgRHUgaWhuIG51ciBuaWNodCBiZW5lbm5lbi48L3A+XG4gICAgICAgICAgPC9ibG9ja3F1b3RlPlxuICAgICAgICA8L2xpPlxuICAgICAgICA8bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuICAgICAgICAgIDxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiIC8+QXVmIGRhcyBQaW5uZW4gdmVyemljaHRlbiwgZGFtaXQgaW1tZXIgZGllIG5ldWVzdGVuIEtvcnJla3R1cmVuIGFua29tbWVuLjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+QWt0dWVsbGUgS29ycmVrdHVyZW4gaG9sc3QgRHUgZHVyY2ggcmVnZWxtw6TDn2lnZXMgTmV1YmF1ZW4g4oCTIG5pY2h0IGR1cmNoIFVuc2Now6RyZmUuPC9wPlxuICAgICAgICAgIDwvYmxvY2txdW90ZT5cbiAgICAgICAgPC9saT5cbiAgICAgIDwvdWw+XG4gICAgPC9saT5cbiAgICA8bGk+XG4gICAgICA8cD5EZWluIERvY2tlcmZpbGUga29waWVydCBlcnN0IGRlbiBnZXNhbXRlbiBDb2RlLCBkYW5uIGluc3RhbGxpZXJ0IGVzIGRpZSBBYmjDpG5naWdrZWl0ZW4uIER1IMOkbmRlcnN0IGVpbmUgWmVpbGUgQ29kZSB1bmQgYmF1c3QgbmV1LjwvcD5cblxuICAgICAgPHA+V2FydW0gZGF1ZXJ0IGRlciBCYXUgc28gbGFuZ2Ugd2llIGJlaW0gZXJzdGVuIE1hbD88L3A+XG5cbiAgICAgIDx1bCBjbGFzcz1cInRhc2stbGlzdFwiPlxuICAgICAgICA8bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuICAgICAgICAgIDxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiIGNoZWNrZWQ9XCJjaGVja2VkXCIgLz5XZWlsIGRlciBnZcOkbmRlcnRlIExheWVyIGFsbGUgZm9sZ2VuZGVuIExheWVyIHVuZ8O8bHRpZyBtYWNodC48L3A+XG5cbiAgICAgICAgICA8YmxvY2txdW90ZT5cbiAgICAgICAgICAgIDxwPlJpY2h0aWcuIERlciBDYWNoZSB0csOkZ3QgYmlzIHp1ciBlcnN0ZW4gw4RuZGVydW5nIOKAkyBkYXJ1bnRlciB3aXJkIGFsbGVzIG5ldSBnZWJhdXQuPC9wPlxuICAgICAgICAgIDwvYmxvY2txdW90ZT5cbiAgICAgICAgPC9saT5cbiAgICAgICAgPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbiAgICAgICAgICA8cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiAvPldlaWwgZGVyIEJ1aWxkLUNhY2hlIG5hY2ggamVkZXIgw4RuZGVydW5nIGFtIEFyYmVpdHN2ZXJ6ZWljaG5pcyB2ZXJ3b3JmZW4gd2lyZC48L3A+XG5cbiAgICAgICAgICA8YmxvY2txdW90ZT5cbiAgICAgICAgICAgIDxwPlZlcndvcmZlbiB3aXJkIG5pY2h0cy4gRXMgcGFzc3QgbnVyIGFiIGRlciBnZcOkbmRlcnRlbiBaZWlsZSBrZWluIExheWVyIG1laHIuPC9wPlxuICAgICAgICAgIDwvYmxvY2txdW90ZT5cbiAgICAgICAgPC9saT5cbiAgICAgICAgPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbiAgICAgICAgICA8cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiAvPldlaWwgPGNvZGU+cGlwPC9jb2RlPiBiZWkgamVkZW0gTGF1ZiBwcsO8ZnQsIG9iIGVzIG5ldWVyZSBGYXNzdW5nZW4gZGVyIFBha2V0ZSBnaWJ0LjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+RGFzIHTDpHRlIDxjb2RlPnBpcDwvY29kZT4gYXVjaCDigJMgbnVyIGzDpHVmdCBlcyDDvGJlcmhhdXB0IG51ciwgd2VpbCBzZWluIExheWVyIG5ldSBnZWJhdXQgd2lyZC48L3A+XG4gICAgICAgICAgPC9ibG9ja3F1b3RlPlxuICAgICAgICA8L2xpPlxuICAgICAgICA8bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuICAgICAgICAgIDxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiIC8+V2VpbCBlaW4gTGF5ZXIgbWl0IGtvcGllcnRlbiBEYXRlaWVuIGdydW5kc8OkdHpsaWNoIG5pY2h0IHp3aXNjaGVuZ2VzcGVpY2hlcnQgd2lyZC48L3A+XG5cbiAgICAgICAgICA8YmxvY2txdW90ZT5cbiAgICAgICAgICAgIDxwPkRvY2gsIGF1Y2ggPGNvZGU+Q09QWTwvY29kZT4gd2lyZCB6d2lzY2hlbmdlc3BlaWNoZXJ0IOKAkyBzb2xhbmdlIHNpY2ggZGllIERhdGVpZW4gbmljaHQgw6RuZGVybi48L3A+XG4gICAgICAgICAgPC9ibG9ja3F1b3RlPlxuICAgICAgICA8L2xpPlxuICAgICAgPC91bD5cbiAgICA8L2xpPlxuICAgIDxsaT5cbiAgICAgIDxwPkVpbiBEb2NrZXJmaWxlIGluc3RhbGxpZXJ0IGluIGVpbmVyIFplaWxlIGVpbiBQYWtldCB1bmQgbMO2c2NodCBpbiBkZXIgbsOkY2hzdGVuIGRpZSBQYWtldGxpc3Rlbi48L3A+XG5cbiAgICAgIDxwPldhcnVtIGlzdCBkYXMgSW1hZ2UgdHJvdHpkZW0gbmljaHQga2xlaW5lcj88L3A+XG5cbiAgICAgIDx1bCBjbGFzcz1cInRhc2stbGlzdFwiPlxuICAgICAgICA8bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuICAgICAgICAgIDxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiIGNoZWNrZWQ9XCJjaGVja2VkXCIgLz5XZWlsIGRlciBmcsO8aGVyZSBMYXllciBibGVpYnQgdW5kIGRlciBzcMOkdGVyZSBkaWUgRGF0ZWllbiBudXIgw7xiZXJkZWNrdC48L3A+XG5cbiAgICAgICAgICA8YmxvY2txdW90ZT5cbiAgICAgICAgICAgIDxwPkdlbmF1LiBFaW4gTGF5ZXIgd2lyZCBuaWUgbmFjaHRyw6RnbGljaCBrbGVpbmVyIOKAkyBMw7ZzY2hlbiBsZWd0IG51ciBlaW5lIE1hcmtlIGRhcsO8YmVyLjwvcD5cbiAgICAgICAgICA8L2Jsb2NrcXVvdGU+XG4gICAgICAgIDwvbGk+XG4gICAgICAgIDxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG4gICAgICAgICAgPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgLz5XZWlsIGRhcyBMw7ZzY2hlbiBlcnN0IGJlaW0gU3RhcnQgZGVzIENvbnRhaW5lcnMgd2lya3NhbSB3aXJkLjwvcD5cblxuICAgICAgICAgIDxibG9ja3F1b3RlPlxuICAgICAgICAgICAgPHA+PGNvZGU+UlVOPC9jb2RlPiBsw6R1ZnQgYmVpbSBCYXVlbiwgbmljaHQgYmVpbSBTdGFydGVuLiBBbSBaZWl0cHVua3QgbGllZ3QgZXMgbmljaHQuPC9wPlxuICAgICAgICAgIDwvYmxvY2txdW90ZT5cbiAgICAgICAgPC9saT5cbiAgICAgICAgPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbiAgICAgICAgICA8cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiAvPldlaWwgZGllIFBha2V0bGlzdGVuIGltIEJhc2lzLUltYWdlIGxpZWdlbiB1bmQgZG9ydCBuaWNodCBlcnJlaWNoYmFyIHNpbmQuPC9wPlxuXG4gICAgICAgICAgPGJsb2NrcXVvdGU+XG4gICAgICAgICAgICA8cD5TaWUgZW50c3RlaGVuIGVyc3QgZHVyY2ggRGVpbiA8Y29kZT5hcHQtZ2V0IHVwZGF0ZTwvY29kZT4g4oCTIGFsc28gaW4gRGVpbmVtIGVpZ2VuZW4gTGF5ZXIuPC9wPlxuICAgICAgICAgIDwvYmxvY2txdW90ZT5cbiAgICAgICAgPC9saT5cbiAgICAgICAgPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbiAgICAgICAgICA8cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiAvPldlaWwgRG9ja2VyIGdlbMO2c2NodGUgRGF0ZWllbiB6dXIgU2ljaGVyaGVpdCBhdWZiZXdhaHJ0LCBiaXMgZGFzIEltYWdlIGdlcHVzaHQgd2lyZC48L3A+XG5cbiAgICAgICAgICA8YmxvY2txdW90ZT5cbiAgICAgICAgICAgIDxwPkVpbmUgc29sY2hlIEF1ZmJld2FocnVuZyBnaWJ0IGVzIG5pY2h0LiBFcyBpc3Qgc2NobGljaHQgZGVyIEF1ZmJhdSBhdXMgU2NoaWNodGVuLjwvcD5cbiAgICAgICAgICA8L2Jsb2NrcXVvdGU+XG4gICAgICAgIDwvbGk+XG4gICAgICA8L3VsPlxuICAgIDwvbGk+XG4gIDwvb2w+XG5cbiJ9</script>
-
-  <ol>
-    <li>
-      <p>Zwei Begriffe, die im Alltag oft durcheinandergehen.</p>
-
-      <p>Was unterscheidet ein Docker-Image von einem Docker-Container?</p>
-
-      <ul class="task-list">
-        <li class="task-list-item">
-          <p>Das Image ist der Bauplan, der Container eine laufende Ausprägung davon.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Das Image läuft im Vordergrund, der Container läuft im Hintergrund weiter.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Das Image liegt in der Registry, der Container liegt lokal auf der Platte.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Das Image enthält nur die Anwendung, der Container zusätzlich das Betriebssystem.</p>
-
-          
-        </li>
-      </ul>
-    </li>
-    <li>
-      <p>Dieselbe Anwendung soll in Entwicklung, Test und Produktion unterschiedlich arbeiten.</p>
-
-      <p>Wie sollte eine 12-Factor-App laut Faktor III („Config“) ihre Konfiguration bekommen?</p>
-
-      <ul class="task-list">
-        <li class="task-list-item">
-          <p>Aus Umgebungsvariablen, die beim Start von außen gesetzt werden.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Aus einer Konfigurationsdatei, die beim Bauen fest ins Image kopiert wird.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Aus Kommandozeilenparametern, die beim Start des Containers übergeben werden.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Aus einer zentralen Datenbank, die jeder Dienst bei jeder Anfrage abfragt.</p>
-
-          
-        </li>
-      </ul>
-    </li>
-    <li>
-      <p>Du willst einen Container im Hintergrund starten und ihm einen festen Namen geben.</p>
-
-      <p>Welcher Aufruf ist dafür der richtige?</p>
-
-      <ul class="task-list">
-        <li class="task-list-item">
-          <p>docker run -d –name meine-app nginx</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>docker run –name -d meine-app nginx</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>docker start -d –name meine-app nginx</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>docker create -d –name meine-app nginx</p>
-
-          
-        </li>
-      </ul>
-    </li>
-    <li>
-      <p>Im Dockerfile stehen Anweisungen, die zu unterschiedlichen Zeitpunkten wirken.</p>
-
-      <p>Welche Anweisung bestimmt, was beim <strong>Starten</strong> eines Containers ausgeführt wird?</p>
-
-      <ul class="task-list">
-        <li class="task-list-item">
-          <p>CMD beziehungsweise ENTRYPOINT – beide wirken zur Startzeit.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>RUN – die Anweisung führt den angegebenen Befehl im Container aus.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>ENV – die Anweisung setzt die Umgebung, in der der Start abläuft.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>EXPOSE – die Anweisung startet den Dienst auf dem genannten Port.</p>
-
-          
-        </li>
-      </ul>
-    </li>
-    <li>
-      <p>Du baust ein Image mit <code>docker image build .</code> und vergisst den Parameter <code>-t</code>.</p>
-
-      <p>Welchen Namen trägt das Image danach – und warum ist das unpraktisch?</p>
-
-      <ul class="task-list">
-        <li class="task-list-item">
-          <p>Gar keinen – es erscheint als <code>&lt;none&gt;</code> und ist nur per ID ansprechbar.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Den Namen des Verzeichnisses, in dem das Dockerfile gerade liegt.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Den Namen des Basis-Images aus der <code>FROM</code>-Zeile mit dem Tag <code>latest</code>.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Einen zufällig erzeugten Namen, so wie Container ihn beim Start bekommen.</p>
-
-          
-        </li>
-      </ul>
-    </li>
-    <li>
-      <p>Ein vollständiger Imagename lautet <code>registry.example.com/team/app:1.4.2</code>.</p>
-
-      <p>Was bezeichnet dabei der Teil <code>team/app</code>?</p>
-
-      <ul class="task-list">
-        <li class="task-list-item">
-          <p>Das Repository – den Platz für ein Image in vielen Ständen.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Die Registry – den Dienst, der die Images speichert und ausliefert.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Den Tag – die Kennzeichnung eines bestimmten Standes des Images.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Den Layer – die Schicht, aus der das Image beim Bauen entstanden ist.</p>
-
-          
-        </li>
-      </ul>
-    </li>
-    <li>
-      <p>In einem Container läuft eine Datenbank. Der Container wird gelöscht und neu angelegt.</p>
-
-      <p>Was passiert mit den Daten – und wie verhinderst Du den Verlust?</p>
-
-      <ul class="task-list">
-        <li class="task-list-item">
-          <p>Sie sind weg. Ein Volume an der Datenablage hätte sie überleben lassen.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Sie bleiben im Image erhalten, sofern Du es vorher neu gebaut hast.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Sie bleiben erhalten, weil Docker den Schreibbereich automatisch sichert.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Sie sind weg. Nur ein erneutes <code>docker commit</code> hätte sie retten können.</p>
-
-          
-        </li>
-      </ul>
-    </li>
-    <li>
-      <p>Zwei Container stehen zusammen in einem selbst angelegten Netzwerk.</p>
-
-      <p>Wie erreicht der eine Container den anderen?</p>
-
-      <ul class="task-list">
-        <li class="task-list-item">
-          <p>Über seinen Container-Namen, den Docker im Netzwerk auflöst.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Über <code>localhost</code> und den Port, den der andere Container belegt hat.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Über die IP-Adresse des Hosts und den veröffentlichten Port.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Über gar nichts: Container sind grundsätzlich voneinander abgeschottet.</p>
-
-          
-        </li>
-      </ul>
-    </li>
-    <li>
-      <p>Eine Umgebung besteht aus Datenbank, Webserver und Anwendung mit Volumes und Netzwerk.</p>
-
-      <p>Womit startest Du alle drei mit einem einzigen Befehl?</p>
-
-      <ul class="task-list">
-        <li class="task-list-item">
-          <p>Mit Docker Compose und einer Datei, die alle Services beschreibt.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Mit <code>docker run</code>, dem Du alle drei Images hintereinander übergibst.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Mit einem Dockerfile, das die drei Images als Stufen zusammenfasst.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Mit <code>docker network create</code>, das alle Container darin gemeinsam startet.</p>
-
-          
-        </li>
-      </ul>
-    </li>
-    <li>
-      <p>In einer Compose-Datei steht bei der Anwendung <code>depends_on: [datenbank]</code>.</p>
-
-      <p>Was garantiert diese Angabe – und was nicht?</p>
-
-      <ul class="task-list">
-        <li class="task-list-item">
-          <p>Die Startreihenfolge, aber nicht, dass die Datenbank schon bereit ist.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Dass die Datenbank läuft und Verbindungen annimmt, bevor die App startet.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Dass die Anwendung neu startet, sobald die Datenbank neu gestartet wurde.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Dass beide Container im selben Netzwerk stehen und einander erreichen.</p>
-
-          
-        </li>
-      </ul>
-    </li>
-    <li>
-      <p>Ein Prozess im Container läuft, antwortet aber auf keine Anfrage mehr.</p>
-
-      <p>Wozu dient in dieser Lage ein <code>HEALTHCHECK</code> im Dockerfile?</p>
-
-      <ul class="task-list">
-        <li class="task-list-item">
-          <p>Das Image sagt selbst, wie man prüft, ob es tatsächlich arbeitet.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Er startet den Container automatisch neu, sobald der Prozess endet.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Er prüft beim Bauen, ob alle Abhängigkeiten im Image vorhanden sind.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Er meldet an die Registry zurück, ob das Image fehlerfrei gezogen wurde.</p>
-
-          
-        </li>
-      </ul>
-    </li>
-    <li>
-      <p>Du führst <code>docker container stop meine-app</code> aus und suchst den Container anschließend.</p>
-
-      <p>Warum erscheint er in <code>docker container ls</code> nicht mehr?</p>
-
-      <ul class="task-list">
-        <li class="task-list-item">
-          <p>Weil der Befehl nur laufende Container zeigt – mit <code>-a</code> siehst Du ihn wieder.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Weil <code>stop</code> den Container samt seines Schreibbereichs endgültig entfernt.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Weil angehaltene Container automatisch in die Registry zurückgeschrieben werden.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Weil der Name nach dem Anhalten freigegeben und der Eintrag gelöscht wird.</p>
-
-          
-        </li>
-      </ul>
-    </li>
-    <li>
-      <p>Ein Team überlegt, Anwendung und Datenbank gemeinsam in einem Container zu betreiben.</p>
-
-      <p>Was spricht am deutlichsten dagegen?</p>
-
-      <ul class="task-list">
-        <li class="task-list-item">
-          <p>Beide hätten denselben Lebenszyklus und ließen sich nicht getrennt ersetzen.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Ein Container kann technisch immer nur einen einzigen Prozess ausführen.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Datenbanken lassen sich in Containern grundsätzlich nicht sinnvoll betreiben.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Das gemeinsame Image würde die zulässige Maximalgröße einer Registry sprengen.</p>
-
-          
-        </li>
-      </ul>
-    </li>
-    <li>
-      <p>Auf einer Plattform werden Container laufend beendet, verschoben und neu gestartet.</p>
-
-      <p>Welche Eigenschaft muss eine Anwendung dafür mitbringen?</p>
-
-      <ul class="task-list">
-        <li class="task-list-item">
-          <p>Zustandslosigkeit – zwischen zwei Anfragen bleibt nichts im Speicher.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Ein möglichst kleines Image, damit das Verschieben schnell genug abläuft.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Einen Healthcheck, damit die Plattform den Zustand jederzeit abfragen kann.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Eine eigene Sitzungsverwaltung, die jeden Container gezielt wiederfindet.</p>
-
-          
-        </li>
-      </ul>
-    </li>
-    <li>
-      <p>In Produktion läuft <code>anwendung:latest</code>. Heute Nacht ist etwas kaputtgegangen.</p>
-
-      <p>Welches Vorgehen hätte die Fehlersuche überhaupt erst möglich gemacht?</p>
-
-      <ul class="task-list">
-        <li class="task-list-item">
-          <p>Feste Versions-Tags veröffentlichen und im Betrieb darauf verweisen.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Das Tag <code>latest</code> nach jedem Push zusätzlich mit einem Datum versehen.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Die Registry so einstellen, dass sie jeden Push automatisch aufbewahrt.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Auf das Pinnen verzichten, damit immer die neuesten Korrekturen ankommen.</p>
-
-          
-        </li>
-      </ul>
-    </li>
-    <li>
-      <p>Dein Dockerfile kopiert erst den gesamten Code, dann installiert es die Abhängigkeiten. Du änderst eine Zeile Code und baust neu.</p>
-
-      <p>Warum dauert der Bau so lange wie beim ersten Mal?</p>
-
-      <ul class="task-list">
-        <li class="task-list-item">
-          <p>Weil der geänderte Layer alle folgenden Layer ungültig macht.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Weil der Build-Cache nach jeder Änderung am Arbeitsverzeichnis verworfen wird.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Weil <code>pip</code> bei jedem Lauf prüft, ob es neuere Fassungen der Pakete gibt.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Weil ein Layer mit kopierten Dateien grundsätzlich nicht zwischengespeichert wird.</p>
-
-          
-        </li>
-      </ul>
-    </li>
-    <li>
-      <p>Ein Dockerfile installiert in einer Zeile ein Paket und löscht in der nächsten die Paketlisten.</p>
-
-      <p>Warum ist das Image trotzdem nicht kleiner?</p>
-
-      <ul class="task-list">
-        <li class="task-list-item">
-          <p>Weil der frühere Layer bleibt und der spätere die Dateien nur überdeckt.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Weil das Löschen erst beim Start des Containers wirksam wird.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Weil die Paketlisten im Basis-Image liegen und dort nicht erreichbar sind.</p>
-
-          
-        </li>
-        <li class="task-list-item">
-          <p>Weil Docker gelöschte Dateien zur Sicherheit aufbewahrt, bis das Image gepusht wird.</p>
-
-          
-        </li>
-      </ul>
-    </li>
-  </ol>
-
+<div class="skr-didaktikon-quiz" id="wissens-check">
+<script type="text/plain" data-skr-didaktikon-payload>eyJodG1sIjoiXG48b2w+XG48bGk+XG48cD5ad2VpIEJlZ3JpZmZlLCBkaWUgaW0gQWxsdGFnIG9mdCBkdXJjaGVpbmFuZGVyZ2VoZW4uPC9wPlxuPHA+V2FzIHVudGVyc2NoZWlkZXQgZWluIERvY2tlci1JbWFnZSB2b24gZWluZW0gRG9ja2VyLUNvbnRhaW5lcj88L3A+XG48dWwgY2xhc3M9XCJ0YXNrLWxpc3RcIj5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJEYXMgSW1hZ2UgaXN0IGRlciBCYXVwbGFuLCBkZXIgQ29udGFpbmVyIGVpbmUgbGF1ZmVuZGUgQXVzcHLDpGd1bmcgZGF2b24uXCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiIGNoZWNrZWQ9XCJjaGVja2VkXCI+IERhcyBJbWFnZSBpc3QgZGVyIEJhdXBsYW4sIGRlciBDb250YWluZXIgZWluZSBsYXVmZW5kZSBBdXNwcsOkZ3VuZyBkYXZvbi48L3A+XG48YmxvY2txdW90ZT5cbjxwPkdlbmF1IOKAkyB3aWUgS2xhc3NlIHVuZCBPYmpla3QuIEF1cyBlaW5lbSBJbWFnZSBlbnRzdGVoZW4gYmVsaWViaWcgdmllbGUgQ29udGFpbmVyLjwvcD5cbjwvYmxvY2txdW90ZT5cbjwvbGk+XG48bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBhcmlhLWxhYmVsPVwiRGFzIEltYWdlIGzDpHVmdCBpbSBWb3JkZXJncnVuZCwgZGVyIENvbnRhaW5lciBsw6R1ZnQgaW0gSGludGVyZ3J1bmQgd2VpdGVyLlwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIj4gRGFzIEltYWdlIGzDpHVmdCBpbSBWb3JkZXJncnVuZCwgZGVyIENvbnRhaW5lciBsw6R1ZnQgaW0gSGludGVyZ3J1bmQgd2VpdGVyLjwvcD5cbjxibG9ja3F1b3RlPlxuPHA+Vm9yZGVyLSB1bmQgSGludGVyZ3J1bmQgc3RldWVyc3QgRHUgYmVpbSBTdGFydCBtaXQgPGNvZGU+LWQ8L2NvZGU+LiBNaXQgZGVtIFVudGVyc2NoaWVkIGhhdCBkYXMgbmljaHRzIHp1IHR1bi48L3A+XG48L2Jsb2NrcXVvdGU+XG48L2xpPlxuPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbjxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgYXJpYS1sYWJlbD1cIkRhcyBJbWFnZSBsaWVndCBpbiBkZXIgUmVnaXN0cnksIGRlciBDb250YWluZXIgbGllZ3QgbG9rYWwgYXVmIGRlciBQbGF0dGUuXCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiPiBEYXMgSW1hZ2UgbGllZ3QgaW4gZGVyIFJlZ2lzdHJ5LCBkZXIgQ29udGFpbmVyIGxpZWd0IGxva2FsIGF1ZiBkZXIgUGxhdHRlLjwvcD5cbjxibG9ja3F1b3RlPlxuPHA+RWluIEltYWdlIGxpZWd0IG5hY2ggZGVtIDxjb2RlPnB1bGw8L2NvZGU+IGViZW5mYWxscyBsb2thbC4gRGVyIE9ydCBpc3QgbmljaHQgZGFzIFVudGVyc2NoZWlkZW5kZS48L3A+XG48L2Jsb2NrcXVvdGU+XG48L2xpPlxuPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbjxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgYXJpYS1sYWJlbD1cIkRhcyBJbWFnZSBlbnRow6RsdCBudXIgZGllIEFud2VuZHVuZywgZGVyIENvbnRhaW5lciB6dXPDpHR6bGljaCBkYXMgQmV0cmllYnNzeXN0ZW0uXCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiPiBEYXMgSW1hZ2UgZW50aMOkbHQgbnVyIGRpZSBBbndlbmR1bmcsIGRlciBDb250YWluZXIgenVzw6R0emxpY2ggZGFzIEJldHJpZWJzc3lzdGVtLjwvcD5cbjxibG9ja3F1b3RlPlxuPHA+VW1nZWtlaHJ0OiBEYXMgSW1hZ2UgYnJpbmd0IGRpZSBVbWdlYnVuZyBtaXQuIERlbiBLZXJuIHRlaWxlbiBzaWNoIGFsbGUgQ29udGFpbmVyIG1pdCBkZW0gSG9zdC48L3A+XG48L2Jsb2NrcXVvdGU+XG48L2xpPlxuPC91bD5cbjwvbGk+XG48bGk+XG48cD5EaWVzZWxiZSBBbndlbmR1bmcgc29sbCBpbiBFbnR3aWNrbHVuZywgVGVzdCB1bmQgUHJvZHVrdGlvbiB1bnRlcnNjaGllZGxpY2ggYXJiZWl0ZW4uPC9wPlxuPHA+V2llIHNvbGx0ZSBlaW5lIDEyLUZhY3Rvci1BcHAgbGF1dCBGYWt0b3IgSUlJICjigJ5Db25maWfigJwpIGlocmUgS29uZmlndXJhdGlvbiBiZWtvbW1lbj88L3A+XG48dWwgY2xhc3M9XCJ0YXNrLWxpc3RcIj5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJBdXMgVW1nZWJ1bmdzdmFyaWFibGVuLCBkaWUgYmVpbSBTdGFydCB2b24gYXXDn2VuIGdlc2V0enQgd2VyZGVuLlwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiBjaGVja2VkPVwiY2hlY2tlZFwiPiBBdXMgVW1nZWJ1bmdzdmFyaWFibGVuLCBkaWUgYmVpbSBTdGFydCB2b24gYXXDn2VuIGdlc2V0enQgd2VyZGVuLjwvcD5cbjxibG9ja3F1b3RlPlxuPHA+UmljaHRpZy4gU28gYmxlaWJ0IGRhc3NlbGJlIEltYWdlIMO8YmVyYWxsIGdsZWljaCDigJMgbnVyIGRpZSBVbWdlYnVuZyDDpG5kZXJ0IHNpY2guPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJBdXMgZWluZXIgS29uZmlndXJhdGlvbnNkYXRlaSwgZGllIGJlaW0gQmF1ZW4gZmVzdCBpbnMgSW1hZ2Uga29waWVydCB3aXJkLlwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIj4gQXVzIGVpbmVyIEtvbmZpZ3VyYXRpb25zZGF0ZWksIGRpZSBiZWltIEJhdWVuIGZlc3QgaW5zIEltYWdlIGtvcGllcnQgd2lyZC48L3A+XG48YmxvY2txdW90ZT5cbjxwPkRhbm4gYnJhdWNoc3QgRHUgamUgVW1nZWJ1bmcgZWluIGVpZ2VuZXMgSW1hZ2Ug4oCTIHVuZCBrZWluZXMgZGF2b24gaXN0IGRhcyBnZXRlc3RldGUuPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJBdXMgS29tbWFuZG96ZWlsZW5wYXJhbWV0ZXJuLCBkaWUgYmVpbSBTdGFydCBkZXMgQ29udGFpbmVycyDDvGJlcmdlYmVuIHdlcmRlbi5cIiBkaXNhYmxlZD1cImRpc2FibGVkXCI+IEF1cyBLb21tYW5kb3plaWxlbnBhcmFtZXRlcm4sIGRpZSBiZWltIFN0YXJ0IGRlcyBDb250YWluZXJzIMO8YmVyZ2ViZW4gd2VyZGVuLjwvcD5cbjxibG9ja3F1b3RlPlxuPHA+TcO2Z2xpY2gsIGFiZXIgbmljaHQgZGVyIDEyLUZhY3Rvci1XZWc6IFVtZ2VidW5nc3ZhcmlhYmxlbiBzaW5kIHNwcmFjaC0gdW5kIHN5c3RlbW5ldXRyYWwuPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJBdXMgZWluZXIgemVudHJhbGVuIERhdGVuYmFuaywgZGllIGplZGVyIERpZW5zdCBiZWkgamVkZXIgQW5mcmFnZSBhYmZyYWd0LlwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIj4gQXVzIGVpbmVyIHplbnRyYWxlbiBEYXRlbmJhbmssIGRpZSBqZWRlciBEaWVuc3QgYmVpIGplZGVyIEFuZnJhZ2UgYWJmcmFndC48L3A+XG48YmxvY2txdW90ZT5cbjxwPkRhcyB3w6RyZSBlaW5lIHp1c8OkdHpsaWNoZSBBYmjDpG5naWdrZWl0IHVuZCBlaW4gZ2VtZWluc2FtZXIgQXVzZmFsbHB1bmt0IGbDvHIgYWxsZSBEaWVuc3RlLjwvcD5cbjwvYmxvY2txdW90ZT5cbjwvbGk+XG48L3VsPlxuPC9saT5cbjxsaT5cbjxwPkR1IHdpbGxzdCBlaW5lbiBDb250YWluZXIgaW0gSGludGVyZ3J1bmQgc3RhcnRlbiB1bmQgaWhtIGVpbmVuIGZlc3RlbiBOYW1lbiBnZWJlbi48L3A+XG48cD5XZWxjaGVyIEF1ZnJ1ZiBpc3QgZGFmw7xyIGRlciByaWNodGlnZT88L3A+XG48dWwgY2xhc3M9XCJ0YXNrLWxpc3RcIj5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJkb2NrZXIgcnVuIC1kIOKAk25hbWUgbWVpbmUtYXBwIG5naW54XCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiIGNoZWNrZWQ9XCJjaGVja2VkXCI+IGRvY2tlciBydW4gLWQgJm5kYXNoO25hbWUgbWVpbmUtYXBwIG5naW54PC9wPlxuPGJsb2NrcXVvdGU+XG48cD5SaWNodGlnOiA8Y29kZT4tZDwvY29kZT4gbMO2c3Qgdm9tIFRlcm1pbmFsLCA8Y29kZT4tLW5hbWU8L2NvZGU+IHZlcmdpYnQgZGVuIE5hbWVuLCBtaXQgZGVtIER1IGlobiBzcMOkdGVyIGFuc3ByaWNoc3QuPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJkb2NrZXIgcnVuIOKAk25hbWUgLWQgbWVpbmUtYXBwIG5naW54XCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiPiBkb2NrZXIgcnVuICZuZGFzaDtuYW1lIC1kIG1laW5lLWFwcCBuZ2lueDwvcD5cbjxibG9ja3F1b3RlPlxuPHA+PGNvZGU+LS1uYW1lPC9jb2RlPiBlcndhcnRldCBkZW4gTmFtZW4gZGlyZWt0IGRhaGludGVyLiBIaWVyIHfDvHJkZSA8Y29kZT4tZDwvY29kZT4gYWxzIE5hbWUgZ2VsZXNlbi48L3A+XG48L2Jsb2NrcXVvdGU+XG48L2xpPlxuPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbjxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgYXJpYS1sYWJlbD1cImRvY2tlciBzdGFydCAtZCDigJNuYW1lIG1laW5lLWFwcCBuZ2lueFwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIj4gZG9ja2VyIHN0YXJ0IC1kICZuZGFzaDtuYW1lIG1laW5lLWFwcCBuZ2lueDwvcD5cbjxibG9ja3F1b3RlPlxuPHA+PGNvZGU+c3RhcnQ8L2NvZGU+IHN0YXJ0ZXQgZWluZW4gdm9yaGFuZGVuZW4gQ29udGFpbmVyIHVuZCBsZWd0IGtlaW5lbiBuZXVlbiBhdXMgZWluZW0gSW1hZ2UgYW4uPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJkb2NrZXIgY3JlYXRlIC1kIOKAk25hbWUgbWVpbmUtYXBwIG5naW54XCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiPiBkb2NrZXIgY3JlYXRlIC1kICZuZGFzaDtuYW1lIG1laW5lLWFwcCBuZ2lueDwvcD5cbjxibG9ja3F1b3RlPlxuPHA+PGNvZGU+Y3JlYXRlPC9jb2RlPiBsZWd0IGRlbiBDb250YWluZXIgbnVyIGFuLiBPaG5lIDxjb2RlPnN0YXJ0PC9jb2RlPiBsw6R1ZnQgZXIgbmljaHQg4oCTIDxjb2RlPi1kPC9jb2RlPiBiZXdpcmt0IGhpZXIgbmljaHRzLjwvcD5cbjwvYmxvY2txdW90ZT5cbjwvbGk+XG48L3VsPlxuPC9saT5cbjxsaT5cbjxwPkltIERvY2tlcmZpbGUgc3RlaGVuIEFud2Vpc3VuZ2VuLCBkaWUgenUgdW50ZXJzY2hpZWRsaWNoZW4gWmVpdHB1bmt0ZW4gd2lya2VuLjwvcD5cbjxwPldlbGNoZSBBbndlaXN1bmcgYmVzdGltbXQsIHdhcyBiZWltIDxzdHJvbmc+U3RhcnRlbjwvc3Ryb25nPiBlaW5lcyBDb250YWluZXJzIGF1c2dlZsO8aHJ0IHdpcmQ/PC9wPlxuPHVsIGNsYXNzPVwidGFzay1saXN0XCI+XG48bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBhcmlhLWxhYmVsPVwiQ01EIGJlemllaHVuZ3N3ZWlzZSBFTlRSWVBPSU5UIOKAkyBiZWlkZSB3aXJrZW4genVyIFN0YXJ0emVpdC5cIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgY2hlY2tlZD1cImNoZWNrZWRcIj4gQ01EIGJlemllaHVuZ3N3ZWlzZSBFTlRSWVBPSU5UIOKAkyBiZWlkZSB3aXJrZW4genVyIFN0YXJ0emVpdC48L3A+XG48YmxvY2txdW90ZT5cbjxwPlJpY2h0aWcuIDxjb2RlPkVOVFJZUE9JTlQ8L2NvZGU+IGlzdCBkYXMgUHJvZ3JhbW0sIDxjb2RlPkNNRDwvY29kZT4gbGllZmVydCBkZXNzZW4gU3RhbmRhcmRhcmd1bWVudGUuPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJSVU4g4oCTIGRpZSBBbndlaXN1bmcgZsO8aHJ0IGRlbiBhbmdlZ2ViZW5lbiBCZWZlaGwgaW0gQ29udGFpbmVyIGF1cy5cIiBkaXNhYmxlZD1cImRpc2FibGVkXCI+IFJVTiDigJMgZGllIEFud2Vpc3VuZyBmw7xocnQgZGVuIGFuZ2VnZWJlbmVuIEJlZmVobCBpbSBDb250YWluZXIgYXVzLjwvcD5cbjxibG9ja3F1b3RlPlxuPHA+PGNvZGU+UlVOPC9jb2RlPiBsw6R1ZnQgYmVpbSA8c3Ryb25nPkJhdWVuPC9zdHJvbmc+IHVuZCB2ZXLDpG5kZXJ0IGRhcyBJbWFnZS4gQmVpbSBTdGFydCBwYXNzaWVydCBkYW1pdCBuaWNodHMgbWVoci48L3A+XG48L2Jsb2NrcXVvdGU+XG48L2xpPlxuPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbjxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgYXJpYS1sYWJlbD1cIkVOViDigJMgZGllIEFud2Vpc3VuZyBzZXR6dCBkaWUgVW1nZWJ1bmcsIGluIGRlciBkZXIgU3RhcnQgYWJsw6R1ZnQuXCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiPiBFTlYg4oCTIGRpZSBBbndlaXN1bmcgc2V0enQgZGllIFVtZ2VidW5nLCBpbiBkZXIgZGVyIFN0YXJ0IGFibMOkdWZ0LjwvcD5cbjxibG9ja3F1b3RlPlxuPHA+PGNvZGU+RU5WPC9jb2RlPiBzZXR6dCBudXIgU3RhbmRhcmR3ZXJ0ZSBmw7xyIFZhcmlhYmxlbi4gV2FzIGF1c2dlZsO8aHJ0IHdpcmQsIGxlZ3Qgc2llIG5pY2h0IGZlc3QuPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJFWFBPU0Ug4oCTIGRpZSBBbndlaXN1bmcgc3RhcnRldCBkZW4gRGllbnN0IGF1ZiBkZW0gZ2VuYW5udGVuIFBvcnQuXCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiPiBFWFBPU0Ug4oCTIGRpZSBBbndlaXN1bmcgc3RhcnRldCBkZW4gRGllbnN0IGF1ZiBkZW0gZ2VuYW5udGVuIFBvcnQuPC9wPlxuPGJsb2NrcXVvdGU+XG48cD48Y29kZT5FWFBPU0U8L2NvZGU+IGlzdCByZWluZSBEb2t1bWVudGF0aW9uIGltIEltYWdlLiBFcyBzdGFydGV0IG5pY2h0cyB1bmQgw7ZmZm5ldCBuaWNodHMuPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjwvdWw+XG48L2xpPlxuPGxpPlxuPHA+RHUgYmF1c3QgZWluIEltYWdlIG1pdCA8Y29kZT5kb2NrZXIgaW1hZ2UgYnVpbGQgLjwvY29kZT4gdW5kIHZlcmdpc3N0IGRlbiBQYXJhbWV0ZXIgPGNvZGU+LXQ8L2NvZGU+LjwvcD5cbjxwPldlbGNoZW4gTmFtZW4gdHLDpGd0IGRhcyBJbWFnZSBkYW5hY2gg4oCTIHVuZCB3YXJ1bSBpc3QgZGFzIHVucHJha3Rpc2NoPzwvcD5cbjx1bCBjbGFzcz1cInRhc2stbGlzdFwiPlxuPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbjxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgYXJpYS1sYWJlbD1cIkdhciBrZWluZW4g4oCTIGVzIGVyc2NoZWludCBhbHMgJmx0O25vbmUmZ3Q7IHVuZCBpc3QgbnVyIHBlciBJRCBhbnNwcmVjaGJhci5cIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgY2hlY2tlZD1cImNoZWNrZWRcIj4gR2FyIGtlaW5lbiDigJMgZXMgZXJzY2hlaW50IGFscyA8Y29kZT4mbHQ7bm9uZSZndDs8L2NvZGU+IHVuZCBpc3QgbnVyIHBlciBJRCBhbnNwcmVjaGJhci48L3A+XG48YmxvY2txdW90ZT5cbjxwPlJpY2h0aWcuIE5hY2ggZGVtIGRyaXR0ZW4gQnVpbGQgb2huZSA8Y29kZT4tdDwvY29kZT4gaGFzdCBEdSBkcmVpIG5hbWVubG9zZSBJbWFnZXMgKOKAnmRhbmdsaW5n4oCcKS48L3A+XG48L2Jsb2NrcXVvdGU+XG48L2xpPlxuPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbjxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgYXJpYS1sYWJlbD1cIkRlbiBOYW1lbiBkZXMgVmVyemVpY2huaXNzZXMsIGluIGRlbSBkYXMgRG9ja2VyZmlsZSBnZXJhZGUgbGllZ3QuXCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiPiBEZW4gTmFtZW4gZGVzIFZlcnplaWNobmlzc2VzLCBpbiBkZW0gZGFzIERvY2tlcmZpbGUgZ2VyYWRlIGxpZWd0LjwvcD5cbjxibG9ja3F1b3RlPlxuPHA+RG9ja2VyIGxpZXN0IGF1cyBkZW0gVmVyemVpY2huaXMgZGVuIEJhdS1Lb250ZXh0LCBhYmVyIG5pZW1hbHMgZWluZW4gSW1hZ2VuYW1lbi48L3A+XG48L2Jsb2NrcXVvdGU+XG48L2xpPlxuPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbjxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgYXJpYS1sYWJlbD1cIkRlbiBOYW1lbiBkZXMgQmFzaXMtSW1hZ2VzIGF1cyBkZXIgRlJPTS1aZWlsZSBtaXQgZGVtIFRhZyBsYXRlc3QuXCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiPiBEZW4gTmFtZW4gZGVzIEJhc2lzLUltYWdlcyBhdXMgZGVyIDxjb2RlPkZST008L2NvZGU+LVplaWxlIG1pdCBkZW0gVGFnIDxjb2RlPmxhdGVzdDwvY29kZT4uPC9wPlxuPGJsb2NrcXVvdGU+XG48cD5EYW5uIHfDvHJkZXN0IER1IGRhcyBCYXNpcy1JbWFnZSDDvGJlcnNjaHJlaWJlbi4gRGFzIHBhc3NpZXJ0IGF1c2Ryw7xja2xpY2ggbmljaHQuPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJFaW5lbiB6dWbDpGxsaWcgZXJ6ZXVndGVuIE5hbWVuLCBzbyB3aWUgQ29udGFpbmVyIGlobiBiZWltIFN0YXJ0IGJla29tbWVuLlwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIj4gRWluZW4genVmw6RsbGlnIGVyemV1Z3RlbiBOYW1lbiwgc28gd2llIENvbnRhaW5lciBpaG4gYmVpbSBTdGFydCBiZWtvbW1lbi48L3A+XG48YmxvY2txdW90ZT5cbjxwPlp1ZmFsbHNuYW1lbiBiZWtvbW1lbiBudXIgQ29udGFpbmVyLiBJbWFnZXMgYmxlaWJlbiBvaG5lIDxjb2RlPi10PC9jb2RlPiBzY2hsaWNodCBuYW1lbmxvcy48L3A+XG48L2Jsb2NrcXVvdGU+XG48L2xpPlxuPC91bD5cbjwvbGk+XG48bGk+XG48cD5FaW4gdm9sbHN0w6RuZGlnZXIgSW1hZ2VuYW1lIGxhdXRldCA8Y29kZT5yZWdpc3RyeS5leGFtcGxlLmNvbS90ZWFtL2FwcDoxLjQuMjwvY29kZT4uPC9wPlxuPHA+V2FzIGJlemVpY2huZXQgZGFiZWkgZGVyIFRlaWwgPGNvZGU+dGVhbS9hcHA8L2NvZGU+PzwvcD5cbjx1bCBjbGFzcz1cInRhc2stbGlzdFwiPlxuPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbjxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgYXJpYS1sYWJlbD1cIkRhcyBSZXBvc2l0b3J5IOKAkyBkZW4gUGxhdHogZsO8ciBlaW4gSW1hZ2UgaW4gdmllbGVuIFN0w6RuZGVuLlwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiBjaGVja2VkPVwiY2hlY2tlZFwiPiBEYXMgUmVwb3NpdG9yeSDigJMgZGVuIFBsYXR6IGbDvHIgZWluIEltYWdlIGluIHZpZWxlbiBTdMOkbmRlbi48L3A+XG48YmxvY2txdW90ZT5cbjxwPlJpY2h0aWcuIERpZSB2ZXJzY2hpZWRlbmVuIFN0w6RuZGUgZGFyaW4gdW50ZXJzY2hlaWRlc3QgRHUgw7xiZXIgZGllIFRhZ3MuPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJEaWUgUmVnaXN0cnkg4oCTIGRlbiBEaWVuc3QsIGRlciBkaWUgSW1hZ2VzIHNwZWljaGVydCB1bmQgYXVzbGllZmVydC5cIiBkaXNhYmxlZD1cImRpc2FibGVkXCI+IERpZSBSZWdpc3RyeSDigJMgZGVuIERpZW5zdCwgZGVyIGRpZSBJbWFnZXMgc3BlaWNoZXJ0IHVuZCBhdXNsaWVmZXJ0LjwvcD5cbjxibG9ja3F1b3RlPlxuPHA+RGllIFJlZ2lzdHJ5IHN0ZWh0IGRhdm9yOiA8Y29kZT5yZWdpc3RyeS5leGFtcGxlLmNvbTwvY29kZT4uIFNpZSBpc3QgZGVyIFNlcnZlciwgbmljaHQgZGVyIFBsYXR6LjwvcD5cbjwvYmxvY2txdW90ZT5cbjwvbGk+XG48bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBhcmlhLWxhYmVsPVwiRGVuIFRhZyDigJMgZGllIEtlbm56ZWljaG51bmcgZWluZXMgYmVzdGltbXRlbiBTdGFuZGVzIGRlcyBJbWFnZXMuXCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiPiBEZW4gVGFnIOKAkyBkaWUgS2VubnplaWNobnVuZyBlaW5lcyBiZXN0aW1tdGVuIFN0YW5kZXMgZGVzIEltYWdlcy48L3A+XG48YmxvY2txdW90ZT5cbjxwPkRlciBUYWcgc3RlaHQgaGludGVyIGRlbSBEb3BwZWxwdW5rdDogPGNvZGU+MS40LjI8L2NvZGU+LiBFciBiZXplaWNobmV0IGVpbmVuIFN0YW5kLjwvcD5cbjwvYmxvY2txdW90ZT5cbjwvbGk+XG48bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBhcmlhLWxhYmVsPVwiRGVuIExheWVyIOKAkyBkaWUgU2NoaWNodCwgYXVzIGRlciBkYXMgSW1hZ2UgYmVpbSBCYXVlbiBlbnRzdGFuZGVuIGlzdC5cIiBkaXNhYmxlZD1cImRpc2FibGVkXCI+IERlbiBMYXllciDigJMgZGllIFNjaGljaHQsIGF1cyBkZXIgZGFzIEltYWdlIGJlaW0gQmF1ZW4gZW50c3RhbmRlbiBpc3QuPC9wPlxuPGJsb2NrcXVvdGU+XG48cD5MYXllciBoYWJlbiBrZWluZSBOYW1lbiB1bmQgdGF1Y2hlbiBpbSBJbWFnZW5hbWVuIGFuIGtlaW5lciBTdGVsbGUgYXVmLjwvcD5cbjwvYmxvY2txdW90ZT5cbjwvbGk+XG48L3VsPlxuPC9saT5cbjxsaT5cbjxwPkluIGVpbmVtIENvbnRhaW5lciBsw6R1ZnQgZWluZSBEYXRlbmJhbmsuIERlciBDb250YWluZXIgd2lyZCBnZWzDtnNjaHQgdW5kIG5ldSBhbmdlbGVndC48L3A+XG48cD5XYXMgcGFzc2llcnQgbWl0IGRlbiBEYXRlbiDigJMgdW5kIHdpZSB2ZXJoaW5kZXJzdCBEdSBkZW4gVmVybHVzdD88L3A+XG48dWwgY2xhc3M9XCJ0YXNrLWxpc3RcIj5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJTaWUgc2luZCB3ZWcuIEVpbiBWb2x1bWUgYW4gZGVyIERhdGVuYWJsYWdlIGjDpHR0ZSBzaWUgw7xiZXJsZWJlbiBsYXNzZW4uXCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiIGNoZWNrZWQ9XCJjaGVja2VkXCI+IFNpZSBzaW5kIHdlZy4gRWluIFZvbHVtZSBhbiBkZXIgRGF0ZW5hYmxhZ2UgaMOkdHRlIHNpZSDDvGJlcmxlYmVuIGxhc3Nlbi48L3A+XG48YmxvY2txdW90ZT5cbjxwPlJpY2h0aWcuIERlciBTY2hyZWliYmVyZWljaCBnZWjDtnJ0IGRlbSBDb250YWluZXIgdW5kIHN0aXJidCBtaXQgaWhtLjwvcD5cbjwvYmxvY2txdW90ZT5cbjwvbGk+XG48bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBhcmlhLWxhYmVsPVwiU2llIGJsZWliZW4gaW0gSW1hZ2UgZXJoYWx0ZW4sIHNvZmVybiBEdSBlcyB2b3JoZXIgbmV1IGdlYmF1dCBoYXN0LlwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIj4gU2llIGJsZWliZW4gaW0gSW1hZ2UgZXJoYWx0ZW4sIHNvZmVybiBEdSBlcyB2b3JoZXIgbmV1IGdlYmF1dCBoYXN0LjwvcD5cbjxibG9ja3F1b3RlPlxuPHA+RWluIEltYWdlIGlzdCB1bnZlcsOkbmRlcmxpY2guIFdhcyBlaW4gQ29udGFpbmVyIHNjaHJlaWJ0LCBrb21tdCBkb3J0IG5pZSBhbi48L3A+XG48L2Jsb2NrcXVvdGU+XG48L2xpPlxuPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbjxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgYXJpYS1sYWJlbD1cIlNpZSBibGVpYmVuIGVyaGFsdGVuLCB3ZWlsIERvY2tlciBkZW4gU2NocmVpYmJlcmVpY2ggYXV0b21hdGlzY2ggc2ljaGVydC5cIiBkaXNhYmxlZD1cImRpc2FibGVkXCI+IFNpZSBibGVpYmVuIGVyaGFsdGVuLCB3ZWlsIERvY2tlciBkZW4gU2NocmVpYmJlcmVpY2ggYXV0b21hdGlzY2ggc2ljaGVydC48L3A+XG48YmxvY2txdW90ZT5cbjxwPkVzIGdpYnQga2VpbmUgYXV0b21hdGlzY2hlIFNpY2hlcnVuZy4gT2huZSBWb2x1bWUgaXN0IG1pdCA8Y29kZT5ybTwvY29kZT4gYWxsZXMgd2VnLjwvcD5cbjwvYmxvY2txdW90ZT5cbjwvbGk+XG48bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBhcmlhLWxhYmVsPVwiU2llIHNpbmQgd2VnLiBOdXIgZWluIGVybmV1dGVzIGRvY2tlciBjb21taXQgaMOkdHRlIHNpZSByZXR0ZW4ga8O2bm5lbi5cIiBkaXNhYmxlZD1cImRpc2FibGVkXCI+IFNpZSBzaW5kIHdlZy4gTnVyIGVpbiBlcm5ldXRlcyA8Y29kZT5kb2NrZXIgY29tbWl0PC9jb2RlPiBow6R0dGUgc2llIHJldHRlbiBrw7ZubmVuLjwvcD5cbjxibG9ja3F1b3RlPlxuPHA+PGNvZGU+Y29tbWl0PC9jb2RlPiBmcmllcnQgZWluZW4gU3RhbmQgaW5zIEltYWdlIGVpbiDigJMgYWxzIEJldHJpZWJzd2VnIGlzdCBkYXMgbmljaHQgdm9yZ2VzZWhlbi48L3A+XG48L2Jsb2NrcXVvdGU+XG48L2xpPlxuPC91bD5cbjwvbGk+XG48bGk+XG48cD5ad2VpIENvbnRhaW5lciBzdGVoZW4genVzYW1tZW4gaW4gZWluZW0gc2VsYnN0IGFuZ2VsZWd0ZW4gTmV0endlcmsuPC9wPlxuPHA+V2llIGVycmVpY2h0IGRlciBlaW5lIENvbnRhaW5lciBkZW4gYW5kZXJlbj88L3A+XG48dWwgY2xhc3M9XCJ0YXNrLWxpc3RcIj5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCLDnGJlciBzZWluZW4gQ29udGFpbmVyLU5hbWVuLCBkZW4gRG9ja2VyIGltIE5ldHp3ZXJrIGF1ZmzDtnN0LlwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiBjaGVja2VkPVwiY2hlY2tlZFwiPiDDnGJlciBzZWluZW4gQ29udGFpbmVyLU5hbWVuLCBkZW4gRG9ja2VyIGltIE5ldHp3ZXJrIGF1ZmzDtnN0LjwvcD5cbjxibG9ja3F1b3RlPlxuPHA+UmljaHRpZy4gR2VuYXUgZGVzaGFsYiBpc3QgPGNvZGU+LS1uYW1lPC9jb2RlPiBrZWluZSBLb3NtZXRpaywgc29uZGVybiBkaWUgQWRyZXNzZS48L3A+XG48L2Jsb2NrcXVvdGU+XG48L2xpPlxuPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbjxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgYXJpYS1sYWJlbD1cIsOcYmVyIGxvY2FsaG9zdCB1bmQgZGVuIFBvcnQsIGRlbiBkZXIgYW5kZXJlIENvbnRhaW5lciBiZWxlZ3QgaGF0LlwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIj4gw5xiZXIgPGNvZGU+bG9jYWxob3N0PC9jb2RlPiB1bmQgZGVuIFBvcnQsIGRlbiBkZXIgYW5kZXJlIENvbnRhaW5lciBiZWxlZ3QgaGF0LjwvcD5cbjxibG9ja3F1b3RlPlxuPHA+PGNvZGU+bG9jYWxob3N0PC9jb2RlPiBpc3QgaW0gQ29udGFpbmVyIGVyIHNlbGJzdC4gRGVyIGFuZGVyZSBpc3QgZGFyw7xiZXIgbmljaHQgZXJyZWljaGJhci48L3A+XG48L2Jsb2NrcXVvdGU+XG48L2xpPlxuPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbjxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgYXJpYS1sYWJlbD1cIsOcYmVyIGRpZSBJUC1BZHJlc3NlIGRlcyBIb3N0cyB1bmQgZGVuIHZlcsO2ZmZlbnRsaWNodGVuIFBvcnQuXCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiPiDDnGJlciBkaWUgSVAtQWRyZXNzZSBkZXMgSG9zdHMgdW5kIGRlbiB2ZXLDtmZmZW50bGljaHRlbiBQb3J0LjwvcD5cbjxibG9ja3F1b3RlPlxuPHA+RGFzIGdpbmdlLCBpc3QgYWJlciBkZXIgVW13ZWcgbmFjaCBkcmF1w59lbiDigJMgdW5kIGRpZSBBZHJlc3NlIMOkbmRlcnQgc2ljaCBzdMOkbmRpZy48L3A+XG48L2Jsb2NrcXVvdGU+XG48L2xpPlxuPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbjxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgYXJpYS1sYWJlbD1cIsOcYmVyIGdhciBuaWNodHM6IENvbnRhaW5lciBzaW5kIGdydW5kc8OkdHpsaWNoIHZvbmVpbmFuZGVyIGFiZ2VzY2hvdHRldC5cIiBkaXNhYmxlZD1cImRpc2FibGVkXCI+IMOcYmVyIGdhciBuaWNodHM6IENvbnRhaW5lciBzaW5kIGdydW5kc8OkdHpsaWNoIHZvbmVpbmFuZGVyIGFiZ2VzY2hvdHRldC48L3A+XG48YmxvY2txdW90ZT5cbjxwPkltIGdlbWVpbnNhbWVuIE5ldHp3ZXJrIHNpbmQgc2llIGVzIG5pY2h0LiBHZW5hdSBkYWbDvHIgbGVnc3QgRHUgZWluZXMgYW4uPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjwvdWw+XG48L2xpPlxuPGxpPlxuPHA+RWluZSBVbWdlYnVuZyBiZXN0ZWh0IGF1cyBEYXRlbmJhbmssIFdlYnNlcnZlciB1bmQgQW53ZW5kdW5nIG1pdCBWb2x1bWVzIHVuZCBOZXR6d2Vyay48L3A+XG48cD5Xb21pdCBzdGFydGVzdCBEdSBhbGxlIGRyZWkgbWl0IGVpbmVtIGVpbnppZ2VuIEJlZmVobD88L3A+XG48dWwgY2xhc3M9XCJ0YXNrLWxpc3RcIj5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJNaXQgRG9ja2VyIENvbXBvc2UgdW5kIGVpbmVyIERhdGVpLCBkaWUgYWxsZSBTZXJ2aWNlcyBiZXNjaHJlaWJ0LlwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiBjaGVja2VkPVwiY2hlY2tlZFwiPiBNaXQgRG9ja2VyIENvbXBvc2UgdW5kIGVpbmVyIERhdGVpLCBkaWUgYWxsZSBTZXJ2aWNlcyBiZXNjaHJlaWJ0LjwvcD5cbjxibG9ja3F1b3RlPlxuPHA+UmljaHRpZy4gQ29tcG9zZSBsZWd0IE5ldHp3ZXJrIHVuZCBWb2x1bWVzIGdsZWljaCBtaXQgYW4uPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJNaXQgZG9ja2VyIHJ1biwgZGVtIER1IGFsbGUgZHJlaSBJbWFnZXMgaGludGVyZWluYW5kZXIgw7xiZXJnaWJzdC5cIiBkaXNhYmxlZD1cImRpc2FibGVkXCI+IE1pdCA8Y29kZT5kb2NrZXIgcnVuPC9jb2RlPiwgZGVtIER1IGFsbGUgZHJlaSBJbWFnZXMgaGludGVyZWluYW5kZXIgw7xiZXJnaWJzdC48L3A+XG48YmxvY2txdW90ZT5cbjxwPjxjb2RlPmRvY2tlciBydW48L2NvZGU+IHN0YXJ0ZXQgZ2VuYXUgZWluZW4gQ29udGFpbmVyIGF1cyBnZW5hdSBlaW5lbSBJbWFnZS48L3A+XG48L2Jsb2NrcXVvdGU+XG48L2xpPlxuPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbjxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgYXJpYS1sYWJlbD1cIk1pdCBlaW5lbSBEb2NrZXJmaWxlLCBkYXMgZGllIGRyZWkgSW1hZ2VzIGFscyBTdHVmZW4genVzYW1tZW5mYXNzdC5cIiBkaXNhYmxlZD1cImRpc2FibGVkXCI+IE1pdCBlaW5lbSBEb2NrZXJmaWxlLCBkYXMgZGllIGRyZWkgSW1hZ2VzIGFscyBTdHVmZW4genVzYW1tZW5mYXNzdC48L3A+XG48YmxvY2txdW90ZT5cbjxwPkVpbiBEb2NrZXJmaWxlIGJlc2NocmVpYnQsIHdpZSBlaW4gSW1hZ2UgZW50c3RlaHQg4oCTIG5pY2h0LCB3YXMgenVzYW1tZW4gbMOkdWZ0LjwvcD5cbjwvYmxvY2txdW90ZT5cbjwvbGk+XG48bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBhcmlhLWxhYmVsPVwiTWl0IGRvY2tlciBuZXR3b3JrIGNyZWF0ZSwgZGFzIGFsbGUgQ29udGFpbmVyIGRhcmluIGdlbWVpbnNhbSBzdGFydGV0LlwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIj4gTWl0IDxjb2RlPmRvY2tlciBuZXR3b3JrIGNyZWF0ZTwvY29kZT4sIGRhcyBhbGxlIENvbnRhaW5lciBkYXJpbiBnZW1laW5zYW0gc3RhcnRldC48L3A+XG48YmxvY2txdW90ZT5cbjxwPkRlciBCZWZlaGwgbGVndCBudXIgZGFzIE5ldHp3ZXJrIGFuLiBTdGFydGVuIG11c3N0IER1IHdlaXRlcmhpbiBzZWxic3QuPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjwvdWw+XG48L2xpPlxuPGxpPlxuPHA+SW4gZWluZXIgQ29tcG9zZS1EYXRlaSBzdGVodCBiZWkgZGVyIEFud2VuZHVuZyA8Y29kZT5kZXBlbmRzX29uOiBbZGF0ZW5iYW5rXTwvY29kZT4uPC9wPlxuPHA+V2FzIGdhcmFudGllcnQgZGllc2UgQW5nYWJlIOKAkyB1bmQgd2FzIG5pY2h0PzwvcD5cbjx1bCBjbGFzcz1cInRhc2stbGlzdFwiPlxuPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbjxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgYXJpYS1sYWJlbD1cIkRpZSBTdGFydHJlaWhlbmZvbGdlLCBhYmVyIG5pY2h0LCBkYXNzIGRpZSBEYXRlbmJhbmsgc2Nob24gYmVyZWl0IGlzdC5cIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgY2hlY2tlZD1cImNoZWNrZWRcIj4gRGllIFN0YXJ0cmVpaGVuZm9sZ2UsIGFiZXIgbmljaHQsIGRhc3MgZGllIERhdGVuYmFuayBzY2hvbiBiZXJlaXQgaXN0LjwvcD5cbjxibG9ja3F1b3RlPlxuPHA+UmljaHRpZy4gRGVyIENvbnRhaW5lciBsw6R1ZnQg4oCTIG9iIGRlciBEaWVuc3QgYW50d29ydGV0LCB3ZWnDnyBDb21wb3NlIG5pY2h0LjwvcD5cbjwvYmxvY2txdW90ZT5cbjwvbGk+XG48bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBhcmlhLWxhYmVsPVwiRGFzcyBkaWUgRGF0ZW5iYW5rIGzDpHVmdCB1bmQgVmVyYmluZHVuZ2VuIGFubmltbXQsIGJldm9yIGRpZSBBcHAgc3RhcnRldC5cIiBkaXNhYmxlZD1cImRpc2FibGVkXCI+IERhc3MgZGllIERhdGVuYmFuayBsw6R1ZnQgdW5kIFZlcmJpbmR1bmdlbiBhbm5pbW10LCBiZXZvciBkaWUgQXBwIHN0YXJ0ZXQuPC9wPlxuPGJsb2NrcXVvdGU+XG48cD5EYXMgbGVpc3RldCBlcnN0IDxjb2RlPmNvbmRpdGlvbjogc2VydmljZV9oZWFsdGh5PC9jb2RlPiB6dXNhbW1lbiBtaXQgZWluZW0gPGNvZGU+aGVhbHRoY2hlY2s8L2NvZGU+LjwvcD5cbjwvYmxvY2txdW90ZT5cbjwvbGk+XG48bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBhcmlhLWxhYmVsPVwiRGFzcyBkaWUgQW53ZW5kdW5nIG5ldSBzdGFydGV0LCBzb2JhbGQgZGllIERhdGVuYmFuayBuZXUgZ2VzdGFydGV0IHd1cmRlLlwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIj4gRGFzcyBkaWUgQW53ZW5kdW5nIG5ldSBzdGFydGV0LCBzb2JhbGQgZGllIERhdGVuYmFuayBuZXUgZ2VzdGFydGV0IHd1cmRlLjwvcD5cbjxibG9ja3F1b3RlPlxuPHA+RWluZW4gc29sY2hlbiBOZXVzdGFydCBsw7ZzdCA8Y29kZT5kZXBlbmRzX29uPC9jb2RlPiBuaWNodCBhdXMuIEVzIHdpcmt0IG51ciBiZWltIEhvY2hmYWhyZW4uPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJEYXNzIGJlaWRlIENvbnRhaW5lciBpbSBzZWxiZW4gTmV0endlcmsgc3RlaGVuIHVuZCBlaW5hbmRlciBlcnJlaWNoZW4uXCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiPiBEYXNzIGJlaWRlIENvbnRhaW5lciBpbSBzZWxiZW4gTmV0endlcmsgc3RlaGVuIHVuZCBlaW5hbmRlciBlcnJlaWNoZW4uPC9wPlxuPGJsb2NrcXVvdGU+XG48cD5EYXMgdHV0IENvbXBvc2Ugb2huZWhpbiBmw7xyIGFsbGUgU2VydmljZXMg4oCTIGRhZsO8ciBicmF1Y2h0IGVzIGRpZSBBbmdhYmUgbmljaHQuPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjwvdWw+XG48L2xpPlxuPGxpPlxuPHA+RWluIFByb3plc3MgaW0gQ29udGFpbmVyIGzDpHVmdCwgYW50d29ydGV0IGFiZXIgYXVmIGtlaW5lIEFuZnJhZ2UgbWVoci48L3A+XG48cD5Xb3p1IGRpZW50IGluIGRpZXNlciBMYWdlIGVpbiA8Y29kZT5IRUFMVEhDSEVDSzwvY29kZT4gaW0gRG9ja2VyZmlsZT88L3A+XG48dWwgY2xhc3M9XCJ0YXNrLWxpc3RcIj5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJEYXMgSW1hZ2Ugc2FndCBzZWxic3QsIHdpZSBtYW4gcHLDvGZ0LCBvYiBlcyB0YXRzw6RjaGxpY2ggYXJiZWl0ZXQuXCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiIGNoZWNrZWQ9XCJjaGVja2VkXCI+IERhcyBJbWFnZSBzYWd0IHNlbGJzdCwgd2llIG1hbiBwcsO8ZnQsIG9iIGVzIHRhdHPDpGNobGljaCBhcmJlaXRldC48L3A+XG48YmxvY2txdW90ZT5cbjxwPlJpY2h0aWcuIOKAnkzDpHVmdOKAnCB1bmQg4oCeZnVua3Rpb25pZXJ04oCcIHNpbmQgendlaSB2ZXJzY2hpZWRlbmUgQXVzc2FnZW4uPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJFciBzdGFydGV0IGRlbiBDb250YWluZXIgYXV0b21hdGlzY2ggbmV1LCBzb2JhbGQgZGVyIFByb3plc3MgZW5kZXQuXCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiPiBFciBzdGFydGV0IGRlbiBDb250YWluZXIgYXV0b21hdGlzY2ggbmV1LCBzb2JhbGQgZGVyIFByb3plc3MgZW5kZXQuPC9wPlxuPGJsb2NrcXVvdGU+XG48cD5EYXMgTmV1c3RhcnRlbiByZWdlbHQgZGllIE5ldXN0YXJ0LVJpY2h0bGluaWUgb2RlciBkaWUgUGxhdHRmb3JtLCBuaWNodCBkZXIgSGVhbHRoY2hlY2suPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJFciBwcsO8ZnQgYmVpbSBCYXVlbiwgb2IgYWxsZSBBYmjDpG5naWdrZWl0ZW4gaW0gSW1hZ2Ugdm9yaGFuZGVuIHNpbmQuXCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiPiBFciBwcsO8ZnQgYmVpbSBCYXVlbiwgb2IgYWxsZSBBYmjDpG5naWdrZWl0ZW4gaW0gSW1hZ2Ugdm9yaGFuZGVuIHNpbmQuPC9wPlxuPGJsb2NrcXVvdGU+XG48cD5FciBsw6R1ZnQgenVyIExhdWZ6ZWl0IGltIGZlcnRpZ2VuIENvbnRhaW5lciwgbmljaHQgd8OkaHJlbmQgZGVzIEJhdWVucy48L3A+XG48L2Jsb2NrcXVvdGU+XG48L2xpPlxuPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbjxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgYXJpYS1sYWJlbD1cIkVyIG1lbGRldCBhbiBkaWUgUmVnaXN0cnkgenVyw7xjaywgb2IgZGFzIEltYWdlIGZlaGxlcmZyZWkgZ2V6b2dlbiB3dXJkZS5cIiBkaXNhYmxlZD1cImRpc2FibGVkXCI+IEVyIG1lbGRldCBhbiBkaWUgUmVnaXN0cnkgenVyw7xjaywgb2IgZGFzIEltYWdlIGZlaGxlcmZyZWkgZ2V6b2dlbiB3dXJkZS48L3A+XG48YmxvY2txdW90ZT5cbjxwPk1pdCBkZXIgUmVnaXN0cnkgaGF0IGVyIG5pY2h0cyB6dSB0dW4uIFNpZSBzaWVodCBuaWUgZWluZW4gbGF1ZmVuZGVuIENvbnRhaW5lci48L3A+XG48L2Jsb2NrcXVvdGU+XG48L2xpPlxuPC91bD5cbjwvbGk+XG48bGk+XG48cD5EdSBmw7xocnN0IDxjb2RlPmRvY2tlciBjb250YWluZXIgc3RvcCBtZWluZS1hcHA8L2NvZGU+IGF1cyB1bmQgc3VjaHN0IGRlbiBDb250YWluZXIgYW5zY2hsaWXDn2VuZC48L3A+XG48cD5XYXJ1bSBlcnNjaGVpbnQgZXIgaW4gPGNvZGU+ZG9ja2VyIGNvbnRhaW5lciBsczwvY29kZT4gbmljaHQgbWVocj88L3A+XG48dWwgY2xhc3M9XCJ0YXNrLWxpc3RcIj5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJXZWlsIGRlciBCZWZlaGwgbnVyIGxhdWZlbmRlIENvbnRhaW5lciB6ZWlndCDigJMgbWl0IC1hIHNpZWhzdCBEdSBpaG4gd2llZGVyLlwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIiBjaGVja2VkPVwiY2hlY2tlZFwiPiBXZWlsIGRlciBCZWZlaGwgbnVyIGxhdWZlbmRlIENvbnRhaW5lciB6ZWlndCDigJMgbWl0IDxjb2RlPi1hPC9jb2RlPiBzaWVoc3QgRHUgaWhuIHdpZWRlci48L3A+XG48YmxvY2txdW90ZT5cbjxwPlJpY2h0aWcuIEVyIGlzdCBhbmdlaGFsdGVuLCBuaWNodCBnZWzDtnNjaHQ6IEFsbGUgw4RuZGVydW5nZW4gc2luZCBub2NoIGRhLjwvcD5cbjwvYmxvY2txdW90ZT5cbjwvbGk+XG48bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBhcmlhLWxhYmVsPVwiV2VpbCBzdG9wIGRlbiBDb250YWluZXIgc2FtdCBzZWluZXMgU2NocmVpYmJlcmVpY2hzIGVuZGfDvGx0aWcgZW50ZmVybnQuXCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiPiBXZWlsIDxjb2RlPnN0b3A8L2NvZGU+IGRlbiBDb250YWluZXIgc2FtdCBzZWluZXMgU2NocmVpYmJlcmVpY2hzIGVuZGfDvGx0aWcgZW50ZmVybnQuPC9wPlxuPGJsb2NrcXVvdGU+XG48cD5FbnRmZXJuZW4gdHV0IDxjb2RlPnJtPC9jb2RlPi4gTmFjaCA8Y29kZT5zdG9wPC9jb2RlPiBleGlzdGllcnQgZXIgd2VpdGVyLCBudXIgZWJlbiBhbmdlaGFsdGVuLjwvcD5cbjwvYmxvY2txdW90ZT5cbjwvbGk+XG48bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBhcmlhLWxhYmVsPVwiV2VpbCBhbmdlaGFsdGVuZSBDb250YWluZXIgYXV0b21hdGlzY2ggaW4gZGllIFJlZ2lzdHJ5IHp1csO8Y2tnZXNjaHJpZWJlbiB3ZXJkZW4uXCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiPiBXZWlsIGFuZ2VoYWx0ZW5lIENvbnRhaW5lciBhdXRvbWF0aXNjaCBpbiBkaWUgUmVnaXN0cnkgenVyw7xja2dlc2NocmllYmVuIHdlcmRlbi48L3A+XG48YmxvY2txdW90ZT5cbjxwPkluIGRpZSBSZWdpc3RyeSBnZWxhbmdlbiBudXIgSW1hZ2VzLCB1bmQgYXVjaCBkaWUgbnVyIGR1cmNoIGVpbmVuIDxjb2RlPnB1c2g8L2NvZGU+LjwvcD5cbjwvYmxvY2txdW90ZT5cbjwvbGk+XG48bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBhcmlhLWxhYmVsPVwiV2VpbCBkZXIgTmFtZSBuYWNoIGRlbSBBbmhhbHRlbiBmcmVpZ2VnZWJlbiB1bmQgZGVyIEVpbnRyYWcgZ2Vsw7ZzY2h0IHdpcmQuXCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiPiBXZWlsIGRlciBOYW1lIG5hY2ggZGVtIEFuaGFsdGVuIGZyZWlnZWdlYmVuIHVuZCBkZXIgRWludHJhZyBnZWzDtnNjaHQgd2lyZC48L3A+XG48YmxvY2txdW90ZT5cbjxwPkRlciBOYW1lIGJsZWlidCBiZWxlZ3Qg4oCTIGRlc2hhbGIgc2NoZWl0ZXJ0IGVpbiB6d2VpdGVyIENvbnRhaW5lciBtaXQgZ2xlaWNoZW0gTmFtZW4uPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjwvdWw+XG48L2xpPlxuPGxpPlxuPHA+RWluIFRlYW0gw7xiZXJsZWd0LCBBbndlbmR1bmcgdW5kIERhdGVuYmFuayBnZW1laW5zYW0gaW4gZWluZW0gQ29udGFpbmVyIHp1IGJldHJlaWJlbi48L3A+XG48cD5XYXMgc3ByaWNodCBhbSBkZXV0bGljaHN0ZW4gZGFnZWdlbj88L3A+XG48dWwgY2xhc3M9XCJ0YXNrLWxpc3RcIj5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJCZWlkZSBow6R0dGVuIGRlbnNlbGJlbiBMZWJlbnN6eWtsdXMgdW5kIGxpZcOfZW4gc2ljaCBuaWNodCBnZXRyZW5udCBlcnNldHplbi5cIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgY2hlY2tlZD1cImNoZWNrZWRcIj4gQmVpZGUgaMOkdHRlbiBkZW5zZWxiZW4gTGViZW5zenlrbHVzIHVuZCBsaWXDn2VuIHNpY2ggbmljaHQgZ2V0cmVubnQgZXJzZXR6ZW4uPC9wPlxuPGJsb2NrcXVvdGU+XG48cD5SaWNodGlnLiBLZWluIGdldHJlbm50ZXMgQWt0dWFsaXNpZXJlbiwga2VpbiBnZXRyZW5udGVzIFNrYWxpZXJlbiwgZWluIExvZy1TdHJvbS48L3A+XG48L2Jsb2NrcXVvdGU+XG48L2xpPlxuPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbjxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgYXJpYS1sYWJlbD1cIkVpbiBDb250YWluZXIga2FubiB0ZWNobmlzY2ggaW1tZXIgbnVyIGVpbmVuIGVpbnppZ2VuIFByb3plc3MgYXVzZsO8aHJlbi5cIiBkaXNhYmxlZD1cImRpc2FibGVkXCI+IEVpbiBDb250YWluZXIga2FubiB0ZWNobmlzY2ggaW1tZXIgbnVyIGVpbmVuIGVpbnppZ2VuIFByb3plc3MgYXVzZsO8aHJlbi48L3A+XG48YmxvY2txdW90ZT5cbjxwPlRlY2huaXNjaCBnZWh0IG1laHIgYWxzIGVpbmVyLiBFcyBpc3QgZWluZSBFbnR3dXJmc3JlZ2VsLCBrZWluZSBCZWdyZW56dW5nLjwvcD5cbjwvYmxvY2txdW90ZT5cbjwvbGk+XG48bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBhcmlhLWxhYmVsPVwiRGF0ZW5iYW5rZW4gbGFzc2VuIHNpY2ggaW4gQ29udGFpbmVybiBncnVuZHPDpHR6bGljaCBuaWNodCBzaW5udm9sbCBiZXRyZWliZW4uXCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiPiBEYXRlbmJhbmtlbiBsYXNzZW4gc2ljaCBpbiBDb250YWluZXJuIGdydW5kc8OkdHpsaWNoIG5pY2h0IHNpbm52b2xsIGJldHJlaWJlbi48L3A+XG48YmxvY2txdW90ZT5cbjxwPkxhc3NlbiBzaWUgc2ljaCBzZWhyIHdvaGwg4oCTIG1pdCBlaW5lbSBWb2x1bWUgZsO8ciBkaWUgZGF1ZXJoYWZ0ZW4gRGF0ZW4uPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJEYXMgZ2VtZWluc2FtZSBJbWFnZSB3w7xyZGUgZGllIHp1bMOkc3NpZ2UgTWF4aW1hbGdyw7bDn2UgZWluZXIgUmVnaXN0cnkgc3ByZW5nZW4uXCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiPiBEYXMgZ2VtZWluc2FtZSBJbWFnZSB3w7xyZGUgZGllIHp1bMOkc3NpZ2UgTWF4aW1hbGdyw7bDn2UgZWluZXIgUmVnaXN0cnkgc3ByZW5nZW4uPC9wPlxuPGJsb2NrcXVvdGU+XG48cD5FaW5lIHNvbGNoZSBHcmVuemUgZ2lidCBlcyBpbiBkZXIgUHJheGlzIG5pY2h0LiBEaWUgR3LDtsOfZSBpc3QgbmljaHQgZGFzIEFyZ3VtZW50LjwvcD5cbjwvYmxvY2txdW90ZT5cbjwvbGk+XG48L3VsPlxuPC9saT5cbjxsaT5cbjxwPkF1ZiBlaW5lciBQbGF0dGZvcm0gd2VyZGVuIENvbnRhaW5lciBsYXVmZW5kIGJlZW5kZXQsIHZlcnNjaG9iZW4gdW5kIG5ldSBnZXN0YXJ0ZXQuPC9wPlxuPHA+V2VsY2hlIEVpZ2Vuc2NoYWZ0IG11c3MgZWluZSBBbndlbmR1bmcgZGFmw7xyIG1pdGJyaW5nZW4/PC9wPlxuPHVsIGNsYXNzPVwidGFzay1saXN0XCI+XG48bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBhcmlhLWxhYmVsPVwiWnVzdGFuZHNsb3NpZ2tlaXQg4oCTIHp3aXNjaGVuIHp3ZWkgQW5mcmFnZW4gYmxlaWJ0IG5pY2h0cyBpbSBTcGVpY2hlci5cIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgY2hlY2tlZD1cImNoZWNrZWRcIj4gWnVzdGFuZHNsb3NpZ2tlaXQg4oCTIHp3aXNjaGVuIHp3ZWkgQW5mcmFnZW4gYmxlaWJ0IG5pY2h0cyBpbSBTcGVpY2hlci48L3A+XG48YmxvY2txdW90ZT5cbjxwPlJpY2h0aWcuIE51ciB3YXMgZXJzZXR6YmFyIGlzdCwga2FubiBkaWUgUGxhdHRmb3JtIHZlcnNjaGllYmVuIHVuZCB2ZXJ2aWVsZmFjaGVuLjwvcD5cbjwvYmxvY2txdW90ZT5cbjwvbGk+XG48bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBhcmlhLWxhYmVsPVwiRWluIG3DtmdsaWNoc3Qga2xlaW5lcyBJbWFnZSwgZGFtaXQgZGFzIFZlcnNjaGllYmVuIHNjaG5lbGwgZ2VudWcgYWJsw6R1ZnQuXCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiPiBFaW4gbcO2Z2xpY2hzdCBrbGVpbmVzIEltYWdlLCBkYW1pdCBkYXMgVmVyc2NoaWViZW4gc2NobmVsbCBnZW51ZyBhYmzDpHVmdC48L3A+XG48YmxvY2txdW90ZT5cbjxwPkRpZSBHcsO2w59lIGhpbGZ0IGJlaW0gVGVtcG8sIMOkbmRlcnQgYWJlciBuaWNodHMgYW4gZGVyIEVyc2V0emJhcmtlaXQuPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJFaW5lbiBIZWFsdGhjaGVjaywgZGFtaXQgZGllIFBsYXR0Zm9ybSBkZW4gWnVzdGFuZCBqZWRlcnplaXQgYWJmcmFnZW4ga2Fubi5cIiBkaXNhYmxlZD1cImRpc2FibGVkXCI+IEVpbmVuIEhlYWx0aGNoZWNrLCBkYW1pdCBkaWUgUGxhdHRmb3JtIGRlbiBadXN0YW5kIGplZGVyemVpdCBhYmZyYWdlbiBrYW5uLjwvcD5cbjxibG9ja3F1b3RlPlxuPHA+U2VociBuw7x0emxpY2gg4oCTIGFiZXIgZXIgbWVsZGV0IG51ci4gRXJzZXR6YmFyIG1hY2h0IGVyIGRpZSBBbndlbmR1bmcgbmljaHQuPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJFaW5lIGVpZ2VuZSBTaXR6dW5nc3ZlcndhbHR1bmcsIGRpZSBqZWRlbiBDb250YWluZXIgZ2V6aWVsdCB3aWVkZXJmaW5kZXQuXCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiPiBFaW5lIGVpZ2VuZSBTaXR6dW5nc3ZlcndhbHR1bmcsIGRpZSBqZWRlbiBDb250YWluZXIgZ2V6aWVsdCB3aWVkZXJmaW5kZXQuPC9wPlxuPGJsb2NrcXVvdGU+XG48cD5HZW5hdSBkYXMgd8OkcmUgZGVyIEZlaGxlcjogU2llIGJpbmRldCBOdXR6ZXIgYW4gZWluZW4gYmVzdGltbXRlbiBDb250YWluZXIuPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjwvdWw+XG48L2xpPlxuPGxpPlxuPHA+SW4gUHJvZHVrdGlvbiBsw6R1ZnQgPGNvZGU+YW53ZW5kdW5nOmxhdGVzdDwvY29kZT4uIEhldXRlIE5hY2h0IGlzdCBldHdhcyBrYXB1dHRnZWdhbmdlbi48L3A+XG48cD5XZWxjaGVzIFZvcmdlaGVuIGjDpHR0ZSBkaWUgRmVobGVyc3VjaGUgw7xiZXJoYXVwdCBlcnN0IG3DtmdsaWNoIGdlbWFjaHQ/PC9wPlxuPHVsIGNsYXNzPVwidGFzay1saXN0XCI+XG48bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBhcmlhLWxhYmVsPVwiRmVzdGUgVmVyc2lvbnMtVGFncyB2ZXLDtmZmZW50bGljaGVuIHVuZCBpbSBCZXRyaWViIGRhcmF1ZiB2ZXJ3ZWlzZW4uXCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiIGNoZWNrZWQ9XCJjaGVja2VkXCI+IEZlc3RlIFZlcnNpb25zLVRhZ3MgdmVyw7ZmZmVudGxpY2hlbiB1bmQgaW0gQmV0cmllYiBkYXJhdWYgdmVyd2Vpc2VuLjwvcD5cbjxibG9ja3F1b3RlPlxuPHA+UmljaHRpZy4gTnVyIGVpbiB1bnZlcsOkbmRlcmxpY2hlciBUYWcgc2FndCwgd2VsY2hlciBTdGFuZCBnZXN0ZXJuIGxpZWYuPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJEYXMgVGFnIGxhdGVzdCBuYWNoIGplZGVtIFB1c2ggenVzw6R0emxpY2ggbWl0IGVpbmVtIERhdHVtIHZlcnNlaGVuLlwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIj4gRGFzIFRhZyA8Y29kZT5sYXRlc3Q8L2NvZGU+IG5hY2ggamVkZW0gUHVzaCB6dXPDpHR6bGljaCBtaXQgZWluZW0gRGF0dW0gdmVyc2VoZW4uPC9wPlxuPGJsb2NrcXVvdGU+XG48cD5EYXMgRGF0dW0gYW0gYmV3ZWdsaWNoZW4gVGFnIGhpbGZ0IG5pY2h0OiBFciB6ZWlndCB0cm90emRlbSBpbW1lciBhdWZzIE5ldWVzdGUuPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJEaWUgUmVnaXN0cnkgc28gZWluc3RlbGxlbiwgZGFzcyBzaWUgamVkZW4gUHVzaCBhdXRvbWF0aXNjaCBhdWZiZXdhaHJ0LlwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIj4gRGllIFJlZ2lzdHJ5IHNvIGVpbnN0ZWxsZW4sIGRhc3Mgc2llIGplZGVuIFB1c2ggYXV0b21hdGlzY2ggYXVmYmV3YWhydC48L3A+XG48YmxvY2txdW90ZT5cbjxwPkF1ZmJld2FocnQgd2lyZCBkZXIgU3RhbmQgb2huZWhpbi4gT2huZSBUYWcga2FubnN0IER1IGlobiBudXIgbmljaHQgYmVuZW5uZW4uPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJBdWYgZGFzIFBpbm5lbiB2ZXJ6aWNodGVuLCBkYW1pdCBpbW1lciBkaWUgbmV1ZXN0ZW4gS29ycmVrdHVyZW4gYW5rb21tZW4uXCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiPiBBdWYgZGFzIFBpbm5lbiB2ZXJ6aWNodGVuLCBkYW1pdCBpbW1lciBkaWUgbmV1ZXN0ZW4gS29ycmVrdHVyZW4gYW5rb21tZW4uPC9wPlxuPGJsb2NrcXVvdGU+XG48cD5Ba3R1ZWxsZSBLb3JyZWt0dXJlbiBob2xzdCBEdSBkdXJjaCByZWdlbG3DpMOfaWdlcyBOZXViYXVlbiDigJMgbmljaHQgZHVyY2ggVW5zY2jDpHJmZS48L3A+XG48L2Jsb2NrcXVvdGU+XG48L2xpPlxuPC91bD5cbjwvbGk+XG48bGk+XG48cD5EZWluIERvY2tlcmZpbGUga29waWVydCBlcnN0IGRlbiBnZXNhbXRlbiBDb2RlLCBkYW5uIGluc3RhbGxpZXJ0IGVzIGRpZSBBYmjDpG5naWdrZWl0ZW4uIER1IMOkbmRlcnN0IGVpbmUgWmVpbGUgQ29kZSB1bmQgYmF1c3QgbmV1LjwvcD5cbjxwPldhcnVtIGRhdWVydCBkZXIgQmF1IHNvIGxhbmdlIHdpZSBiZWltIGVyc3RlbiBNYWw/PC9wPlxuPHVsIGNsYXNzPVwidGFzay1saXN0XCI+XG48bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBhcmlhLWxhYmVsPVwiV2VpbCBkZXIgZ2XDpG5kZXJ0ZSBMYXllciBhbGxlIGZvbGdlbmRlbiBMYXllciB1bmfDvGx0aWcgbWFjaHQuXCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiIGNoZWNrZWQ9XCJjaGVja2VkXCI+IFdlaWwgZGVyIGdlw6RuZGVydGUgTGF5ZXIgYWxsZSBmb2xnZW5kZW4gTGF5ZXIgdW5nw7xsdGlnIG1hY2h0LjwvcD5cbjxibG9ja3F1b3RlPlxuPHA+UmljaHRpZy4gRGVyIENhY2hlIHRyw6RndCBiaXMgenVyIGVyc3RlbiDDhG5kZXJ1bmcg4oCTIGRhcnVudGVyIHdpcmQgYWxsZXMgbmV1IGdlYmF1dC48L3A+XG48L2Jsb2NrcXVvdGU+XG48L2xpPlxuPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbjxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgYXJpYS1sYWJlbD1cIldlaWwgZGVyIEJ1aWxkLUNhY2hlIG5hY2ggamVkZXIgw4RuZGVydW5nIGFtIEFyYmVpdHN2ZXJ6ZWljaG5pcyB2ZXJ3b3JmZW4gd2lyZC5cIiBkaXNhYmxlZD1cImRpc2FibGVkXCI+IFdlaWwgZGVyIEJ1aWxkLUNhY2hlIG5hY2ggamVkZXIgw4RuZGVydW5nIGFtIEFyYmVpdHN2ZXJ6ZWljaG5pcyB2ZXJ3b3JmZW4gd2lyZC48L3A+XG48YmxvY2txdW90ZT5cbjxwPlZlcndvcmZlbiB3aXJkIG5pY2h0cy4gRXMgcGFzc3QgbnVyIGFiIGRlciBnZcOkbmRlcnRlbiBaZWlsZSBrZWluIExheWVyIG1laHIuPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJXZWlsIHBpcCBiZWkgamVkZW0gTGF1ZiBwcsO8ZnQsIG9iIGVzIG5ldWVyZSBGYXNzdW5nZW4gZGVyIFBha2V0ZSBnaWJ0LlwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIj4gV2VpbCA8Y29kZT5waXA8L2NvZGU+IGJlaSBqZWRlbSBMYXVmIHByw7xmdCwgb2IgZXMgbmV1ZXJlIEZhc3N1bmdlbiBkZXIgUGFrZXRlIGdpYnQuPC9wPlxuPGJsb2NrcXVvdGU+XG48cD5EYXMgdMOkdGUgPGNvZGU+cGlwPC9jb2RlPiBhdWNoIOKAkyBudXIgbMOkdWZ0IGVzIMO8YmVyaGF1cHQgbnVyLCB3ZWlsIHNlaW4gTGF5ZXIgbmV1IGdlYmF1dCB3aXJkLjwvcD5cbjwvYmxvY2txdW90ZT5cbjwvbGk+XG48bGkgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbVwiPlxuPHA+PGlucHV0IHR5cGU9XCJjaGVja2JveFwiIGNsYXNzPVwidGFzay1saXN0LWl0ZW0tY2hlY2tib3hcIiBhcmlhLWxhYmVsPVwiV2VpbCBlaW4gTGF5ZXIgbWl0IGtvcGllcnRlbiBEYXRlaWVuIGdydW5kc8OkdHpsaWNoIG5pY2h0IHp3aXNjaGVuZ2VzcGVpY2hlcnQgd2lyZC5cIiBkaXNhYmxlZD1cImRpc2FibGVkXCI+IFdlaWwgZWluIExheWVyIG1pdCBrb3BpZXJ0ZW4gRGF0ZWllbiBncnVuZHPDpHR6bGljaCBuaWNodCB6d2lzY2hlbmdlc3BlaWNoZXJ0IHdpcmQuPC9wPlxuPGJsb2NrcXVvdGU+XG48cD5Eb2NoLCBhdWNoIDxjb2RlPkNPUFk8L2NvZGU+IHdpcmQgendpc2NoZW5nZXNwZWljaGVydCDigJMgc29sYW5nZSBzaWNoIGRpZSBEYXRlaWVuIG5pY2h0IMOkbmRlcm4uPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjwvdWw+XG48L2xpPlxuPGxpPlxuPHA+RWluIERvY2tlcmZpbGUgaW5zdGFsbGllcnQgaW4gZWluZXIgWmVpbGUgZWluIFBha2V0IHVuZCBsw7ZzY2h0IGluIGRlciBuw6RjaHN0ZW4gZGllIFBha2V0bGlzdGVuLjwvcD5cbjxwPldhcnVtIGlzdCBkYXMgSW1hZ2UgdHJvdHpkZW0gbmljaHQga2xlaW5lcj88L3A+XG48dWwgY2xhc3M9XCJ0YXNrLWxpc3RcIj5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJXZWlsIGRlciBmcsO8aGVyZSBMYXllciBibGVpYnQgdW5kIGRlciBzcMOkdGVyZSBkaWUgRGF0ZWllbiBudXIgw7xiZXJkZWNrdC5cIiBkaXNhYmxlZD1cImRpc2FibGVkXCIgY2hlY2tlZD1cImNoZWNrZWRcIj4gV2VpbCBkZXIgZnLDvGhlcmUgTGF5ZXIgYmxlaWJ0IHVuZCBkZXIgc3DDpHRlcmUgZGllIERhdGVpZW4gbnVyIMO8YmVyZGVja3QuPC9wPlxuPGJsb2NrcXVvdGU+XG48cD5HZW5hdS4gRWluIExheWVyIHdpcmQgbmllIG5hY2h0csOkZ2xpY2gga2xlaW5lciDigJMgTMO2c2NoZW4gbGVndCBudXIgZWluZSBNYXJrZSBkYXLDvGJlci48L3A+XG48L2Jsb2NrcXVvdGU+XG48L2xpPlxuPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbjxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgYXJpYS1sYWJlbD1cIldlaWwgZGFzIEzDtnNjaGVuIGVyc3QgYmVpbSBTdGFydCBkZXMgQ29udGFpbmVycyB3aXJrc2FtIHdpcmQuXCIgZGlzYWJsZWQ9XCJkaXNhYmxlZFwiPiBXZWlsIGRhcyBMw7ZzY2hlbiBlcnN0IGJlaW0gU3RhcnQgZGVzIENvbnRhaW5lcnMgd2lya3NhbSB3aXJkLjwvcD5cbjxibG9ja3F1b3RlPlxuPHA+PGNvZGU+UlVOPC9jb2RlPiBsw6R1ZnQgYmVpbSBCYXVlbiwgbmljaHQgYmVpbSBTdGFydGVuLiBBbSBaZWl0cHVua3QgbGllZ3QgZXMgbmljaHQuPC9wPlxuPC9ibG9ja3F1b3RlPlxuPC9saT5cbjxsaSBjbGFzcz1cInRhc2stbGlzdC1pdGVtXCI+XG48cD48aW5wdXQgdHlwZT1cImNoZWNrYm94XCIgY2xhc3M9XCJ0YXNrLWxpc3QtaXRlbS1jaGVja2JveFwiIGFyaWEtbGFiZWw9XCJXZWlsIGRpZSBQYWtldGxpc3RlbiBpbSBCYXNpcy1JbWFnZSBsaWVnZW4gdW5kIGRvcnQgbmljaHQgZXJyZWljaGJhciBzaW5kLlwiIGRpc2FibGVkPVwiZGlzYWJsZWRcIj4gV2VpbCBkaWUgUGFrZXRsaXN0ZW4gaW0gQmFzaXMtSW1hZ2UgbGllZ2VuIHVuZCBkb3J0IG5pY2h0IGVycmVpY2hiYXIgc2luZC48L3A+XG48YmxvY2txdW90ZT5cbjxwPlNpZSBlbnRzdGVoZW4gZXJzdCBkdXJjaCBEZWluIDxjb2RlPmFwdC1nZXQgdXBkYXRlPC9jb2RlPiDigJMgYWxzbyBpbiBEZWluZW0gZWlnZW5lbiBMYXllci48L3A+XG48L2Jsb2NrcXVvdGU+XG48L2xpPlxuPGxpIGNsYXNzPVwidGFzay1saXN0LWl0ZW1cIj5cbjxwPjxpbnB1dCB0eXBlPVwiY2hlY2tib3hcIiBjbGFzcz1cInRhc2stbGlzdC1pdGVtLWNoZWNrYm94XCIgYXJpYS1sYWJlbD1cIldlaWwgRG9ja2VyIGdlbMO2c2NodGUgRGF0ZWllbiB6dXIgU2ljaGVyaGVpdCBhdWZiZXdhaHJ0LCBiaXMgZGFzIEltYWdlIGdlcHVzaHQgd2lyZC5cIiBkaXNhYmxlZD1cImRpc2FibGVkXCI+IFdlaWwgRG9ja2VyIGdlbMO2c2NodGUgRGF0ZWllbiB6dXIgU2ljaGVyaGVpdCBhdWZiZXdhaHJ0LCBiaXMgZGFzIEltYWdlIGdlcHVzaHQgd2lyZC48L3A+XG48YmxvY2txdW90ZT5cbjxwPkVpbmUgc29sY2hlIEF1ZmJld2FocnVuZyBnaWJ0IGVzIG5pY2h0LiBFcyBpc3Qgc2NobGljaHQgZGVyIEF1ZmJhdSBhdXMgU2NoaWNodGVuLjwvcD5cbjwvYmxvY2txdW90ZT5cbjwvbGk+XG48L3VsPlxuPC9saT5cbjwvb2w+XG4ifQ==</script>
+<ol>
+<li>
+<p>Zwei Begriffe, die im Alltag oft durcheinandergehen.</p>
+<p>Was unterscheidet ein Docker-Image von einem Docker-Container?</p>
+<ul class="task-list">
+<li class="task-list-item">
+<p> Das Image ist der Bauplan, der Container eine laufende Ausprägung davon.</p>
+
+</li>
+<li class="task-list-item">
+<p> Das Image läuft im Vordergrund, der Container läuft im Hintergrund weiter.</p>
+
+</li>
+<li class="task-list-item">
+<p> Das Image liegt in der Registry, der Container liegt lokal auf der Platte.</p>
+
+</li>
+<li class="task-list-item">
+<p> Das Image enthält nur die Anwendung, der Container zusätzlich das Betriebssystem.</p>
+
+</li>
+</ul>
+</li>
+<li>
+<p>Dieselbe Anwendung soll in Entwicklung, Test und Produktion unterschiedlich arbeiten.</p>
+<p>Wie sollte eine 12-Factor-App laut Faktor III („Config“) ihre Konfiguration bekommen?</p>
+<ul class="task-list">
+<li class="task-list-item">
+<p> Aus Umgebungsvariablen, die beim Start von außen gesetzt werden.</p>
+
+</li>
+<li class="task-list-item">
+<p> Aus einer Konfigurationsdatei, die beim Bauen fest ins Image kopiert wird.</p>
+
+</li>
+<li class="task-list-item">
+<p> Aus Kommandozeilenparametern, die beim Start des Containers übergeben werden.</p>
+
+</li>
+<li class="task-list-item">
+<p> Aus einer zentralen Datenbank, die jeder Dienst bei jeder Anfrage abfragt.</p>
+
+</li>
+</ul>
+</li>
+<li>
+<p>Du willst einen Container im Hintergrund starten und ihm einen festen Namen geben.</p>
+<p>Welcher Aufruf ist dafür der richtige?</p>
+<ul class="task-list">
+<li class="task-list-item">
+<p> docker run -d &ndash;name meine-app nginx</p>
+
+</li>
+<li class="task-list-item">
+<p> docker run &ndash;name -d meine-app nginx</p>
+
+</li>
+<li class="task-list-item">
+<p> docker start -d &ndash;name meine-app nginx</p>
+
+</li>
+<li class="task-list-item">
+<p> docker create -d &ndash;name meine-app nginx</p>
+
+</li>
+</ul>
+</li>
+<li>
+<p>Im Dockerfile stehen Anweisungen, die zu unterschiedlichen Zeitpunkten wirken.</p>
+<p>Welche Anweisung bestimmt, was beim <strong>Starten</strong> eines Containers ausgeführt wird?</p>
+<ul class="task-list">
+<li class="task-list-item">
+<p> CMD beziehungsweise ENTRYPOINT – beide wirken zur Startzeit.</p>
+
+</li>
+<li class="task-list-item">
+<p> RUN – die Anweisung führt den angegebenen Befehl im Container aus.</p>
+
+</li>
+<li class="task-list-item">
+<p> ENV – die Anweisung setzt die Umgebung, in der der Start abläuft.</p>
+
+</li>
+<li class="task-list-item">
+<p> EXPOSE – die Anweisung startet den Dienst auf dem genannten Port.</p>
+
+</li>
+</ul>
+</li>
+<li>
+<p>Du baust ein Image mit <code>docker image build .</code> und vergisst den Parameter <code>-t</code>.</p>
+<p>Welchen Namen trägt das Image danach – und warum ist das unpraktisch?</p>
+<ul class="task-list">
+<li class="task-list-item">
+<p> Gar keinen – es erscheint als <code>&lt;none&gt;</code> und ist nur per ID ansprechbar.</p>
+
+</li>
+<li class="task-list-item">
+<p> Den Namen des Verzeichnisses, in dem das Dockerfile gerade liegt.</p>
+
+</li>
+<li class="task-list-item">
+<p> Den Namen des Basis-Images aus der <code>FROM</code>-Zeile mit dem Tag <code>latest</code>.</p>
+
+</li>
+<li class="task-list-item">
+<p> Einen zufällig erzeugten Namen, so wie Container ihn beim Start bekommen.</p>
+
+</li>
+</ul>
+</li>
+<li>
+<p>Ein vollständiger Imagename lautet <code>registry.example.com/team/app:1.4.2</code>.</p>
+<p>Was bezeichnet dabei der Teil <code>team/app</code>?</p>
+<ul class="task-list">
+<li class="task-list-item">
+<p> Das Repository – den Platz für ein Image in vielen Ständen.</p>
+
+</li>
+<li class="task-list-item">
+<p> Die Registry – den Dienst, der die Images speichert und ausliefert.</p>
+
+</li>
+<li class="task-list-item">
+<p> Den Tag – die Kennzeichnung eines bestimmten Standes des Images.</p>
+
+</li>
+<li class="task-list-item">
+<p> Den Layer – die Schicht, aus der das Image beim Bauen entstanden ist.</p>
+
+</li>
+</ul>
+</li>
+<li>
+<p>In einem Container läuft eine Datenbank. Der Container wird gelöscht und neu angelegt.</p>
+<p>Was passiert mit den Daten – und wie verhinderst Du den Verlust?</p>
+<ul class="task-list">
+<li class="task-list-item">
+<p> Sie sind weg. Ein Volume an der Datenablage hätte sie überleben lassen.</p>
+
+</li>
+<li class="task-list-item">
+<p> Sie bleiben im Image erhalten, sofern Du es vorher neu gebaut hast.</p>
+
+</li>
+<li class="task-list-item">
+<p> Sie bleiben erhalten, weil Docker den Schreibbereich automatisch sichert.</p>
+
+</li>
+<li class="task-list-item">
+<p> Sie sind weg. Nur ein erneutes <code>docker commit</code> hätte sie retten können.</p>
+
+</li>
+</ul>
+</li>
+<li>
+<p>Zwei Container stehen zusammen in einem selbst angelegten Netzwerk.</p>
+<p>Wie erreicht der eine Container den anderen?</p>
+<ul class="task-list">
+<li class="task-list-item">
+<p> Über seinen Container-Namen, den Docker im Netzwerk auflöst.</p>
+
+</li>
+<li class="task-list-item">
+<p> Über <code>localhost</code> und den Port, den der andere Container belegt hat.</p>
+
+</li>
+<li class="task-list-item">
+<p> Über die IP-Adresse des Hosts und den veröffentlichten Port.</p>
+
+</li>
+<li class="task-list-item">
+<p> Über gar nichts: Container sind grundsätzlich voneinander abgeschottet.</p>
+
+</li>
+</ul>
+</li>
+<li>
+<p>Eine Umgebung besteht aus Datenbank, Webserver und Anwendung mit Volumes und Netzwerk.</p>
+<p>Womit startest Du alle drei mit einem einzigen Befehl?</p>
+<ul class="task-list">
+<li class="task-list-item">
+<p> Mit Docker Compose und einer Datei, die alle Services beschreibt.</p>
+
+</li>
+<li class="task-list-item">
+<p> Mit <code>docker run</code>, dem Du alle drei Images hintereinander übergibst.</p>
+
+</li>
+<li class="task-list-item">
+<p> Mit einem Dockerfile, das die drei Images als Stufen zusammenfasst.</p>
+
+</li>
+<li class="task-list-item">
+<p> Mit <code>docker network create</code>, das alle Container darin gemeinsam startet.</p>
+
+</li>
+</ul>
+</li>
+<li>
+<p>In einer Compose-Datei steht bei der Anwendung <code>depends_on: [datenbank]</code>.</p>
+<p>Was garantiert diese Angabe – und was nicht?</p>
+<ul class="task-list">
+<li class="task-list-item">
+<p> Die Startreihenfolge, aber nicht, dass die Datenbank schon bereit ist.</p>
+
+</li>
+<li class="task-list-item">
+<p> Dass die Datenbank läuft und Verbindungen annimmt, bevor die App startet.</p>
+
+</li>
+<li class="task-list-item">
+<p> Dass die Anwendung neu startet, sobald die Datenbank neu gestartet wurde.</p>
+
+</li>
+<li class="task-list-item">
+<p> Dass beide Container im selben Netzwerk stehen und einander erreichen.</p>
+
+</li>
+</ul>
+</li>
+<li>
+<p>Ein Prozess im Container läuft, antwortet aber auf keine Anfrage mehr.</p>
+<p>Wozu dient in dieser Lage ein <code>HEALTHCHECK</code> im Dockerfile?</p>
+<ul class="task-list">
+<li class="task-list-item">
+<p> Das Image sagt selbst, wie man prüft, ob es tatsächlich arbeitet.</p>
+
+</li>
+<li class="task-list-item">
+<p> Er startet den Container automatisch neu, sobald der Prozess endet.</p>
+
+</li>
+<li class="task-list-item">
+<p> Er prüft beim Bauen, ob alle Abhängigkeiten im Image vorhanden sind.</p>
+
+</li>
+<li class="task-list-item">
+<p> Er meldet an die Registry zurück, ob das Image fehlerfrei gezogen wurde.</p>
+
+</li>
+</ul>
+</li>
+<li>
+<p>Du führst <code>docker container stop meine-app</code> aus und suchst den Container anschließend.</p>
+<p>Warum erscheint er in <code>docker container ls</code> nicht mehr?</p>
+<ul class="task-list">
+<li class="task-list-item">
+<p> Weil der Befehl nur laufende Container zeigt – mit <code>-a</code> siehst Du ihn wieder.</p>
+
+</li>
+<li class="task-list-item">
+<p> Weil <code>stop</code> den Container samt seines Schreibbereichs endgültig entfernt.</p>
+
+</li>
+<li class="task-list-item">
+<p> Weil angehaltene Container automatisch in die Registry zurückgeschrieben werden.</p>
+
+</li>
+<li class="task-list-item">
+<p> Weil der Name nach dem Anhalten freigegeben und der Eintrag gelöscht wird.</p>
+
+</li>
+</ul>
+</li>
+<li>
+<p>Ein Team überlegt, Anwendung und Datenbank gemeinsam in einem Container zu betreiben.</p>
+<p>Was spricht am deutlichsten dagegen?</p>
+<ul class="task-list">
+<li class="task-list-item">
+<p> Beide hätten denselben Lebenszyklus und ließen sich nicht getrennt ersetzen.</p>
+
+</li>
+<li class="task-list-item">
+<p> Ein Container kann technisch immer nur einen einzigen Prozess ausführen.</p>
+
+</li>
+<li class="task-list-item">
+<p> Datenbanken lassen sich in Containern grundsätzlich nicht sinnvoll betreiben.</p>
+
+</li>
+<li class="task-list-item">
+<p> Das gemeinsame Image würde die zulässige Maximalgröße einer Registry sprengen.</p>
+
+</li>
+</ul>
+</li>
+<li>
+<p>Auf einer Plattform werden Container laufend beendet, verschoben und neu gestartet.</p>
+<p>Welche Eigenschaft muss eine Anwendung dafür mitbringen?</p>
+<ul class="task-list">
+<li class="task-list-item">
+<p> Zustandslosigkeit – zwischen zwei Anfragen bleibt nichts im Speicher.</p>
+
+</li>
+<li class="task-list-item">
+<p> Ein möglichst kleines Image, damit das Verschieben schnell genug abläuft.</p>
+
+</li>
+<li class="task-list-item">
+<p> Einen Healthcheck, damit die Plattform den Zustand jederzeit abfragen kann.</p>
+
+</li>
+<li class="task-list-item">
+<p> Eine eigene Sitzungsverwaltung, die jeden Container gezielt wiederfindet.</p>
+
+</li>
+</ul>
+</li>
+<li>
+<p>In Produktion läuft <code>anwendung:latest</code>. Heute Nacht ist etwas kaputtgegangen.</p>
+<p>Welches Vorgehen hätte die Fehlersuche überhaupt erst möglich gemacht?</p>
+<ul class="task-list">
+<li class="task-list-item">
+<p> Feste Versions-Tags veröffentlichen und im Betrieb darauf verweisen.</p>
+
+</li>
+<li class="task-list-item">
+<p> Das Tag <code>latest</code> nach jedem Push zusätzlich mit einem Datum versehen.</p>
+
+</li>
+<li class="task-list-item">
+<p> Die Registry so einstellen, dass sie jeden Push automatisch aufbewahrt.</p>
+
+</li>
+<li class="task-list-item">
+<p> Auf das Pinnen verzichten, damit immer die neuesten Korrekturen ankommen.</p>
+
+</li>
+</ul>
+</li>
+<li>
+<p>Dein Dockerfile kopiert erst den gesamten Code, dann installiert es die Abhängigkeiten. Du änderst eine Zeile Code und baust neu.</p>
+<p>Warum dauert der Bau so lange wie beim ersten Mal?</p>
+<ul class="task-list">
+<li class="task-list-item">
+<p> Weil der geänderte Layer alle folgenden Layer ungültig macht.</p>
+
+</li>
+<li class="task-list-item">
+<p> Weil der Build-Cache nach jeder Änderung am Arbeitsverzeichnis verworfen wird.</p>
+
+</li>
+<li class="task-list-item">
+<p> Weil <code>pip</code> bei jedem Lauf prüft, ob es neuere Fassungen der Pakete gibt.</p>
+
+</li>
+<li class="task-list-item">
+<p> Weil ein Layer mit kopierten Dateien grundsätzlich nicht zwischengespeichert wird.</p>
+
+</li>
+</ul>
+</li>
+<li>
+<p>Ein Dockerfile installiert in einer Zeile ein Paket und löscht in der nächsten die Paketlisten.</p>
+<p>Warum ist das Image trotzdem nicht kleiner?</p>
+<ul class="task-list">
+<li class="task-list-item">
+<p> Weil der frühere Layer bleibt und der spätere die Dateien nur überdeckt.</p>
+
+</li>
+<li class="task-list-item">
+<p> Weil das Löschen erst beim Start des Containers wirksam wird.</p>
+
+</li>
+<li class="task-list-item">
+<p> Weil die Paketlisten im Basis-Image liegen und dort nicht erreichbar sind.</p>
+
+</li>
+<li class="task-list-item">
+<p> Weil Docker gelöschte Dateien zur Sicherheit aufbewahrt, bis das Image gepusht wird.</p>
+
+</li>
+</ul>
+</li>
+</ol>
 </div>
-
 <h2 id="wie-es-weitergeht">Wie es weitergeht</h2>
-
 <ul>
-  <li><strong>Ab 85 % richtig – Sitzt.</strong> Die Grundlagen tragen. Nimm Dir für den nächsten Schritt die Best Practices vor – und bau Dein erstes eigenes Projekt-Image um.</li>
-  <li><strong>Ab 60 % richtig – Gutes Fundament.</strong> Das Meiste sitzt. Geh die Stellen, bei denen Du geschwankt hast, noch einmal an: Der Lebenszyklus und die zwölf Faktoren klären die meisten Rückfragen.</li>
-  <li><strong>Unter 60 % – Noch Luft.</strong> Fang bei zwei Seiten an: dem Lebenszyklus eines Containers und den zwölf Faktoren. Fast alles Weitere hängt an diesen beiden.</li>
+<li><strong>Ab 85 % richtig – Sitzt.</strong> Die Grundlagen tragen. Nimm Dir für den nächsten Schritt die Best Practices vor – und bau Dein erstes eigenes Projekt-Image um.</li>
+<li><strong>Ab 60 % richtig – Gutes Fundament.</strong> Das Meiste sitzt. Geh die Stellen, bei denen Du geschwankt hast, noch einmal an: Der Lebenszyklus und die zwölf Faktoren klären die meisten Rückfragen.</li>
+<li><strong>Unter 60 % – Noch Luft.</strong> Fang bei zwei Seiten an: dem Lebenszyklus eines Containers und den zwölf Faktoren. Fast alles Weitere hängt an diesen beiden.</li>
 </ul>
 
+    </main><aside class="skr-guide-sidebar">
+  <details class="skr-guide-side skr-guide-side--toc skr-fold" data-skr-toc-box
+           data-skr-toc-limit="12" open hidden>
+    <summary class="skr-guide-side__label">Auf dieser Seite</summary>
+    <nav class="skr-toc skr-fold__body" data-skr-toc aria-label="Inhaltsverzeichnis"></nav>
+  </details>
+  <template data-skr-sidebar-cards></template>
+</aside>
 
-    </main><aside class="avd-academy-guide-sidebar"><details class="avd-academy-guide-side avd-academy-guide-side--toc avd-academy-fold" data-avd-academy-toc-box
-               data-avd-academy-toc-grenze="12" open hidden>
-        <summary class="avd-academy-guide-side__label">Auf dieser Seite</summary>
-        <nav class="avd-academy-toc avd-academy-fold__body" data-avd-academy-toc aria-label="Inhaltsverzeichnis"></nav>
-      </details>
-    </aside>
-  </div><div class="avd-academy-print-contact" aria-hidden="true">
-    <span>Kontakt: https://academy.atvantage-academy.workers.dev/</span>
-    <span>academy@atvantage.com</span>
   </div>
+  <div class="skr-print-contact" aria-hidden="true">
+  <span>Kontakt: https://www.atvantage.com</span>
+  <span>academy@atvantage.com</span>
+</div>
 
-  <footer class="avd-academy-footer">
-  <div class="avd-academy-footer__grid">
+<footer class="skr-footer">
+  <div class="skr-footer__grid">
     <div><strong>Containertechnologien (Academy)</strong>
       <p>Schulungsunterlagen der ATVANTAGE Academy.</p>
     </div><div>
       <strong>Kontakt</strong>
-      <p><a href="https://academy.atvantage-academy.workers.dev/" target="_blank" rel="noopener">Website</a><br><a href="mailto:academy@atvantage.com">academy@atvantage.com</a><br>
+      <p><a href="https://www.atvantage.com" target="_blank" rel="noopener">Website</a><br><a href="mailto:academy@atvantage.com">academy@atvantage.com</a><br>
       </p>
     </div></div>
-  <div class="avd-academy-footer__legal">
-    © <span data-avd-academy-year>2026</span> ATVANTAGE
+  <div class="skr-footer__legal">
+    © <span data-skr-year>2026</span> ATVANTAGE
   </div>
 </footer>
 

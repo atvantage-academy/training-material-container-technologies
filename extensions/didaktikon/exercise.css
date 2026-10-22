@@ -1,0 +1,23 @@
+/* Skriptorium: in der Schicht skr.extensions – extensions/didaktikon/exercise.css. */
+@layer skr.tokens, skr.base, skr.components, skr.theme, skr.extensions;
+@layer skr.extensions {
+.skr-didaktikon-content-top > * + *,
+.skr-didaktikon-content-after > * + * { margin-top: var(--skr-rhythm-block); }
+.skr-didaktikon-content-top > :is(h1, h2, h3, h4, h5, h6) + *,
+.skr-didaktikon-content-after > :is(h1, h2, h3, h4, h5, h6) + * { margin-top: var(--skr-rhythm-heading); }
+
+.skr-didaktikon-user-story {
+  font-size: 1.125rem;
+  color: var(--skr-color-headline);
+}
+
+.skr-didaktikon-objectives { border-left-color: var(--skr-color-primary); }
+.skr-didaktikon-objectives > h2 { margin-top: 0; }
+.skr-didaktikon-objectives > :last-child { margin-bottom: 0; }
+
+/* Folgen Lernziele und Definition of Done aufeinander, rücken sie zusammen. Die Lernziele
+   stehen als letzter Block in der Hülle von content.top, die Definition of Done danach. */
+.skr-didaktikon-content-top:has(> .skr-didaktikon-objectives:last-child) + .skr-guide-done {
+  margin-top: calc(-1 * var(--skr-space-2));
+}
+}

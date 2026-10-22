@@ -1,0 +1,144 @@
+/* =========================================================================
+   BEST PRACTICES ALS KARTE
+   Nur Anordnung und Zustand. Alle Farben aus den Tokens des Skriptoriums (`--skr-*`).
+   ========================================================================= */
+.bp__map {
+  position: relative;
+  aspect-ratio: 1280 / 620;
+  margin: var(--skr-space-8) 0;
+}
+.bp__links {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.bp__link {
+  fill: none;
+  stroke: var(--skr-color-border);
+  stroke-width: 2;
+}
+
+/* Knoten sitzen auf denselben Koordinaten wie die Linien darunter. */
+.bp__node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font: inherit;
+  color: var(--skr-color-ink);
+  background: var(--skr-color-bg);
+  border: 2px solid var(--skr-color-border);
+  border-radius: var(--skr-radius);
+  padding: 0.35rem 0.7rem;
+  cursor: pointer;
+  text-align: left;
+  line-height: 1.25;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.bp__node:hover,
+.bp__node:focus-visible {
+  border-color: var(--skr-color-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--skr-color-accent) 32%, transparent);
+}
+.bp__node:focus-visible { outline: none; }
+@media (prefers-reduced-motion: reduce) {
+  .bp__node { transition: none; }
+}
+
+.bp__center {
+  background: var(--skr-color-accent-soft);
+  border-color: var(--skr-color-accent);
+  color: var(--skr-color-accent-ink);
+  font-weight: var(--skr-fw-bold);
+  font-size: var(--skr-fs-md);
+  padding: 0.6rem 1.1rem;
+}
+.bp__branch {
+  background: var(--skr-color-bg-subtle);
+  font-weight: var(--skr-fw-bold);
+}
+.bp__leaf { font-size: var(--skr-fs-sm); max-width: 19%; }
+/* Die Blätter wachsen nach außen, nicht über die Mitte: Der Ankerpunkt ist
+   die INNERE Kante, dort endet auch die Linie. */
+.bp__leaf--links { transform: translate(-100%, -50%); }
+.bp__leaf--rechts { transform: translate(0, -50%); }
+/* Die vier, die man zuerst angeht. */
+.bp__leaf--key { border-color: var(--skr-color-accent); border-width: 2px; }
+.bp__leaf--key::after {
+  content: "★";
+  margin-left: 0.35rem;
+  color: var(--skr-color-accent-ink);
+}
+
+/* --- Schmal: aus der Karte wird eine Liste ------------------------------ */
+@media (max-width: 62rem) {
+  .bp__map { aspect-ratio: auto; display: flex; flex-direction: column; gap: var(--skr-space-2); align-items: flex-start; }
+  .bp__links { display: none; }
+  .bp__node { position: static; transform: none; max-width: 100%; }
+  .bp__leaf { margin-left: var(--skr-space-6); max-width: 100%; }
+}
+
+/* --- Die Erläuterungen -------------------------------------------------- */
+.bp__detail {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 60;
+  width: min(44rem, 92vw);
+  max-height: 86vh;
+  overflow-y: auto;
+  padding: var(--skr-space-6);
+  background: var(--skr-color-bg);
+  border: 2px solid var(--skr-color-accent);
+  border-radius: var(--skr-radius-lg);
+  box-shadow: 0 1.5rem 3rem rgb(0 0 0 / 0.25);
+}
+.bp__detail > :first-child { margin-top: 0; }
+.bp__detail > :last-child { margin-bottom: 0; }
+.bp__question { color: var(--skr-color-ink-muted); font-style: italic; }
+.bp__badge {
+  display: inline-block;
+  padding: 0 var(--skr-space-2);
+  border-radius: var(--skr-radius-sm);
+  background: var(--skr-color-accent-soft);
+  color: var(--skr-color-accent-ink);
+  font-size: var(--skr-fs-sm);
+  font-weight: var(--skr-fw-medium);
+}
+.bp__code {
+  overflow-x: auto;
+  padding: var(--skr-space-2) var(--skr-space-3);
+  border-radius: var(--skr-radius-sm);
+  background: var(--skr-code-bg);
+  font-family: var(--skr-font-mono);
+  font-size: var(--skr-fs-sm);
+  white-space: pre;
+}
+.bp__backdrop { position: fixed; inset: 0; z-index: 50; background: rgb(0 0 0 / 0.5); }
+.bp__print-only { display: none; }
+
+/* --- Druck: linear und vollständig -------------------------------------- */
+@media print {
+  /* Die Bedienhinweise und der Sternhinweis gehören zur Karte – ohne sie sind
+     sie auf Papier gegenstandslos. */
+  .bp__map,
+  .bp__screen-only { display: none; }
+  .bp__print-only { display: block; }
+  .bp__detail[hidden] { display: block; }
+  .bp__detail {
+    position: static;
+    transform: none;
+    width: auto;
+    max-height: none;
+    overflow: visible;
+    box-shadow: none;
+    border: 0;
+    border-top: 1px solid var(--skr-color-border);
+    border-radius: 0;
+    padding: var(--skr-space-3) 0 0;
+    margin-top: var(--skr-space-4);
+    break-inside: avoid;
+  }
+  .bp__backdrop { display: none !important; }
+}

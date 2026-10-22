@@ -1,0 +1,6 @@
+/* Skriptorium: in der Schicht skr.theme – themes/atvantage/tokens/fonts.css. */
+@layer skr.tokens, skr.base, skr.components, skr.theme, skr.extensions;
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap') layer(skr.theme);
+@layer skr.theme {
+
+}

@@ -1,0 +1,317 @@
+/* Skriptorium: in der Schicht skr.components – skriptorium/site.css. */
+@layer skr.tokens, skr.base, skr.components, skr.theme, skr.extensions;
+@layer skr.components {
+body { min-height: 100vh; display: flex; flex-direction: column; }
+
+/* --- Skip-Link (Zugänglichkeit) ------------------------------------------- */
+.skr-skip-link {
+  position: absolute; left: var(--skr-space-2); top: -3rem;
+  background: var(--skr-color-primary); color: var(--skr-color-primary-contrast);
+  padding: var(--skr-space-2) var(--skr-space-4); border-radius: var(--skr-radius);
+  transition: top var(--skr-transition); z-index: 100;
+}
+.skr-skip-link:focus { top: var(--skr-space-2); }
+
+.skr-toc { display: flex; flex-direction: column; gap: 10px; }
+.skr-toc a { color: var(--skr-color-ink); text-decoration: none; font-size: 1rem; }
+.skr-toc a:hover { color: var(--skr-color-accent-text); }
+.skr-toc a[aria-current="true"] { color: var(--skr-color-accent-text); font-weight: 500; }
+.skr-toc .skr-toc--h3 { padding-left: 14px; font-size: 0.9375rem; }
+
+
+/* --- Suche in der Kopfzeile ------------------------------------------------
+   Markup: tools.html (`search`), Verhalten: search.js.
+   Das Icon ist ein gewöhnliches Seitenwerkzeug (`skr-tool`); hier steht
+   nur, was die Suche darüber hinaus braucht.
+
+   ZWEI DARSTELLUNGEN, EIN DIALOG. `data-open="expand"`: Der Dialog öffnet ohne
+   Modalität und klappt unter dem Icon auf. `data-open="dialog"`: Er öffnet modal
+   über der Seite – auf Wunsch der Site (`search.display: dialog`) und auf
+   schmalen Viewports immer. Das Skript entscheidet beim Öffnen. */
+.skr-search { position: relative; display: inline-flex; }
+.skr-search__dialog {
+  width: min(34rem, calc(100vw - 2rem));
+  max-height: min(70vh, 40rem);
+  padding: var(--skr-space-3);
+  border: 1px solid var(--skr-color-border);
+  border-radius: var(--skr-radius-lg);
+  background: var(--skr-topbar-bg);
+  color: var(--skr-color-ink);
+  box-shadow: var(--skr-shadow-2);
+  overflow: auto;
+}
+.skr-search[data-open="expand"] .skr-search__dialog {
+  position: absolute; inset: calc(100% + 10px) 0 auto auto;
+  margin: 0;
+  z-index: 60;
+}
+.skr-search[data-open="dialog"] .skr-search__dialog {
+  margin: 10vh auto auto;
+}
+.skr-search__dialog::backdrop { background: rgb(0 0 0 / .4); }
+@media (max-width: 600px) {
+  .skr-search[data-open="dialog"] .skr-search__dialog {
+    width: 100vw; max-width: 100vw; max-height: 100dvh;
+    margin: 0; border-radius: 0; border-width: 0 0 1px;
+  }
+}
+
+/* Die Leiste steht unten bündig: Über den Feldern sitzen ihre Beschriftungen, der
+   Schließen-Knopf hat keine und gehört auf die Höhe der Felder. */
+.skr-search__bar { display: flex; gap: var(--skr-space-2); align-items: flex-end; }
+.skr-search__field { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.skr-search__field[hidden] { display: none; }
+.skr-search__field--scope { flex: none; max-width: 12rem; }
+.skr-search__field--query { flex: 1 1 auto; }
+.skr-search__label {
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--skr-color-ink-muted);
+}
+.skr-search__scope,
+.skr-search__input {
+  min-height: 34px;
+  border: 1px solid var(--skr-color-border);
+  border-radius: var(--skr-radius);
+  background: var(--skr-color-bg);
+  color: var(--skr-color-ink);
+  font: inherit;
+}
+/* DIE AUSWAHL HEBT SICH VOM FELD AB: Sie stellt ein, das Feld nimmt Text auf.
+   Gemischt wird die Schriftfarbe in die Fläche des Dialogs – im hellen Schema ist
+   die Schrift dunkel, die Auswahl wird also dunkler, im dunklen umgekehrt. Eine
+   Regel für beide Schemata. `bg-subtle` reichte im dunklen nicht: Es liegt dort
+   kaum über der Fläche des Dialogs. */
+.skr-search__scope {
+  width: 100%;
+  padding: 0 var(--skr-space-2);
+  background: color-mix(in srgb, var(--skr-color-ink) 12%, var(--skr-topbar-bg));
+  color: var(--skr-color-headline);
+  font-weight: 500;
+  cursor: pointer;
+}
+.skr-search__input { width: 100%; padding: 0 var(--skr-space-3); }
+.skr-search__close { flex: none; font-size: 15px; }
+
+.skr-search__status {
+  margin: var(--skr-space-2) 0 0;
+  font-size: .875rem;
+  color: var(--skr-color-ink-muted);
+}
+.skr-search__status:empty { display: none; }
+.skr-search__results { list-style: none; margin: var(--skr-space-2) 0 0; padding: 0; }
+.skr-search__results:empty { display: none; }
+.skr-search__hit {
+  display: block;
+  padding: var(--skr-space-2) var(--skr-space-3);
+  border-radius: var(--skr-radius);
+  color: var(--skr-color-ink);
+  text-decoration: none;
+}
+.skr-search__hit:hover,
+.skr-search__hit:focus-visible { background: var(--skr-color-bg-subtle); }
+.skr-search__title { font-weight: 600; color: var(--skr-color-headline); }
+.skr-search__scope-tag {
+  margin-left: var(--skr-space-2);
+  font-size: .8125rem;
+  color: var(--skr-color-ink-muted);
+}
+.skr-search__snippet { display: block; margin-top: 2px; font-size: .875rem; line-height: 1.45; }
+/* Die Fundstelle trägt keine Farbe als einzige Auszeichnung: fett UND hinterlegt. */
+.skr-search__hit mark {
+  background: var(--skr-color-accent-soft);
+  color: inherit;
+  font-weight: 600;
+}
+
+/* NIE IM AUSDRUCK – weder Icon noch ein offener Dialog. */
+@media print {
+  .skr-search { display: none !important; }
+}
+
+/* --- Erkennungsmerkmal von 4.0 (ADR-0061) -----------------------------------
+   Zwei der drei Effekte; welche an sind, nennt `data-skr-effects` am <html>
+   (Schalter `effects.*`). Die Seitenübergänge stehen NICHT hier, sondern in
+   page-transitions.css – eine Seite ohne den Effekt darf keine einzige Regel davon
+   tragen.
+
+   BEIDE LAUFEN AM SCROLLEN, nicht an der Zeit (`animation-timeline: scroll()`): Sie
+   bewegen sich nur, wenn die Leserin selbst scrollt, und stehen still, wenn sie es nicht
+   tut. Darum bleiben sie auch unter `prefers-reduced-motion` – sie fügen keine Bewegung
+   hinzu, die nicht von ihr ausgeht. Ohne Scroll-Timeline (ältere Browser) greift keine
+   der Regeln: keine Linie, Kopfzeile deckend. */
+
+/* Durchscheinende Kopfzeile: oben deckend, ab den ersten 64 px Scrollweg leicht
+   durchscheinend mit Unschärfe und einer feinen Akzentkante. DECKKRAFT 88 %: Selbst über
+   einer weißen Fläche im dunklen bzw. einer schwarzen im hellen Schema bleibt der
+   Hintergrund der Navigation nah an `--skr-topbar-bg` (Mischung 88 : 12), und die
+   Unschärfe nimmt dem Durchscheinenden die Kanten – die Kontrastzusagen der Kopfzeile
+   gelten so weiter (Rechnung in ADR-0061).
+
+   HINTERGRUND UND UNSCHÄRFE AUF `::before`, NICHT AUF DER KOPFZEILE: Ein `backdrop-filter`
+   an ihr machte sie zum Bezugsrahmen für `position: fixed` – die seitlichen Menüs langer
+   Aufklappmenüs, die am Fenster hängen (ADR-0059), säßen dann an der Kopfzeile fest. Die
+   Kopfzeile ist durch `position: sticky` und `z-index` ohnehin eine eigene Stapelebene;
+   `z-index: -1` legt die Flächen hinter ihren Inhalt.
+
+   ZWEI SCHICHTEN, ANIMIERT WIRD NUR DIE DECKKRAFT (#339): `::before` ist die gescrollte
+   Fläche (durchscheinend, Unschärfe, Akzentkante), `::after` darüber die deckende Fläche
+   von oben (mit der gewohnten Kante); `::after` blendet über die ersten 64 px aus. Keine
+   Farbe steht in Keyframes: Der Browser rechnet Keyframe-Farben beim Start der Animation
+   aus und wertet `light-dark()` beim Wechsel des Farbschemas nicht neu aus – die Kopfzeile
+   blieb gescrollt bis zum Neuladen im alten Schema. Die Schichten reichen 1 px über den
+   Innenrand und tragen die Kante als Schatten an der Stelle der Randlinie. */
+@supports (animation-timeline: scroll()) {
+  [data-skr-effects~="translucent-header"] .skr-header {
+    background-color: transparent;
+    border-bottom-color: transparent;
+  }
+  [data-skr-effects~="translucent-header"] .skr-header::before,
+  [data-skr-effects~="translucent-header"] .skr-header::after {
+    content: ""; position: absolute; inset: 0 0 -1px 0; z-index: -1; pointer-events: none;
+  }
+  [data-skr-effects~="translucent-header"] .skr-header::before {
+    background-color: color-mix(in srgb, var(--skr-topbar-bg) 88%, transparent);
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+    backdrop-filter: blur(12px) saturate(1.4);
+    box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--skr-color-accent) 45%, var(--skr-border-soft));
+  }
+  [data-skr-effects~="translucent-header"] .skr-header::after {
+    background-color: var(--skr-topbar-bg);
+    box-shadow: inset 0 -1px 0 var(--skr-border-soft);
+    animation: skr-header-opaque linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 0 64px;
+  }
+}
+@keyframes skr-header-opaque {
+  to { opacity: 0; }
+}
+
+/* Lesefortschritt: 2 px in der Schulungsfarbe am oberen Rand, wächst von links mit dem
+   Scrollweg der Seite. Dekorativ (`aria-hidden`), ohne Skript. */
+.skr-reading-progress { display: none; }
+@supports (animation-timeline: scroll()) {
+  [data-skr-effects~="reading-progress"] .skr-reading-progress {
+    display: block;
+    position: fixed; inset: 0 0 auto 0; height: 2px; z-index: 30;
+    background: var(--skr-color-accent);
+    transform-origin: 0 50%; transform: scaleX(0);
+    pointer-events: none;
+    animation: skr-reading-progress linear both;
+    animation-timeline: scroll(root block);
+  }
+}
+@keyframes skr-reading-progress {
+  to { transform: scaleX(1); }
+}
+
+@media print {
+  .skr-reading-progress { display: none !important; }
+  .skr-header::after { animation: none !important; }
+}
+
+/* --- Kopfzeile auf schmalen Bildschirmen (#370) -----------------------------
+   Die volle Wortmarke passt neben Burger und Werkzeugen erst ab etwa 530 px (interne
+   Site mit Kennzeichen und allen Werkzeugen: gut 620 px). Darunter stauchte die
+   Flex-Zeile sie bis auf null – unsichtbar, aber Tab-Halt. Bis 768 px steht deshalb
+   die Bildmarke (header.html) an ihrer Stelle, die Marke schrumpft nie, und die
+   Abstände werden enger.
+
+   Bis 600 px – auf dem Handy – tritt der QR-Code der Kopfzeile zurück: Er bringt die
+   Adresse vom Beamer aufs Handy; auf dem Handy selbst braucht ihn niemand. Ein Tablet
+   behält ihn. Nur am Bildschirm; im Ausdruck steht er weiter (print.css).
+
+   Hier und nicht in components.css: Die Bildmarke ist Inneres der Kopfzeile ohne
+   öffentliche Zusage, kein Autorenbaustein. */
+.skr-header__mark { display: none; }
+@media screen and (max-width: 768px) {
+  .skr-header { gap: var(--skr-space-3); }
+  .skr-header__brand { flex: none; }
+  .skr-header__brand > :not(.skr-header__mark) { display: none; }
+  .skr-header__brand > .skr-header__mark { display: block; width: 28px; height: 28px; }
+  .skr-header .skr-header__badge { margin-left: calc(var(--skr-space-1) - var(--skr-space-3)); }
+}
+@media screen and (max-width: 600px) {
+  .skr-header__tools .skr-qr { display: none; }
+}
+
+/* --- QR-Code im Popup ------------------------------------------------------
+   Ein Klick auf den QR-Knopf der Werkzeugleiste öffnet ein modales `<dialog>`
+   (client.js): oben die Beschriftung des Knopfs und Schließen, darunter der
+   Code groß genug zum Scannen, darunter die Adresse, die er trägt. Mittig auf jeder
+   Breite; schmal nimmt es fast die ganze Breite. Der Code bleibt dunkel auf hell,
+   auch im dunklen Farbschema – invertiert lesen ihn viele Scanner nicht. */
+/* --- Auswahldialog (`skr.dialog` in client.js) -----------------------------
+   Eine Frage vor einem folgenreichen Schritt, gestaltet wie das QR-Popup darunter.
+   Inneres des Themes, keine Autorenkomponente. */
+.skr-dialog {
+  box-sizing: border-box;
+  width: min(92vw, 440px);
+  padding: var(--skr-space-6, 1.5rem);
+  background: var(--skr-color-bg);
+  color: var(--skr-color-ink);
+  border: 1px solid var(--skr-color-border);
+  border-radius: var(--radius-dark, 6px);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .35);
+}
+.skr-dialog::backdrop { background: rgba(2, 6, 23, .6); }
+.skr-dialog__title {
+  margin: 0 0 .75rem;
+  font-size: 1.05rem;
+  line-height: 1.35;
+  color: var(--skr-color-headline);
+}
+.skr-dialog__text { margin: 0 0 1.25rem; }
+.skr-dialog__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .6rem; }
+
+.skr-qr-dialog {
+  box-sizing: border-box;
+  width: min(92vw, 420px);
+  max-height: 92vh;
+  padding: var(--skr-space-6, 1.5rem);
+  background: var(--skr-color-bg);
+  color: var(--skr-color-ink);
+  border: 1px solid var(--skr-color-border);
+  border-radius: var(--radius-dark, 6px);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .35);
+}
+.skr-qr-dialog::backdrop { background: rgba(2, 6, 23, .6); }
+.skr-qr-dialog__head {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
+  margin-bottom: 1rem;
+}
+.skr-qr-dialog__title {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.35;
+  color: var(--skr-color-headline);
+}
+.skr-qr-dialog__code {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto;
+  padding: 8px;
+  background: var(--skr-color-primary-contrast);
+  border: 1px solid var(--skr-color-border);
+  border-radius: var(--skr-radius);
+}
+.skr-qr-dialog__code svg { display: block; width: 100%; height: auto; }
+.skr-qr-dialog__code svg rect { fill: var(--skr-color-primary-contrast); }
+.skr-qr-dialog__code svg path { fill: var(--skr-color-primary-dark); }
+/* Die Adresse vollständig und markierbar – sie bricht an jeder Stelle um, statt
+   das Popup zu verbreitern. */
+.skr-qr-dialog__url {
+  margin: 1rem 0 0;
+  font-family: var(--skr-font-mono, ui-monospace, monospace);
+  font-size: .85rem;
+  line-height: 1.45;
+  text-align: center;
+  overflow-wrap: anywhere;
+  user-select: all;
+  color: var(--skr-color-ink-muted);
+}
+@media print { .skr-qr-dialog { display: none; } }
+}

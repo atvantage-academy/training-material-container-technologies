@@ -1,204 +1,174 @@
-<!DOCTYPE html><html lang="de" data-avd-academy-effects="page-transitions translucent-header reading-progress">
+<!DOCTYPE html>
+<html lang="de" data-skr-effects="page-transitions translucent-header reading-progress">
 <head>
   <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>
-(function () {
-  try {
-    var t = localStorage.getItem("avd-academy-theme");
-    if (t === "dark" || t === "light") document.documentElement.setAttribute("data-avd-academy-theme", t);
-  } catch (e) {}
-  addEventListener("unhandledrejection", function (e) {
-    var r = e.reason;
-    if (r && r.name === "InvalidStateError" && /ViewTransition opt-in disabled/.test(r.message || "")) e.preventDefault();
-  });
-})();
-</script><title>Eine Datenbank konfigurieren · Containertechnologien (Academy)</title><meta name="description" content="Eine PostgreSQL-Datenbank allein über Umgebungsvariablen einrichten, zwei Container aus demselben Image betreiben – und die Daten in ein Volume retten."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta name="skr-root" content="../../">
+<script src="../../skriptorium/skr.js?v=dfcd09dd"></script>
+<title>Eine Datenbank konfigurieren · Containertechnologien (Academy)</title>
+<meta name="description" content="Eine PostgreSQL-Datenbank allein über Umgebungsvariablen einrichten, zwei Container aus demselben Image betreiben – und die Daten in ein Volume retten.">
+
+<meta property="og:site_name" content="Containertechnologien (Academy)">
 <meta property="og:title" content="Eine Datenbank konfigurieren">
 <meta property="og:description" content="Eine PostgreSQL-Datenbank allein über Umgebungsvariablen einrichten, zwei Container aus demselben Image betreiben – und die Daten in ein Volume retten.">
-<meta property="og:type" content="article"><link rel="preload" href="/training-material-container-technologies/theme/academy/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/fonts.css?v=d37c8ecb"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/tokens/colors.css?v=b0afc83e">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/tokens/typography.css?v=1b512d1a">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/tokens/spacing.css?v=ffc57a80">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/tokens/components.css?v=fb3020a8">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/tokens/base.css?v=01ad66fa"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=e7c08f24">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=32c1897e">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=60856a0a">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=63868197"><style>
-:where(.avd-academy-guide-main a[href*="docker.com"]) {
-  position: relative;
-  padding-left: 1.35em;
-}
-:where(.avd-academy-guide-main a[href*="docker.com"])::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: .18em;
-  width: 1em;
-  height: 1em;
-  background: center / contain no-repeat;
-  background-image: none;
-  background-color: currentColor;
-  mask-image: url("/training-material-container-technologies/assets/icons/docker.svg");
-  mask-repeat: no-repeat;
-  mask-position: center;
-  mask-size: contain;
-}
-.avd-academy-linkmark--none :where(.avd-academy-guide-main a[href*="docker.com"]),
-:where(.avd-academy-guide-main a[href*="docker.com"]).avd-academy-linkmark--none { padding-left: 0; }
-</style><link rel="stylesheet" media="print" href="/training-material-container-technologies/theme/academy/print.css?v=fa38b084">
-<meta name="generator" content="ATVANTAGE Academy Theme 4.5.4">
-<script type="application/json" id="avd-academy-build-info">{"theme":"4.5.4","schemas":{"config":"1.3.0","frontmatter":"1.1.0","layout":"1.0.0"},"audience":"learner","languages":["de"],"internal":false}</script><script type="application/json" id="avd-academy-page-info">{"pageId":null,"language":"de","url":"/training-material-container-technologies/docker-grundlagen/konfiguration-und-zustand/issue.html","title":"Eine Datenbank konfigurieren","layout":"guide","description":"Eine PostgreSQL-Datenbank allein über Umgebungsvariablen einrichten, zwei Container aus demselben Image betreiben – und die Daten in ein Volume retten.","duration":45,"topics":["Umgebungsvariablen","Volumes","12-Factor-App","Zustandslosigkeit"],"languages":["de"],"clientApi":"full","defaultLanguage":"de","siteIndex":"/training-material-container-technologies/theme/site.json"}</script>
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=b1738f9e" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=514cf6b3" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/search-trail.js?v=c7eb3d26" data-avd-academy-search-trail
-        data-base="/training-material-container-technologies/" data-index="/training-material-container-technologies/theme/search/de.json?v=1792670141" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=2b412283">
-<script type="module">
-  const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
-  const _hlsprachen = ["java", "http", "json", "xml"];
-  Promise.all([import(_hlbase + "core.min.js"), ..._hlsprachen.map((s) => import(_hlbase + s + ".min.js"))])
-    .then(([core, ...grammatiken]) => {
-      const hljs = core.default;
-      _hlsprachen.forEach((s, i) => hljs.registerLanguage(s, grammatiken[i].default));
-      const _auswahl = _hlsprachen.map((s) => "pre code.language-" + s).join(",");
-      const _faerben = (wurzel) => (wurzel || document)
-        .querySelectorAll(_auswahl)
-        .forEach((el) => { if (!el.dataset.highlighted) { hljs.highlightElement(el); } });
-      _faerben(document);
-      window.AvdHighlight = { hljs, apply: _faerben, languages: _hlsprachen.slice() };
-      document.dispatchEvent(new CustomEvent("avd-academy-highlight-ready"));
-      document.querySelectorAll("pre code.language-http .hljs-number").forEach((el) => {
-        const code = parseInt(el.textContent, 10);
-        if (code >= 100 && code <= 599) {
-          el.classList.add("avd-academy-http-status--" + Math.floor(code / 100) + "xx");
-        }
-      });
-    });
-</script>
-<link rel="apple-touch-icon" sizes="180x180" href="/training-material-container-technologies/theme/atvantage/assets/icon-180.png">
-<link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
-<link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
+<meta property="og:type" content="article">
+<link rel="preload" href="../../themes/atvantage/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../themes/default/theme.css?v=b795c99c">
+<link rel="stylesheet" href="../../themes/atvantage/fonts.css?v=0f189d71">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/colors.css?v=8ed47a94">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/typography.css?v=6445d4d3">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/spacing.css?v=58e35278">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/components.css?v=3fcd65a3">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/base.css?v=b47b1e2d">
+<link rel="stylesheet" href="../../themes/atvantage/theme.css?v=e7026433">
+<link rel="stylesheet" href="../../themes/didaktikon/theme.css?v=4a593b58">
+<link rel="stylesheet" href="../../skriptorium/tokens.css?v=e74fbfe2">
+<link rel="stylesheet" href="../../extensions/didaktikon/tokens.css?v=5966d76a">
+<link rel="stylesheet" href="../../skriptorium/base.css?v=86e37c43">
+<link rel="stylesheet" href="../../skriptorium/components.css?v=b86ac9ad">
+<link rel="stylesheet" href="../../skriptorium/doclinks.css?v=2ef23515">
+<link rel="stylesheet" href="../../skriptorium/linkmarks.css?v=31148a87">
+<link rel="stylesheet" href="../../skriptorium/site.css?v=d11b6ac6">
+<link rel="stylesheet" href="../../skriptorium/logo.css?v=43a7fbaf">
+<link rel="stylesheet" href="../../skriptorium/guide.css?v=d99cc970">
+<link rel="stylesheet" media="print" href="../../skriptorium/print.css?v=856e77e0">
+<meta name="generator" content="Skriptorium 1.5.0">
+<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"1.0.0"}],"internal":false,"languages":["de"],"skriptorium":"1.5.0","theme":"didaktikon","themes":[{"name":"didaktikon","version":"1.0.0"},{"name":"atvantage","version":"1.0.0"},{"name":"default","version":"1.5.0"}]}</script>
+<script type="application/json" id="skr-page-info">{"clientApi":"full","defaultLanguage":"de","description":"Eine PostgreSQL-Datenbank allein über Umgebungsvariablen einrichten, zwei Container aus demselben Image betreiben – und die Daten in ein Volume retten.","duration":45,"fields":{"didaktikon":{"objectives":["Du nutzt Umgebungsvariablen, um einen Container umgebungsspezifisch zu konfigurieren.","Du richtest eine PostgreSQL-Datenbank ein.","Du überprüfst die Log-Ausgabe eines Containers, um einen Fehler zu finden.","Du legst ein **Volume** an und weist nach, dass Daten darin das Löschen des Containers überleben."],"reflective_questions":["Woher weißt Du, welche Umgebungsvariablen ein fremdes Image auswertet? Was passiert, wenn Du einen Namen falsch schreibst?","Mit dem Volume haben Deine Daten das Löschen des Containers überlebt. **Wo liegen sie jetzt eigentlich**, und wem gehören sie? Was wäre ohne Volume passiert?","Wo landen die Log-Ausgaben der Datenbank, und warum ist das für eine Betriebsplattform praktischer als eine Logdatei im Container?","Aus welchen Gründen ist `POSTGRES_PASSWORD_FILE` besser als `POSTGRES_PASSWORD`?"],"user_story":"**Als** Entwickler **möchte ich** eine Datenbank einrichten, ohne ihr Image anzufassen, **damit** dasselbe Artefakt in Entwicklung, Test und Produktion unterschiedlich arbeiten kann."},"skriptorium":{"definition_of_done":["In einem Container läuft eine Datenbank.","Die Tabellen sind angelegt und im Container mit `psql` abrufbar.","Die Datenbank ist auch außerhalb des Containers erreichbar.","Die Daten der Datenbank sind auch nach Löschen und Neuerzeugen des Containers vorhanden."]}},"language":"de","languages":["de"],"layout":"didaktikon.exercise","pageId":null,"runtimeFragments":null,"siteIndex":"/skriptorium/site.json","title":"Eine Datenbank konfigurieren","topics":["Umgebungsvariablen","Volumes","12-Factor-App","Zustandslosigkeit"],"url":"/docker-grundlagen/konfiguration-und-zustand/issue.html"}</script>
+<script type="application/json" id="skr-texts">{"didaktikon.capture":"Capture-Modus","didaktikon.captureExit":"beenden","didaktikon.captureText":"Text einblenden","didaktikon.crosswordAcross":"Waagerecht","didaktikon.crosswordCellAcross":"{number} waagerecht, Buchstabe {position}","didaktikon.crosswordCellDown":"{number} senkrecht, Buchstabe {position}","didaktikon.crosswordDown":"Senkrecht","didaktikon.crosswordHintLetter":"Tipp: Buchstabe","didaktikon.crosswordHintWord":"Tipp: Wort","didaktikon.crosswordRestart":"Neu beginnen","didaktikon.crosswordRestartText":"Deine Eingaben in diesem Rätsel werden gelöscht.","didaktikon.crosswordRestartTitle":"Kreuzworträtsel neu beginnen?","didaktikon.crosswordReveal":"Auflösen","didaktikon.crosswordRevealText":"Alle Felder werden ausgefüllt.","didaktikon.crosswordRevealTitle":"Kreuzworträtsel auflösen?","didaktikon.crosswordSolution":"Lösungswort","didaktikon.crosswordSolutionCell":"Lösungswort, Buchstabe {position}","didaktikon.crosswordSolved":"Gelöst – alle Begriffe stimmen.","didaktikon.doclinkCrossword":"Kreuzworträtsel","didaktikon.doclinkExercise":"Übung","didaktikon.doclinkQuiz":"Wissens-Check","didaktikon.doclinkSimulation":"Simulation","didaktikon.doclinkVisualization":"Visualisierung","didaktikon.exerciseObjectives":"Lernziele","didaktikon.exerciseQuestionsDone":"Du hast die Kontrollfragen beantwortet","didaktikon.exerciseReflectiveQuestions":"Reflexionsfragen","didaktikon.quizAgain":"Noch einmal","didaktikon.quizCorrect":"Richtig.","didaktikon.quizCorrectCount":"{count} richtig","didaktikon.quizCorrectWouldBe":"Richtig wäre gewesen:","didaktikon.quizDone":"Fertig","didaktikon.quizEvaluate":"Auswertung","didaktikon.quizNext":"Weiter","didaktikon.quizProgress":"Fortschritt","didaktikon.quizQuestionOf":"Frage {current} von {total}","didaktikon.quizRestart":"Neu beginnen","didaktikon.quizRestartText":"Deine Antworten in diesem Wissens-Check werden gelöscht.","didaktikon.quizRestartTitle":"Wissens-Check neu beginnen?","didaktikon.quizResult":"{correct} von {total} richtig","didaktikon.quizResultLong":"{correct} von {total} Fragen richtig","didaktikon.quizWrong":"Nicht ganz.","didaktikon.scenarios":"Szenarien","didaktikon.simAllScenarios":"Alle Szenarien (Taste 0)","didaktikon.simControls":"Simulation steuern","didaktikon.simNext":"Schritt vor (→)","didaktikon.simNextAria":"Schritt vor","didaktikon.simOverview":"Übersicht","didaktikon.simPause":"Pause (Leertaste)","didaktikon.simPauseAria":"Pause","didaktikon.simPlay":"Abspielen (Leertaste)","didaktikon.simPlayAria":"Abspielen","didaktikon.simPrev":"Schritt zurück (←)","didaktikon.simPrevAria":"Schritt zurück","didaktikon.simPrintHint":"Diese Simulation lebt von der Bewegung. Auf Papier steht nur der gerade sichtbare Schritt – der QR-Code oben führt zurück zur laufenden Fassung.","didaktikon.simReset":"Zurück auf Anfang (Taste R)","didaktikon.simResetAria":"Zurück auf Anfang","didaktikon.simScenarioCount":"{count} Szenarien","didaktikon.simScenarioKey":"{title} (Taste {number})","didaktikon.simScenarioTitle":"Szenario {number}","didaktikon.simSpeed":"Tempo wählen (Taste T)","didaktikon.simSpeedAria":"Tempo wählen","didaktikon.simSpeedMenu":"Tempo","didaktikon.simStepCount":"{count} Schritte","didaktikon.simStepCountOne":"{count} Schritt","didaktikon.simStepCounter":"Schritt {current} / {total}","didaktikon.speedFast":"zügig","didaktikon.speedNormal":"normal","didaktikon.speedSlow":"langsam","didaktikon.speedTurbo":"im Zeitraffer","didaktikon.speedValue":"{speed}×","didaktikon.stepNote":"Erklärung zum aktuellen Schritt"}</script>
 
-  <link rel="stylesheet" href="/training-material-container-technologies/theme/academy/guide.css?v=590fafce">
-<style>@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }</style>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/page-transitions.css?v=83436606">
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=4a155a65"></head><body class="avd-academy-guide">
-<div class="avd-academy-reading-progress" aria-hidden="true"></div>
-  <a class="avd-academy-skip-link" href="#avd-academy-content">Zum Inhalt springen</a><div class="avd-academy-metanav"><span>ATVANTAGE Academy</span>
-  </div>
+<script src="../../skriptorium/client.js?v=82492cae" defer></script>
+<script src="../../skriptorium/site.js?v=6472c794" defer></script>
+<script src="../../skriptorium/search-trail.js?v=31279378" data-skr-search-trail
+        data-base="../../" data-index="../../skriptorium/search/de.json?v=07ea62a4" defer></script>
+<link rel="stylesheet" href="../../skriptorium/highlight.css?v=f8a3fc05">
+<script type="module" src="../../skriptorium/highlight.js?v=0b2d40aa" data-skr-highlight="[&#34;bash&#34;,&#34;dockerfile&#34;,&#34;python&#34;,&#34;sql&#34;,&#34;yaml&#34;]"></script>
+<link rel="apple-touch-icon" sizes="180x180" href="../../themes/atvantage/assets/icon-180.png">
+<link rel="icon" sizes="32x32" href="../../themes/atvantage/assets/icon-32.png">
+<link rel="icon" sizes="16x16" href="../../themes/atvantage/assets/icon-16.png">
 
-  <header class="avd-academy-header"
-        data-avd-academy-menu-visible="7" data-avd-academy-menu-speed="1.0" data-avd-academy-header><a class="avd-academy-header__brand" href="/training-material-container-technologies/" aria-label="Startseite"><img class="avd-academy-header__logo" src="/training-material-container-technologies/assets/logo-schulung.svg" alt="ATVANTAGE Academy"><span class="avd-academy-header__logo-mask" role="img" aria-label="ATVANTAGE Academy"
-          style="--avd-academy-logo-src: url('/training-material-container-technologies/assets/logo-schulung.svg'); --avd-academy-logo-ratio: 260 / 24;"></span><img class="avd-academy-header__mark" src="/training-material-container-technologies/theme/atvantage/assets/icon-180.png" alt="">
-  </a><button class="avd-academy-tool avd-academy-header__burger" data-avd-academy-nav-toggle="#avd-academy-main-nav"
-          aria-label="Navigation umschalten" aria-expanded="false">☰</button><nav class="avd-academy-header__nav" id="avd-academy-main-nav">
-      <a href="/training-material-container-technologies/">Start</a><div class="avd-academy-header__group" data-avd-academy-menu>
-        <button type="button" class="avd-academy-header__grouptoggle"
-                aria-expanded="false" aria-haspopup="true">Allgemeines<span class="avd-academy-header__caret" aria-hidden="true">▾</span></button>
-        <div class="avd-academy-header__submenu" role="menu">
-          <a role="menuitem" href="/training-material-container-technologies/shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a>
+  <style>@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }</style>
+  <link rel="stylesheet" href="../../skriptorium/page-transitions.css?v=716872f0">
+<link rel="stylesheet" href="../../skriptorium/guide-layout.css?v=04cc011a">
+<link rel="stylesheet" href="../../extensions/didaktikon/exercise.css?v=d44ba6e9">
+<script src="../../skriptorium/guide-layout.js?v=207db517" defer></script>
+
+
+</head><body class="skr-guide" data-skr-layout="didaktikon.exercise" data-skr-layouts="didaktikon.exercise skriptorium.guide skriptorium.page" data-skr-lang="de" data-skr-audience="learner">
+<div class="skr-reading-progress" aria-hidden="true"></div>
+  <a class="skr-skip-link" href="#skr-content">Zum Inhalt springen</a>
+  <div class="skr-metanav"><span>ATVANTAGE Academy</span></div>
+  <header class="skr-header"
+        data-skr-menu-visible="7" data-skr-menu-speed="1" data-skr-header>
+  <a class="skr-header__brand" href="../../" aria-label="Startseite"><img class="skr-header__logo" src="../../themes/didaktikon/assets/logo-schulung.svg" alt="ATVANTAGE Academy"><span class="skr-header__logo-mask" role="img" aria-label="ATVANTAGE Academy" data-skr-logo-mask></span><img class="skr-header__mark" src="../../themes/atvantage/assets/icon-180.png" alt="">
+  </a>
+  <button class="skr-tool skr-header__burger" data-skr-nav-toggle="#skr-main-nav"
+          aria-label="Navigation umschalten" aria-expanded="false"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  <nav class="skr-header__nav" id="skr-main-nav">
+      <a href="../../">Start</a>
+      <div class="skr-header__group" data-skr-menu>
+        <button type="button" class="skr-header__grouptoggle"
+                aria-expanded="false" aria-haspopup="true">Allgemeines<span class="skr-header__caret" aria-hidden="true"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path fill="currentColor" stroke="none" d="M5 8h14l-7 9z"/></svg></span></button>
+        <div class="skr-header__submenu" role="menu">
+          <a role="menuitem" href="../../shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a>
         </div>
       </div>
-      <a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a>
-  </nav><div class="avd-academy-header__tools"><div class="avd-academy-search" data-avd-academy-search hidden
-             data-mode="expand" data-shortcut="double_shift"
-             data-index="/training-material-container-technologies/theme/search/de.json?v=1792670141"
-             data-base="/training-material-container-technologies/">
-          <button type="button" class="avd-academy-tool avd-academy-tool--search" data-avd-academy-search-toggle
-                  aria-expanded="false" aria-controls="avd-academy-search-dialog"
-                  title="Suchen (zweimal Shift)" aria-label="Suchen"><svg viewBox="0 0 24 24" width="1em" height="1em"
-                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"
-                  ><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button>
-          <dialog class="avd-academy-search__dialog" id="avd-academy-search-dialog" aria-label="Suchen">
-            <div class="avd-academy-search__bar" role="search"><label class="avd-academy-search__field avd-academy-search__field--scope" hidden>
-                <span class="avd-academy-search__label">Bereich</span>
-                <select class="avd-academy-search__scope">
-                  <option value="">Alle</option>
-                </select>
-              </label>
-              <label class="avd-academy-search__field avd-academy-search__field--query">
-                <span class="avd-academy-search__label">Suchbegriff</span>
-                <input type="search" class="avd-academy-search__input"
-                       placeholder="Diese Site durchsuchen" autocomplete="off" spellcheck="false"
-                       aria-describedby="avd-academy-search-status">
-              </label>
-              <button type="button" class="avd-academy-tool avd-academy-search__close" data-avd-academy-search-close
-                      title="Suche schließen" aria-label="Suche schließen">✕</button>
-            </div>
-            <p class="avd-academy-search__status" id="avd-academy-search-status" data-avd-academy-search-status role="status"></p>
-            <ul class="avd-academy-search__results" data-avd-academy-search-results aria-label="Suchergebnisse"></ul>
-          </dialog>
-        </div>
-        <script src="/training-material-container-technologies/theme/jekyll/search.js?v=4b72be9e" defer></script><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
-                title="Diese Seite auf Deinem Smartphone öffnen"
-                aria-label="Diese Seite auf Deinem Smartphone öffnen"></button><button type="button" class="avd-academy-tool avd-academy-tool--theme" data-avd-academy-theme-toggle
-              title="Farbschema umschalten (hell/dunkel)"
-              aria-label="Dunkles Farbschema">◐</button></div>
+      <a href="../../docker-grundlagen/">Docker-Grundlagen</a>
+  </nav>
+  <div class="skr-header__tools">
+<div class="skr-search" data-skr-search hidden
+     data-mode="expand" data-shortcut="double_shift"
+     data-index="../../skriptorium/search/de.json?v=07ea62a4"
+     data-base="../../">
+  <button type="button" class="skr-tool skr-tool--search" data-skr-search-toggle
+          aria-expanded="false" aria-controls="skr-search-dialog"
+          title="Suchen (zweimal Umschalt)" aria-label="Suchen"><svg viewBox="0 0 24 24" width="1em" height="1em"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"
+          ><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button>
+  <dialog class="skr-search__dialog" id="skr-search-dialog" aria-label="Suchen">
+    <div class="skr-search__bar" role="search"><label class="skr-search__field skr-search__field--scope" hidden>
+        <span class="skr-search__label">Bereich</span>
+        <select class="skr-search__scope">
+          <option value="">Alle</option>
+        </select>
+      </label>
+      <label class="skr-search__field skr-search__field--query">
+        <span class="skr-search__label">Suchbegriff</span>
+        <input type="search" class="skr-search__input"
+               placeholder="Diese Site durchsuchen" autocomplete="off" spellcheck="false"
+               aria-describedby="skr-search-status">
+      </label>
+      <button type="button" class="skr-tool skr-search__close" data-skr-search-close
+              title="Suche schließen" aria-label="Suche schließen"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <p class="skr-search__status" id="skr-search-status" data-skr-search-status role="status"></p>
+    <ul class="skr-search__results" data-skr-search-results aria-label="Suchergebnisse"></ul>
+  </dialog>
+</div>
+<script src="../../skriptorium/search.js?v=07b9ef3e" defer></script>
+<button type="button" class="skr-qr" data-skr-qr hidden
+        title="Diese Seite auf Deinem Smartphone öffnen"
+        aria-label="Diese Seite auf Deinem Smartphone öffnen"></button>
+<button type="button" class="skr-tool skr-tool--theme" data-skr-theme-toggle
+        title="Farbschema umschalten (hell/dunkel)"
+        aria-label="Dunkles Farbschema"><svg viewBox="0 0 24 24" width="1em" height="1em"
+        fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"
+        ><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+</div>
 </header>
-<section class="avd-academy-guide-hero"
-           aria-labelledby="avd-academy-page-title"><nav class="avd-academy-guide-hero__crumbs" aria-label="Brotkrumen"><a href="/training-material-container-technologies/docker-grundlagen/">Docker-Grundlagen</a><span>/</span><span aria-current="page">Eine Datenbank konfigurieren</span></nav><div class="avd-academy-guide-hero__meta">
-      <div class="avd-academy-guide-hero__tags"><span class="avd-academy-tag avd-academy-tag--time">ca. 45 Minuten</span><span class="avd-academy-tag">Umgebungsvariablen</span><span class="avd-academy-tag">Volumes</span><span class="avd-academy-tag">12-Factor-App</span><span class="avd-academy-tag">Zustandslosigkeit</span>
-      </div>
-      <div class="avd-academy-guide-hero__actions">
-        <button type="button" class="avd-academy-btn avd-academy-btn--ghost avd-academy-copy-md"
-                data-avd-academy-copy-md="#avd-academy-md-source"
-                title="Markdown kopieren" aria-label="Markdown kopieren"></button>
-      </div>
-    </div><h1 id="avd-academy-page-title">Eine Datenbank konfigurieren</h1>
-  </section><div class="avd-academy-guide-layout">
-    <main class="avd-academy-guide-main avd-academy-guide-main--numbered" id="avd-academy-content">
+<section class="skr-guide-hero"
+         aria-labelledby="skr-page-title"><nav class="skr-guide-hero__crumbs" aria-label="Brotkrumen"><a href="../../docker-grundlagen/">Docker-Grundlagen</a><span>/</span><span aria-current="page">Eine Datenbank konfigurieren</span></nav>
 
-<p><strong>Als</strong> Entwickler <strong>möchte ich</strong> eine Datenbank einrichten, ohne ihr Image
-anzufassen, <strong>damit</strong> dasselbe Artefakt in Entwicklung, Test und Produktion
-unterschiedlich arbeiten kann.</p>
+  <div class="skr-guide-hero__meta">
+    <div class="skr-guide-hero__tags"><span class="skr-tag skr-tag--time">ca. 45 Minuten</span><span class="skr-tag">Umgebungsvariablen</span><span class="skr-tag">Volumes</span><span class="skr-tag">12-Factor-App</span><span class="skr-tag">Zustandslosigkeit</span>
+    </div>
+    <div class="skr-guide-hero__actions">
+      <button type="button" class="skr-btn skr-btn--ghost skr-copy-md"
+              data-skr-copy-md="#skr-md-source"
+              title="Markdown kopieren" aria-label="Markdown kopieren"></button>
+    </div>
+  </div><h1 id="skr-page-title">Eine Datenbank konfigurieren</h1>
+</section>
 
+  <div class="skr-guide-layout">
+    <main class="skr-guide-main" id="skr-content"><div class="skr-didaktikon-content-top" data-skr-slot="content.top">
+<div class="skr-didaktikon-user-story" data-skr-field="didaktikon.user_story">
+<p><strong>Als</strong> Entwickler <strong>möchte ich</strong> eine Datenbank einrichten, ohne ihr Image anzufassen, <strong>damit</strong> dasselbe Artefakt in Entwicklung, Test und Produktion unterschiedlich arbeiten kann.</p>
+</div>
+<div class="skr-callout skr-didaktikon-objectives" data-skr-field="didaktikon.objectives">
 <h2 id="lernziele">Lernziele</h2>
-
-<p>Du…</p>
-
 <ul>
-  <li>nutzt Umgebungsvariablen, um einen Container umgebungsspezifisch zu
-konfigurieren.</li>
-  <li>richtest eine PostgreSQL-Datenbank ein.</li>
-  <li>überprüfst die Log-Ausgabe eines Containers, um einen Fehler zu finden.</li>
-  <li>legst ein <strong>Volume</strong> an und weist nach, dass Daten darin das Löschen des
-Containers überleben.</li>
+<li>Du nutzt Umgebungsvariablen, um einen Container umgebungsspezifisch zu konfigurieren.</li>
+<li>Du richtest eine PostgreSQL-Datenbank ein.</li>
+<li>Du überprüfst die Log-Ausgabe eines Containers, um einen Fehler zu finden.</li>
+<li>Du legst ein <strong>Volume</strong> an und weist nach, dass Daten darin das Löschen des Containers überleben.</li>
 </ul>
-
+</div>
+</div>
+<div class="skr-guide-done">
 <h2 id="definition-of-done">Definition of Done</h2>
-
 <ul class="task-list">
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />In einem Container läuft eine Datenbank.</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Die Tabellen sind angelegt und im Container mit <code>psql</code> abrufbar.</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Die Datenbank ist auch außerhalb des Containers erreichbar.</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Die Daten der Datenbank sind auch nach Löschen und Neuerzeugen des
-Containers vorhanden.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="In einem Container läuft eine Datenbank." disabled="disabled"> In einem Container läuft eine Datenbank.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Die Tabellen sind angelegt und im Container mit psql abrufbar." disabled="disabled"> Die Tabellen sind angelegt und im Container mit <code>psql</code> abrufbar.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Die Datenbank ist auch außerhalb des Containers erreichbar." disabled="disabled"> Die Datenbank ist auch außerhalb des Containers erreichbar.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Die Daten der Datenbank sind auch nach Löschen und Neuerzeugen des Containers vorhanden." disabled="disabled"> Die Daten der Datenbank sind auch nach Löschen und Neuerzeugen des Containers vorhanden.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Du hast die Kontrollfragen beantwortet" disabled="disabled"> Du hast die Kontrollfragen beantwortet</li>
 </ul>
-
+</div>
 <h2 id="arbeitsschritte">Arbeitsschritte</h2>
-
 <h3 id="einen-container-ohne-konfiguration-starten">Einen Container ohne Konfiguration starten</h3>
-
 <pre><code class="language-bash">docker container run -d --name meine-db postgres:16
 </code></pre>
-
 <p>Der Container läuft nicht. Sieh nach, warum:</p>
-
 <pre><code class="language-bash">docker container logs meine-db
 </code></pre>
-
 <blockquote>
-  <p><strong>Hinweis:</strong> Die Meldung sagt Dir genau, welche Angabe fehlt.
+<p><strong>Hinweis:</strong> Die Meldung sagt Dir genau, welche Angabe fehlt.
 <code>docker container logs</code> ist ab jetzt Dein erster Griff, wenn etwas nicht tut.</p>
 </blockquote>
-
 <p>Räum den gescheiterten Versuch weg – den Namen brauchst Du gleich wieder.</p>
-
 <h3 id="umgebungsvariablen-setzen">Umgebungsvariablen setzen</h3>
-
 <p>Jede Angabe kommt mit einem eigenen <code>-e</code> von außen dazu:</p>
-
 <pre><code class="language-bash">docker container run -d \
   --name meine-db \
   -p 5432:5432 \
@@ -207,24 +177,18 @@ Containers vorhanden.</li>
   -e POSTGRES_PASSWORD=geheim \
   postgres:16
 </code></pre>
-
 <p>Prüfe in der Log-Ausgabe, dass die Datenbank bereit ist:</p>
-
 <pre><code class="language-bash">docker container logs meine-db
 </code></pre>
-
 <blockquote>
-  <p><strong>Hinweis:</strong> Woher kommen die Namen <code>POSTGRES_DB</code>, <code>POSTGRES_USER</code> und
+<p><strong>Hinweis:</strong> Woher kommen die Namen <code>POSTGRES_DB</code>, <code>POSTGRES_USER</code> und
 <code>POSTGRES_PASSWORD</code>? Sieh im Datenblatt des Images auf Docker Hub nach. Merk
 Dir, wo diese Information steht – bei jedem anderen Image wirst Du sie dort
 wieder suchen.</p>
 </blockquote>
-
 <h3 id="ein-schema-mit-tabellen-anlegen">Ein Schema mit Tabellen anlegen</h3>
-
 <p>Das Schema gehört nicht in einen Befehl, sondern in eine Datei. Leg auf Deinem
 Rechner <code>schema.sql</code> an:</p>
-
 <pre><code class="language-sql">CREATE TABLE gruss (
   id   SERIAL PRIMARY KEY,
   text TEXT NOT NULL
@@ -233,64 +197,46 @@ Rechner <code>schema.sql</code> an:</p>
 INSERT INTO gruss (text)
 VALUES ('Hallo Welt'), ('Hello World'), ('Bonjour le monde');
 </code></pre>
-
 <p>Das Image führt beim <strong>ersten</strong> Start jede <code>.sql</code>-Datei aus, die in
 <code>/docker-entrypoint-initdb.d/</code> liegt. Reich Deine Datei also dorthin hinein –
 der Container von eben hat seine Datenbank schon angelegt, also weg damit und
 neu:</p>
-
 <pre><code class="language-bash">docker container run -d \
   --name meine-db \
   -p 5432:5432 \
   -e POSTGRES_DB=helloworld \
   -e POSTGRES_USER=kurs \
   -e POSTGRES_PASSWORD=geheim \
-  -v "$(pwd)/schema.sql":/docker-entrypoint-initdb.d/1-schema.sql \
+  -v &quot;$(pwd)/schema.sql&quot;:/docker-entrypoint-initdb.d/1-schema.sql \
   postgres:16
 </code></pre>
-
 <p>Zum Prüfen – und nur dafür – fragst Du die Datenbank mit <code>psql</code> ab, von <strong>innen</strong>:</p>
-
-<pre><code class="language-bash">docker container exec meine-db psql -U kurs -d helloworld -c "SELECT * FROM gruss"
+<pre><code class="language-bash">docker container exec meine-db psql -U kurs -d helloworld -c &quot;SELECT * FROM gruss&quot;
 </code></pre>
-
 <h3 id="nachsehen-ob-die-datenbank-auch-von-außen-erreichbar-ist">Nachsehen, ob die Datenbank auch von außen erreichbar ist</h3>
-
 <p><code>psql</code> im Container beweist nur, dass die Datenbank <strong>sich selbst</strong> erreicht. Ob
 der veröffentlichte Port wirklich auf Deinem Rechner liegt, zeigt ein Blick auf
 die offenen Ports – <strong>außerhalb</strong> von Docker:</p>
-
 <p><strong>Linux:</strong></p>
-
 <pre><code class="language-bash">ss -ltn | grep 5432
 </code></pre>
-
 <p><strong>macOS:</strong></p>
-
 <pre><code class="language-bash">netstat -an | grep LISTEN | grep 5432
 </code></pre>
-
 <p><strong>Windows:</strong></p>
-
-<pre><code class="language-bash">netstat -ano | find "5432"
+<pre><code class="language-bash">netstat -ano | find &quot;5432&quot;
 </code></pre>
-
 <blockquote>
-  <p><strong>Hinweis:</strong> Eine Zeile mit <code>LISTEN</code> auf Port 5432 heißt: <strong>Dein Rechner</strong> nimmt
+<p><strong>Hinweis:</strong> Eine Zeile mit <code>LISTEN</code> auf Port 5432 heißt: <strong>Dein Rechner</strong> nimmt
 dort Verbindungen an und reicht sie in den Container weiter. Mach die
 Gegenprobe – stopp den Container und sieh noch einmal nach. Dann ist die Zeile
 weg.</p>
 </blockquote>
-
 <h3 id="die-daten-der-datenbank-außerhalb-des-containers-speichern">Die Daten der Datenbank außerhalb des Containers speichern</h3>
-
 <p>Bisher liegen die Daten im Container. Leg einen Ablageort an, der ihn überdauert:</p>
-
 <pre><code class="language-bash">docker volume create kurs-daten
 </code></pre>
-
 <p>Erzeuge die Datenbank neu – mit dem Volume und mit <code>PGDATA</code>:</p>
-
 <pre><code class="language-bash">docker container run -d \
   --name meine-db \
   -p 5432:5432 \
@@ -299,93 +245,87 @@ weg.</p>
   -e POSTGRES_PASSWORD=geheim \
   -e PGDATA=/var/lib/postgresql/data/pgdata \
   -v kurs-daten:/var/lib/postgresql/data \
-  -v "$(pwd)/schema.sql":/docker-entrypoint-initdb.d/1-schema.sql \
+  -v &quot;$(pwd)/schema.sql&quot;:/docker-entrypoint-initdb.d/1-schema.sql \
   postgres:16
 </code></pre>
-
 <blockquote>
-  <p><strong>Hinweis:</strong> <code>PGDATA</code> sagt dem Image, <strong>wo</strong> es seine Dateien ablegen soll.
+<p><strong>Hinweis:</strong> <code>PGDATA</code> sagt dem Image, <strong>wo</strong> es seine Dateien ablegen soll.
 Ohne die Angabe hängt das Verzeichnis von der Image-Version ab – mit ihr liegt
 es immer an derselben Stelle unter Deinem Volume.</p>
 </blockquote>
-
 <p>Jetzt die Probe: <strong>Lösch den Container und erzeuge ihn neu</strong> – mit denselben
 Angaben wie eben. Frag danach wieder die Tabelle ab.</p>
-
 <blockquote>
-  <p><strong>Hinweis:</strong> Überleg Dir <strong>vorher</strong>, was Du erwartest. Zwei Dinge sind zu
+<p><strong>Hinweis:</strong> Überleg Dir <strong>vorher</strong>, was Du erwartest. Zwei Dinge sind zu
 beobachten: ob Deine Zeilen noch da sind – und ob <code>schema.sql</code> ein zweites Mal
 gelaufen ist.</p>
 </blockquote>
-
 <h3 id="optional-das-passwort-aus-einer-datei-lesen">Optional: Das Passwort aus einer Datei lesen</h3>
-
 <p>Das Passwort steht bisher im Befehl – und damit in Deiner Shell-History und in
 <code>docker container inspect</code>. Das Image kennt zu seinen <code>POSTGRES_*</code>-Variablen
 jeweils eine Schwester mit dem Zusatz <code>_FILE</code>: Sie enthält nicht den Wert,
 sondern den <strong>Pfad zu einer Datei</strong>, in der der Wert steht.</p>
-
 <p>Leg die Datei an:</p>
-
 <pre><code class="language-bash">echo 'geheim' &gt; passwort.txt
 </code></pre>
-
 <p>Erzeuge die Datenbank noch einmal neu – mit diesen beiden Angaben <strong>statt</strong>
 <code>-e POSTGRES_PASSWORD=geheim</code>:</p>
-
-<pre><code class="language-bash">-v "$(pwd)/passwort.txt":/run/secrets/db-passwort
+<pre><code class="language-bash">-v &quot;$(pwd)/passwort.txt&quot;:/run/secrets/db-passwort
 -e POSTGRES_PASSWORD_FILE=/run/secrets/db-passwort
 </code></pre>
-
 <blockquote>
-  <p><strong>Hinweis:</strong> Nimm dafür ein <strong>frisches</strong> Volume, sonst ist die Datenbank schon
+<p><strong>Hinweis:</strong> Nimm dafür ein <strong>frisches</strong> Volume, sonst ist die Datenbank schon
 eingerichtet und behält ihr altes Passwort. Dass es geklappt hat, siehst Du
 daran, dass der Container läuft: Ohne Passwort – egal auf welchem Weg – bricht
 er ab, wie beim ersten Versuch.</p>
 </blockquote>
-
 <p>Auf einer Betriebsplattform legt genau diese Datei nicht der Mensch an, sondern
 die Plattform – aus ihrer eigenen Verwaltung für Geheimnisse.</p>
-
+<div class="skr-didaktikon-content-after" data-skr-slot="content.after">
 <h2 id="reflexionsfragen">Reflexionsfragen</h2>
-
+<div class="skr-didaktikon-reflective-questions" data-skr-field="didaktikon.reflective_questions">
 <ul>
-  <li>Woher weißt Du, welche Umgebungsvariablen ein fremdes Image auswertet? Was
-passiert, wenn Du einen Namen falsch schreibst?</li>
-  <li>Mit dem Volume haben Deine Daten das Löschen des Containers überlebt. <strong>Wo
-liegen sie jetzt eigentlich</strong>, und wem gehören sie? Was wäre ohne Volume
-passiert?</li>
-  <li>Wo landen die Log-Ausgaben der Datenbank, und warum ist das für eine
-Betriebsplattform praktischer als eine Logdatei im Container?</li>
-  <li>Aus welchen Gründen ist <code>POSTGRES_PASSWORD_FILE</code> besser als
-<code>POSTGRES_PASSWORD</code>?</li>
+<li>Woher weißt Du, welche Umgebungsvariablen ein fremdes Image auswertet? Was passiert, wenn Du einen Namen falsch schreibst?</li>
+<li>Mit dem Volume haben Deine Daten das Löschen des Containers überlebt. <strong>Wo liegen sie jetzt eigentlich</strong>, und wem gehören sie? Was wäre ohne Volume passiert?</li>
+<li>Wo landen die Log-Ausgaben der Datenbank, und warum ist das für eine Betriebsplattform praktischer als eine Logdatei im Container?</li>
+<li>Aus welchen Gründen ist <code>POSTGRES_PASSWORD_FILE</code> besser als <code>POSTGRES_PASSWORD</code>?</li>
 </ul>
+</div>
+</div>
+<textarea id="skr-md-source" hidden aria-hidden="true"># Eine Datenbank konfigurieren
+&lt;div class=&#34;skr-didaktikon-content-top&#34; data-skr-slot=&#34;content.top&#34; markdown=&#34;1&#34;&gt;
 
+&lt;div class=&#34;skr-didaktikon-user-story&#34; data-skr-field=&#34;didaktikon.user_story&#34; markdown=&#34;1&#34;&gt;
 
-<textarea id="avd-academy-md-source" hidden aria-hidden="true"># Eine Datenbank konfigurieren
+**Als** Entwickler **möchte ich** eine Datenbank einrichten, ohne ihr Image anzufassen, **damit** dasselbe Artefakt in Entwicklung, Test und Produktion unterschiedlich arbeiten kann.
 
-**Als** Entwickler **möchte ich** eine Datenbank einrichten, ohne ihr Image
-anzufassen, **damit** dasselbe Artefakt in Entwicklung, Test und Produktion
-unterschiedlich arbeiten kann.
+&lt;/div&gt;
+
+&lt;div class=&#34;skr-callout skr-didaktikon-objectives&#34; data-skr-field=&#34;didaktikon.objectives&#34; markdown=&#34;1&#34;&gt;
 
 ## Lernziele
 
-Du…
+- Du nutzt Umgebungsvariablen, um einen Container umgebungsspezifisch zu konfigurieren.
+- Du richtest eine PostgreSQL-Datenbank ein.
+- Du überprüfst die Log-Ausgabe eines Containers, um einen Fehler zu finden.
+- Du legst ein **Volume** an und weist nach, dass Daten darin das Löschen des Containers überleben.
 
-- nutzt Umgebungsvariablen, um einen Container umgebungsspezifisch zu
-  konfigurieren.
-- richtest eine PostgreSQL-Datenbank ein.
-- überprüfst die Log-Ausgabe eines Containers, um einen Fehler zu finden.
-- legst ein **Volume** an und weist nach, dass Daten darin das Löschen des
-  Containers überleben.
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;div class=&#34;skr-guide-done&#34; markdown=&#34;1&#34;&gt;
 
 ## Definition of Done
 
-* [ ] In einem Container läuft eine Datenbank.
-* [ ] Die Tabellen sind angelegt und im Container mit `psql` abrufbar.
-* [ ] Die Datenbank ist auch außerhalb des Containers erreichbar.
-* [ ] Die Daten der Datenbank sind auch nach Löschen und Neuerzeugen des
-  Containers vorhanden.
+- [ ] In einem Container läuft eine Datenbank.
+- [ ] Die Tabellen sind angelegt und im Container mit `psql` abrufbar.
+- [ ] Die Datenbank ist auch außerhalb des Containers erreichbar.
+- [ ] Die Daten der Datenbank sind auch nach Löschen und Neuerzeugen des Containers vorhanden.
+- [ ] Du hast die Kontrollfragen beantwortet
+
+&lt;/div&gt;
+
 
 ## Arbeitsschritte
 
@@ -443,7 +383,7 @@ CREATE TABLE gruss (
 );
 
 INSERT INTO gruss (text)
-VALUES (&apos;Hallo Welt&apos;), (&apos;Hello World&apos;), (&apos;Bonjour le monde&apos;);
+VALUES (&#39;Hallo Welt&#39;), (&#39;Hello World&#39;), (&#39;Bonjour le monde&#39;);
 ```
 
 Das Image führt beim **ersten** Start jede `.sql`-Datei aus, die in
@@ -458,14 +398,14 @@ docker container run -d \
   -e POSTGRES_DB=helloworld \
   -e POSTGRES_USER=kurs \
   -e POSTGRES_PASSWORD=geheim \
-  -v &quot;$(pwd)/schema.sql&quot;:/docker-entrypoint-initdb.d/1-schema.sql \
+  -v &#34;$(pwd)/schema.sql&#34;:/docker-entrypoint-initdb.d/1-schema.sql \
   postgres:16
 ```
 
 Zum Prüfen – und nur dafür – fragst Du die Datenbank mit `psql` ab, von **innen**:
 
 ```bash
-docker container exec meine-db psql -U kurs -d helloworld -c &quot;SELECT * FROM gruss&quot;
+docker container exec meine-db psql -U kurs -d helloworld -c &#34;SELECT * FROM gruss&#34;
 ```
 
 ### Nachsehen, ob die Datenbank auch von außen erreichbar ist
@@ -489,7 +429,7 @@ netstat -an | grep LISTEN | grep 5432
 **Windows:**
 
 ```bash
-netstat -ano | find &quot;5432&quot;
+netstat -ano | find &#34;5432&#34;
 ```
 
 &gt; **Hinweis:** Eine Zeile mit `LISTEN` auf Port 5432 heißt: **Dein Rechner** nimmt
@@ -516,7 +456,7 @@ docker container run -d \
   -e POSTGRES_PASSWORD=geheim \
   -e PGDATA=/var/lib/postgresql/data/pgdata \
   -v kurs-daten:/var/lib/postgresql/data \
-  -v &quot;$(pwd)/schema.sql&quot;:/docker-entrypoint-initdb.d/1-schema.sql \
+  -v &#34;$(pwd)/schema.sql&#34;:/docker-entrypoint-initdb.d/1-schema.sql \
   postgres:16
 ```
 
@@ -541,14 +481,14 @@ sondern den **Pfad zu einer Datei**, in der der Wert steht.
 Leg die Datei an:
 
 ```bash
-echo &apos;geheim&apos; &gt; passwort.txt
+echo &#39;geheim&#39; &gt; passwort.txt
 ```
 
 Erzeuge die Datenbank noch einmal neu – mit diesen beiden Angaben **statt**
 `-e POSTGRES_PASSWORD=geheim`:
 
 ```bash
--v &quot;$(pwd)/passwort.txt&quot;:/run/secrets/db-passwort
+-v &#34;$(pwd)/passwort.txt&#34;:/run/secrets/db-passwort
 -e POSTGRES_PASSWORD_FILE=/run/secrets/db-passwort
 ```
 
@@ -560,54 +500,70 @@ Erzeuge die Datenbank noch einmal neu – mit diesen beiden Angaben **statt**
 Auf einer Betriebsplattform legt genau diese Datei nicht der Mensch an, sondern
 die Plattform – aus ihrer eigenen Verwaltung für Geheimnisse.
 
+
+&lt;div class=&#34;skr-didaktikon-content-after&#34; data-skr-slot=&#34;content.after&#34; markdown=&#34;1&#34;&gt;
+
 ## Reflexionsfragen
 
-- Woher weißt Du, welche Umgebungsvariablen ein fremdes Image auswertet? Was
-  passiert, wenn Du einen Namen falsch schreibst?
-- Mit dem Volume haben Deine Daten das Löschen des Containers überlebt. **Wo
-  liegen sie jetzt eigentlich**, und wem gehören sie? Was wäre ohne Volume
-  passiert?
-- Wo landen die Log-Ausgaben der Datenbank, und warum ist das für eine
-  Betriebsplattform praktischer als eine Logdatei im Container?
-- Aus welchen Gründen ist `POSTGRES_PASSWORD_FILE` besser als
-  `POSTGRES_PASSWORD`?
+&lt;div class=&#34;skr-didaktikon-reflective-questions&#34; data-skr-field=&#34;didaktikon.reflective_questions&#34; markdown=&#34;1&#34;&gt;
 
+- Woher weißt Du, welche Umgebungsvariablen ein fremdes Image auswertet? Was passiert, wenn Du einen Namen falsch schreibst?
+- Mit dem Volume haben Deine Daten das Löschen des Containers überlebt. **Wo liegen sie jetzt eigentlich**, und wem gehören sie? Was wäre ohne Volume passiert?
+- Wo landen die Log-Ausgaben der Datenbank, und warum ist das für eine Betriebsplattform praktischer als eine Logdatei im Container?
+- Aus welchen Gründen ist `POSTGRES_PASSWORD_FILE` besser als `POSTGRES_PASSWORD`?
+
+&lt;/div&gt;
+
+&lt;/div&gt;
 ## Weiterführende Informationen
-
 - [Das PostgreSQL-Image auf Docker Hub](https://hub.docker.com/_/postgres)
 - [The Twelve-Factor App](https://12factor.net/de/)
 - [Musterlösung (PR)](https://github.com/atvantage-academy/code-template-docker-basics/pull/3)
 - [Musterlösung (Pages)](https://atvantage-academy.github.io/code-template-docker-basics/konfiguration-und-zustand/)
 </textarea>
-    </main><aside class="avd-academy-guide-sidebar"><details class="avd-academy-guide-side avd-academy-guide-side--toc avd-academy-fold" data-avd-academy-toc-box
-               data-avd-academy-toc-grenze="12" open hidden>
-        <summary class="avd-academy-guide-side__label">Auf dieser Seite</summary>
-        <nav class="avd-academy-toc avd-academy-fold__body" data-avd-academy-toc aria-label="Inhaltsverzeichnis"></nav>
-      </details>
-      <div class="avd-academy-guide-side avd-academy-guide-side--bordered" data-avd-academy-progress hidden><div class="avd-academy-guide-side__label" id="avd-academy-progress-label">Fortschritt</div><div class="avd-academy-progress__bar" aria-labelledby="avd-academy-progress-label"><div class="avd-academy-progress__fill"></div></div>
-        <div class="avd-academy-progress__text"></div>
-      </div>
-      <div class="avd-academy-guide-side avd-academy-guide-side--bordered">
-        <div class="avd-academy-guide-side__label">Weiterführende Informationen</div>
-        <div class="avd-academy-guide-side__links"><a href="https://hub.docker.com/_/postgres" target="_blank" rel="noopener"><span>Das PostgreSQL-Image auf Docker Hub</span><span class="avd-academy-linkicon avd-academy-linkicon--right avd-academy-linkicon--mark" style="--avd-academy-linkicon-src: url('/training-material-container-technologies/assets/icons/docker.svg')" aria-hidden="true"></span></a><a href="https://12factor.net/de/" target="_blank" rel="noopener"><span>The Twelve-Factor App</span></a><a href="https://github.com/atvantage-academy/code-template-docker-basics/pull/3" target="_blank" rel="noopener"><span>Musterlösung (PR)</span><span class="avd-academy-linkicon avd-academy-linkicon--right avd-academy-linkicon--mark" style="--avd-academy-linkicon-src: url('/training-material-container-technologies/theme/academy/icons/icon-github.svg')" aria-hidden="true"></span></a><a href="https://atvantage-academy.github.io/code-template-docker-basics/konfiguration-und-zustand/" target="_blank" rel="noopener"><span>Musterlösung (Pages)</span><span class="avd-academy-linkicon avd-academy-linkicon--right avd-academy-linkicon--mark" style="--avd-academy-linkicon-src: url('/training-material-container-technologies/theme/academy/icons/icon-github-pages.svg')" aria-hidden="true"></span></a>
-        </div></div>
-    </aside>
-  </div><div class="avd-academy-print-contact" aria-hidden="true">
-    <span>Kontakt: https://academy.atvantage-academy.workers.dev/</span>
-    <span>academy@atvantage.com</span>
+    </main><aside class="skr-guide-sidebar">
+  <details class="skr-guide-side skr-guide-side--toc skr-fold" data-skr-toc-box
+           data-skr-toc-limit="12" open>
+    <summary class="skr-guide-side__label">Auf dieser Seite</summary>
+    <nav class="skr-toc skr-fold__body" data-skr-toc aria-label="Inhaltsverzeichnis"><a href="#definition-of-done">Definition of Done</a><a href="#arbeitsschritte">Arbeitsschritte</a><a href="#einen-container-ohne-konfiguration-starten" class="skr-toc--h3">Einen Container ohne Konfiguration starten</a><a href="#umgebungsvariablen-setzen" class="skr-toc--h3">Umgebungsvariablen setzen</a><a href="#ein-schema-mit-tabellen-anlegen" class="skr-toc--h3">Ein Schema mit Tabellen anlegen</a><a href="#nachsehen-ob-die-datenbank-auch-von-außen-erreichbar-ist" class="skr-toc--h3">Nachsehen, ob die Datenbank auch von außen erreichbar ist</a><a href="#die-daten-der-datenbank-außerhalb-des-containers-speichern" class="skr-toc--h3">Die Daten der Datenbank außerhalb des Containers speichern</a><a href="#optional-das-passwort-aus-einer-datei-lesen" class="skr-toc--h3">Optional: Das Passwort aus einer Datei lesen</a><a href="#reflexionsfragen">Reflexionsfragen</a></nav>
+  </details>
+  <section class="skr-guide-side skr-guide-side--bordered skr-guide-progress" data-skr-card="skriptorium.progress"
+           aria-labelledby="skr-card-skriptorium-progress" data-skr-progress-text="{done} / {total} erledigt">
+    <div class="skr-guide-side__label" id="skr-card-skriptorium-progress">Fortschritt</div>
+    <div class="skr-guide-side__body">
+      <div class="skr-guide-progress__bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-labelledby="skr-card-skriptorium-progress"><div class="skr-guide-progress__fill"></div></div>
+      <div class="skr-guide-progress__text" aria-live="polite">0 / 5 erledigt</div>
+    </div>
+  </section>
+  <template data-skr-sidebar-cards></template>
+  <div class="skr-guide-side skr-guide-side--bordered">
+    <div class="skr-guide-side__label">Weiterführende Informationen</div>
+    <div class="skr-guide-side__links">
+      <a href="https://hub.docker.com/_/postgres" target="_blank" rel="noopener"><span>Das PostgreSQL-Image auf Docker Hub</span></a>
+      <a href="https://12factor.net/de/" target="_blank" rel="noopener"><span>The Twelve-Factor App</span></a>
+      <a href="https://github.com/atvantage-academy/code-template-docker-basics/pull/3" target="_blank" rel="noopener"><span>Musterlösung (PR)</span></a>
+      <a href="https://atvantage-academy.github.io/code-template-docker-basics/konfiguration-und-zustand/" target="_blank" rel="noopener"><span>Musterlösung (Pages)</span></a>
+    </div>
   </div>
+</aside>
 
-  <footer class="avd-academy-footer">
-  <div class="avd-academy-footer__grid">
+  </div>
+  <div class="skr-print-contact" aria-hidden="true">
+  <span>Kontakt: https://www.atvantage.com</span>
+  <span>academy@atvantage.com</span>
+</div>
+
+<footer class="skr-footer">
+  <div class="skr-footer__grid">
     <div><strong>Containertechnologien (Academy)</strong>
       <p>Schulungsunterlagen der ATVANTAGE Academy.</p>
     </div><div>
       <strong>Kontakt</strong>
-      <p><a href="https://academy.atvantage-academy.workers.dev/" target="_blank" rel="noopener">Website</a><br><a href="mailto:academy@atvantage.com">academy@atvantage.com</a><br>
+      <p><a href="https://www.atvantage.com" target="_blank" rel="noopener">Website</a><br><a href="mailto:academy@atvantage.com">academy@atvantage.com</a><br>
       </p>
     </div></div>
-  <div class="avd-academy-footer__legal">
-    © <span data-avd-academy-year>2026</span> ATVANTAGE
+  <div class="skr-footer__legal">
+    © <span data-skr-year>2026</span> ATVANTAGE
   </div>
 </footer>
 

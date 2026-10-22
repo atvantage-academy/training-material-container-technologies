@@ -1,0 +1,276 @@
+/* =========================================================================
+   CONTAINERWISSEN KOMPAKT
+   Nur Anordnung und Zustand. Alle Farben aus den Tokens des Skriptoriums (`--skr-*`) – sonst
+   kippt das dunkle Schema.
+   ========================================================================= */
+
+/* --- Die Bühne: zwei Orte, dazwischen die Leitung ---------------------- */
+.cv {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) clamp(7rem, 12vw, 11rem) minmax(0, 1.2fr);
+  gap: var(--skr-space-3);
+  /* UNTEN VERANKERT, nicht mittig: Gezogen und geschoben werden IMAGES, nicht
+     Kästen. Rechts stehen die Images tief im Daemon-Kasten, links sind es die
+     untersten Kacheln – über die gemeinsame Unterkante treffen sich beide. */
+  align-items: end;
+  margin: var(--skr-space-6) 0;
+}
+/* Hebt die Pfeile auf die Zeile der Images: Darunter liegt rechts nur noch
+   die Befehlszeile des Daemons. */
+.cv__wire { margin-bottom: 3rem; gap: var(--skr-space-2); }
+@media (max-width: 62rem) {
+  .cv { grid-template-columns: 1fr; align-items: stretch; }
+  .cv__wire { margin-bottom: 0; }
+}
+
+.cv__place {
+  border: 2px solid var(--skr-color-border);
+  border-radius: var(--skr-radius-lg);
+  padding: var(--skr-space-4);
+  background: var(--skr-color-bg-subtle);
+}
+.cv__place-title { margin: 0 0 var(--skr-space-1); font-size: var(--skr-fs-md); }
+.cv__place-note {
+  margin: 0 0 var(--skr-space-3);
+  font-size: var(--skr-fs-sm);
+  color: var(--skr-color-ink-muted);
+}
+
+/* --- Anklickbares --------------------------------------------------------
+   Jeder Baustein IST ein Knopf – nicht ein Kasten mit einem Knopf darin.
+   Das Fragezeichen ist nur Schmuck (`aria-hidden`), der Name trägt die
+   Beschriftung. */
+.cv__button,
+.cv__tile {
+  display: flex;
+  align-items: center;
+  gap: var(--skr-space-2);
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  background: var(--skr-color-bg);
+  border: 2px solid var(--skr-color-border);
+  border-radius: var(--skr-radius);
+  padding: var(--skr-space-2) var(--skr-space-3);
+}
+.cv__button {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+  font-weight: var(--skr-fw-bold);
+}
+.cv__tile + .cv__tile { margin-top: var(--skr-space-2); }
+.cv__button:hover .cv__badge,
+.cv__tile:hover { border-color: var(--skr-color-accent); }
+.cv__button:hover { color: var(--skr-color-accent-ink); }
+
+/* --- „Hier kannst Du nachsehen“ ------------------------------------------
+   Alles, was sich öffnen lässt, leuchtet unter dem Zeiger auf – die ganze
+   Fläche, nicht nur die Überschrift. Bei der Registry und beim Daemon ist
+   der KASTEN der Hotspot (`data-cv-area`); der Knopf in der Überschrift
+   bleibt daneben bestehen, weil eine Fläche allein mit der Tastatur nicht
+   erreichbar wäre. */
+.cv__place[data-cv-area],
+.cv__daemon[data-cv-area] { cursor: pointer; }
+.cv__place[data-cv-area],
+.cv__daemon[data-cv-area],
+.cv__tile {
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+/* Zeigt der Zeiger auf einen Baustein IM Kasten, tritt der Kasten zurück -
+   sonst leuchten zwei Dinge, von denen nur eines gemeint ist. */
+.cv__place[data-cv-area]:hover:not(:has(.cv__tile:hover, a:hover)),
+.cv__place[data-cv-area]:focus-within:not(:has(.cv__tile:focus-visible, a:focus-visible)),
+.cv__daemon[data-cv-area]:hover:not(:has(.cv__tile:hover, a:hover)),
+.cv__daemon[data-cv-area]:focus-within:not(:has(.cv__tile:focus-visible, a:focus-visible)),
+.cv__tile:hover,
+.cv__tile:focus-visible {
+  border-color: var(--skr-color-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--skr-color-accent) 32%, transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .cv__place[data-cv-area],
+  .cv__daemon[data-cv-area],
+  .cv__tile { transition: none; }
+}
+.cv__button:focus-visible,
+.cv__tile:focus-visible {
+  outline: 3px solid var(--skr-color-accent);
+  outline-offset: 2px;
+}
+/* Das runde „i“ zeigt an: Hier steckt mehr. */
+.cv__badge {
+  flex: 0 0 auto;
+  display: inline-grid;
+  place-items: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border: 2px solid var(--skr-color-accent);
+  border-radius: 50%;
+  color: var(--skr-color-accent-ink);
+  font-size: 0.8rem;
+  font-weight: var(--skr-fw-bold);
+  line-height: 1;
+}
+.cv__tile code { font-size: 0.9em; }
+.cv__tile-text { display: block; }
+.cv__tile-note {
+  display: block;
+  font-size: var(--skr-fs-sm);
+  color: var(--skr-color-ink-muted);
+}
+.cv__icon { flex: 0 0 auto; fill: none; stroke: var(--skr-color-accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* --- Die Leitung zwischen Registry und Rechner ------------------------- */
+.cv__wire {
+  display: grid;
+  gap: var(--skr-space-3);
+  justify-items: center;
+  text-align: center;
+}
+.cv__wire code { font-size: var(--skr-fs-sm); white-space: nowrap; }
+.cv__arrow { display: block; width: 100%; max-width: 6rem; height: auto; }
+.cv__arrow-line { fill: none; stroke: var(--skr-color-accent); stroke-width: 4; }
+.cv__arrow-head { fill: var(--skr-color-accent); }
+@media (max-width: 62rem) {
+  .cv__arrow { transform: rotate(90deg); max-width: 4rem; }
+}
+
+/* --- Der Daemon trägt Images und Container ----------------------------- */
+.cv__daemon {
+  margin-top: var(--skr-space-3);
+  border: 2px dashed var(--skr-color-accent);
+  border-radius: var(--skr-radius);
+  padding: var(--skr-space-3);
+  background: var(--skr-color-bg);
+}
+.cv__daemon-body {
+  display: grid;
+  /* `minmax(0, …)`: Ohne das wachsen die Kacheln auf ihren Inhalt und der
+     Container-Kasten schob sich aus dem Daemon-Rahmen heraus. */
+  grid-template-columns: minmax(0, 1fr) minmax(5rem, 0.7fr) minmax(0, 1fr);
+  gap: var(--skr-space-2);
+  align-items: center;
+  margin-top: var(--skr-space-3);
+}
+@media (max-width: 40rem) {
+  .cv__daemon-body { grid-template-columns: 1fr; }
+  .cv__daemon-body .cv__arrow { transform: rotate(90deg); }
+}
+.cv__cross { display: grid; justify-items: center; gap: var(--skr-space-1); }
+.cv__cross code { font-size: 0.75rem; text-align: center; }
+.cv__hint {
+  margin: var(--skr-space-3) 0 0;
+  font-size: var(--skr-fs-sm);
+  color: var(--skr-color-ink-muted);
+}
+.cv__api {
+  margin: var(--skr-space-2) 0 0;
+  padding-left: var(--skr-space-3);
+  border-left: 3px solid var(--skr-color-border);
+  font-size: var(--skr-fs-sm);
+  color: var(--skr-color-ink-muted);
+}
+
+/* --- Der Mensch an der Tastatur ----------------------------------------
+   Dasselbe Strichmännchen wie im Foliensatz: Es macht sichtbar, dass die CLI
+   die Stelle ist, an der ein Mensch eingreift. */
+.cv__with-person { display: flex; align-items: center; gap: var(--skr-space-2); }
+.cv__with-person > .cv__tile { flex: 1 1 auto; }
+.cv__person { flex: 0 0 auto; text-align: center; }
+.cv__person-figure {
+  display: block;
+  fill: none;
+  stroke: var(--skr-color-ink);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.cv__person-head { fill: var(--skr-color-bg); }
+.cv__person-label {
+  display: block;
+  font-size: var(--skr-fs-sm);
+  color: var(--skr-color-ink-muted);
+}
+
+/* --- Reiter im Erklärkasten ---------------------------------------------
+   Der Baustein kommt aus dem Theme (`skr-tabs`); hier bekommt er nur
+   einen engeren Abstand und eine FESTE Höhe - sonst springt der Kasten beim
+   Umschalten. */
+.cv__detail .skr-tabs.skr-tabs { margin: var(--skr-space-4) 0 0; }
+.cv__detail .skr-tabs--enhanced > .skr-tabs__panel[open] {
+  min-height: 15rem;
+  padding: var(--skr-space-4);
+}
+
+/* --- Die Erläuterungen ---------------------------------------------------
+   Sie stehen IM Dokument (Druck!) und werden am Bildschirm nur geöffnet. */
+.cv__detail {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 60;
+  width: min(48rem, 92vw);
+  max-height: 86vh;
+  overflow-y: auto;
+  padding: var(--skr-space-6);
+  background: var(--skr-color-bg);
+  border: 2px solid var(--skr-color-accent);
+  border-radius: var(--skr-radius-lg);
+  box-shadow: 0 1.5rem 3rem rgb(0 0 0 / 0.25);
+}
+.cv__detail:focus-visible { outline: 3px solid var(--skr-color-accent); outline-offset: 3px; }
+.cv__detail > :first-child { margin-top: 0; }
+.cv__detail table { width: 100%; border-collapse: collapse; font-size: var(--skr-fs-sm); }
+.cv__detail th,
+.cv__detail td {
+  border: 1px solid var(--skr-color-border);
+  padding: var(--skr-space-1) var(--skr-space-2);
+  text-align: left;
+  vertical-align: top;
+}
+.cv__detail th { background: var(--skr-color-bg-subtle); }
+.cv__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgb(0 0 0 / 0.5);
+}
+.cv__diagram { display: block; width: 100%; max-width: 34rem; height: auto; margin: var(--skr-space-4) 0; }
+.cv__state { fill: var(--skr-color-bg-subtle); stroke: var(--skr-color-border); stroke-width: 2; }
+/* UML: gefüllter Kreis = Startknoten, Ring mit gefülltem Kern = Endknoten. */
+.cv__node-start { fill: var(--skr-color-ink); }
+.cv__node-end { fill: none; stroke: var(--skr-color-ink); stroke-width: 2.5; }
+.cv__node-core { fill: var(--skr-color-ink); }
+.cv__state-note { fill: var(--skr-color-ink-muted); font-size: 12px; }
+.cv__state-label { fill: var(--skr-color-headline); font-size: 15px; }
+.cv__edge { fill: none; stroke: var(--skr-color-accent); stroke-width: 2.5; }
+.cv__edge-head { fill: var(--skr-color-accent); }
+.cv__edge-label { fill: var(--skr-color-ink-muted); font-size: 13px; }
+
+/* Nur für den Druck gedacht – am Bildschirm wäre es eine leere Überschrift. */
+.cv__print-only { display: none; }
+
+/* --- Drucklayout: ALLES ist drin --------------------------------------- */
+@media print {
+  .cv__detail[hidden] { display: block; }
+  .cv__detail {
+    position: static;
+    transform: none;
+    width: auto;
+    max-height: none;
+    overflow: visible;
+    box-shadow: none;
+    border-color: var(--skr-color-border);
+    margin-top: var(--skr-space-4);
+    break-inside: avoid;
+  }
+  .cv__print-only { display: block; }
+  .cv__backdrop,
+  .cv__badge { display: none !important; }
+  .cv { break-inside: avoid; }
+}

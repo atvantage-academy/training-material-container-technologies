@@ -1,0 +1,113 @@
+/* Skriptorium: in der Schicht skr.extensions – extensions/didaktikon/cue.css. */
+@layer skr.tokens, skr.base, skr.components, skr.theme, skr.extensions;
+@layer skr.extensions {
+.skr-didaktikon-cue__head {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 0.9rem;
+  margin: 0 0 1.5rem 0;
+}
+.skr-didaktikon-cue__time {
+  font-size: 1.5rem; line-height: 1.1;
+  font-weight: var(--skr-fw-bold, 700);
+  color: var(--skr-color-accent-text);
+  font-variant-numeric: tabular-nums;
+}
+.skr-didaktikon-cue__meta {
+  font-size: 0.92rem; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--skr-color-ink-muted);
+}
+
+/* Zweispaltig: links die Handlung, rechts das Material. Unter 960 px
+   untereinander – ein Pult-Bildschirm ist nicht immer breit. */
+.skr-didaktikon-cue__columns {
+  display: grid; grid-template-columns: 1.9fr 1fr; gap: 2.4rem 3rem;
+  align-items: start;
+}
+@media (max-width: 960px) {
+  .skr-didaktikon-cue__columns { grid-template-columns: 1fr; gap: 1.4rem; }
+}
+
+.skr-didaktikon-cue__columns h3 {
+  font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--skr-color-ink-muted);
+  margin: 0 0 0.7rem 0; padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--skr-color-border);
+}
+/* Die Überschrift der HANDLUNGS-Spalte trägt den Auftrag, nicht das Wort „Tun".
+   Sie soll sich lesen wie eine Regieanweisung, deshalb steht sie als Satz und
+   nicht als Rubrik. SELEKTIERT WIRD NEGATIV: Handlung ist, was NICHT die
+   Material-Spalte ist. Sie braucht damit keine eigene Klasse und kann sie auch
+   nicht vergessen. */
+.skr-didaktikon-cue__columns > div:not(.skr-didaktikon-cue__material) > h3 {
+  font-size: 1.1rem; letter-spacing: 0; text-transform: none;
+  color: var(--skr-color-accent-text);
+  border-bottom-color: color-mix(in srgb, var(--skr-color-accent) 45%, transparent);
+}
+/* Erwartbare Antworten als Gedankenstütze – leiser als die Anweisung selbst. */
+.skr-didaktikon-cue__columns li em {
+  color: var(--skr-color-ink-muted); font-size: 0.92em;
+}
+.skr-didaktikon-cue__columns ul { margin: 0; padding-left: 1.15rem; }
+.skr-didaktikon-cue__columns li { margin-bottom: 0.8rem; line-height: 1.45; }
+/* Die Material-Spalte listet Verweise: ohne Aufzählungspunkte und kleiner, damit
+   sie neben der Handlung nicht wie ein zweiter Auftrag wirkt. */
+.skr-didaktikon-cue__material ul { list-style: none; padding-left: 0; }
+.skr-didaktikon-cue__material li { font-size: 0.95rem; margin-bottom: 0.7rem; }
+
+/* Die eine Sache, die schiefgeht, wenn man nicht daran denkt. HÖCHSTENS EINE je
+   Folie – zwei Fallen sind keine Falle mehr, sondern eine Liste. */
+.skr-didaktikon-cue__pitfall {
+  margin: 1.6rem 0 0 0; padding: 0.6rem 0.9rem;
+  border-left: 3px solid var(--skr-didaktikon-tone-alert);
+  background: color-mix(in srgb, var(--skr-didaktikon-tone-alert) 8%, transparent);
+  font-size: 0.95rem;
+}
+
+/* Was nach dieser Einheit kommt – steht auf der LETZTEN Folie eines Blocks,
+   damit die Pause sichtbar ist, bevor man sie überblättert. */
+.skr-didaktikon-cue__next {
+  margin: 1.6rem 0 0 0; padding-top: 0.7rem;
+  border-top: 1px solid var(--skr-color-border);
+  font-size: 0.95rem; color: var(--skr-color-ink-muted);
+}
+.skr-didaktikon-cue__next strong { color: var(--skr-color-ink); }
+
+/* Pausenfolie: trägt nur die Uhr. Sie ist im Blätterfluss der Ankerpunkt. */
+.skr-didaktikon-cue__break { text-align: center; color: var(--skr-color-ink-muted); }
+.skr-didaktikon-cue__clock {
+  display: block; font-size: clamp(2.5rem, 7vw, 4.5rem);
+  font-weight: var(--skr-fw-bold, 700);
+  color: var(--skr-color-ink); line-height: 1.1;
+}
+
+/* Tagesraster – die Übersichtsfolie am Anfang. */
+.skr-didaktikon-cue__schedule { width: 100%; font-size: 0.95rem; }
+.skr-didaktikon-cue__schedule td { padding: 0.4rem 0.6rem; vertical-align: top; }
+.skr-didaktikon-cue__schedule .skr-didaktikon-cue__slot {
+  white-space: nowrap; color: var(--skr-color-ink-muted); width: 1%;
+}
+.skr-didaktikon-cue__schedule .skr-didaktikon-cue__duration {
+  white-space: nowrap; text-align: right; width: 1%;
+  color: var(--skr-color-accent-text); font-weight: var(--skr-fw-bold, 700);
+}
+.skr-didaktikon-cue__schedule tr.skr-didaktikon-cue__divider td {
+  border-top: 1px solid var(--skr-color-border);
+}
+
+/* Senkrecht mittig, aber leicht ÜBER der optischen Mitte: Mittig zentriert
+   klaffte unter dem Titel eine breite Lücke, weil der Titel oben anschlägt.
+
+   Der Rahmen der Folie wird dafür ein Flex-Container und füllt die Inhaltsspalte;
+   `:has()` macht auch die Inhaltsspalte zu einem – ohne eigene Klasse an der Folie,
+   die man vergessen könnte. */
+.skr-slide__inner:has(> .skr-didaktikon-cue) {
+  display: flex; flex-direction: column; flex: 1 1 auto;
+}
+.skr-slide__inner > .skr-didaktikon-cue {
+  display: flex; flex-direction: column; flex: 1 1 auto;
+}
+.skr-slide__inner > .skr-didaktikon-cue > .skr-didaktikon-cue__columns {
+  flex: 1 1 auto; align-content: center; padding-bottom: 6vh;
+}
+.skr-slide__inner > .skr-didaktikon-cue > .skr-didaktikon-cue__schedule,
+.skr-slide__inner > .skr-didaktikon-cue > .skr-didaktikon-cue__break { margin-block: auto; }
+}

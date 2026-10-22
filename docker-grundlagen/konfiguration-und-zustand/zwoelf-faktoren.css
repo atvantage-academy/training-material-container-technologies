@@ -1,0 +1,631 @@
+/* =========================================================================
+   ZWÖLF FAKTOREN – ein Kreis zum Anklicken
+   -------------------------------------------------------------------------
+   Warum ein Kreis und keine Liste: Eine nummerierte Liste legt eine Reihen-
+   folge nahe, die es nicht gibt. Die zwölf sind gleichrangig.
+
+   Alle Farben aus den Tokens des Skriptoriums (`--skr-*`). Es gibt KEIN `--skr-space-5`;
+   eine ungültige `var()` lässt die ganze Deklaration fallen.
+   ========================================================================= */
+
+.zf__quelle {
+  max-width: 44rem;
+  font-size: var(--skr-fs-sm);
+  color: var(--skr-color-ink-muted);
+}
+
+.zf {
+  position: relative;
+  width: min(100%, 44rem);
+  margin: var(--skr-space-8) auto;
+  aspect-ratio: 1;
+  /* Der Radius MUSS eine Länge sein: In `translateY()` bezieht sich ein
+     Prozentwert auf die eigene Höhe des Elements, nicht auf die Bühne.
+     Untergrenze gerechnet – Nachbarn liegen 2·r·sin(15°) ≈ 0,52·r
+     auseinander, ein Knopf ist 7,2rem breit, also mindestens 13,9rem. */
+  --zf-ring: clamp(15rem, 38vw, 17rem);
+}
+
+.zf__kreis { list-style: none; margin: 0; padding: 0; }
+.zf__kreis > li {
+  position: absolute;
+  z-index: 1;                       /* ueber dem Netz, das darunter liegt */
+  left: 50%; top: 50%;
+  width: 7.2rem;
+  transform:
+    translate(-50%, -50%)
+    rotate(calc(var(--i) * 30deg))
+    translateY(calc(-1 * var(--zf-ring)))
+    rotate(calc(var(--i) * -30deg));
+}
+
+.zf__knopf {
+  display: flex; flex-direction: column; align-items: center; gap: 0.15rem;
+  width: 100%;
+  padding: 0.5rem 0.4rem;
+  cursor: pointer; font: inherit; text-align: center;
+  color: var(--skr-color-ink);
+  background: var(--skr-color-bg);
+  border: 2px solid var(--skr-color-border);
+  border-radius: var(--skr-radius-lg);
+  box-shadow: var(--skr-shadow-1);
+  transition: transform var(--skr-transition),
+              border-color var(--skr-transition),
+              box-shadow var(--skr-transition);
+}
+.zf__knopf:hover, .zf__knopf:focus-visible {
+  transform: scale(1.06);
+  border-color: var(--skr-color-accent);
+  box-shadow: var(--skr-shadow-1),
+              0 0 14px color-mix(in srgb, var(--skr-color-accent) 30%, transparent);
+}
+.zf__nr {
+  font-family: var(--skr-font-mono);
+  font-size: 0.72em; letter-spacing: 0.08em;
+  color: var(--skr-color-ink-muted);
+}
+.zf__name { font-weight: var(--skr-fw-bold); font-size: 0.82em; line-height: 1.2; }
+
+.zf__knopf--kern {
+  border-color: color-mix(in srgb, var(--skr-color-accent) 70%, transparent);
+  background: color-mix(in srgb, var(--skr-color-accent) 10%, var(--skr-color-bg));
+}
+.zf__knopf--kern .zf__nr { color: var(--skr-color-accent-ink); }
+
+.zf__mitte {
+  position: absolute; left: 50%; top: 50%;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+  width: min(17rem, 44%); text-align: center;
+  /* Halbdurchlässig: Die Sehnen des Netzes laufen quer durch die Kreismitte.
+     Ohne eigenen Grund liefe die Beschriftung über Linien – ein deckender
+     Grund wiederum schnitte das Netz mitten entzwei. Der Text bleibt lesbar,
+     die Linien bleiben erkennbar. */
+  padding: var(--skr-space-4);
+  background: color-mix(in srgb, var(--skr-color-bg) 78%, transparent);
+  border-radius: var(--skr-radius-lg);
+}
+.zf__mitte h2 { margin: 0 0 0.35rem; font-size: 1.1rem; color: var(--skr-color-headline); }
+.zf__mitte p { margin: 0; font-size: var(--skr-fs-sm); color: var(--skr-color-ink-muted); }
+.zf__legende {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  margin-top: 0.6rem; font-size: 0.78em;
+  color: var(--skr-color-ink-muted);
+}
+.zf__legende::before {
+  content: ""; width: 0.85rem; height: 0.85rem; border-radius: 3px;
+  border: 2px solid color-mix(in srgb, var(--skr-color-accent) 70%, transparent);
+  background: color-mix(in srgb, var(--skr-color-accent) 10%, var(--skr-color-bg));
+}
+
+/* --- Das Netz ------------------------------------------------------------
+   Eine dünne Linie zwischen zwei Faktoren heißt: Die beiden nennen einander
+   im Reiter „Zusammenhänge“. Gezeichnet wird ausschließlich, was von BEIDEN
+   Seiten genannt ist – eine einseitige Nennung ergäbe eine Linie, die auf der
+   Gegenseite nicht wiederzufinden ist.
+
+   Die Linien sind Schmuck im Wortsinn: Sie liegen hinter den Knöpfen, nehmen
+   keine Klicks an und sind für Hilfsmittel unsichtbar. Der Inhalt steht als
+   Text im Fenster. */
+.zf__netz {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+.zf__netz line {
+  /* Grau, nicht in der Akzentfarbe: Das Netz ist Hintergrund. In Blau
+     stritte es mit den Knöpfen um die Aufmerksamkeit, obwohl es nur die
+     Lage beschreibt. Die Akzentfarbe bleibt dem Hervorheben vorbehalten. */
+  stroke: color-mix(in srgb, var(--skr-color-border) 85%, transparent);
+  stroke-width: 1;
+  /* Beim Skalieren des viewBox bliebe die Linie sonst nicht haardünn. */
+  vector-effect: non-scaling-stroke;
+  transition: stroke var(--skr-transition),
+              stroke-width var(--skr-transition);
+}
+.zf__netz.is-gedimmt line {
+  stroke: color-mix(in srgb, var(--skr-color-border) 35%, transparent);
+}
+.zf__netz line.is-hell {
+  stroke: var(--skr-color-accent);
+  stroke-width: 2;
+}
+
+/* Unter dieser Breite gibt die halbe Bühne den Radius nicht mehr her – dann
+   lieber ehrlich ein Raster als ein Kreis mit schneidenden Knöpfen. */
+@media (max-width: 56rem) {
+  .zf { aspect-ratio: auto; }
+  /* Gleiche Falle wie beim Zeitstrahl: Das Theme setzt `ol` auf Flex. */
+  .zf ol.zf__kreis {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(7.2rem, 1fr));
+    gap: var(--skr-space-3);
+  }
+  .zf ol.zf__kreis > li { position: static; transform: none; width: auto; }
+  .zf__mitte {
+    position: static; transform: none; width: auto;
+    padding: 0; background: none;
+    margin-bottom: var(--skr-space-6);
+  }
+  /* Ohne Kreis keine Sehnen – im Raster verbände die Linie zwei Kacheln,
+     die nur zufällig nebeneinanderliegen. */
+  .zf__netz { display: none; }
+}
+
+/* --- Das Fenster ---------------------------------------------------------
+   `<dialog>` bringt Esc, Fokusfang und das Stilllegen der übrigen Seite mit.
+   Zentriert wird es vom Browser über `inset: 0` und seine Vorgabe-Marge; das
+   Theme nimmt `dialog` seit 3.13.1 vom Margen-Reset aus. */
+.zf__fenster {
+  position: fixed; inset: 0;
+  width: min(52rem, 95vw);
+  max-height: 88vh;
+  padding: 0;
+  border: 1px solid var(--skr-color-border);
+  border-radius: var(--skr-radius-lg);
+  background: var(--skr-color-bg);
+  color: var(--skr-color-ink);
+  box-shadow: var(--skr-shadow-2);
+}
+.zf__fenster::backdrop {
+  background: color-mix(in srgb, var(--skr-color-ink, #000) 55%, transparent);
+  backdrop-filter: blur(2px);
+}
+.zf__fenster-kopf {
+  display: flex; align-items: flex-start; gap: var(--skr-space-4);
+  padding: var(--skr-space-6) var(--skr-space-6) 0;
+}
+.zf__fenster-kopf h2 { margin: 0; padding: 0; border: 0; font-size: 1.35rem; }
+.zf__fenster-nr {
+  font-family: var(--skr-font-mono);
+  color: var(--skr-color-ink-muted);
+  font-size: 0.9em;
+}
+.zf__zu {
+  margin-left: auto;
+  /* Mindestens 24x24 – darunter verlangt WCAG 2.5.8 freien Abstand ringsum. */
+  min-width: 32px; min-height: 32px;
+  border: 0; border-radius: var(--skr-radius);
+  background: transparent; color: inherit;
+  font-size: 1.4rem; line-height: 1; cursor: pointer;
+}
+.zf__zu:hover { background: var(--skr-color-bg-subtle); }
+.zf__fenster-koerper {
+  padding: var(--skr-space-4) var(--skr-space-6) var(--skr-space-6);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  max-height: calc(88vh - 6rem);
+  /* Etwas kleiner als der Fliesstext der Seite: Was hier steht, sind
+     Einzelheiten zum Nachlesen, und fuenf Reiter brauchen die Hoehe fuer den
+     Inhalt. `--skr-fs-sm` war zu klein zum Lesen, deshalb abgeleitet
+     statt gegriffen – zwischen den beiden Stufen gibt es kein Token. */
+  font-size: calc(var(--skr-fs-base) * 0.94);
+}
+
+/* --- DAS FENSTER SPRINGT NICHT -------------------------------------------
+   Die fünf Reiter eines Faktors sind verschieden lang. Wuchs und schrumpfte
+   das Fenster beim Umschalten, sprang der eben noch gelesene Text unter dem
+   Zeiger weg – und auf einem kurzen Reiter stand die Leiste plötzlich in der
+   Bildschirmmitte.
+
+   Deshalb: feste Höhe, und gescrollt wird IM Reiter. Die Leiste bleibt dabei
+   stehen; würde stattdessen der ganze Körper scrollen, verlöre man beim
+   Lesen die Bedienung aus dem Blick.
+
+   Nur für die Faktoren (`:has(.zf__blatt)`). Die Blätter des Zeitstrahls
+   haben keine Reiter und sind kurz – für sie wäre eine feste Höhe ein
+   Fenster mit viel Leere. Wo `:has()` fehlt, bleibt es beim bisherigen
+   Verhalten: Das Fenster wächst mit dem Inhalt. Kein Inhalt geht verloren. */
+.zf__fenster:has(.zf__blatt) {
+  height: min(88vh, 42rem);
+  display: flex; flex-direction: column;
+}
+.zf__fenster:has(.zf__blatt) .zf__fenster-kopf { flex: none; }
+.zf__fenster:has(.zf__blatt) .zf__fenster-koerper {
+  flex: 1 1 auto; min-height: 0; max-height: none;
+  overflow: hidden;                 /* gescrollt wird eine Ebene tiefer */
+  display: flex; flex-direction: column;
+}
+.zf__fenster:has(.zf__blatt) .zf__blatt {
+  flex: 1 1 auto; min-height: 0;
+  display: flex; flex-direction: column;
+}
+/* Doppelte Klasse: Das Theme setzt `.skr-tabs.skr-tabs`
+   ausdrücklich auf 0-2-0, um von der Ladereihenfolge unabhängig zu sein. */
+.zf__fenster .skr-tabs.skr-tabs {
+  flex: 1 1 auto; min-height: 0;
+  display: flex; flex-direction: column;
+  /* Das Theme setzt hier 3rem nach oben – gedacht fuer Reiter im Fliesstext
+     einer Seite. Im Fenster steht der Leitsatz direkt darueber; so viel Luft
+     dazwischen liest sich wie ein Abriss und kostet Hoehe, die der Inhalt
+     braucht. */
+  margin: var(--skr-space-4) 0 0;
+}
+.zf__fenster .skr-tabs__bar { flex: none; }
+.zf__fenster .skr-tabs__panel { flex: none; }
+/* `min-height: 0` ist der eigentliche Schalter: Ohne ihn wächst ein
+   Flex-Kind über seinen Inhalt hinaus und scrollt nie. */
+.zf__fenster .skr-tabs--enhanced > .skr-tabs__panel[open] {
+  flex: 1 1 auto; min-height: 0;
+  overflow-y: auto;
+  /* AM ENDE IST SCHLUSS. Ohne das rollt der Zeiger, sobald der Reiter unten
+     angekommen ist, in der Seite DAHINTER weiter – man scrollt also im
+     Fenster und landet im Kreis der Faktoren. */
+  overscroll-behavior: contain;
+
+  /* DASS ES WEITERGEHT, MUSS MAN SEHEN. Zwei Mittel, weil keines allein
+     reicht: ein dauerhaft sichtbarer Balken (macOS blendet den eigenen sonst
+     aus, solange man nicht rollt) und ein Schatten an der Kante.
+     Der Schatten kommt ohne Skript aus: Die deckenden Verläufe rollen mit
+     (`local`), die Schatten stehen still (`scroll`). Am oberen Ende schiebt
+     sich der Deckel über den Schatten – der Schatten ist also genau dann zu
+     sehen, wenn in dieser Richtung noch Inhalt liegt. */
+  scrollbar-width: thin;
+  scrollbar-color: var(--skr-color-border) transparent;
+  background:
+    linear-gradient(var(--skr-color-bg) 30%, transparent) top / 100% 1.4rem no-repeat local,
+    linear-gradient(transparent, var(--skr-color-bg) 70%) bottom / 100% 1.4rem no-repeat local,
+    radial-gradient(farthest-side at 50% 0,
+      color-mix(in srgb, var(--skr-color-ink) 20%, transparent), transparent)
+      top / 100% 0.5rem no-repeat scroll,
+    radial-gradient(farthest-side at 50% 100%,
+      color-mix(in srgb, var(--skr-color-ink) 20%, transparent), transparent)
+      bottom / 100% 0.5rem no-repeat scroll;
+}
+/* WebKit und Blink blenden den Balken sonst aus; erst eine eigene Regel macht
+   ihn dauerhaft sichtbar. */
+.zf__fenster .skr-tabs__panel[open]::-webkit-scrollbar { width: 10px; }
+.zf__fenster .skr-tabs__panel[open]::-webkit-scrollbar-thumb {
+  background: var(--skr-color-border);
+  border-radius: 5px;
+  border: 3px solid var(--skr-color-bg);
+}
+.zf__fenster .skr-tabs__panel[open]::-webkit-scrollbar-track { background: transparent; }
+
+/* --- Die Reiterleiste --------------------------------------------------
+   Fuenf Beschriftungen muessen nebeneinander passen. Die Leiste des Themes
+   rollt sonst waagerecht – das ist ein tragfaehiger Rueckfall, aber im
+   Fenster soll man alle fuenf auf einen Blick sehen. Deshalb: kuerzere
+   Woerter, schlankeres Polster und ein Symbol, das die Beschriftung
+   stuetzt statt sie zu ersetzen. */
+/* NUR DIE AUFGEWERTETE LEISTE – UND DIE ZUSAMMENFASSUNGEN NUR OHNE SIE.
+   Hier stand einmal `.zf__fenster .skr-tabs__panel > summary` ohne
+   Einschraenkung. Das Theme blendet die Zusammenfassungen aus, sobald die
+   Leiste steht (`.skr-tabs--enhanced > … > summary { display: none }`) –
+   beide Regeln haben DIESELBE Spezifitaet, und meine stand spaeter. Ergebnis:
+   oben die Leiste und darunter noch einmal alle fuenf zum Aufklappen.
+
+   Deshalb greift die Formatierung der Zusammenfassungen jetzt ausdruecklich
+   nur dort, wo es KEINE Leiste gibt – also ohne JavaScript, wo die Reiter ein
+   Akkordeon sind. */
+.zf__fenster .skr-tabs__tab,
+.zf__fenster .skr-tabs:not(.skr-tabs--enhanced)
+  > .skr-tabs__panel > summary {
+  display: inline-flex; align-items: center; gap: 0.4em;
+  padding-left: 0.7rem; padding-right: 0.7rem;
+  font-size: 0.92em;
+  white-space: nowrap;
+}
+.zf__reiter-bild { width: 1.05em; height: 1.05em; flex: 0 0 auto; }
+
+/* --- Ein Blatt ------------------------------------------------------------ */
+.zf__blatt { display: none; }
+.zf__fenster .zf__blatt { display: block; }
+/* Im Fenster tragen Ueberschrift UND Marke der Kopf – das Blatt bringt beide
+   fuer den Druck mit, wo es keinen Kopf gibt. */
+.zf__fenster .zf__blatt > h2,
+.zf__fenster .zf__blatt > .zf__kopfmarke { display: none; }
+.zf__kopfmarke { margin: 0.4rem 0 0; }
+.zf__marke[hidden] { display: none; }
+.zf__fenster-kopf .zf__marke { margin-top: 0.45rem; }
+.zf__leitsatz {
+  margin: 0 0 var(--skr-space-4);
+  font-size: 1.05em;
+  color: var(--skr-color-headline);
+}
+
+/* A-005: In `skr-tabs__panel` fehlt der Blockrhythmus des Themes.
+   Diese Regel gleicht ihn aus – dokumentierter Workaround, kein Versehen.
+   Fällt weg, sobald das Theme den Panel-Container in seine Fluss-Liste
+   aufnimmt. */
+.skr-tabs__panel > * + *,
+.skr-tabs__panel .zf__beispiel > * + * {
+  margin-top: var(--skr-rhythm-block, 1.1rem);
+}
+
+.zf__beispiel {
+  padding: var(--skr-space-4);
+  border-left: 3px solid var(--skr-color-success);
+  border-radius: 0 var(--skr-radius) var(--skr-radius) 0;
+  background: var(--skr-color-bg-subtle);
+}
+.zf__beispiel--schlecht { border-left-color: var(--skr-color-danger); }
+/* Querverweise: Der Faktorname ist ein echter Verweis – er setzt den Hash,
+   und das Fenster wechselt. So wird aus der Liste Navigation statt Prosa. */
+.zf__bezug { margin: 0; padding-left: 1.1rem; }
+.zf__bezug li + li { margin-top: var(--skr-space-3); }
+.zf__bezug a {
+  font-weight: var(--skr-fw-bold);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--skr-color-accent) 50%, transparent);
+}
+.zf__bezug a:hover { border-bottom-color: var(--skr-color-accent); }
+.zf__bezug-nr {
+  font-family: var(--skr-font-mono);
+  font-size: 0.82em;
+  color: var(--skr-color-ink-muted);
+  margin-right: 0.25em;
+}
+
+.zf__folge {
+  font-size: 0.94em;
+  color: var(--skr-color-ink-muted);
+}
+
+/* Fachbegriffe als Schlagworte: Wer sie einmal gesehen hat, erkennt sie im
+   nächsten Gespräch wieder – und weiß, was NICHT gemeint ist. */
+.zf__begriffe { margin: 0; }
+.zf__begriffe dt {
+  display: inline-block;
+  margin-top: var(--skr-space-3);
+  padding: 0.08em 0.6em;
+  border-radius: 999px;
+  font-family: var(--skr-font-mono);
+  font-size: 0.78em; font-weight: var(--skr-fw-bold);
+  color: var(--skr-color-accent-ink);
+  background: color-mix(in srgb, var(--skr-color-accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--skr-color-accent) 40%, transparent);
+}
+.zf__begriffe dd { margin: 0.25rem 0 0; }
+.zf__begriffe dt.zf__begriffe--nein {
+  color: var(--skr-color-danger-ink);
+  background: color-mix(in srgb, var(--skr-color-danger) 12%, transparent);
+  border-color: color-mix(in srgb, var(--skr-color-danger) 40%, transparent);
+}
+.zf__marke {
+  display: inline-block;
+  padding: 0.1em 0.7em; border-radius: 999px;
+  font-size: 0.78em; font-weight: var(--skr-fw-bold);
+  color: var(--skr-color-accent-ink);
+  background: color-mix(in srgb, var(--skr-color-accent) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--skr-color-accent) 45%, transparent);
+}
+
+/* --- Druck: EINE SEITE JE FAKTOR ------------------------------------------
+   Am Bildschirm ist der Kreis die Sache; auf Papier kann man nichts
+   anklicken. Gedruckt wird, was hinter den Knöpfen steckt. Die Reiter werden
+   dafür von `beforeprint` alle geöffnet. */
+/* =========================================================================
+   VIER STATIONEN – die eigene Aufteilung unter dem Kreis
+   -------------------------------------------------------------------------
+   Ein Zeitstrahl, kein Kreis und kein Netz: Diese vier stehen in einer
+   Reihenfolge, und zwischen ihnen liegt nichts als die Zeit. Genau das ist
+   ihr Vorzug gegenüber den zwölf – also muss man es auch sehen.
+
+   Auf der Seite steht nur Takt und Kernsatz. Alles Weitere liegt im selben
+   Fenster wie bei den Faktoren; eine zweite Fenstermechanik gäbe es sonst
+   doppelt zu pflegen.
+   ========================================================================= */
+
+/* KEINE eigene Breitenbegrenzung: Der Abschnitt soll genauso breit laufen
+   wie der Text oben auf der Seite. Das Theme gibt die Inhaltsbreite vor;
+   eine eigene `max-width` hier setzte den Absatz sichtbar schmaler daneben. */
+.sw {
+  margin: var(--skr-space-12) 0 0;
+  padding-top: var(--skr-space-8);
+  border-top: 1px solid var(--skr-color-border);
+}
+.sw__lead { color: var(--skr-color-ink-muted); }
+
+.sw__strahl { margin: var(--skr-space-12) 0 0; }
+/* `.sw ol.sw__takte` und nicht `.sw__takte`: Das Theme setzt fuer die Seite
+   `.skr-guide-main ol { display: flex; flex-direction: column }` –
+   spezifischer als eine einzelne Klasse. Mit `.sw__takte` allein wurde aus
+   dem Zeitstrahl eine Liste untereinander, und `grid-template-columns`,
+   `gap` und `padding` fielen still unter den Tisch. */
+.sw ol.sw__takte {
+  position: relative;
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: var(--skr-space-4);
+}
+/* Der Strahl liegt auf Höhe der Punkte – deshalb derselbe Abstand von oben
+   wie der halbe Punktdurchmesser. */
+.sw__takte::before {
+  content: ""; position: absolute;
+  left: 0; right: 0; top: 0.6rem;
+  border-top: 2px solid var(--skr-color-border);
+}
+.sw__takte::after {
+  content: ""; position: absolute;
+  right: 0; top: 0.6rem;
+  width: 0.65rem; height: 0.65rem;
+  border-top: 2px solid var(--skr-color-border);
+  border-right: 2px solid var(--skr-color-border);
+  transform: translate(2px, -50%) rotate(45deg);
+}
+
+.sw__knopf {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center;
+  gap: var(--skr-space-2);
+  width: 100%; padding: 0 var(--skr-space-2);
+  background: none; border: 0; font: inherit; color: inherit;
+  text-align: center; cursor: pointer;
+}
+/* Der Punkt trägt einen Ring in Hintergrundfarbe: So verschwindet der Strahl
+   unter ihm, statt durch ihn hindurchzulaufen. */
+.sw__punkt {
+  width: 1.2rem; height: 1.2rem; border-radius: 50%;
+  background: var(--skr-color-bg);
+  border: 2px solid var(--skr-color-accent);
+  box-shadow: 0 0 0 5px var(--skr-color-bg);
+  transition: background var(--skr-transition),
+              transform var(--skr-transition);
+}
+.sw__wann {
+  font-family: var(--skr-font-mono);
+  font-size: 0.72em; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--skr-color-ink-muted);
+}
+.sw__kern {
+  font-weight: var(--skr-fw-bold);
+  color: var(--skr-color-headline);
+  line-height: 1.25;
+}
+.sw__mehr {
+  font-size: var(--skr-fs-sm);
+  color: var(--skr-color-link);
+}
+.sw__knopf:hover .sw__punkt,
+.sw__knopf:focus-visible .sw__punkt {
+  background: var(--skr-color-accent);
+  transform: scale(1.15);
+}
+.sw__knopf:hover .sw__mehr,
+.sw__knopf:focus-visible .sw__mehr { text-decoration: underline; }
+
+/* --- Der querstehende Punkt: Schnittstellen ------------------------------
+   Kein fünfter Takt. Er betrifft als einziger nicht die eigene Anwendung,
+   sondern die Nachbarn – deshalb quer über die Breite und als Skizze einer
+   kleinen Dienstlandschaft statt als weiterer Punkt auf dem Strahl. */
+.sw__quer {
+  margin-top: var(--skr-space-12);
+  padding: var(--skr-space-6);
+  background: var(--skr-color-bg-subtle);
+  border: 2px dashed color-mix(in srgb, var(--skr-color-accent) 45%, var(--skr-color-border));
+  border-radius: var(--skr-radius-lg);
+}
+.sw__quer h3 { margin: 0 0 var(--skr-space-2); color: var(--skr-color-headline); }
+
+
+/* DAS SCROLLEN ÜBERNIMMT DER BAUSTEIN DES THEMES (`skr-tablescroll`),
+   hier steht nur noch der Abstand. Begründung: Die Skizze hat eine
+   Mindestbreite, auf einem schmalen Schirm scrollt ihr Rahmen also waagerecht –
+   und ein Scrollbereich braucht einen Tastatur-Haltepunkt, sonst kommt dorthin
+   nur, wer eine Maus hat (axe-Regel `scrollable-region-focusable`). Das Theme
+   setzt ihn selbst, und zwar nur dann, wenn wirklich gescrollt werden muss;
+   im Druck macht es den Rahmen auf, damit nichts abgeschnitten wird. */
+.sw__bild { margin: var(--skr-space-6) 0 0; }
+.sw__bild svg { display: block; width: 100%; min-width: 34rem; height: auto; }
+.sw__kasten {
+  fill: var(--skr-color-bg);
+  stroke: var(--skr-color-border);
+  stroke-width: 2;
+}
+.sw__kasten--mitte { stroke: var(--skr-color-accent); }
+.sw__beschriftung {
+  fill: var(--skr-color-ink);
+  font-size: 15px; font-weight: var(--skr-fw-bold);
+}
+.sw__kante { stroke: var(--skr-color-border); stroke-width: 2; fill: none; }
+.sw__kante--lose {
+  stroke: var(--skr-color-warning);
+  stroke-dasharray: 6 5;
+}
+.sw__art { fill: var(--skr-color-ink-muted); font-size: 12px; }
+.sw__art--lose { fill: var(--skr-color-warning-ink); }
+
+.sw__arten { margin: var(--skr-space-6) 0 0; padding-left: 1.1rem; }
+.sw__arten li + li { margin-top: var(--skr-space-2); }
+.sw__arten strong { color: var(--skr-color-headline); }
+
+.sw__rest {
+  margin-top: var(--skr-space-8);
+  font-size: var(--skr-fs-sm);
+  color: var(--skr-color-ink-muted);
+}
+
+/* --- Die Blätter der Stationen im Fenster -------------------------------- */
+.sw__blatt .zf__leitsatz { margin-top: 0; }
+.sw__frage {
+  margin: var(--skr-space-4) 0;
+  padding: var(--skr-space-3);
+  background: var(--skr-color-bg-subtle);
+  border-left: 3px solid var(--skr-color-accent);
+  border-radius: var(--skr-radius-sm);
+}
+.sw__marke {
+  display: block;
+  margin-bottom: var(--skr-space-1);
+  font-family: var(--skr-font-mono);
+  font-size: 0.72em; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--skr-color-ink-muted);
+}
+.sw__blatt .sw__zu { font-size: var(--skr-fs-sm); }
+
+/* Wie bei den Faktoren: Das Blatt lebt im Lager und wird ins Fenster
+   geschoben. Die eigene Ueberschrift ist dort doppelt - der Fensterkopf
+   zeigt sie schon. Auf Papier ist sie die einzige. */
+.sw__blatt { display: none; }
+.zf__fenster .sw__blatt { display: block; }
+.zf__fenster .sw__blatt > h2 { display: none; }
+
+@media (max-width: 56rem) {
+  /* Untereinander statt nebeneinander – der Strahl steht dann links. */
+  .sw ol.sw__takte { grid-template-columns: 1fr; gap: var(--skr-space-6); }
+  .sw__takte::before { left: 0.6rem; right: auto; top: 0; bottom: 0; border-top: 0;
+    border-left: 2px solid var(--skr-color-border); }
+  .sw__takte::after { right: auto; left: 0.6rem; top: auto; bottom: 0;
+    transform: translate(-50%, 2px) rotate(135deg); }
+  .sw__knopf { flex-direction: row; align-items: center; text-align: left;
+    gap: var(--skr-space-4); padding: 0; }
+  .sw__punkt { flex: none; }
+  .sw__wann { flex: none; min-width: 5.5rem; }
+}
+
+@media print {
+  .zf, .zf__quelle, .zf__fenster { display: none !important; }
+  /* DAS LAGER MUSS AUF PAPIER AUFGEHEN. Es traegt am Bildschirm `hidden`,
+     und ein `display: none` am Vorfahren laesst sich von den Blaettern darin
+     NICHT aufheben – `.zf__blatt { display: block !important }` lief deshalb
+     ins Leere, und im Ausdruck fehlten saemtliche Faktoren. */
+  #zf-lager { display: block !important; }
+  /* Die eigene Aufteilung kommt aufs Papier – sie ist die Lehrlinie. Der
+     Strahl entfällt (anklicken geht auf Papier nicht), stattdessen steht
+     jede Station ausgeschrieben da. */
+  .sw__strahl { display: none !important; }
+  .sw__quer { break-inside: avoid; background: none; }
+  .sw { break-before: page; border-top: none; }
+  .sw__blatt {
+    display: block !important;
+    break-inside: avoid;
+    margin-top: 0.8cm;
+  }
+  .sw__blatt > h2 { display: block !important; font-size: 16pt; margin: 0 0 0.2cm; }
+  .sw__bild { break-inside: avoid; }
+  .zf__blatt {
+    display: block !important;
+    break-after: page;
+    padding-top: 1.2cm;
+  }
+  .zf__blatt:last-of-type { break-after: auto; }
+  .zf__blatt > h2 { display: block !important; font-size: 20pt; margin: 0 0 0.2cm; }
+  .zf__blatt .skr-tabs__panel > summary {
+    font-size: 10pt; letter-spacing: 0.06em; text-transform: uppercase;
+    margin-top: 0.7cm;
+  }
+  /* NUR TEXT, KEINE KAESTCHEN. Am Bildschirm trennen Rahmen und Flächen das
+     Bedienbare vom Text – der Reiterkasten, die Beispielspalten, die
+     Begriffe als Plaketten. Auf Papier gibt es nichts zu bedienen: Dort
+     stehen Kapitel hintereinander, und jeder Rahmen ist nur noch Farbe auf
+     dem Blatt. Was er bedeutete, sagt die Überschrift darüber ohnehin. */
+  .zf__blatt .skr-tabs,
+  .zf__blatt .skr-tabs__panel,
+  .skr-tabs--enhanced > .skr-tabs__panel[open],
+  .zf__beispiel,
+  .zf__begriffe dt,
+  .zf__marke,
+  .sw__frage,
+  .sw__quer {
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+  /* Ohne Plakette braucht der Begriff einen anderen Halt als die Fläche. */
+  .zf__begriffe dt { font-weight: bold; }
+}

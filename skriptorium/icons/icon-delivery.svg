@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Auslieferung">
+  <!-- Feste Farben im Asset, denn ein <img> erbt keine Tokens: die dunkle Fläche #33424d und der Akzent #00b4cc des Standard-Themes (Akzent im dunklen Schema, 4,1:1 auf der Fläche). -->
+  <rect width="32" height="32" fill="#33424d"/>
+  <!-- Ein Paket und das, was hineingeht: der orange Pfeil ist die Ladung, die beim
+       Leser ankommt. Bewusst zwei grosse Formen statt vieler Striche - der Eintrag
+       im Menue ist 18 Pixel breit, und dort ueberlebt nur, was wenige Kanten hat. -->
+  <path d="M6 17v8h20v-8" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M16 5v9M12 11l4 4 4-4" fill="none" stroke="#00b4cc" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

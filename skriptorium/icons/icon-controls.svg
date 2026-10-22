@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Bedienelemente">
+  <!-- Feste Farben im Asset, denn ein <img> erbt keine Tokens: die dunkle Fläche #33424d und der Akzent #00b4cc des Standard-Themes (Akzent im dunklen Schema, 4,1:1 auf der Fläche). -->
+  <rect width="32" height="32" fill="#33424d"/>
+  <!-- Zwei Schalter: der obere umgelegt (Akzentfarbe), der untere aus. Bedienelemente
+       sind das, was der Betrachter umlegt - nicht das, was die Seite zeigt. -->
+  <rect x="6"  y="8"  width="20" height="8" rx="4" fill="none" stroke="#ffffff" stroke-width="2"/>
+  <circle cx="21" cy="12" r="2.6" fill="#00b4cc"/>
+  <rect x="6"  y="18" width="20" height="8" rx="4" fill="none" stroke="#ffffff" stroke-width="2"/>
+  <circle cx="11" cy="22" r="2.6" fill="#ffffff"/>
+</svg>

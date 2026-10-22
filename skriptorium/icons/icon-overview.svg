@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Übersicht">
+  <!-- Feste Farben im Asset, denn ein <img> erbt keine Tokens: die dunkle Fläche #33424d und der Akzent #00b4cc des Standard-Themes (Akzent im dunklen Schema, 4,1:1 auf der Fläche). -->
+  <rect width="32" height="32" fill="#33424d"/>
+  <g fill="none" stroke="#ffffff" stroke-width="2.2">
+    <!-- Vier Kacheln = die vier Vorlagen auf einen Blick -->
+    <rect x="8"  y="8"  width="7" height="7" rx="1.5"/>
+    <rect x="17" y="17" width="7" height="7" rx="1.5"/>
+    <rect x="8"  y="17" width="7" height="7" rx="1.5"/>
+  </g>
+  <rect x="17" y="8" width="7" height="7" rx="1.5" fill="#00b4cc"/>
+</svg>

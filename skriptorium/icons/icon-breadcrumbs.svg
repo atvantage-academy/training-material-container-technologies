@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Brotkrumen und Sprungmarken">
+  <!-- Feste Farben im Asset, denn ein <img> erbt keine Tokens: die dunkle Fläche #33424d und der Akzent #00b4cc des Standard-Themes (Akzent im dunklen Schema, 4,1:1 auf der Fläche). -->
+  <rect width="32" height="32" fill="#33424d"/>
+  <!-- Drei Stationen eines Pfades, durch Winkel getrennt - die letzte ist die
+       aktuelle Seite und traegt deshalb die Akzentfarbe. -->
+  <g fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 16h3"/>
+    <path d="M12 12l3.5 4L12 20"/>
+    <path d="M18 16h2"/>
+  </g>
+  <circle cx="25" cy="16" r="3" fill="#00b4cc"/>
+</svg>

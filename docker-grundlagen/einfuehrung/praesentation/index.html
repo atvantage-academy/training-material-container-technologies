@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="de" data-skr-present-mark>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="skr-root" content="../../../">
+<script src="../../../skriptorium/skr.js?v=dfcd09dd"></script>
+<title>Warum Container? · Containertechnologien (Academy)</title>
+<meta name="description" content="Von der Agilität über die Wall of Confusion zum Container als Paket – und zur Abgrenzung gegen die virtuelle Maschine.">
+
+<meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta property="og:title" content="Warum Container?">
+<meta property="og:description" content="Von der Agilität über die Wall of Confusion zum Container als Paket – und zur Abgrenzung gegen die virtuelle Maschine.">
+<meta property="og:type" content="website">
+<link rel="preload" href="../../../themes/atvantage/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../../themes/default/theme.css?v=b795c99c">
+<link rel="stylesheet" href="../../../themes/atvantage/fonts.css?v=0f189d71">
+<link rel="stylesheet" href="../../../themes/atvantage/tokens/colors.css?v=8ed47a94">
+<link rel="stylesheet" href="../../../themes/atvantage/tokens/typography.css?v=6445d4d3">
+<link rel="stylesheet" href="../../../themes/atvantage/tokens/spacing.css?v=58e35278">
+<link rel="stylesheet" href="../../../themes/atvantage/tokens/components.css?v=3fcd65a3">
+<link rel="stylesheet" href="../../../themes/atvantage/tokens/base.css?v=b47b1e2d">
+<link rel="stylesheet" href="../../../themes/atvantage/theme.css?v=e7026433">
+<link rel="stylesheet" href="../../../themes/didaktikon/theme.css?v=4a593b58">
+<link rel="stylesheet" href="../../../skriptorium/tokens.css?v=e74fbfe2">
+<link rel="stylesheet" href="../../../extensions/didaktikon/tokens.css?v=5966d76a">
+<link rel="stylesheet" href="../../../skriptorium/base.css?v=86e37c43">
+<link rel="stylesheet" href="../../../skriptorium/components.css?v=b86ac9ad">
+<link rel="stylesheet" href="../../../skriptorium/doclinks.css?v=2ef23515">
+<link rel="stylesheet" href="../../../skriptorium/linkmarks.css?v=31148a87">
+<link rel="stylesheet" href="../../../skriptorium/site.css?v=d11b6ac6">
+<link rel="stylesheet" href="../../../skriptorium/logo.css?v=43a7fbaf">
+<link rel="stylesheet" media="print" href="../../../skriptorium/print.css?v=856e77e0">
+<meta name="generator" content="Skriptorium 1.5.0">
+<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"1.0.0"}],"internal":false,"languages":["de"],"skriptorium":"1.5.0","theme":"didaktikon","themes":[{"name":"didaktikon","version":"1.0.0"},{"name":"atvantage","version":"1.0.0"},{"name":"default","version":"1.5.0"}]}</script>
+<script type="application/json" id="skr-page-info">{"clientApi":"full","defaultLanguage":"de","description":"Von der Agilität über die Wall of Confusion zum Container als Paket – und zur Abgrenzung gegen die virtuelle Maschine.","duration":null,"fields":null,"language":"de","languages":["de"],"layout":"skriptorium.presentation","pageAssets":[{"path":"docker-grundlagen/einfuehrung/praesentation/praesentation.css","src":"praesentation.css","type":"style"}],"pageId":null,"runtimeFragments":["^/\\d+$"],"siteIndex":"/skriptorium/site.json","title":"Warum Container?","topics":null,"url":"/docker-grundlagen/einfuehrung/praesentation/"}</script>
+<script type="application/json" id="skr-texts">{"didaktikon.capture":"Capture-Modus","didaktikon.captureExit":"beenden","didaktikon.captureText":"Text einblenden","didaktikon.crosswordAcross":"Waagerecht","didaktikon.crosswordCellAcross":"{number} waagerecht, Buchstabe {position}","didaktikon.crosswordCellDown":"{number} senkrecht, Buchstabe {position}","didaktikon.crosswordDown":"Senkrecht","didaktikon.crosswordHintLetter":"Tipp: Buchstabe","didaktikon.crosswordHintWord":"Tipp: Wort","didaktikon.crosswordRestart":"Neu beginnen","didaktikon.crosswordRestartText":"Deine Eingaben in diesem Rätsel werden gelöscht.","didaktikon.crosswordRestartTitle":"Kreuzworträtsel neu beginnen?","didaktikon.crosswordReveal":"Auflösen","didaktikon.crosswordRevealText":"Alle Felder werden ausgefüllt.","didaktikon.crosswordRevealTitle":"Kreuzworträtsel auflösen?","didaktikon.crosswordSolution":"Lösungswort","didaktikon.crosswordSolutionCell":"Lösungswort, Buchstabe {position}","didaktikon.crosswordSolved":"Gelöst – alle Begriffe stimmen.","didaktikon.doclinkCrossword":"Kreuzworträtsel","didaktikon.doclinkExercise":"Übung","didaktikon.doclinkQuiz":"Wissens-Check","didaktikon.doclinkSimulation":"Simulation","didaktikon.doclinkVisualization":"Visualisierung","didaktikon.exerciseObjectives":"Lernziele","didaktikon.exerciseQuestionsDone":"Du hast die Kontrollfragen beantwortet","didaktikon.exerciseReflectiveQuestions":"Reflexionsfragen","didaktikon.quizAgain":"Noch einmal","didaktikon.quizCorrect":"Richtig.","didaktikon.quizCorrectCount":"{count} richtig","didaktikon.quizCorrectWouldBe":"Richtig wäre gewesen:","didaktikon.quizDone":"Fertig","didaktikon.quizEvaluate":"Auswertung","didaktikon.quizNext":"Weiter","didaktikon.quizProgress":"Fortschritt","didaktikon.quizQuestionOf":"Frage {current} von {total}","didaktikon.quizRestart":"Neu beginnen","didaktikon.quizRestartText":"Deine Antworten in diesem Wissens-Check werden gelöscht.","didaktikon.quizRestartTitle":"Wissens-Check neu beginnen?","didaktikon.quizResult":"{correct} von {total} richtig","didaktikon.quizResultLong":"{correct} von {total} Fragen richtig","didaktikon.quizWrong":"Nicht ganz.","didaktikon.scenarios":"Szenarien","didaktikon.simAllScenarios":"Alle Szenarien (Taste 0)","didaktikon.simControls":"Simulation steuern","didaktikon.simNext":"Schritt vor (→)","didaktikon.simNextAria":"Schritt vor","didaktikon.simOverview":"Übersicht","didaktikon.simPause":"Pause (Leertaste)","didaktikon.simPauseAria":"Pause","didaktikon.simPlay":"Abspielen (Leertaste)","didaktikon.simPlayAria":"Abspielen","didaktikon.simPrev":"Schritt zurück (←)","didaktikon.simPrevAria":"Schritt zurück","didaktikon.simPrintHint":"Diese Simulation lebt von der Bewegung. Auf Papier steht nur der gerade sichtbare Schritt – der QR-Code oben führt zurück zur laufenden Fassung.","didaktikon.simReset":"Zurück auf Anfang (Taste R)","didaktikon.simResetAria":"Zurück auf Anfang","didaktikon.simScenarioCount":"{count} Szenarien","didaktikon.simScenarioKey":"{title} (Taste {number})","didaktikon.simScenarioTitle":"Szenario {number}","didaktikon.simSpeed":"Tempo wählen (Taste T)","didaktikon.simSpeedAria":"Tempo wählen","didaktikon.simSpeedMenu":"Tempo","didaktikon.simStepCount":"{count} Schritte","didaktikon.simStepCountOne":"{count} Schritt","didaktikon.simStepCounter":"Schritt {current} / {total}","didaktikon.speedFast":"zügig","didaktikon.speedNormal":"normal","didaktikon.speedSlow":"langsam","didaktikon.speedTurbo":"im Zeitraffer","didaktikon.speedValue":"{speed}×","didaktikon.stepNote":"Erklärung zum aktuellen Schritt"}</script>
+
+<script src="../../../skriptorium/client.js?v=82492cae" defer></script>
+<script src="../../../skriptorium/site.js?v=6472c794" defer></script>
+<script src="../../../skriptorium/search-trail.js?v=31279378" data-skr-search-trail
+        data-base="../../../" data-index="../../../skriptorium/search/de.json?v=07ea62a4" defer></script>
+<link rel="stylesheet" href="../../../skriptorium/highlight.css?v=f8a3fc05">
+<script type="module" src="../../../skriptorium/highlight.js?v=0b2d40aa" data-skr-highlight="[&#34;bash&#34;,&#34;dockerfile&#34;,&#34;python&#34;,&#34;sql&#34;,&#34;yaml&#34;]"></script>
+<link rel="apple-touch-icon" sizes="180x180" href="../../../themes/atvantage/assets/icon-180.png">
+<link rel="icon" sizes="32x32" href="../../../themes/atvantage/assets/icon-32.png">
+<link rel="icon" sizes="16x16" href="../../../themes/atvantage/assets/icon-16.png">
+
+<link rel="stylesheet" href="../../../skriptorium/presentation.css?v=fc13e38e">
+<script src="../../../skriptorium/presentation.js?v=59ada18d" defer></script>
+
+<link rel="stylesheet" href="../../../docker-grundlagen/einfuehrung/praesentation/praesentation.css?v=32e6edf2">
+
+</head>
+<body class="skr-present" data-skr-layout="skriptorium.presentation" data-skr-layouts="skriptorium.presentation" data-skr-lang="de" data-skr-audience="learner" data-skr-present data-skr-present-title="Warum Container?">
+  <a class="skr-skip-link" href="#skr-deck">Zum Inhalt springen</a>
+  <header class="skr-present__bar">
+    <img class="skr-present__logo" src="../../../themes/didaktikon/assets/logo-schulung.svg" alt="ATVANTAGE Academy"><span class="skr-present__logo-mask" role="img" aria-label="ATVANTAGE Academy" data-skr-logo-mask></span><span class="skr-present__title">Warum Container?</span>
+    <span class="skr-present__counter" data-skr-present-counter aria-live="off"></span>
+    <div class="skr-present__tools">
+      <button type="button" class="skr-present__back" data-skr-back hidden
+              title="Zurück" aria-label="Zurück"><svg viewBox="0 0 24 24" width="1em" height="1em"
+              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"
+              ><path d="M19 12H5M11 6l-6 6 6 6"/></svg> Zurück</button>
+<button type="button" class="skr-qr" data-skr-qr hidden
+        title="Diese Seite auf Deinem Smartphone öffnen"
+        aria-label="Diese Seite auf Deinem Smartphone öffnen"></button>
+<button type="button" class="skr-tool skr-tool--theme" data-skr-theme-toggle
+        title="Farbschema umschalten (hell/dunkel)"
+        aria-label="Dunkles Farbschema"><svg viewBox="0 0 24 24" width="1em" height="1em"
+        fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"
+        ><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+<button type="button" class="skr-tool skr-tool--print"
+        data-skr-present-print=""
+        title="Drucken (alle Folien)" aria-label="Drucken (alle Folien)"></button>
+<button type="button" class="skr-tool skr-tool--full"
+        data-skr-present-full=""
+        title="Vollbild (Taste F)" aria-label="Vollbild"><svg viewBox="0 0 24 24" width="1em" height="1em"
+        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"
+        ><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg></button>
+</div>
+  </header>
+  <main class="skr-deck" id="skr-deck" data-skr-deck>
+    <!--
+===============================================================================
+ANFORDERUNGEN AN DIESE UNTERLAGE
+-------------------------------------------------------------------------------
+Steht hier und nicht in der AGENTS.md, weil eine Anforderung dort niemand
+findet, der diese Datei bearbeitet.
+
+FORM
+- `layout: presentation`, ein Ordner mit `index.md`, den beiden Bildern und dem
+  Stylesheet `praesentation.css` (in `styles:` genannt). Jedes `##` beginnt eine Folie.
+- Farben AUSSCHLIESSLICH aus den `--skr-*`-Token.
+
+DIE FOLIEN STUETZEN, SIE FUEHREN NICHT
+- Die Einheit lebt am BOARD: Die Liste "Was braucht eine Anwendung?" entsteht
+  mit der Gruppe, und der Rahmen darum wird dort gezogen. Diese Folien zeigen
+  nur, was sich schlecht an die Tafel malen lässt.
+- Folie "Was braucht eine Anwendung?" deshalb ERST ZEIGEN, WENN DIE GRUPPE
+  gesammelt hat - vorher nimmt sie die Antwort vorweg.
+- Die Folie „Das Paket heißt Container“ trägt die beiden Bilder aus dem alten
+  Foliensatz (Warenverkehr früher/heute). Sie liegen neben dieser Seite und
+  werden RELATIV eingebunden – so tragen sie in beiden Unterlagen. Früher zeigte der
+  Trainer sie aus einem eigenen Foliensatz - sie gehören jetzt hierher.
+
+DIE BEGRIFFE STEHEN NICHT MEHR HIER
+- Image, Container, Registry und der Lebenszyklus sind in die Visualisierung
+  `visualisierung.md` gewandert („Containerwissen kompakt“). Der Foliensatz
+  endet mit der Abgrenzung gegen die virtuelle Maschine; danach wird die
+  Visualisierung projiziert. Keine Folien dazu nachbauen.
+
+DER UNTERSCHIED IST DIE ISOLATION, NICHT „MENSCH ODER MASCHINE“
+- Die Anleitung ist nicht deshalb schlecht, weil ein MENSCH sie abarbeitet: Ein
+  Skript täte dasselbe. Entscheidend ist, WO sie ausgeführt wird - auf dem
+  ZIELRECHNER, den sie dabei verändert und den sich mehrere Anwendungen teilen.
+- Der Container dreht das um: Übergeben wird etwas FERTIG INSTALLIERTES, auf dem
+  Zielrechner wird nichts mehr installiert. Dieser Gegensatz trägt die Folien
+  „die Anleitung“, „Was braucht eine Anwendung“ und „Das Paket heißt Container“.
+===============================================================================
+-->
+<h1 id="warum-container">Warum Container?</h1>
+<p>Was sie lösen – und warum die Frage vor der Technik kommt.</p>
+<h2 id="agilität-will-häufig-liefern">Agilität will häufig liefern</h2>
+<div class="wc__z">
+  <figure class="wc__schleife wc__z-bild">
+  <svg viewBox="0 0 520 300" role="img" aria-labelledby="wc-schleife-titel">
+    <title id="wc-schleife-titel">Kreislauf aus vier Stationen: Analyse, Tests schreiben, Design, Implementierung – und wieder von vorn. Eine gestrichelte Verbindung zwischen Tests und Implementierung ist mit TDD beschriftet.</title>
+    <defs>
+      <marker id="wc-spitze" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+        <path class="wc__spitze" d="M0 0 L10 5 L0 10 Z"/>
+      </marker>
+    </defs>
+    <line class="wc__tdd" x1="336" y1="84" x2="194" y2="218"/>
+    <rect class="wc__chip" x="240" y="140" width="50" height="22" rx="6"/>
+    <text class="wc__chip-text" x="265" y="152" text-anchor="middle" dominant-baseline="central">TDD</text>
+    <path class="wc__bogen" marker-end="url(#wc-spitze)" d="M215 48 H300"/>
+    <path class="wc__bogen" marker-end="url(#wc-spitze)" d="M405 81 V216"/>
+    <path class="wc__bogen" marker-end="url(#wc-spitze)" d="M305 252 H220"/>
+    <path class="wc__bogen" marker-end="url(#wc-spitze)" d="M115 219 V84"/>
+    <rect class="wc__station" x="20" y="20" width="190" height="56" rx="10"/>
+    <text class="wc__station-text" x="115" y="48" text-anchor="middle" dominant-baseline="central">Analyse</text>
+    <rect class="wc__station" x="310" y="20" width="190" height="56" rx="10"/>
+    <text class="wc__station-text" x="405" y="48" text-anchor="middle" dominant-baseline="central">Tests schreiben</text>
+    <rect class="wc__station" x="310" y="224" width="190" height="56" rx="10"/>
+    <text class="wc__station-text" x="405" y="252" text-anchor="middle" dominant-baseline="central">Design</text>
+    <rect class="wc__station" x="20" y="224" width="190" height="56" rx="10"/>
+    <text class="wc__station-text" x="115" y="252" text-anchor="middle" dominant-baseline="central">Implementierung</text>
+  </svg>
+  <figcaption>Jede Runde endet mit etwas Lieferbarem – und trifft auf den Übergabepunkt zum Betrieb.</figcaption>
+  </figure>
+  <div class="wc__glied wc__z-1">
+    <p><strong>Agilität</strong>In kurzen Abständen etwas Fertiges abliefern.</p>
+  </div>
+  <div class="wc__folgepfeil wc__z-ab1" aria-hidden="true"><svg viewBox="0 0 48 28"><path class="wc__folgepfeil-bogen" d="M6 22 C 16 22 22 8 32 8"/><path class="wc__folgepfeil-spitze" d="M29 0 L47 8 L29 16 Z"/></svg></div>
+  <div class="wc__glied wc__z-2">
+    <p><strong>Häufig liefern</strong>Heißt: den Übergabepunkt zum Betrieb oft passieren.</p>
+  </div>
+  <div class="wc__folgepfeil wc__folgepfeil--quer wc__z-quer" aria-hidden="true"><svg viewBox="0 0 48 28"><path class="wc__folgepfeil-bogen" d="M6 22 C 16 22 22 8 32 8"/><path class="wc__folgepfeil-spitze" d="M29 0 L47 8 L29 16 Z"/></svg></div>
+  <div class="wc__glied wc__glied--ziel wc__z-3">
+    <p><strong>Also selbst ausliefern</strong>Wer ihn oft passiert, will ihn nicht jedes Mal verhandeln.</p>
+  </div>
+  <div class="wc__folgepfeil wc__z-ab3" aria-hidden="true"><svg viewBox="0 0 48 28"><path class="wc__folgepfeil-bogen" d="M6 22 C 16 22 22 8 32 8"/><path class="wc__folgepfeil-spitze" d="M29 0 L47 8 L29 16 Z"/></svg></div>
+  <div class="skr-callout skr-callout--info wc__z-devops">
+    <p><strong>DevOps</strong> ist hier genau das – und nicht mehr: Entwicklung und
+    Betrieb teilen sich Werkzeuge und Verantwortung.</p>
+  </div>
+</div>
+<h2 id="früher-die-wall-of-confusion">Früher: die Wall of Confusion</h2>
+<div class="wc__mauer">
+  <div class="wc__seite">
+    <strong>Entwicklung</strong>
+    <p>„Bei mir läuft es.“</p>
+    <ul>
+      <li>wartet auf den Betrieb</li>
+      <li>sieht die Logs nur auf Zuruf</li>
+      <li>kann den Fehler nicht selbst nachstellen</li>
+    </ul>
+  </div>
+  <div class="wc__bombe">
+    <svg viewBox="0 0 280 260" role="img" aria-labelledby="wc-bombe-titel">
+      <title id="wc-bombe-titel">Zwei Personen, zwischen ihnen eine gemauerte Wand. Über die Wand fliegt eine Bombe mit brennender Lunte, beschriftet mit „Code“. Die Person rechts hebt abwehrend die Arme.</title>
+      <defs>
+        <marker id="wc-flug-spitze" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto">
+          <path class="wc__flug-spitze" d="M0 0 L10 5 L0 10 Z"/>
+        </marker>
+      </defs>
+      <path class="wc__flug" marker-end="url(#wc-flug-spitze)" d="M78 180 Q 140 -20 205 178"/>
+      <line class="wc__boden" x1="5" y1="245" x2="275" y2="245"/>
+      <rect class="wc__ziegel" x="122" y="110" width="36" height="135"/>
+      <path class="wc__fuge" d="M122 132.5 H158 M122 155 H158 M122 177.5 H158 M122 200 H158 M122 222.5 H158 M140 110 V132.5 M140 155 V177.5 M140 200 V222.5"/>
+      <g class="wc__mensch">
+        <circle class="wc__kopf" cx="58" cy="176" r="11"/>
+        <path d="M58 187 V214 M58 214 L46 243 M58 214 L70 243 M58 194 L42 208 M58 193 L76 182"/>
+      </g>
+      <g class="wc__mensch">
+        <circle class="wc__kopf" cx="222" cy="176" r="11"/>
+        <path d="M222 187 V214 M222 214 L210 243 M222 214 L234 243 M222 194 L206 180 M222 194 L238 180"/>
+      </g>
+      <path class="wc__lunte" d="M140 47 C 148 34 158 32 166 28"/>
+      <circle class="wc__funke" cx="172" cy="24" r="5"/>
+      <path class="wc__strahl" d="M172 14 V8 M182 18 l6 -4 M183 31 l7 3 M161 15 l-4 -5"/>
+      <rect class="wc__bombe-koerper" x="132" y="47" width="16" height="10" rx="2"/>
+      <circle class="wc__bombe-koerper" cx="140" cy="79" r="25"/>
+      <text class="wc__bombe-text" x="140" y="80" text-anchor="middle" dominant-baseline="central">Code</text>
+    </svg>
+  </div>
+  <div class="wc__seite">
+    <strong>Betrieb</strong>
+    <p>„Dann hast Du es falsch gebaut.“</p>
+    <ul>
+      <li>bekommt ein Paket, das er nicht gebaut hat</li>
+      <li>bringt es nach fremder Anleitung zum Laufen</li>
+      <li>meldet zurück, was er im Log sieht</li>
+    </ul>
+  </div>
+</div>
+<p>Was da flog – ein <code>JAR</code>, ein NPM-Paket, ein ZIP mit Skripten – heißt <strong>Code Bomb</strong>.
+Jede Rückfrage nimmt denselben Weg zurück: Die Entwicklung kommt an nichts selbst
+heran, wartet auf jede Antwort – und aus Minuten werden Tage.</p>
+<h2 id="und-dabei-immer-die-anleitung">Und dabei immer: die Anleitung</h2>
+<blockquote>
+<p>Java 17 installieren. <code>APP_ENV</code> setzen. Port 8080 freigeben.
+Verzeichnis <code>/var/data</code> anlegen, Schreibrecht für den Dienstbenutzer.</p>
+</blockquote>
+<p>Sie ist Prosa, und sie veraltet. Der Kern ist aber ein anderer: <strong>Ausgeführt wird
+sie auf dem Zielrechner</strong> – und sie verändert ihn. Ein Skript statt Prosa ändert
+daran nichts; es installiert dieselben Dinge auf derselben Maschine, auf der
+nebenan schon etwas anderes läuft.</p>
+<p><strong>Das Paket enthielt die Anwendung – aber nicht das, was sie zum Laufen braucht.</strong></p>
+<h2 id="was-braucht-eine-anwendung-zum-laufen">Was braucht eine Anwendung zum Laufen?</h2>
+<div class="wc__rahmen">
+  <p class="wc__rahmen-kopf">Das alles steckt ab jetzt im Paket – fertig installiert, nicht auf dem Zielrechner:</p>
+  <ul class="wc__braucht">
+    <li>Laufzeit und Bibliotheken</li>
+    <li>Dateisystem, Verzeichnisse</li>
+    <li>Startbefehl</li>
+    <li>Ports</li>
+    <li>Umgebungsvariablen</li>
+    <li>Benutzer und Rechte</li>
+  </ul>
+</div>
+<p class="wc__aussen">Außerhalb des Rahmens bleibt, was die Umgebung beisteuert:
+Adressen der Nachbardienste, Zugangsdaten, Speicher und CPU.</p>
+<h2 id="das-paket-heißt-container">Das Paket heißt Container</h2>
+<div class="wc__warenverkehr">
+  <figure>
+    <img src="warenverkehr-frueher.jpg" alt="Historische Aufnahme: Ein Dampfschiff wird am Kai beladen, Arbeiter rollen einzelne Holzfässer heran und stapeln sie an Deck.">
+    <figcaption><strong>Früher:</strong> Jedes Stück einzeln. Für jedes Gut ein eigenes Verfahren, und jeder Hafen macht es anders.</figcaption>
+  </figure>
+  <figure>
+    <img src="warenverkehr-heute.jpg" alt="Ein voll beladenes Containerschiff auf See; alle Container haben dieselben Maße und sind gestapelt.">
+    <figcaption><strong>Heute:</strong> Eine genormte Kiste. Der Kran fragt nicht, was drin ist – er kennt nur die Kiste.</figcaption>
+  </figure>
+</div>
+<p>Früher: <strong>Paket + Anleitung</strong> – ausgeführt auf dem Zielrechner, der sich dabei verändert.</p>
+<p>Jetzt: <strong>ein fertig installiertes Artefakt</strong> – auf dem Zielrechner wird nichts mehr
+installiert. Es bringt seine Umgebung mit, läuft abgeschottet neben den anderen und
+startet überall gleich.</p>
+<h2 id="container-ist-nicht-virtuelle-maschine">Container ist nicht virtuelle Maschine</h2>
+<div class="wc__breit">
+  <table class="wc__tabelle">
+    <thead>
+      <tr><td></td><th scope="col">Virtuelle Maschine</th><th scope="col">Container</th></tr>
+    </thead>
+    <tbody>
+      <tr><th scope="row">Bringt mit</th><td>ein ganzes Betriebssystem</td><td>nur die Anwendung samt ihrer Umgebung</td></tr>
+      <tr><th scope="row">Kernel</th><td>einen eigenen</td><td>den des Hosts</td></tr>
+      <tr><th scope="row">Startet in</th><td>Minuten</td><td>Sekunden</td></tr>
+      <tr><th scope="row">Pro Maschine</th><td>eine Handvoll</td><td>Dutzende</td></tr>
+    </tbody>
+  </table>
+  <figure class="wc__aufbau">
+    <svg viewBox="0 0 620 460" role="img" aria-labelledby="wc-aufbau-titel">
+      <title id="wc-aufbau-titel">Oben der Kasten „Container“ mit Symbolen für Dateisystem, Threads und CPU, Ports, RAM und Umgebungsvariablen. Unten der Host mit demselben Satz Symbole und seinem Betriebssystem, das alles verwaltet. Dazwischen liegt der Kernel: Durch ihn laufen gestrichelte Doppelpfeile, die jedes Paar aufeinander abbilden – Dateisystem auf ein Verzeichnis der Host-Platte, Threads auf Prozesse des Hosts, ein Host-Port auf einen Container-Port, Speicher auf das RAM des Hosts. Nur die Umgebungsvariablen haben keinen Pfeil; ihr Weg durch den Kernel ist mit einem Verbotszeichen versehen.</title>
+      <defs>
+        <marker id="wc-zu-spitze" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path class="wc__zuordnung-spitze" d="M0 0 L10 5 L0 10 Z"/>
+        </marker>
+        <g id="ico-fs"><path d="M4 12 h11 l4 5 h17 v18 h-32 z"/></g>
+        <g id="ico-cpu"><path d="M12 12 h16 v16 h-16 z M17 17 h6 v6 h-6 z M16 12 V6 M24 12 V6 M16 28 V34 M24 28 V34 M12 16 H6 M12 24 H6 M28 16 H34 M28 24 H34"/></g>
+        <g id="ico-port"><path d="M15 6 V16 M25 6 V16 M9 16 H31 V22 a11 11 0 0 1 -22 0 Z M20 33 V37"/></g>
+        <g id="ico-ram"><path d="M5 13 h30 v14 h-30 z M13 13 V27 M20 13 V27 M27 13 V27 M10 27 v4 M17 27 v4 M24 27 v4 M31 27 v4"/></g>
+        <g id="ico-env"><path d="M5 10 h20 l10 10 -10 10 h-20 z"/><circle cx="13" cy="20" r="2.5"/></g>
+      </defs>
+      <rect class="wc__kasten" x="16" y="8" width="588" height="138" rx="12"/>
+      <text class="wc__kasten-titel" x="36" y="32">Container</text>
+      <use class="wc__ico" href="#ico-fs" x="82" y="46"/>
+      <text class="wc__ico-text" x="102" y="106" text-anchor="middle">Dateisystem</text>
+      <use class="wc__ico" href="#ico-cpu" x="192" y="46"/>
+      <text class="wc__ico-text" x="212" y="106" text-anchor="middle">Threads / CPU</text>
+      <use class="wc__ico" href="#ico-port" x="302" y="46"/>
+      <text class="wc__ico-text" x="322" y="106" text-anchor="middle">Ports</text>
+      <use class="wc__ico" href="#ico-ram" x="412" y="46"/>
+      <text class="wc__ico-text" x="432" y="106" text-anchor="middle">RAM</text>
+      <use class="wc__ico" href="#ico-env" x="522" y="46"/>
+      <text class="wc__ico-text" x="542" y="100" text-anchor="middle">Umgebungs-</text>
+      <text class="wc__ico-text" x="542" y="116" text-anchor="middle">variablen</text>
+      <rect class="wc__kernel" x="16" y="200" width="588" height="44" rx="8"/>
+      <text class="wc__kernel-titel" x="32" y="227">Kernel</text>
+      <path class="wc__zuordnung" marker-start="url(#wc-zu-spitze)" marker-end="url(#wc-zu-spitze)" d="M102 150 V298"/>
+      <path class="wc__zuordnung" marker-start="url(#wc-zu-spitze)" marker-end="url(#wc-zu-spitze)" d="M212 150 V298"/>
+      <path class="wc__zuordnung" marker-start="url(#wc-zu-spitze)" marker-end="url(#wc-zu-spitze)" d="M322 150 V298"/>
+      <path class="wc__zuordnung" marker-start="url(#wc-zu-spitze)" marker-end="url(#wc-zu-spitze)" d="M432 150 V298"/>
+      <rect class="wc__zuordnung-feld" x="48" y="152" width="108" height="46"/>
+      <text class="wc__zuordnung-text" x="102" y="163" text-anchor="middle">liegt als</text>
+      <text class="wc__zuordnung-text" x="102" y="177" text-anchor="middle">Verzeichnis auf</text>
+      <text class="wc__zuordnung-text" x="102" y="191" text-anchor="middle">der Host-Platte</text>
+      <rect class="wc__zuordnung-feld" x="158" y="152" width="108" height="46"/>
+      <text class="wc__zuordnung-text" x="212" y="170" text-anchor="middle">sind Prozesse</text>
+      <text class="wc__zuordnung-text" x="212" y="184" text-anchor="middle">des Hosts</text>
+      <rect class="wc__zuordnung-feld" x="268" y="152" width="108" height="46"/>
+      <text class="wc__zuordnung-text" x="322" y="163" text-anchor="middle">Host-Port 8080</text>
+      <text class="wc__zuordnung-text" x="322" y="177" text-anchor="middle">→ Port 80 im</text>
+      <text class="wc__zuordnung-text" x="322" y="191" text-anchor="middle">Container</text>
+      <rect class="wc__zuordnung-feld" x="378" y="152" width="108" height="46"/>
+      <text class="wc__zuordnung-text" x="432" y="170" text-anchor="middle">aus dem RAM</text>
+      <text class="wc__zuordnung-text" x="432" y="184" text-anchor="middle">des Hosts</text>
+      <rect class="wc__zuordnung-feld" x="488" y="152" width="108" height="46"/>
+      <text class="wc__zuordnung-text" x="542" y="163" text-anchor="middle">bleiben im</text>
+      <text class="wc__zuordnung-text" x="542" y="177" text-anchor="middle">Container –</text>
+      <text class="wc__zuordnung-text" x="542" y="191" text-anchor="middle">nicht gemappt</text>
+      <circle class="wc__gesperrt" cx="542" cy="222" r="13"/>
+      <path class="wc__gesperrt" d="M533 231 L551 213"/>
+      <rect class="wc__host" x="16" y="300" width="588" height="152" rx="12"/>
+      <text class="wc__host-titel" x="36" y="326">Host</text>
+      <rect class="wc__os" x="32" y="336" width="556" height="36" rx="8"/>
+      <text class="wc__os-text" x="310" y="359" text-anchor="middle">Betriebssystem – verwaltet Platte, Kerne, Netz und Speicher</text>
+      <use class="wc__ico wc__ico--host" href="#ico-fs" x="82" y="384"/>
+      <text class="wc__ico-text--host" x="102" y="444" text-anchor="middle">Platte</text>
+      <use class="wc__ico wc__ico--host" href="#ico-cpu" x="192" y="384"/>
+      <text class="wc__ico-text--host" x="212" y="444" text-anchor="middle">CPU-Kerne</text>
+      <use class="wc__ico wc__ico--host" href="#ico-port" x="302" y="384"/>
+      <text class="wc__ico-text--host" x="322" y="444" text-anchor="middle">Netzwerk</text>
+      <use class="wc__ico wc__ico--host" href="#ico-ram" x="412" y="384"/>
+      <text class="wc__ico-text--host" x="432" y="444" text-anchor="middle">Arbeitsspeicher</text>
+    </svg>
+    <figcaption>Der <strong>Kernel</strong> ist die Schnittstelle: Er grenzt die vier
+    linken Teile ab und bildet sie auf das ab, was der Host hat. Die
+    Umgebungsvariablen nicht – die gehören allein dem Container.</figcaption>
+  </figure>
+</div>
+
+  </main>
+  <nav class="skr-present__controls" aria-label="Foliennavigation" hidden data-skr-present-controls>
+    <button type="button" class="skr-present__nav" data-skr-present-prev
+            title="Vorherige Folie (←)" aria-label="Vorherige Folie"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <button type="button" class="skr-present__nav" data-skr-present-next
+            title="Nächste Folie (→)" aria-label="Nächste Folie"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></button>
+  </nav>
+  <div class="skr-present__progress" aria-hidden="true">
+    <div class="skr-present__progress-fill" data-skr-present-progress></div>
+  </div>
+  <div class="skr-print-contact" aria-hidden="true">
+  <span>Kontakt: https://www.atvantage.com</span>
+  <span>academy@atvantage.com</span>
+</div>
+
+</body>
+</html>

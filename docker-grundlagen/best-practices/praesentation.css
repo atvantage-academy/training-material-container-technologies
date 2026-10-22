@@ -1,0 +1,756 @@
+.lc {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+  gap: var(--skr-space-4);
+  margin: var(--skr-space-4) 0 0;
+}
+.lc__spalte { min-width: 0; }
+/* JEDE LOESUNG EIN KASTEN - aber nur Ueberschrift, Untertitel und Schichten.
+   Das Fazit steht DARUNTER und ausserhalb: Es beurteilt den Kasten, es
+   gehoert nicht hinein. Klasse statt `#lc-vergleich >`, damit die Fassungen
+   fuer den Druck ihn mitnehmen: Die Kopien verlieren ihre Kennungen, ihre
+   Klassen aber nicht. */
+.lc__loesung {
+  padding: var(--skr-space-3);
+  border: 1px solid var(--skr-color-border);
+  border-radius: var(--skr-radius);
+}
+/* GLEICHE ZEILEN IN BEIDEN SPALTEN: Ohne das beginnen die Stapel auf
+   verschiedener Hoehe, sobald ein Untertitel umbricht - und dann steht
+   `FROM` nicht mehr neben `FROM`. `subgrid` reicht die Zeilen des Vergleichs
+   an die Spalten durch; wo es fehlt, bleibt es beim bisherigen Fluss. */
+@supports (grid-template-rows: subgrid) {
+  /* Dieselbe Mechanik fuer die Loeschen-Folie, nur drei Zeilen: Titel,
+     Stapel, Fazit - dort gibt es keinen Untertitel. */
+  #lc-loeschen { grid-template-rows: auto auto auto; }
+  #lc-loeschen > .lc__spalte {
+    display: grid; grid-row: span 3; grid-template-rows: subgrid;
+  }
+  #lc-loeschen .lc__loesung {
+    display: grid; grid-row: span 2; grid-template-rows: subgrid;
+  }
+  #lc-vergleich { grid-template-rows: auto auto auto auto; }
+  #lc-vergleich > .lc__spalte {
+    display: grid;
+    grid-row: span 4;
+    grid-template-rows: subgrid;
+  }
+  /* Der Rahmen reicht die Zeilen WEITER durch (verschachteltes `subgrid`):
+     So bleiben Titel, Untertitel und Stapel ueber beide Spalten auf gleicher
+     Hoehe, obwohl der Kasten nur drei der vier Zeilen umfasst. */
+  #lc-vergleich .lc__loesung {
+    display: grid;
+    grid-row: span 3;
+    grid-template-rows: subgrid;
+  }
+}
+.lc__titel {
+  font-weight: var(--skr-fw-bold);
+  font-size: var(--skr-fs-lg);
+  margin-bottom: var(--skr-space-2);
+}
+.lc__unter {
+  font-size: var(--skr-fs-sm);
+  color: var(--skr-color-ink-muted);
+  margin: 0 0 var(--skr-space-4);
+}
+
+/* DER STAPEL FOLGT DER DATEI. Die erste Zeile des Dockerfiles steht zuoberst,
+   die letzte zuunterst - genau wie im Editor. Die Lage IM IMAGE ist eine
+   andere Frage, und die beantwortet die Achse daneben, nicht die Zeichnung.
+
+   `ul.lc__stapel` und nicht `.lc__stapel`: Das Theme setzt fuer die Seite
+   `.skr-guide-main ul { display: flex; flex-direction: column;
+   gap: 8px; padding-left: 22px }` - Klasse plus Element schlaegt eine
+   einzelne Klasse. Ohne die staerkere Regel greifen hier weder Abstand noch
+   Einzug. */
+ul.lc__stapel {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.lc__layer {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--skr-space-3);
+  padding: var(--skr-space-3) var(--skr-space-4);
+  border: 1px solid var(--skr-color-border);
+  font-family: var(--skr-font-mono);
+  font-size: var(--skr-fs-sm);
+  background: var(--skr-color-bg-subtle);
+}
+ul.lc__stapel > .lc__layer:first-child { border-radius: var(--skr-radius) var(--skr-radius) 0 0; }
+ul.lc__stapel > .lc__layer:last-child  { border-radius: 0 0 var(--skr-radius) var(--skr-radius); }
+
+.lc__layer--neu {
+  border-color: var(--skr-color-warning);
+  background: var(--skr-color-bg);
+}
+/* EINHEITLICH IN ALLEN BILDERN: Das Schluesselwort farbig und fett, der
+   Rest der Zeile normal, der Hash grau und kleiner. So sieht eine Schicht
+   ueberall gleich aus - egal auf welcher Folie. */
+.lc__layer code b { color: var(--skr-color-accent-ink); }
+.lc__marke {
+  flex: 0 0 auto;
+  /* Rechts in der Schicht, wie der Hash: Ohne das klebt der Befund am Namen,
+     weil die mittlere Spanne den freien Platz bekommt. */
+  margin-left: auto;
+  text-align: right;
+  font-family: var(--skr-font-sans);
+  font-size: var(--skr-fs-sm);
+  font-weight: var(--skr-fw-medium);
+  color: var(--skr-color-ink-muted);
+}
+.lc__layer--neu .lc__marke { color: var(--skr-color-warning-ink); }
+
+/* DAS URTEIL GEHOERT INS BILD. Welche Reihenfolge besser ist, soll man
+   sehen, nicht aus zwei Bilanzsaetzen erschliessen muessen. Gruen mit Haken,
+   wo es richtig laeuft; ein skeptisches Gesicht, wo Aufwand ohne Gegenwert
+   entsteht. Beides haengt am selben Schalter wie die Schichten. */
+/* Das Fazit ist ein Callout des Themes - gruen, wo es laeuft, gelb, wo
+   Aufwand ohne Gegenwert entsteht. Der Baustein bringt Grund und Kante mit;
+   hier kommt nur die Zeile mit dem Sinnbild dazu. */
+.lc__fazit { margin-top: var(--skr-space-2); }
+.lc__loesung + .lc__fazit { margin-top: var(--skr-space-2); }
+.lc__panel[hidden] { display: none; }
+.skr-slide .lc__panel { margin: 0; }
+.lc__panel .lc__urteil {
+  display: flex; align-items: center; gap: var(--skr-space-2);
+  margin: 0 0 var(--skr-space-1);
+  font-weight: var(--skr-fw-bold);
+}
+.lc__panel .lc__grund { margin: 0; font-size: var(--skr-fs-sm); }
+.lc__urteil-bild { flex: 0 0 auto; width: 1.3em; height: 1.3em; }
+.skr-callout--success .lc__urteil { color: var(--skr-color-success-ink); }
+.skr-callout--warning .lc__urteil { color: var(--skr-color-warning-ink); }
+
+.lc__bilanz {
+  margin-top: var(--skr-space-4);
+  padding: var(--skr-space-3) var(--skr-space-4);
+  border-radius: var(--skr-radius);
+  background: var(--skr-color-bg-subtle);
+  font-size: var(--skr-fs-sm);
+}
+/* Bildunterschrift: sagt, was man sieht. Die Leserichtung ist etwas anderes
+   und behaelt ihre eigene Klasse - sonst stuende unter jedem Bild wieder ein
+   Satz ueber oben und unten. */
+.lc__bildtext,
+.lc__leserichtung {
+  font-size: var(--skr-fs-sm);
+  color: var(--skr-color-ink-muted);
+  margin-top: var(--skr-space-2);
+}
+
+/* --- Aufbau: Dockerfile neben dem Stapel -------------------------------- */
+.lc__quelle {
+  font-size: var(--skr-fs-sm);
+  color: var(--skr-color-ink-muted);
+}
+/* --- Das Dockerfile als DATEI -------------------------------------------
+   Ein Codeblock sieht aus wie Code; hier soll man eine DATEI sehen, auf die
+   sich die Schichten daneben Zeile fuer Zeile beziehen. Dafuer braucht es
+   zweierlei: den Dateinamen ueber dem Rahmen und die Zeilennummern, denn
+   ueber sie laeuft die Zuordnung zur rechten Spalte. */
+.lc__datei {
+  border: 1px solid var(--skr-color-border);
+  border-radius: var(--skr-radius);
+  background: var(--skr-code-bg, var(--skr-color-bg-subtle));
+  overflow: hidden;
+  text-align: left;
+  max-width: 30rem;
+  margin: var(--skr-space-6) auto;
+}
+.lc__datei-name {
+  margin: 0;
+  padding: var(--skr-space-2) var(--skr-space-4);
+  border-bottom: 1px solid var(--skr-color-border);
+  background: var(--skr-color-bg-subtle);
+  font-family: var(--skr-font-mono);
+  font-size: var(--skr-fs-sm);
+  color: var(--skr-color-ink-muted);
+}
+/* `ol.lc__datei-zeilen`: Das Theme setzt `ol` auf Flex mit eigenem Einzug. */
+ol.lc__datei-zeilen {
+  list-style: none;
+  counter-reset: zeile;
+  display: block;
+  /* Dicht unter dem Dateinamen anfangen: Mit dem Polster des Themes stand
+     ueber der ersten Zeile eine Luecke, die wie eine leere Zeile aussah. */
+  margin: 0;
+  padding: var(--skr-space-2) 0;
+  font-family: var(--skr-font-mono);
+  font-size: var(--skr-fs-sm);
+  line-height: 1.6;
+}
+.lc__datei-zeilen li {
+  counter-increment: zeile;
+  display: flex; gap: var(--skr-space-4);
+  margin: 0;
+  padding: 0 var(--skr-space-4) 0 0;
+}
+/* Die Nummer steht in einer eigenen Spalte mit Trennlinie - wie im Editor. */
+.lc__datei-zeilen li::before {
+  content: counter(zeile);
+  flex: 0 0 2.2rem;
+  padding-right: var(--skr-space-2);
+  border-right: 1px solid var(--skr-color-border);
+  text-align: right;
+  color: var(--skr-color-ink-muted);
+}
+.lc__datei-zeilen b { color: var(--skr-color-accent-ink); }
+
+/* --- Zeile fuer Zeile: Datei links, was daraus entsteht rechts ----------
+   EIN Gitter fuer beide Spalten, damit jede Dockerfile-Zeile GENAU neben
+   ihrer Schicht steht. Zwei getrennte Listen nebeneinander verrutschen,
+   sobald eine Zeile umbricht - und dann stimmt die Zuordnung nicht mehr,
+   die das ganze Bild ausmacht.
+
+   `display: contents` an Liste und Eintrag: Die Listen-Semantik bleibt fuer
+   Bildschirmleser erhalten, die Zellen werden trotzdem direkte Kinder des
+   Gitters und richten sich aneinander aus. */
+/* DIE ACHSE STEHT NEBEN DEM GITTER, NICHT DARIN. Sie war einmal die dritte
+   Spalte mit `grid-row: 1 / -1`. Das greift nicht: Ohne explizite Zeilen
+   zeigt `-1` auf die einzige Zeilenlinie des Gitters, die Achse belegte nur
+   die erste Zeile - und in die freien Zellen der dritten Spalte lief alles
+   Weitere hinein. Statt Zeilen fest zu verdrahten (und sie beim naechsten
+   Zeile-mehr wieder nachzuziehen), steht die Achse jetzt als Nachbar. */
+.lc__zuordnung {
+  display: flex;
+  align-items: stretch;
+  gap: var(--skr-space-5, 1.25rem);
+  text-align: left;
+  margin: var(--skr-space-8) auto;
+}
+/* Das Gitter ist die Liste selbst: zwei Spalten, eine Reihe je Zeile. */
+ol.lc__zu-liste {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: var(--skr-space-2) var(--skr-space-4);
+  align-items: center;
+  list-style: none;
+  margin: 0; padding: 0;
+}
+.lc__zu-liste > li { display: contents; }
+.lc__zu-liste code {
+  padding: var(--skr-space-2) var(--skr-space-3);
+  border-radius: var(--skr-radius);
+  background: var(--skr-code-bg, var(--skr-color-bg-subtle));
+  font-size: var(--skr-fs-sm);
+  white-space: nowrap;
+}
+.lc__zeilennr {
+  display: inline-block;
+  width: 1.6rem; margin-right: var(--skr-space-3);
+  padding-right: var(--skr-space-2);
+  border-right: 1px solid var(--skr-color-border);
+  text-align: right;
+  color: var(--skr-color-ink-muted);
+}
+.lc__zu-liste b { color: var(--skr-color-accent-ink); }
+
+/* Rechts steht nur noch, WAS entsteht - die Zeile selbst steht ja daneben. */
+.lc__typ {
+  display: flex; align-items: center; gap: var(--skr-space-3);
+  padding: var(--skr-space-2) var(--skr-space-3);
+  border: 1px solid var(--skr-color-border);
+  border-radius: var(--skr-radius);
+  font-size: var(--skr-fs-sm);
+}
+.lc__sinnbild { flex: 0 0 auto; width: 1.1em; height: 1.1em; fill: currentColor; }
+
+/* --- Der Cache entscheidet je Schicht -----------------------------------
+   NICHT "schon da" an jeder Zeile - das war eine Behauptung, kein Bild. Hier
+   stehen beide Seiten der Entscheidung nebeneinander: links, was lokal liegt
+   (darunter zwei Schichten aus einem FREMDEN Image - genau das ist der
+   Gewinn), rechts die Kette des gewuenschten Images mit dem Befund je Zeile.
+   Verglichen wird der Hash, nicht der Name. */
+.lc__cache { max-width: 46rem; margin: var(--skr-space-6) auto; text-align: left; }
+/* EIN Gitter fuer alle drei Spalten: Schicht, Pfeil, Cache-Eintrag. Nur so
+   steht der Eintrag GENAU neben seiner Schicht - und der Hash steht auf
+   beiden Seiten am selben Rand, weil er in der Schicht rechts sitzt. */
+ol.lc__cache-liste {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 2px var(--skr-space-3);
+  align-items: center;
+  list-style: none; margin: 0; padding: 0;
+}
+.lc__cache-liste > li { display: contents; }
+.lc__cache-kopf .lc__titel { font-size: var(--skr-fs-sm); }
+
+/* DIE RICHTUNG IST DIE AUSSAGE, deshalb keine Beschriftung: Was im Cache
+   liegt, kommt VON DORT (Pfeil nach links). Was fehlt, wandert nach dem Holen
+   DORTHIN (Pfeil nach rechts, in der Farbe des Fehlenden). */
+.lc__pfeil {
+  position: relative; display: block;
+  width: 2.6rem; height: 2px;
+  background: var(--skr-color-border);
+}
+.lc__pfeil::after {
+  content: ""; position: absolute; top: 50%;
+  width: 0.5rem; height: 0.5rem;
+  border-top: 2px solid var(--skr-color-border);
+  border-right: 2px solid var(--skr-color-border);
+}
+.lc__pfeil--links::after  { left: 0;  transform: translate(0, -50%) rotate(-135deg); }
+.lc__pfeil--rechts::after { right: 0; transform: translate(0, -50%) rotate(45deg); }
+.lc__pfeil--holen { background: var(--skr-color-warning); }
+.lc__pfeil--holen::after {
+  border-top-color: var(--skr-color-warning);
+  border-right-color: var(--skr-color-warning);
+}
+
+ul.lc__chips { list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: 2px; }
+.lc__chip {
+  display: flex; flex-direction: column;
+  padding: var(--skr-space-2) var(--skr-space-3);
+  border: 1px dashed var(--skr-color-border);
+  border-radius: var(--skr-radius);
+  font-size: var(--skr-fs-sm);
+  color: var(--skr-color-ink-muted);
+}
+.lc__chip.is-treffer {
+  border-style: solid;
+  border-color: var(--skr-color-accent);
+  color: var(--skr-color-ink);
+}
+/* Der leere Platz sagt: hier ist noch nichts - der Pfeil sagt, dass sich das
+   gleich aendert. Er braucht eine Hoehe, sonst faellt die Zeile zusammen. */
+.lc__chip--leer { min-height: 2.1rem; border-color: var(--skr-color-warning); }
+
+.lc__cache .lc__titel { margin-bottom: var(--skr-space-2); }
+
+/* --- Wie aus drei Zeilen vier Schichten werden --------------------------
+   EINE `FROM`-Zeile bringt MEHRERE Schichten mit. Zwei Listen nebeneinander
+   legten nahe, dass Zeile 1 zu Schicht 1 gehoert - und genau das stimmt hier
+   nicht. Deshalb ein Gitter, in dem die `FROM`-Zeile ueber ZWEI Zeilen geht,
+   und eine Klammer, die diese beiden zusammenfasst.
+
+   Die Spalten stehen ausdruecklich (`grid-column`), die Zeilen nicht: So
+   rutscht nichts, wenn eine Schicht dazukommt - und `grid-row: 1 / -1`, das
+   ohne feste Zeilen nicht traegt, wird gar nicht erst gebraucht. */
+/* MEHR BREITE, NUR WO SIE GEBRAUCHT WIRD. Das Theme deckelt die
+   Inhaltsspalte einer Folie auf 1100px; hier steht sie auf 46rem, damit Text
+   und Bild auf einer Spalte liegen. Fuer dieses eine Diagramm ist das zu eng
+   - vier Spalten mit Code darin. `:has()` weitet genau die Folie, auf der es
+   steht, statt alle Folien fuer ein Bild zu verbreitern. */
+.skr-slide:has(.lc__ableitung) .skr-slide__inner { max-width: 58rem; }
+.lc__ableitung {
+  display: grid;
+  /* Alle Spalten so breit wie ihr Inhalt: Eine `1fr`-Spalte machte die
+     Schichten kuenstlich breit, und in der Mitte stand nichts. */
+  grid-template-columns: auto auto auto auto;
+  justify-content: center;
+  /* KEIN Zeilenabstand: Die Dateispalte soll als DATEI durchlaufen; die
+     Schichten bekommen ihren Abstand selbst. */
+  gap: 0 var(--skr-space-4);
+  align-items: center;
+  margin: var(--skr-space-6) auto;
+  text-align: left;
+}
+.lc__ab-kopf { grid-column: 1; font-size: var(--skr-fs-sm); }
+.lc__ab-kopf--rechts { grid-column: 3; }
+/* Die linke Spalte ist eine Datei: Zeilennummer, durchlaufender Grund,
+   aussen gerundet. Sie muss trotzdem Zelle bleiben - nur so stehen COPY und
+   CMD auf derselben Hoehe wie ihre Schicht. */
+.lc__ab-datei {
+  grid-column: 1;
+  padding: var(--skr-space-2) var(--skr-space-3);
+  background: var(--skr-code-bg, var(--skr-color-bg-subtle));
+  font-size: var(--skr-fs-sm);
+  white-space: nowrap;
+  align-self: stretch;
+  display: flex; align-items: center;
+}
+.lc__ab-datei:last-of-type { border-radius: 0 0 var(--skr-radius) var(--skr-radius); }
+/* FALLE: In einem Flex-Kasten faellt der Leerraum ZWISCHEN den Kindern weg -
+   aus `<b>FROM</b> meine-basis` wurde "FROMmeine-basis". Deshalb steht der
+   Rest der Zeile in einer eigenen Spanne und ist damit EIN Kind. */
+.lc__ab-datei > span:last-child { white-space: pre; }
+.lc__ab-datei b { color: var(--skr-color-accent-ink); }
+.lc__ab-kopf:not(.lc__ab-kopf--rechts) {
+  margin: 0;
+  padding: var(--skr-space-2) var(--skr-space-3);
+  background: var(--skr-color-bg-subtle);
+  border-bottom: 1px solid var(--skr-color-border);
+  border-radius: var(--skr-radius) var(--skr-radius) 0 0;
+  font-family: var(--skr-font-mono);
+  color: var(--skr-color-ink-muted);
+}
+/* Die Verbinderspalte rueckt nach rechts: Datei und Schichten sollen sich
+   nicht beruehren, und der Abstand gehoert zwischen die beiden Spalten. */
+.lc__ab-klammer, .lc__ab-strich { grid-column: 2; margin-left: var(--skr-space-6); }
+.lc__ab-schicht { grid-column: 3; margin: 1px 0; }
+/* Schmal halten: Ohne diese Regel dehnt die mittlere Spanne die Schicht und
+   zwischen Anweisung und Hash klafft eine Luecke. */
+.lc__ableitung .lc__layer > span { flex: 0 0 auto; }
+.lc__ableitung .lc__hash { margin-left: var(--skr-space-4); }
+.lc__ab-name { grid-column: 4; }
+/* Die Zeile, die zwei Schichten mitbringt, steht ueber beiden. */
+.lc__ab-hoch, .lc__ab-klammer { grid-row: span 2; }
+/* Die Klammer fasst zusammen: nach rechts offen, damit sie die Schichten
+   umarmt statt sie abzugrenzen. */
+.lc__ab-klammer {
+  width: 0.55rem; align-self: stretch;
+  border: 2px solid var(--skr-color-accent);
+  border-right: 0;
+  border-radius: var(--skr-radius) 0 0 var(--skr-radius);
+}
+.lc__ab-strich { width: 0.55rem; height: 2px; background: var(--skr-color-border); }
+/* Kurze Beschriftungen halten die Schichten flach - deshalb `RUN apk add …`
+   statt der ganzen Zeile. */
+.lc__ableitung .lc__layer code { white-space: nowrap; }
+
+/* --- Der Name zeigt auf eine Schicht -----------------------------------
+   DIE UMDEFINITION ALS BILD: Zwei Namen, zwei Schichten, EINE Kette. Wie bei
+   der Zuordnung ein Gitter mit `display: contents`, damit der Name genau
+   neben seiner Schicht steht - eine frei positionierte Beschriftung
+   verrutschte, sobald eine Zeile umbricht. */
+.lc__zeigt { max-width: 42rem; margin: var(--skr-space-8) auto; text-align: left; }
+ol.lc__zeigt-liste {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px var(--skr-space-3);
+  align-items: center;
+  list-style: none; margin: 0; padding: 0;
+}
+.lc__zeigt-liste > li { display: contents; }
+/* Der Strich fuehrt vom Namen zur Schicht - gezeichnet, nicht getippt: Ein
+   Pfeil als Zeichen wuerde vorgelesen. */
+.lc__zeiger { display: flex; align-items: center; gap: var(--skr-space-2);
+  font-size: var(--skr-fs-sm); }
+.lc__zeiger::before {
+  content: ""; flex: 0 0 1.4rem; height: 2px;
+  background: var(--skr-color-accent);
+}
+.lc__zeiger code {
+  padding: 0.1rem 0.45rem;
+  border: 1px solid var(--skr-color-accent);
+  border-radius: var(--skr-radius);
+  color: var(--skr-color-accent-ink);
+}
+
+/* --- Zum Mitnehmen: ein kleines Manifest -------------------------------
+   Die fuenf Saetze sind nummeriert, weil sie aufeinander aufbauen: Aus den
+   ersten dreien (wie es funktioniert) folgen die letzten beiden (was man
+   deshalb tut). Eine Aufzaehlung mit Punkten stellte sie nebeneinander. */
+/* FALLE, ZWEIMAL ZUGESCHLAGEN: Ein Eintrag enthaelt FLIESSTEXT mit
+   `<strong>` darin - also gemischte Inline-Inhalte. Weder `display: contents`
+   noch `display: flex` duerfen an ihn.
+
+   `contents` machte jedes Textstueck zu einer eigenen Gitterzelle (die Saetze
+   rissen auseinander, der Zaehler stand auf 0). `flex` machte jedes
+   Textstueck und jedes `<strong>` zu einem eigenen Flex-Element - mit `gap`
+   DAZWISCHEN: grosse Luecken zwischen den Woertern und falsche Umbrueche.
+
+   Der Text muss im normalen Fluss bleiben. Die Nummer haengt deshalb
+   absolut daneben, der Eintrag macht nur Platz dafuer. */
+ol.lc__manifest {
+  display: flex; flex-direction: column;
+  gap: var(--skr-space-4);
+  list-style: none;
+  counter-reset: satz;
+  margin: var(--skr-space-6) auto 0;
+  padding: 0;
+  max-width: 46rem;
+  text-align: left;
+}
+.lc__manifest > li {
+  counter-increment: satz;
+  position: relative;
+  margin: 0;
+  padding-left: 3rem;
+}
+.lc__manifest > li::before {
+  content: counter(satz);
+  position: absolute;
+  left: 0; top: 0;
+  width: 2rem;
+  text-align: right;
+  font-family: var(--skr-font-mono);
+  font-size: 1.4em; font-weight: var(--skr-fw-bold);
+  line-height: inherit;
+  color: var(--skr-color-accent);
+}
+
+/* Die Fussnote erlaeutert das Bild, sie gehoert nicht hinein - deshalb
+   kleiner, leiser und dicht darunter. */
+.lc__fussnote {
+  max-width: 44rem;
+  margin: 0 auto var(--skr-space-6);
+  font-size: var(--skr-fs-sm);
+  color: var(--skr-color-ink-muted);
+}
+.lc__typ--fs   { color: var(--skr-color-accent-ink); }
+.lc__typ--meta { color: var(--skr-color-ink-muted); border-style: dashed; }
+
+/* DIE BASIS IST SELBST EIN STAPEL. `FROM` holt kein einzelnes Blatt, sondern
+   ein Image - und das bringt seine eigenen Schichten mit. Als Miniatur aus
+   flachen Kaesten gezeichnet: Sie zeigt "mehrere", ohne eine Zahl zu
+   behaupten, und bleibt flach genug, um neben eine Zeile zu passen. */
+/* OHNE RAHMEN: Die Basis ist keine Schicht, die dieses Dockerfile anlegt -
+   sie ist der Grund, auf dem es aufsetzt. Ein Kasten stellte sie in eine
+   Reihe mit den anderen. Die Andeutung der Schichtchen genuegt, und der Text
+   dazu spricht mit derselben Stimme wie die Beschriftung der Achse: eine
+   Erlaeuterung am Bild, keine Beschriftung eines Kastens. */
+.lc__typ--basis {
+  align-items: center;
+  border: 0;
+  padding-left: 0; padding-right: 0;
+  color: var(--skr-color-ink-muted);
+}
+.lc__mini { flex: 0 0 auto; display: flex; flex-direction: column; gap: 2px; width: 2.4rem; }
+.lc__mini i {
+  display: block; height: 4px;
+  border: 1px solid var(--skr-color-border);
+  border-radius: 2px;
+  background: var(--skr-color-bg);
+}
+
+/* Die Achse steht neben ALLEN Zeilen, nicht in einer davon. */
+/* --- Die Achse -----------------------------------------------------------
+   DIE ZEICHNUNG ERKLAERT SICH NICHT SELBST, DIE ACHSE TUT ES. Das Bild folgt
+   der Datei; dass frueher Gebautes IM IMAGE weiter unten liegt, steht als
+   Pfeil daneben - einmal, an dieser Stelle, statt als Satz unter jedem Bild. */
+.lc__achse { display: flex; flex-direction: column; }
+.lc__achse-teil {
+  flex: 1 1 50%;
+  position: relative;
+  display: flex; align-items: center;
+  padding-left: 1.5rem;
+  font-size: var(--skr-fs-sm);
+  color: var(--skr-color-ink-muted);
+}
+/* Der Strich laeuft durch, die Spitze sitzt am jeweiligen Ende. */
+.lc__achse-teil::before {
+  content: ""; position: absolute; left: 0.5rem; top: 0; bottom: 0;
+  border-left: 2px solid var(--skr-color-border);
+}
+.lc__achse-teil::after {
+  content: ""; position: absolute; left: 0.5rem;
+  width: 0.6rem; height: 0.6rem;
+  border-top: 2px solid var(--skr-color-border);
+  border-right: 2px solid var(--skr-color-border);
+}
+.lc__achse-teil--hoch::after   { top: 0;    transform: translate(-50%, 1px) rotate(-45deg); }
+.lc__achse-teil--runter::after { bottom: 0; transform: translate(-50%, -1px) rotate(135deg); }
+
+.lc__nr {
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.4rem; height: 1.4rem; border-radius: 50%;
+  font-family: var(--skr-font-sans);
+  font-size: 0.75rem; font-weight: var(--skr-fw-bold);
+  color: var(--skr-color-accent-ink);
+  background: var(--skr-color-accent-soft);
+}
+/* Die BESCHRIFTUNG dehnt sich, nicht der Hash: Sonst waechst die letzte
+   Spalte und ihr Text klebt am Namen statt am rechten Rand. */
+.lc__layer > span:nth-child(2) { flex: 1 1 auto; }
+.lc__hash { margin-left: auto; text-align: right; }
+
+/* Metadaten sind keine Schicht - das muss man sehen. */
+.lc__layer--meta {
+  background: none;
+  border-style: dashed;
+  color: var(--skr-color-ink-muted);
+}
+
+.lc__formel {
+  margin: var(--skr-space-6) 0;
+  padding: var(--skr-space-4);
+  border-left: 3px solid var(--skr-color-accent);
+  background: var(--skr-color-bg-subtle);
+  font-family: var(--skr-font-mono);
+  font-size: var(--skr-fs-sm);
+}
+.lc__hash {
+  flex: 0 0 auto;
+  font-family: var(--skr-font-mono);
+  font-size: 0.78em;
+  color: var(--skr-color-ink-muted);
+}
+.lc__spalte--einzeln { max-width: 42rem; margin: var(--skr-space-6) auto; }
+
+/* --- Geteilte Basis: Zweige oben, gemeinsamer Grund unten --------------- */
+.lc__teilen { margin: var(--skr-space-6) auto; max-width: 42rem; }
+.lc__zweige {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: var(--skr-space-4);
+  margin-top: 2px;
+}
+.lc__zweige--eins { grid-template-columns: 1fr; }
+.lc__zweig-name {
+  margin: var(--skr-space-2) 0 0;
+  font-size: var(--skr-fs-sm);
+}
+.lc__kopf {
+  margin: 0 0 var(--skr-space-2);
+  font-size: var(--skr-fs-sm);
+  color: var(--skr-color-ink-muted);
+}
+.lc__layer--eigen { background: var(--skr-color-bg); }
+/* Der gemeinsame Grund traegt beide Zweige - deshalb die Akzentkante. */
+ul.lc__stapel--basis > .lc__layer {
+  border-color: color-mix(in srgb, var(--skr-color-accent) 55%, var(--skr-color-border));
+}
+
+/* --- Die Wahl: was hat sich geaendert? ---------------------------------- */
+/* Die Zeile soll nach EINGABE aussehen, nicht nach Fliesstext: eigener
+   Grund, Rahmen, Kante in der Akzentfarbe - wie ein Infobalken. */
+.lc__wahl {
+  display: flex; flex-wrap: wrap; gap: var(--skr-space-2);
+  justify-content: center;
+  align-items: center;
+  padding: var(--skr-space-3) var(--skr-space-4);
+  background: var(--skr-color-bg-subtle);
+  border: 1px solid var(--skr-color-border);
+  border-left: 4px solid var(--skr-color-accent);
+  border-radius: 0 var(--skr-radius) var(--skr-radius) 0;
+  margin: var(--skr-space-6) 0;
+  align-items: center;
+}
+/* Die Frage steht vor den Knoepfen, nicht darueber: So liest sich die Zeile
+   als ein Satz - "Entwickler aendert: nichts / Anwendungscode / ...". */
+.lc__wahl-frage {
+  font-weight: var(--skr-fw-bold);
+  color: var(--skr-color-headline);
+}
+.lc__knopf {
+  padding: 0.45rem 0.9rem;
+  font: inherit;
+  font-size: var(--skr-fs-sm);
+  color: var(--skr-color-ink);
+  background: var(--skr-color-bg);
+  border: 2px solid var(--skr-color-border);
+  border-radius: var(--skr-radius);
+  cursor: pointer;
+  transition: border-color var(--skr-transition),
+              background var(--skr-transition);
+}
+.lc__knopf:hover { border-color: var(--skr-color-accent); }
+.lc__knopf[aria-pressed="true"] {
+  border-color: var(--skr-color-accent);
+  background: var(--skr-color-accent-soft);
+  color: var(--skr-color-accent-ink);
+  font-weight: var(--skr-fw-bold);
+}
+.lc__knopf:focus-visible {
+  outline: 2px solid var(--skr-color-accent); outline-offset: 2px;
+}
+/* Die Schicht wechselt ihren Zustand - eine kurze Blende macht sichtbar,
+   WELCHE sich geaendert hat, statt das Bild springen zu lassen. */
+.lc__layer { transition: border-color var(--skr-transition),
+                         background var(--skr-transition); }
+@media (prefers-reduced-motion: reduce) { .lc__layer { transition: none; } }
+
+@media (max-width: 40rem) {
+  .lc__zweige { grid-template-columns: 1fr; }
+}
+
+/* --- EINE SPALTE, MITTIG ------------------------------------------------
+   Das Theme gibt der Folie eine Inhaltsspalte von 1100px. Der Text lief
+   darin ueber die volle Breite, waehrend die Bilder bei 42rem mittig
+   standen - das liest sich als linksbuendiger Text neben zentrierten
+   Bildern. Eine gemeinsame Breite raeumt das auf: Text, Code und Bilder
+   stehen auf derselben Spalte, und die Spalte steht in der Mitte.
+
+   Die Zahl kommt vom breitesten Element, dem Vergleich: zwei Spalten zu je
+   19rem plus 2rem Abstand. Wer sie aendert, rechnet dort nach. */
+.skr-slide__inner {
+  max-width: 46rem;
+  /* KEINE eigene Textausrichtung: Es gilt der Standard des Themes
+     (linksbuendig). Zentrierte Zeilen waren einmal gesetzt und wieder
+     verworfen - Fliesstext liest sich linksbuendig besser, und diese Folien
+     tragen mehr als eine Zeile. Mittig steht nur, was zu einem Bild gehoert:
+     Bildtitel, Bilanz, Quellenzeile. NICHT erneut `text-align: center` hier
+     setzen. */
+}
+
+/* LUFT, WO PLATZ IST. Eine Folie traegt EINE Aussage; die Abstaende duerfen
+   das zeigen. Das Theme rechnet fuer Doku-Seiten enger. */
+.skr-slide h2 {
+  margin-bottom: var(--skr-space-8);
+  /* Das Theme setzt `text-wrap: balance` fuer alle Ueberschriften. Auf einer
+     Doku-Seite ist das schoen; hier steht unter der Ueberschrift ein Strich
+     ueber die volle Breite, und eine ausgewogen umgebrochene Zeile darueber
+     sieht aus wie ein Fehler. Also normal umbrechen - erst am Rand. */
+  text-wrap: normal;
+}
+/* NUR DIE ABSAETZE DER FOLIE SELBST. `.skr-slide p` traefe auch
+   jeden Absatz INNERHALB eines Bausteins - und weil das Theme dafuer
+   ohnehin schon `margin: 0 0 space-4` setzt (Klasse plus Element, 0-1-1),
+   verlieren die Bausteinregeln mit ihrer einen Klasse. Genau daran stand
+   ueber der ersten Dockerfile-Zeile eine Luecke. */
+.skr-slide__inner > p { margin-bottom: var(--skr-space-6); }
+
+/* DIE ABSAETZE IN DEN BAUSTEINEN BRINGEN IHRE ABSTAENDE SELBST MIT - und
+   brauchen dafuer zwei Klassen, um die Regel des Themes zu ueberbieten. */
+.lc__datei .lc__datei-name,
+.lc__achse .lc__achse-teil,
+.lc__spalte .lc__titel,
+.lc__cache .lc__titel,
+.lc__spalte .lc__unter,
+.lc__spalte .lc__bildtext,
+.lc__teilen .lc__kopf,
+.lc__teilen .lc__zweig-name,
+.lc__spalte .lc__leserichtung,
+.lc__spalte .lc__bilanz,
+.lc__druck .lc__druck-fall { margin: 0; }
+/* ENG HALTEN: Titel, Untertitel und Stapel gehoeren zusammen - hier kostet
+   jeder Abstand Folienhoehe, und die Folie ist ohnehin die vollste. */
+.lc__spalte .lc__titel { margin-bottom: var(--skr-space-1); }
+.lc__spalte .lc__unter { margin-bottom: var(--skr-space-2); }
+.lc__teilen .lc__kopf { margin-bottom: var(--skr-space-2); }
+.lc__teilen .lc__zweig-name { margin-top: var(--skr-space-2); }
+.lc__spalte .lc__leserichtung,
+.lc__spalte .lc__bildtext { margin-top: var(--skr-space-2); }
+.lc__spalte .lc__bilanz { margin-top: var(--skr-space-4); }
+/* Diese beiden stehen frei auf der Folie und sollen mittig bleiben - das
+   Theme setzt die Kurzform `margin` und nimmt ihnen sonst das `auto`. */
+.skr-slide .lc__fussnote { margin: 0 auto var(--skr-space-6); }
+.skr-slide .lc__bildtext { max-width: 46rem; margin: 0 auto; }
+/* Der Callout ist ein Baustein des Themes - hier nur in die Mitte gerueckt. */
+.skr-slide .skr-callout { max-width: 46rem; margin: var(--skr-space-6) auto 0; }
+.skr-slide .lc__formel { margin: var(--skr-space-6) auto; }
+.skr-slide__inner > :last-child { margin-bottom: 0; }
+.lc__mit-achse, .lc__teilen, .lc__spalte--einzeln {
+  margin-top: var(--skr-space-8);
+  margin-bottom: var(--skr-space-8);
+}
+.lc { margin-top: var(--skr-space-8); }
+.lc__wahl { margin: var(--skr-space-6) 0 0; }
+/* Der Vergleich ist so breit wie die Spalte - sonst steht er wieder eingerueckt. */
+.lc { margin-left: auto; margin-right: auto; }
+/* Ueberschrift und Kernsatz stehen mittig ueber dem Bild, das sie beschreiben. */
+.lc__bilanz, .lc__quelle { text-align: center; }
+
+/* --- Auf Papier stehen ALLE DREI FAELLE ---------------------------------
+   Am Bildschirm waehlt man einen; auf dem Papier kann niemand klicken. Die
+   drei Fassungen entstehen beim Laden aus demselben Markup (siehe Skript) -
+   eine zweite, von Hand gepflegte Kopie waere binnen einer Aenderung falsch.
+
+   `break-inside: auto` hebt die Regel des Themes fuer GENAU DIESE Folie auf:
+   Drei Faelle passen nicht zuverlaessig auf eine Seite, und ein abgeschnittener
+   Fall waere schlimmer als ein Seitenumbruch. */
+.lc__druck { display: none; }
+@media print {
+  .lc__wahl, #lc-vergleich, .lc__quelle--nurbild { display: none !important; }
+  .lc__druck { display: block; }
+  .skr-slide:has(.lc__druck) { break-inside: auto; }
+  .lc__druck .lc { gap: var(--skr-space-4); margin: 0 0 0.5cm; }
+  .lc__druck-fall {
+    margin: 0.5cm 0 0.15cm;
+    font-weight: var(--skr-fw-bold);
+    border-bottom: 1px solid var(--skr-color-border);
+  }
+  .lc__druck .lc__layer { padding: 0.1cm 0.2cm; }
+  .lc__druck .lc__titel { font-size: 1em; }
+  .lc__druck .lc__unter { display: none; }
+}

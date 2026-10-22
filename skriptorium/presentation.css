@@ -1,0 +1,375 @@
+/* Skriptorium: in der Schicht skr.components – skriptorium/presentation.css. */
+@layer skr.tokens, skr.base, skr.components, skr.theme, skr.extensions;
+@layer skr.components {
+.skr-present {
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--skr-color-bg);
+  color: var(--skr-color-ink);
+  font-family: var(--skr-font-sans);
+}
+.skr-present[data-ready] {
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* --- Während des Ladens -----------------------------------------------------
+   `data-skr-present-loading` setzt die Vorlage am <html>, bevor der Browser zum
+   ersten Mal malt; presentation.js nimmt die Marke ab, sobald die erste Folie
+   steht, sonst eine Frist von wenigen Sekunden. So lange steht die Fläche schon
+   in ihrer endgültigen Form – Kopfleiste oben, Fortschrittsbalken unten –, die
+   Bühne bleibt leer, statt den Inhalt als lange Seite zu zeigen. Dauert es,
+   läuft nach einem Moment ein Lichtpunkt durch den Fortschrittsbalken; bei
+   reduzierter Bewegung bleibt der Balken still. Nur am Bildschirm: Der Druck
+   zeigt den Inhalt immer. */
+@media screen {
+  html[data-skr-present-loading] .skr-present {
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+  html[data-skr-present-loading] .skr-deck { visibility: hidden; overflow: hidden; }
+  html[data-skr-present-loading] .skr-present__controls { visibility: hidden; }
+  html[data-skr-present-loading] .skr-present__progress { overflow: hidden; }
+  html[data-skr-present-loading] .skr-present__progress-fill {
+    width: 30%;
+    opacity: 0;
+    transition: none;
+    animation: skr-present-loading 1.2s ease-in-out 400ms infinite;
+  }
+}
+@keyframes skr-present-loading {
+  from { opacity: 1; transform: translateX(-100%); }
+  to { opacity: 1; transform: translateX(340%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-skr-present-loading] .skr-present__progress-fill { animation: none; }
+}
+
+/* --- Kopfleiste ------------------------------------------------------------- */
+.skr-present__bar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--skr-space-4);
+  padding: var(--skr-space-2) var(--skr-space-6);
+  background: var(--skr-topbar-bg);
+  border-bottom: 1px solid var(--skr-border-soft);
+  /* Über der Bühne: Der vergrößerte QR-Code in den Werkzeugen ragt in die Folie
+     hinein. Ohne z-index läge er darunter – die Bühne steht später im Baum. */
+  position: relative;
+  z-index: 1;
+}
+.skr-present__logo { height: var(--skr-present-logo-height); width: auto; flex: 0 0 auto; }
+/* DIE WORTMARKE TRAEGT DIE SCHULUNGSFARBE - dieselbe Konstruktion wie im Kopfbereich
+   (`components.css`, `__logo-mask`). Ohne sie stand hier die Dateifarbe des
+   SVG: auf jeder gewoehnlichen Seite blau, auf dieser orange. Der span ist DEFAULT
+   unsichtbar und das <img> sichtbar; kann die Engine Masken, kehrt sich das um. */
+.skr-present__logo-mask { display: none; }
+@supports (mask: url("#x") no-repeat) {
+  .skr-present__logo-mask ~ .skr-present__logo,
+  .skr-present__logo:has(~ .skr-present__logo-mask) { display: none; }
+  .skr-present__logo-mask {
+    display: block;
+    height: var(--skr-present-logo-height);
+    flex: 0 0 auto;
+    aspect-ratio: var(--skr-logo-ratio);
+    background-color: var(--skr-color-accent);
+    mask-repeat: no-repeat;
+    mask-position: left center;
+    mask-size: contain;
+  }
+}
+.skr-present__title {
+  font-size: var(--skr-fs-sm);
+  font-weight: var(--skr-fw-medium);
+  color: var(--skr-color-ink-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Auf der Titelfolie steht der Titel groß in der Fläche – in der Leiste wäre er
+   dann doppelt. Er bleibt im Fluss (kein Springen), nur unsichtbar. */
+.skr-present[data-at-title] .skr-present__title { visibility: hidden; }
+
+.skr-present__counter {
+  margin-left: auto;
+  font-size: var(--skr-fs-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--skr-color-ink-muted);
+}
+/* Werkzeuggruppe: positioniert nur – wie die Knöpfe darin AUSSEHEN, steht in
+   components.css (`.skr-tool`). Die drei Variablen ziehen sie von der
+   Doku-Seiten-Vorgabe (34 px, Überschriftenfarbe) auf das Maß dieser schmalen
+   Kopfleiste. Der QR-Code daneben ist genauso groß. */
+.skr-present__tools {
+  display: flex; align-items: center; gap: var(--skr-space-2);
+  --skr-tool-size: 2rem;
+  --skr-tool-glyph: 1rem;
+  --skr-tool-ink: var(--skr-color-ink-muted);
+  --skr-tool-ink-hover: var(--skr-color-accent);
+}
+.skr-present__tools .skr-qr { --skr-qr-size: 2rem; }
+.skr-present__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  border: 0;
+  padding: 0;
+  background: none;
+  font: inherit;
+  font-size: var(--skr-fs-sm);
+  color: var(--skr-color-ink-muted);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.skr-present__back[hidden] { display: none; }
+.skr-present__back > svg { flex: none; }
+.skr-present__back:hover { color: var(--skr-color-accent-text); }
+
+/* --- Bühne + Schiene --------------------------------------------------------
+   Ohne [data-ready] (kein JS) bleibt der Bereich ein normaler, scrollbarer
+   Textfluss mit lesbarer Breite. */
+.skr-deck {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0 auto;
+  padding: var(--skr-space-8) var(--skr-space-6);
+  max-width: var(--skr-page-width);
+  width: 100%;
+}
+.skr-deck[data-ready] {
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  max-width: none;
+  /* Waagerechte Wischgesten gehören der Präsentation, nicht der
+     Verlaufsnavigation des Browsers („zurück“). */
+  overscroll-behavior-x: contain;
+}
+
+.skr-deck__track {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  transition: transform 420ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .skr-deck__track { transition: none; }
+}
+/* Während der Finger zieht, folgt die Schiene ohne Nachlauf – erst beim
+   Loslassen rastet sie animiert ein. */
+.skr-deck__track--dragging { transition: none; }
+
+/* --- Folie ------------------------------------------------------------------
+   Jede Folie ist genau so breit wie die Bühne; die Schiene verschiebt sich um
+   n × 100 %, wodurch die alte Folie nach links aus dem Bild wandert. */
+.skr-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  /* Senkrechtes Scrollen bleibt beim Browser (flüssig, ohne JS), waagerechte
+     Gesten bekommt die Präsentation. `pinch-zoom` erhält das Zoomen. */
+  touch-action: pan-y pinch-zoom;
+  display: flex;
+  flex-direction: column;
+  /* Der Inhalt einer Folie steht SENKRECHT IN DER MITTE – gesetzt als
+     `margin-block: auto` an der Inhaltsspalte (siehe unten), nicht hier.
+     `justify-content: flex-start` bleibt die Grundlage dafür: Reicht der Platz
+     nicht, lösen sich die automatischen Margen zu Null auf und die Folie
+     beginnt oben, vollständig rollbar. */
+  justify-content: flex-start;
+  padding: clamp(1.5rem, 1rem + 3vw, 4rem) clamp(1.5rem, 1rem + 4vw, 5rem);
+  /* Fließtext einer Folie ist größer als auf einer Doku-Seite: Sie wird
+     projiziert und aus einigen Metern gelesen. */
+  font-size: clamp(1rem, 0.85rem + 0.5vw, 1.4rem);
+  line-height: 1.5;
+}
+/* HANDGESCHRIEBENE FOLIEN tragen ihren Inhalt direkt, ohne Inhaltsspalte: Die
+   entsteht nur dort, wo `presentation.js` ein Markdown-Deck aufteilt. Ohne eigenes
+   Kind gibt es nichts, woran eine automatische Marge hängen könnte – deshalb zwei
+   schrumpfende Füllstücke davor und dahinter. Sie tun dasselbe wie `margin: auto`:
+   Sie teilen den freien Platz und lösen sich zu Null auf, wenn keiner da ist.
+
+   `flex-basis: 0` mit `min-height: 0` ist dabei die Zusage, dass sie wirklich
+   verschwinden – ohne das behielten sie bei zu hohem Inhalt ihre Inhaltshöhe und
+   schöben die Folie aus dem sichtbaren Bereich. */
+.skr-slide:not(:has(> .skr-slide__inner))::before,
+.skr-slide:not(:has(> .skr-slide__inner))::after {
+  content: ""; flex: 1 1 0; min-height: 0;
+}
+
+/* SENKRECHT MITTIG, und zwar für jede Folie. Eine Folie trägt EINE Aussage und
+   ist meist kurz – oft ein Bild und zwei Zeilen. Oben angeschlagen liest sich das
+   wie ein angefangener Text; in der Mitte steht es als Aussage da.
+
+   `margin-block: auto` UND NICHT `justify-content: center`: Beide zentrieren, aber
+   `justify-content: center` an einem Flex-Container mit `overflow-y: auto`
+   schneidet bei zu hohem Inhalt den OBEREN Rand ab, und er ist nicht mehr
+   erreichbar. Automatische Außenabstände lösen sich bei fehlendem freien Platz zu
+   Null auf: Die zu hohe Folie beginnt dann oben und lässt sich ganz rollen.
+   Gemeldet aus training-concept-container-technologies (A-008). */
+.skr-slide__inner { width: 100%; max-width: 1100px; margin: auto; }
+
+.skr-slide h2 {
+  font-size: var(--skr-fs-xl);
+  line-height: var(--skr-lh-heading);
+  color: var(--skr-color-headline);
+  margin: 0 0 var(--skr-space-6) 0;
+  padding-bottom: var(--skr-space-3);
+  border-bottom: 2px solid var(--skr-color-accent);
+}
+.skr-slide h3 {
+  font-size: var(--skr-fs-md);
+  color: var(--skr-color-headline);
+  margin: var(--skr-space-6) 0 var(--skr-space-2) 0;
+}
+.skr-slide p,
+.skr-slide ul,
+.skr-slide ol { margin: 0 0 var(--skr-space-4) 0; }
+.skr-slide li { margin-bottom: var(--skr-space-2); }
+.skr-slide li::marker { color: var(--skr-color-accent-text); }
+.skr-slide img { max-width: 100%; height: auto; }
+.skr-slide pre {
+  background: var(--skr-code-bg);
+  border-radius: var(--skr-radius);
+  padding: var(--skr-space-4);
+  overflow-x: auto;
+  font-size: 0.8em;
+}
+.skr-slide table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+.skr-slide th,
+.skr-slide td {
+  text-align: left;
+  padding: var(--skr-space-2) var(--skr-space-3);
+  border-bottom: 1px solid var(--skr-border-soft);
+}
+.skr-slide blockquote {
+  margin: 0 0 var(--skr-space-4) 0;
+  padding: var(--skr-space-3) var(--skr-space-4);
+  border-left: 4px solid var(--skr-color-info);
+  background: var(--skr-color-bg-subtle);
+}
+
+/* Titelfolie: alles vor dem ersten h2. */
+.skr-slide--title { text-align: center; align-items: center; justify-content: center; }
+.skr-slide--title h1 {
+  font-size: var(--skr-fs-2xl);
+  line-height: var(--skr-lh-heading);
+  color: var(--skr-color-headline);
+  margin: 0 0 var(--skr-space-4) 0;
+}
+.skr-slide--title h1::after {
+  content: "";
+  display: block;
+  width: 96px;
+  height: 3px;
+  margin: var(--skr-space-6) auto 0;
+  background: var(--skr-color-accent);
+}
+.skr-slide--title p { color: var(--skr-color-ink-muted); }
+
+/* --- Blättern + Fortschritt ------------------------------------------------- */
+.skr-present__controls {
+  position: fixed;
+  right: var(--skr-space-6);
+  bottom: var(--skr-space-6);
+  display: flex;
+  gap: var(--skr-space-2);
+  z-index: 5;
+}
+/* Ohne Skript gibt es nichts zu blättern: `hidden` gilt auch gegen `display: flex`;
+   presentation.js nimmt es ab, sobald die Folien stehen. */
+.skr-present__controls[hidden] { display: none; }
+.skr-present__nav {
+  width: 2.75rem; height: 2.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--skr-color-border);
+  background: var(--skr-color-bg);
+  color: var(--skr-color-ink);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: var(--skr-shadow-1);
+  transition: background var(--skr-transition), color var(--skr-transition);
+}
+.skr-present__nav:hover:not(:disabled) {
+  background: var(--skr-color-accent);
+  border-color: var(--skr-color-accent);
+  color: var(--skr-color-accent-contrast);
+}
+.skr-present__nav:disabled { opacity: 0.35; cursor: default; }
+
+.skr-present__progress {
+  flex: 0 0 auto;
+  height: 3px;
+  background: var(--skr-border-soft);
+}
+.skr-present__progress-fill {
+  height: 100%;
+  width: 0;
+  background: var(--skr-color-accent);
+  transition: width 420ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- Drucklayout ------------------------------------------------------------
+   Jede Folie auf einer eigenen Seite; die Bedienelemente entfallen. Die
+   Kopfleiste bleibt als Briefkopf auf der ersten Seite – mit dem QR-Code, der
+   vom Blatt zurück zur Online-Fassung führt. */
+@media print {
+  .skr-present,
+  .skr-present[data-ready] { display: block; height: auto; overflow: visible; }
+  .skr-present__bar { border-bottom: 1px solid #cfd4d6; padding: 0 0 0.4rem 0; }
+  .skr-present__counter,
+  .skr-present__controls,
+  .skr-present__progress { display: none !important; }
+  /* Die Werkzeugleiste bleibt als TRÄGER des QR-Codes stehen; die Knöpfe darin
+     (Zurück, Farbschema, Drucken, Vollbild) entfallen einzeln. `margin-left`
+     übernimmt die Rechtsausrichtung vom ausgeblendeten Folienzähler. */
+  .skr-present__tools { margin-left: auto; }
+  .skr-present__back,
+  .skr-tool { display: none !important; }
+  /* Kleiner als auf Doku-Seiten (25 mm): Die Kopfleiste ist schmal, und 20 mm
+     bleiben bei rund 33 Modulen zuverlässig scannbar. */
+  .skr-present__tools .skr-qr { --skr-qr-print: 20mm; }
+  .skr-present[data-at-title] .skr-present__title { visibility: visible; }
+
+  .skr-deck,
+  .skr-deck[data-ready] { overflow: visible; padding: 0; max-width: none; }
+  .skr-deck__track {
+    display: block !important;
+    height: auto !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .skr-slide {
+    display: block;
+    height: auto;
+    overflow: visible;
+    padding: 1.2rem 0 0 0;
+    font-size: 11pt;
+    break-after: page;
+    break-inside: avoid;
+  }
+  .skr-slide:last-child { break-after: auto; }
+  .skr-slide[aria-hidden="true"] { display: block; }
+  .skr-slide__inner { max-width: none; }
+  .skr-slide h2 { font-size: 18pt; }
+  .skr-slide--title h1 { font-size: 24pt; }
+}
+
+/* VERWEISE IM TEXT EINER FOLIE SIND UNTERSTRICHEN – aus demselben Grund wie im Fließtext
+   einer Seite (guide.css, WCAG 1.4.1): Die Farbe allein unterscheidet sie nicht genug vom
+   umgebenden Text. Knöpfe sind keine Verweise im Text. */
+.skr-deck :is(p, li, td, th) > a:not(.skr-btn) {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  text-decoration-thickness: from-font;
+}
+}

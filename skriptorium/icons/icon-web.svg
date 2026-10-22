@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#0f6e7a" stroke-width="2" role="img" aria-label="Web">
+  <!-- Die Strichfarbe gilt nur ohne Maskenunterstützung: der Grundton des Akzents im Standard-Theme. Sonst färbt components.css das Zeichen über die Maske in der Farbe des Verweises. -->
+  <!-- Weltkugel – die Gattung „Site im Netz“, kein Anbieter. Sie ist die Rückfallmarke
+       für jeden Verweis nach draußen, den kein anderes Muster kennt.
+
+       DIESELBE KUGEL WIE IN DER MARKE FÜR GITHUB PAGES: Kreis, Äquator, ein Meridian
+       als Ellipse, Strichstärke 2. Feinere Linien oder weitere Breitengrade verschwimmen
+       bei 16 Pixeln (1em im Fließtext) zu einem Fleck.
+
+       STRICHE, KEINE FLÄCHE: Die Maske nimmt die Deckkraft des Strichs, das Innere
+       bleibt durchsichtig. Ringsum steht dieselbe Luft wie beim Umschlag (2 Einheiten). -->
+  <circle cx="12" cy="12" r="9"/>
+  <path d="M3 12h18"/>
+  <ellipse cx="12" cy="12" rx="3.8" ry="9"/>
+</svg>

@@ -1,0 +1,112 @@
+/* Skriptorium: in der Schicht skr.base – skriptorium/base.css. */
+@layer skr.tokens, skr.base, skr.components, skr.theme, skr.extensions;
+@layer skr.base {
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+
+/* AUSNAHME: Elemente, deren Vorgabe-Marge FUNKTION ist, nicht Dekoration.
+   Ein modales <dialog> zentriert der Browser über `inset: 0` UND `margin: auto` –
+   der Reset darüber nimmt ihm das `auto`, und das Fenster sitzt oben links statt
+   in der Mitte. Das ist kein Gestaltungsdetail: Niemand sucht den Fehler im
+   Reset, und jede Seite mit einem modalen Fenster findet ihn einzeln neu heraus.
+   Gemeldet aus training-concept-container-technologies (A-005). */
+dialog { margin: auto; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+/* Sprungmarken: Die Kopfzeile ist `position: sticky; top: 0` und 80px hoch (siehe
+   components.css). Ohne Versatz scrollt ein Anker-Klick (#id) das Ziel exakt an den
+   Viewport-Rand — also UNTER die Kopfzeile, die Überschrift ist verdeckt.
+   `scroll-padding-top` am Scroll-Container löst das an EINER Stelle für alle Anker:
+   Front-Matter-Anker (`## Titel {#id}`), die automatisch erzeugte
+   Sidebar-Navigation, `:target` und `scrollIntoView()`. Anker gehören deshalb
+   weiterhin AN die Überschrift und nicht davor — ein Element davor läge nur wenige
+   Pixel höher und damit ebenfalls unter der Kopfzeile. */
+html { scroll-padding-top: calc(var(--topnav-height, 72px) + var(--skr-space-4, 16px)); }
+
+/* Layouts ohne Kopfzeile (`chrome: false`) brauchen den Versatz nicht. Rein
+   kosmetisch: Fehlt einem Browser `:has()`, bleibt der größere Versatz stehen —
+   nichts bricht. */
+html:has(> body.skr-guide:not(:has(> .skr-header))) { scroll-padding-top: var(--skr-space-4, 16px); }
+
+/* Body/Headlines: Größe/Gewicht/Familie aus dem Theme. Hier stehen nur die
+   theme-fähigen Farben, damit das dunkle Farbschema funktioniert. */
+body {
+  color: var(--skr-color-ink);
+  background: var(--skr-color-bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+/* Ein langes Wort in einer Überschrift läuft sonst bei 320 px aus der Spalte (WCAG 1.4.10,
+   #396): Umbruch mitten im Wort nur, wenn es nicht in die Zeile passt; auf schmalen
+   Bildschirmen zuvor Silbentrennung nach <html lang>. Breit bleibt es ungetrennt. */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--skr-color-headline);
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+@media (max-width: 600px) {
+  h1, h2, h3, h4, h5, h6 { hyphens: auto; }
+}
+/* Verweise. Das Überfahren ohne Elementgewicht (`:where`), damit jede Regel eines
+   Bausteins für seine Verweise gewinnt – auch eine, die nur eine Klasse nennt. */
+a { color: var(--skr-color-link); }
+:where(a):hover { color: var(--skr-color-link-hover); }
+
+/* --- Medien --------------------------------------------------------------- */
+img, svg, video, canvas { max-width: 100%; height: auto; display: block; }
+
+/* --- Code (das Theme setzt kein Code-Styling → Ergänzung des Kerns) ------ */
+code, kbd, pre { font-family: var(--skr-font-mono); font-size: 0.92em; }
+pre {
+  background: var(--skr-code-bg);
+  border: 1px solid var(--skr-color-border);
+  border-radius: var(--skr-radius);
+  padding: var(--skr-space-4);
+  overflow-x: auto;
+}
+:not(pre) > code {
+  background: var(--skr-code-bg);
+  padding: 0.1em 0.3em;
+  border-radius: var(--skr-radius-sm);
+}
+
+/* --- Tabellen (Ergänzung des Kerns für Doku) ------------------------------ */
+table { border-collapse: collapse; width: 100%; }
+th, td {
+  text-align: left;
+  padding: var(--skr-space-2) var(--skr-space-3);
+  border-bottom: 1px solid var(--skr-color-border);
+}
+th { font-weight: 600; }
+
+/* --- Barrierefreiheit ----------------------------------------------------- */
+/* Der Akzent ALS SCHRIFT: Er trägt Kontrast gegen die Seitenfläche – mehr, als der
+   Fokusrahmen braucht (3:1). Der Akzent selbst ist für Linien und Flächen gedacht und
+   kann hell sein. */
+:focus-visible { outline: 3px solid var(--skr-color-accent-text); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}
+/* --- Zurückgenommener Text ------------------------------------------------
+   FÜR DAS, WOFÜR SONST `opacity` GENOMMEN WIRD. Der Unterschied ist nicht
+   kosmetisch: `opacity` legt eine Ebene über die GANZE Gruppe und senkt damit
+   auch den Kontrast von allem, was darin hervorgehoben ist – ein Wort im Akzent,
+   ein Verweis. Gemessen in einem Schulungs-Repo: Die Schulungsfarbe erreicht
+   5,38:1, unter `opacity: .85` blieben 4,21 – und ein `opacity: 1` am Kind hebt
+   das NICHT auf, weil die Elterndeckkraft eine eigene Ebene erzeugt.
+
+   Diese Klasse dämpft die SCHRIFTFARBE. Was darin eine eigene Farbe trägt,
+   behält sie unverändert.
+
+   `opacity` bleibt richtig, wo eine ganze Fläche mitsamt Hintergrund
+   zurücktreten soll – etwa eine Pausenzeile in einer getönten Tabelle. Falsch
+   ist es über Text, dessen Farbe schon knapp ist. */
+.skr-muted { color: var(--skr-color-ink-muted); }
+
+.skr-visually-hidden {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
+}

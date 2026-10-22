@@ -1,0 +1,11 @@
+/* Skriptorium: in der Schicht skr.theme – themes/atvantage/tokens/components.css. */
+@layer skr.tokens, skr.base, skr.components, skr.theme, skr.extensions;
+@layer skr.theme {
+:root{
+--button-bg:#343E3F;
+--button-text:#FFFFFF;
+--button-bg-hover:#4D5657;
+--button-radius:5px;
+--button-radius-dark:8px;
+}
+}

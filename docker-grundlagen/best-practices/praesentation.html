@@ -1,105 +1,87 @@
-<!DOCTYPE html><html lang="de">
+<!DOCTYPE html>
+<html lang="de" data-skr-present-mark>
 <head>
   <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>
-(function () {
-  try {
-    var t = localStorage.getItem("avd-academy-theme");
-    if (t === "dark" || t === "light") document.documentElement.setAttribute("data-avd-academy-theme", t);
-  } catch (e) {}
-  addEventListener("unhandledrejection", function (e) {
-    var r = e.reason;
-    if (r && r.name === "InvalidStateError" && /ViewTransition opt-in disabled/.test(r.message || "")) e.preventDefault();
-  });
-})();
-</script><title>Layer und Build-Cache · Containertechnologien (Academy)</title><meta name="description" content="Wie aus einem Dockerfile ein Stapel wird, warum jeder Layer einen Hash aus sich und allem darunter trägt – und was daraus für Cache, geteilte Basis-Images und die Reihenfolge der Zeilen folgt."><meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta name="skr-root" content="../../">
+<script src="../../skriptorium/skr.js?v=dfcd09dd"></script>
+<title>Layer und Build-Cache · Containertechnologien (Academy)</title>
+<meta name="description" content="Wie aus einem Dockerfile ein Stapel wird, warum jeder Layer einen Hash aus sich und allem darunter trägt – und was daraus für Cache, geteilte Basis-Images und die Reihenfolge der Zeilen folgt.">
+
+<meta property="og:site_name" content="Containertechnologien (Academy)">
 <meta property="og:title" content="Layer und Build-Cache">
 <meta property="og:description" content="Wie aus einem Dockerfile ein Stapel wird, warum jeder Layer einen Hash aus sich und allem darunter trägt – und was daraus für Cache, geteilte Basis-Images und die Reihenfolge der Zeilen folgt.">
-<meta property="og:type" content="website"><link rel="preload" href="/training-material-container-technologies/theme/academy/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/fonts.css?v=d37c8ecb"><link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/tokens/colors.css?v=b0afc83e">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/tokens/typography.css?v=1b512d1a">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/tokens/spacing.css?v=ffc57a80">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/tokens/components.css?v=fb3020a8">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/atvantage/tokens/base.css?v=01ad66fa"><link rel="stylesheet" href="/training-material-container-technologies/theme/academy/tokens.css?v=e7c08f24">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/base.css?v=32c1897e">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/components.css?v=60856a0a">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/site.css?v=63868197"><style>
-:where(.avd-academy-guide-main a[href*="docker.com"]) {
-  position: relative;
-  padding-left: 1.35em;
-}
-:where(.avd-academy-guide-main a[href*="docker.com"])::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: .18em;
-  width: 1em;
-  height: 1em;
-  background: center / contain no-repeat;
-  background-image: none;
-  background-color: currentColor;
-  mask-image: url("/training-material-container-technologies/assets/icons/docker.svg");
-  mask-repeat: no-repeat;
-  mask-position: center;
-  mask-size: contain;
-}
-.avd-academy-linkmark--none :where(.avd-academy-guide-main a[href*="docker.com"]),
-:where(.avd-academy-guide-main a[href*="docker.com"]).avd-academy-linkmark--none { padding-left: 0; }
-</style><link rel="stylesheet" media="print" href="/training-material-container-technologies/theme/academy/print.css?v=fa38b084">
-<meta name="generator" content="ATVANTAGE Academy Theme 4.5.4">
-<script type="application/json" id="avd-academy-build-info">{"theme":"4.5.4","schemas":{"config":"1.3.0","frontmatter":"1.1.0","layout":"1.0.0"},"audience":"learner","languages":["de"],"internal":false}</script><script type="application/json" id="avd-academy-page-info">{"pageId":null,"language":"de","url":"/training-material-container-technologies/docker-grundlagen/best-practices/praesentation.html","title":"Layer und Build-Cache","layout":"presentation","description":"Wie aus einem Dockerfile ein Stapel wird, warum jeder Layer einen Hash aus sich und allem darunter trägt – und was daraus für Cache, geteilte Basis-Images und die Reihenfolge der Zeilen folgt.","duration":null,"topics":null,"languages":["de"],"clientApi":"full","defaultLanguage":"de","siteIndex":"/training-material-container-technologies/theme/site.json"}</script>
-<script src="/training-material-container-technologies/theme/academy/atvantage.js?v=b1738f9e" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/site.js?v=514cf6b3" defer></script>
-<script src="/training-material-container-technologies/theme/jekyll/search-trail.js?v=c7eb3d26" data-avd-academy-search-trail
-        data-base="/training-material-container-technologies/" data-index="/training-material-container-technologies/theme/search/de.json?v=1792670141" defer></script>
-<link rel="stylesheet" href="/training-material-container-technologies/theme/academy/highlight.css?v=2b412283">
-<script type="module">
-  const _hlbase = "/training-material-container-technologies/theme/academy/hljs/";
-  const _hlsprachen = ["java", "http", "json", "xml"];
-  Promise.all([import(_hlbase + "core.min.js"), ..._hlsprachen.map((s) => import(_hlbase + s + ".min.js"))])
-    .then(([core, ...grammatiken]) => {
-      const hljs = core.default;
-      _hlsprachen.forEach((s, i) => hljs.registerLanguage(s, grammatiken[i].default));
-      const _auswahl = _hlsprachen.map((s) => "pre code.language-" + s).join(",");
-      const _faerben = (wurzel) => (wurzel || document)
-        .querySelectorAll(_auswahl)
-        .forEach((el) => { if (!el.dataset.highlighted) { hljs.highlightElement(el); } });
-      _faerben(document);
-      window.AvdHighlight = { hljs, apply: _faerben, languages: _hlsprachen.slice() };
-      document.dispatchEvent(new CustomEvent("avd-academy-highlight-ready"));
-      document.querySelectorAll("pre code.language-http .hljs-number").forEach((el) => {
-        const code = parseInt(el.textContent, 10);
-        if (code >= 100 && code <= 599) {
-          el.classList.add("avd-academy-http-status--" + Math.floor(code / 100) + "xx");
-        }
-      });
-    });
-</script>
-<link rel="apple-touch-icon" sizes="180x180" href="/training-material-container-technologies/theme/atvantage/assets/icon-180.png">
-<link rel="icon" href="/training-material-container-technologies/theme/atvantage/assets/icon-32.png">
-<link rel="icon" sizes="16x16" href="/training-material-container-technologies/theme/atvantage/assets/icon-16.png">
-<link rel="stylesheet" href="/training-material-container-technologies/theme/jekyll/presentation.css?v=42e076e9">
-  <script src="/training-material-container-technologies/theme/jekyll/presentation.js?v=b2cc2b42" defer></script>
-  <link rel="stylesheet" href="/training-material-container-technologies/assets/custom.css?v=4a155a65"></head>
-<body class="avd-academy-present" data-avd-academy-present data-avd-academy-present-title="Layer und Build-Cache">
-  <a class="avd-academy-skip-link" href="#avd-academy-deck">Zum Inhalt springen</a>
+<meta property="og:type" content="website">
+<link rel="preload" href="../../themes/atvantage/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../themes/default/theme.css?v=b795c99c">
+<link rel="stylesheet" href="../../themes/atvantage/fonts.css?v=0f189d71">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/colors.css?v=8ed47a94">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/typography.css?v=6445d4d3">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/spacing.css?v=58e35278">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/components.css?v=3fcd65a3">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/base.css?v=b47b1e2d">
+<link rel="stylesheet" href="../../themes/atvantage/theme.css?v=e7026433">
+<link rel="stylesheet" href="../../themes/didaktikon/theme.css?v=4a593b58">
+<link rel="stylesheet" href="../../skriptorium/tokens.css?v=e74fbfe2">
+<link rel="stylesheet" href="../../extensions/didaktikon/tokens.css?v=5966d76a">
+<link rel="stylesheet" href="../../skriptorium/base.css?v=86e37c43">
+<link rel="stylesheet" href="../../skriptorium/components.css?v=b86ac9ad">
+<link rel="stylesheet" href="../../skriptorium/doclinks.css?v=2ef23515">
+<link rel="stylesheet" href="../../skriptorium/linkmarks.css?v=31148a87">
+<link rel="stylesheet" href="../../skriptorium/site.css?v=d11b6ac6">
+<link rel="stylesheet" href="../../skriptorium/logo.css?v=43a7fbaf">
+<link rel="stylesheet" media="print" href="../../skriptorium/print.css?v=856e77e0">
+<meta name="generator" content="Skriptorium 1.5.0">
+<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"1.0.0"}],"internal":false,"languages":["de"],"skriptorium":"1.5.0","theme":"didaktikon","themes":[{"name":"didaktikon","version":"1.0.0"},{"name":"atvantage","version":"1.0.0"},{"name":"default","version":"1.5.0"}]}</script>
+<script type="application/json" id="skr-page-info">{"clientApi":"full","defaultLanguage":"de","description":"Wie aus einem Dockerfile ein Stapel wird, warum jeder Layer einen Hash aus sich und allem darunter trägt – und was daraus für Cache, geteilte Basis-Images und die Reihenfolge der Zeilen folgt.","duration":null,"fields":null,"language":"de","languages":["de"],"layout":"skriptorium.presentation","pageAssets":[{"path":"docker-grundlagen/best-practices/praesentation.css","src":"praesentation.css","type":"style"},{"path":"docker-grundlagen/best-practices/praesentation.js","src":"praesentation.js","type":"script"}],"pageId":null,"runtimeFragments":["^/\\d+$"],"siteIndex":"/skriptorium/site.json","title":"Layer und Build-Cache","topics":null,"url":"/docker-grundlagen/best-practices/praesentation.html"}</script>
+<script type="application/json" id="skr-texts">{"didaktikon.capture":"Capture-Modus","didaktikon.captureExit":"beenden","didaktikon.captureText":"Text einblenden","didaktikon.crosswordAcross":"Waagerecht","didaktikon.crosswordCellAcross":"{number} waagerecht, Buchstabe {position}","didaktikon.crosswordCellDown":"{number} senkrecht, Buchstabe {position}","didaktikon.crosswordDown":"Senkrecht","didaktikon.crosswordHintLetter":"Tipp: Buchstabe","didaktikon.crosswordHintWord":"Tipp: Wort","didaktikon.crosswordRestart":"Neu beginnen","didaktikon.crosswordRestartText":"Deine Eingaben in diesem Rätsel werden gelöscht.","didaktikon.crosswordRestartTitle":"Kreuzworträtsel neu beginnen?","didaktikon.crosswordReveal":"Auflösen","didaktikon.crosswordRevealText":"Alle Felder werden ausgefüllt.","didaktikon.crosswordRevealTitle":"Kreuzworträtsel auflösen?","didaktikon.crosswordSolution":"Lösungswort","didaktikon.crosswordSolutionCell":"Lösungswort, Buchstabe {position}","didaktikon.crosswordSolved":"Gelöst – alle Begriffe stimmen.","didaktikon.doclinkCrossword":"Kreuzworträtsel","didaktikon.doclinkExercise":"Übung","didaktikon.doclinkQuiz":"Wissens-Check","didaktikon.doclinkSimulation":"Simulation","didaktikon.doclinkVisualization":"Visualisierung","didaktikon.exerciseObjectives":"Lernziele","didaktikon.exerciseQuestionsDone":"Du hast die Kontrollfragen beantwortet","didaktikon.exerciseReflectiveQuestions":"Reflexionsfragen","didaktikon.quizAgain":"Noch einmal","didaktikon.quizCorrect":"Richtig.","didaktikon.quizCorrectCount":"{count} richtig","didaktikon.quizCorrectWouldBe":"Richtig wäre gewesen:","didaktikon.quizDone":"Fertig","didaktikon.quizEvaluate":"Auswertung","didaktikon.quizNext":"Weiter","didaktikon.quizProgress":"Fortschritt","didaktikon.quizQuestionOf":"Frage {current} von {total}","didaktikon.quizRestart":"Neu beginnen","didaktikon.quizRestartText":"Deine Antworten in diesem Wissens-Check werden gelöscht.","didaktikon.quizRestartTitle":"Wissens-Check neu beginnen?","didaktikon.quizResult":"{correct} von {total} richtig","didaktikon.quizResultLong":"{correct} von {total} Fragen richtig","didaktikon.quizWrong":"Nicht ganz.","didaktikon.scenarios":"Szenarien","didaktikon.simAllScenarios":"Alle Szenarien (Taste 0)","didaktikon.simControls":"Simulation steuern","didaktikon.simNext":"Schritt vor (→)","didaktikon.simNextAria":"Schritt vor","didaktikon.simOverview":"Übersicht","didaktikon.simPause":"Pause (Leertaste)","didaktikon.simPauseAria":"Pause","didaktikon.simPlay":"Abspielen (Leertaste)","didaktikon.simPlayAria":"Abspielen","didaktikon.simPrev":"Schritt zurück (←)","didaktikon.simPrevAria":"Schritt zurück","didaktikon.simPrintHint":"Diese Simulation lebt von der Bewegung. Auf Papier steht nur der gerade sichtbare Schritt – der QR-Code oben führt zurück zur laufenden Fassung.","didaktikon.simReset":"Zurück auf Anfang (Taste R)","didaktikon.simResetAria":"Zurück auf Anfang","didaktikon.simScenarioCount":"{count} Szenarien","didaktikon.simScenarioKey":"{title} (Taste {number})","didaktikon.simScenarioTitle":"Szenario {number}","didaktikon.simSpeed":"Tempo wählen (Taste T)","didaktikon.simSpeedAria":"Tempo wählen","didaktikon.simSpeedMenu":"Tempo","didaktikon.simStepCount":"{count} Schritte","didaktikon.simStepCountOne":"{count} Schritt","didaktikon.simStepCounter":"Schritt {current} / {total}","didaktikon.speedFast":"zügig","didaktikon.speedNormal":"normal","didaktikon.speedSlow":"langsam","didaktikon.speedTurbo":"im Zeitraffer","didaktikon.speedValue":"{speed}×","didaktikon.stepNote":"Erklärung zum aktuellen Schritt"}</script>
 
-  <header class="avd-academy-present__bar">
-    <img class="avd-academy-present__logo" src="/training-material-container-technologies/assets/logo-schulung.svg" alt="ATVANTAGE Academy"><span class="avd-academy-present__logo-mask" role="img" aria-label="ATVANTAGE Academy"
-          style="--avd-academy-logo-src: url('/training-material-container-technologies/assets/logo-schulung.svg'); --avd-academy-logo-ratio: 260 / 24;"></span><span class="avd-academy-present__title">Layer und Build-Cache</span>
-    <span class="avd-academy-present__counter" data-avd-academy-present-counter aria-live="off"></span>
-    <div class="avd-academy-present__tools"><button type="button" class="avd-academy-present__back" data-avd-academy-back hidden
-              title="Zurück" aria-label="Zurück">← Zurück</button><button type="button" class="avd-academy-qr" data-avd-academy-qr hidden
-                title="Diese Seite auf Deinem Smartphone öffnen"
-                aria-label="Diese Seite auf Deinem Smartphone öffnen"></button><button type="button" class="avd-academy-tool avd-academy-tool--theme" data-avd-academy-theme-toggle
-              title="Farbschema umschalten (hell/dunkel)"
-              aria-label="Dunkles Farbschema">◐</button><button type="button" class="avd-academy-tool avd-academy-tool--print"
-                data-avd-academy-present-print
-                title="Drucken (alle Folien)" aria-label="Drucken (alle Folien)"></button><button type="button" class="avd-academy-tool avd-academy-tool--full"
-              data-avd-academy-present-full
-              title="Vollbild (Taste F)" aria-label="Vollbild">⛶</button></div>
-  </header><main class="avd-academy-deck" id="avd-academy-deck" data-avd-academy-deck>
+<script src="../../skriptorium/client.js?v=82492cae" defer></script>
+<script src="../../skriptorium/site.js?v=6472c794" defer></script>
+<script src="../../skriptorium/search-trail.js?v=31279378" data-skr-search-trail
+        data-base="../../" data-index="../../skriptorium/search/de.json?v=07ea62a4" defer></script>
+<link rel="stylesheet" href="../../skriptorium/highlight.css?v=f8a3fc05">
+<script type="module" src="../../skriptorium/highlight.js?v=0b2d40aa" data-skr-highlight="[&#34;bash&#34;,&#34;dockerfile&#34;,&#34;python&#34;,&#34;sql&#34;,&#34;yaml&#34;]"></script>
+<link rel="apple-touch-icon" sizes="180x180" href="../../themes/atvantage/assets/icon-180.png">
+<link rel="icon" sizes="32x32" href="../../themes/atvantage/assets/icon-32.png">
+<link rel="icon" sizes="16x16" href="../../themes/atvantage/assets/icon-16.png">
+
+<link rel="stylesheet" href="../../skriptorium/presentation.css?v=fc13e38e">
+<script src="../../skriptorium/presentation.js?v=59ada18d" defer></script>
+
+<link rel="stylesheet" href="../../docker-grundlagen/best-practices/praesentation.css?v=fa112c6a">
+<script src="../../docker-grundlagen/best-practices/praesentation.js?v=395c63f5" defer></script>
+
+</head>
+<body class="skr-present" data-skr-layout="skriptorium.presentation" data-skr-layouts="skriptorium.presentation" data-skr-lang="de" data-skr-audience="learner" data-skr-present data-skr-present-title="Layer und Build-Cache">
+  <a class="skr-skip-link" href="#skr-deck">Zum Inhalt springen</a>
+  <header class="skr-present__bar">
+    <img class="skr-present__logo" src="../../themes/didaktikon/assets/logo-schulung.svg" alt="ATVANTAGE Academy"><span class="skr-present__logo-mask" role="img" aria-label="ATVANTAGE Academy" data-skr-logo-mask></span><span class="skr-present__title">Layer und Build-Cache</span>
+    <span class="skr-present__counter" data-skr-present-counter aria-live="off"></span>
+    <div class="skr-present__tools">
+      <button type="button" class="skr-present__back" data-skr-back hidden
+              title="Zurück" aria-label="Zurück"><svg viewBox="0 0 24 24" width="1em" height="1em"
+              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"
+              ><path d="M19 12H5M11 6l-6 6 6 6"/></svg> Zurück</button>
+<button type="button" class="skr-qr" data-skr-qr hidden
+        title="Diese Seite auf Deinem Smartphone öffnen"
+        aria-label="Diese Seite auf Deinem Smartphone öffnen"></button>
+<button type="button" class="skr-tool skr-tool--theme" data-skr-theme-toggle
+        title="Farbschema umschalten (hell/dunkel)"
+        aria-label="Dunkles Farbschema"><svg viewBox="0 0 24 24" width="1em" height="1em"
+        fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"
+        ><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+<button type="button" class="skr-tool skr-tool--print"
+        data-skr-present-print=""
+        title="Drucken (alle Folien)" aria-label="Drucken (alle Folien)"></button>
+<button type="button" class="skr-tool skr-tool--full"
+        data-skr-present-full=""
+        title="Vollbild (Taste F)" aria-label="Vollbild"><svg viewBox="0 0 24 24" width="1em" height="1em"
+        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"
+        ><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg></button>
+</div>
+  </header>
+  <main class="skr-deck" id="skr-deck" data-skr-deck>
     <!--
 ===============================================================================
 ANFORDERUNGEN AN DIESE UNTERLAGE
@@ -107,21 +89,21 @@ ANFORDERUNGEN AN DIESE UNTERLAGE
 Steht hier und nicht in der AGENTS.md, weil eine Anforderung dort niemand
 findet, der diese Datei bearbeitet. Die AGENTS.md verweist nur hierher.
 
-Als LIQUID-Kommentar und nicht als HTML-Kommentar: Liquid entfernt ihn beim
-Bauen, ein HTML-Kommentar wanderte in jede ausgelieferte Seite.
-(Den Tag hier nicht ausschreiben - Liquid laese ihn als zweiten Kommentaranfang
-und der Bau braeche ab.)
+Als HTML-Kommentar: Auf der Seite erscheint er nicht, im Quelltext der
+ausgelieferten Seite steht er aber – nichts hineinschreiben, was Lernende
+nicht lesen sollen.
 
 FORM
-- `layout: presentation`, eine Datei, keine Nebendateien, keine Bibliothek.
+- `layout: presentation`, eine Seite, daneben nur Stylesheet und Skript
+  gleichen Namens (`styles:`/`scripts:`), keine Bibliothek.
   JEDES `##` beginnt eine Folie; alles vor dem ersten `##` ist die Titelfolie.
   Eine Folie traegt EINE Aussage und passt auf EINEN Bildschirm - wer Text
   ergaenzt, schneidet stattdessen eine neue Folie.
 - Kein `audiences:`, kein `duration` (die Zeit steht in der Kapitel-Dauer des
   Moduls), keine Verortung im Ablauf ("Tag 1", "nach der Pause").
-- Farben AUSSCHLIESSLICH aus den `--avd-academy-*`-Token. Kein Hex, kein rgb().
+- Farben AUSSCHLIESSLICH aus den `--skr-*`-Token. Kein Hex, kein rgb().
 - FALLE: Das Theme setzt fuer diese Seite
-  `.avd-academy-guide-main ul, .avd-academy-guide-main ol { display: flex;
+  `.skr-guide-main ul, .skr-guide-main ol { display: flex;
   flex-direction: column; gap: 8px; padding-left: 22px }` - SPEZIFISCHER als
   eine einzelne Klasse. Regeln fuer eine Liste deshalb als `ul.lc__stapel`
   schreiben, sonst greifen weder Abstand noch Einzug.
@@ -305,786 +287,22 @@ INHALT
   der "Schicht darunter" - der Sprache der Achse, nicht der Lage im Bild.
 - KEINE eigene Textausrichtung auf den Folien - es gilt der Theme-Standard
   (linksbuendig). Zentrierte Zeilen waren gesetzt und wurden verworfen.
-- FALLE BEI ABSTAENDEN: Das Theme setzt `.avd-academy-slide p { margin: 0 0
+- FALLE BEI ABSTAENDEN: Das Theme setzt `.skr-slide p { margin: 0 0
   space-4 }` - Klasse plus Element, 0-1-1. Eine Bausteinregel mit EINER Klasse
   verliert dagegen, auch wenn sie spaeter steht. Absaetze in Bausteinen deshalb
   mit ZWEI Klassen ansprechen (`.lc__datei .lc__datei-name`), und eine eigene
-  Folienregel nur als `.avd-academy-slide__inner > p` schreiben - sonst trifft
+  Folienregel nur als `.skr-slide__inner > p` schreiben - sonst trifft
   sie auch die Bausteine. Genau daran stand ueber der ersten Dockerfile-Zeile
   eine Luecke, die wie eine leere Zeile aussah.
 - Das Beispiel bleibt ueber alle Abschnitte DASSELBE (node-Anwendung), damit
   man die Stapel vergleichen kann.
 ===============================================================================
 -->
-
 <h1 id="layer-und-build-cache">Layer und Build-Cache</h1>
-
 <p>Ein Image entsteht nicht in einem Stück, sondern Schicht für Schicht.
 Wer das versteht, versteht den Rest von selbst.</p>
-
-<style>
-  .lc {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
-    gap: var(--avd-academy-space-4);
-    margin: var(--avd-academy-space-4) 0 0;
-  }
-  .lc__spalte { min-width: 0; }
-  /* JEDE LOESUNG EIN KASTEN - aber nur Ueberschrift, Untertitel und Schichten.
-     Das Fazit steht DARUNTER und ausserhalb: Es beurteilt den Kasten, es
-     gehoert nicht hinein. Klasse statt `#lc-vergleich >`, damit die Fassungen
-     fuer den Druck ihn mitnehmen: Die Kopien verlieren ihre Kennungen, ihre
-     Klassen aber nicht. */
-  .lc__loesung {
-    padding: var(--avd-academy-space-3);
-    border: 1px solid var(--avd-academy-color-border);
-    border-radius: var(--avd-academy-radius);
-  }
-  /* GLEICHE ZEILEN IN BEIDEN SPALTEN: Ohne das beginnen die Stapel auf
-     verschiedener Hoehe, sobald ein Untertitel umbricht - und dann steht
-     `FROM` nicht mehr neben `FROM`. `subgrid` reicht die Zeilen des Vergleichs
-     an die Spalten durch; wo es fehlt, bleibt es beim bisherigen Fluss. */
-  @supports (grid-template-rows: subgrid) {
-    /* Dieselbe Mechanik fuer die Loeschen-Folie, nur drei Zeilen: Titel,
-       Stapel, Fazit - dort gibt es keinen Untertitel. */
-    #lc-loeschen { grid-template-rows: auto auto auto; }
-    #lc-loeschen > .lc__spalte {
-      display: grid; grid-row: span 3; grid-template-rows: subgrid;
-    }
-    #lc-loeschen .lc__loesung {
-      display: grid; grid-row: span 2; grid-template-rows: subgrid;
-    }
-    #lc-vergleich { grid-template-rows: auto auto auto auto; }
-    #lc-vergleich > .lc__spalte {
-      display: grid;
-      grid-row: span 4;
-      grid-template-rows: subgrid;
-    }
-    /* Der Rahmen reicht die Zeilen WEITER durch (verschachteltes `subgrid`):
-       So bleiben Titel, Untertitel und Stapel ueber beide Spalten auf gleicher
-       Hoehe, obwohl der Kasten nur drei der vier Zeilen umfasst. */
-    #lc-vergleich .lc__loesung {
-      display: grid;
-      grid-row: span 3;
-      grid-template-rows: subgrid;
-    }
-  }
-  .lc__titel {
-    font-weight: var(--avd-academy-fw-bold);
-    font-size: var(--avd-academy-fs-lg);
-    margin-bottom: var(--avd-academy-space-2);
-  }
-  .lc__unter {
-    font-size: var(--avd-academy-fs-sm);
-    color: var(--avd-academy-color-ink-muted);
-    margin: 0 0 var(--avd-academy-space-4);
-  }
-
-  /* DER STAPEL FOLGT DER DATEI. Die erste Zeile des Dockerfiles steht zuoberst,
-     die letzte zuunterst - genau wie im Editor. Die Lage IM IMAGE ist eine
-     andere Frage, und die beantwortet die Achse daneben, nicht die Zeichnung.
-
-     `ul.lc__stapel` und nicht `.lc__stapel`: Das Theme setzt fuer die Seite
-     `.avd-academy-guide-main ul { display: flex; flex-direction: column;
-     gap: 8px; padding-left: 22px }` - Klasse plus Element schlaegt eine
-     einzelne Klasse. Ohne die staerkere Regel greifen hier weder Abstand noch
-     Einzug. */
-  ul.lc__stapel {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .lc__layer {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: var(--avd-academy-space-3);
-    padding: var(--avd-academy-space-3) var(--avd-academy-space-4);
-    border: 1px solid var(--avd-academy-color-border);
-    font-family: var(--avd-academy-font-mono);
-    font-size: var(--avd-academy-fs-sm);
-    background: var(--avd-academy-color-bg-subtle);
-  }
-  ul.lc__stapel > .lc__layer:first-child { border-radius: var(--avd-academy-radius) var(--avd-academy-radius) 0 0; }
-  ul.lc__stapel > .lc__layer:last-child  { border-radius: 0 0 var(--avd-academy-radius) var(--avd-academy-radius); }
-
-  .lc__layer--neu {
-    border-color: var(--avd-academy-color-warning);
-    background: var(--avd-academy-color-bg);
-  }
-  /* EINHEITLICH IN ALLEN BILDERN: Das Schluesselwort farbig und fett, der
-     Rest der Zeile normal, der Hash grau und kleiner. So sieht eine Schicht
-     ueberall gleich aus - egal auf welcher Folie. */
-  .lc__layer code b { color: var(--avd-academy-color-accent-ink); }
-  .lc__marke {
-    flex: 0 0 auto;
-    /* Rechts in der Schicht, wie der Hash: Ohne das klebt der Befund am Namen,
-       weil die mittlere Spanne den freien Platz bekommt. */
-    margin-left: auto;
-    text-align: right;
-    font-family: var(--avd-academy-font-sans);
-    font-size: var(--avd-academy-fs-sm);
-    font-weight: var(--avd-academy-fw-medium);
-    color: var(--avd-academy-color-ink-muted);
-  }
-  .lc__layer--neu .lc__marke { color: var(--avd-academy-color-warning-ink); }
-
-  /* DAS URTEIL GEHOERT INS BILD. Welche Reihenfolge besser ist, soll man
-     sehen, nicht aus zwei Bilanzsaetzen erschliessen muessen. Gruen mit Haken,
-     wo es richtig laeuft; ein skeptisches Gesicht, wo Aufwand ohne Gegenwert
-     entsteht. Beides haengt am selben Schalter wie die Schichten. */
-  /* Das Fazit ist ein Callout des Themes - gruen, wo es laeuft, gelb, wo
-     Aufwand ohne Gegenwert entsteht. Der Baustein bringt Grund und Kante mit;
-     hier kommt nur die Zeile mit dem Sinnbild dazu. */
-  .lc__fazit { margin-top: var(--avd-academy-space-2); }
-  .lc__loesung + .lc__fazit { margin-top: var(--avd-academy-space-2); }
-  .lc__panel[hidden] { display: none; }
-  .avd-academy-slide .lc__panel { margin: 0; }
-  .lc__panel .lc__urteil {
-    display: flex; align-items: center; gap: var(--avd-academy-space-2);
-    margin: 0 0 var(--avd-academy-space-1);
-    font-weight: var(--avd-academy-fw-bold);
-  }
-  .lc__panel .lc__grund { margin: 0; font-size: var(--avd-academy-fs-sm); }
-  .lc__urteil-bild { flex: 0 0 auto; width: 1.3em; height: 1.3em; }
-  .avd-academy-callout--success .lc__urteil { color: var(--avd-academy-color-success-ink); }
-  .avd-academy-callout--warning .lc__urteil { color: var(--avd-academy-color-warning-ink); }
-
-  .lc__bilanz {
-    margin-top: var(--avd-academy-space-4);
-    padding: var(--avd-academy-space-3) var(--avd-academy-space-4);
-    border-radius: var(--avd-academy-radius);
-    background: var(--avd-academy-color-bg-subtle);
-    font-size: var(--avd-academy-fs-sm);
-  }
-  /* Bildunterschrift: sagt, was man sieht. Die Leserichtung ist etwas anderes
-     und behaelt ihre eigene Klasse - sonst stuende unter jedem Bild wieder ein
-     Satz ueber oben und unten. */
-  .lc__bildtext,
-  .lc__leserichtung {
-    font-size: var(--avd-academy-fs-sm);
-    color: var(--avd-academy-color-ink-muted);
-    margin-top: var(--avd-academy-space-2);
-  }
-
-  /* --- Aufbau: Dockerfile neben dem Stapel -------------------------------- */
-  .lc__quelle {
-    font-size: var(--avd-academy-fs-sm);
-    color: var(--avd-academy-color-ink-muted);
-  }
-  /* --- Das Dockerfile als DATEI -------------------------------------------
-     Ein Codeblock sieht aus wie Code; hier soll man eine DATEI sehen, auf die
-     sich die Schichten daneben Zeile fuer Zeile beziehen. Dafuer braucht es
-     zweierlei: den Dateinamen ueber dem Rahmen und die Zeilennummern, denn
-     ueber sie laeuft die Zuordnung zur rechten Spalte. */
-  .lc__datei {
-    border: 1px solid var(--avd-academy-color-border);
-    border-radius: var(--avd-academy-radius);
-    background: var(--avd-academy-code-bg, var(--avd-academy-color-bg-subtle));
-    overflow: hidden;
-    text-align: left;
-    max-width: 30rem;
-    margin: var(--avd-academy-space-6) auto;
-  }
-  .lc__datei-name {
-    margin: 0;
-    padding: var(--avd-academy-space-2) var(--avd-academy-space-4);
-    border-bottom: 1px solid var(--avd-academy-color-border);
-    background: var(--avd-academy-color-bg-subtle);
-    font-family: var(--avd-academy-font-mono);
-    font-size: var(--avd-academy-fs-sm);
-    color: var(--avd-academy-color-ink-muted);
-  }
-  /* `ol.lc__datei-zeilen`: Das Theme setzt `ol` auf Flex mit eigenem Einzug. */
-  ol.lc__datei-zeilen {
-    list-style: none;
-    counter-reset: zeile;
-    display: block;
-    /* Dicht unter dem Dateinamen anfangen: Mit dem Polster des Themes stand
-       ueber der ersten Zeile eine Luecke, die wie eine leere Zeile aussah. */
-    margin: 0;
-    padding: var(--avd-academy-space-2) 0;
-    font-family: var(--avd-academy-font-mono);
-    font-size: var(--avd-academy-fs-sm);
-    line-height: 1.6;
-  }
-  .lc__datei-zeilen li {
-    counter-increment: zeile;
-    display: flex; gap: var(--avd-academy-space-4);
-    margin: 0;
-    padding: 0 var(--avd-academy-space-4) 0 0;
-  }
-  /* Die Nummer steht in einer eigenen Spalte mit Trennlinie - wie im Editor. */
-  .lc__datei-zeilen li::before {
-    content: counter(zeile);
-    flex: 0 0 2.2rem;
-    padding-right: var(--avd-academy-space-2);
-    border-right: 1px solid var(--avd-academy-color-border);
-    text-align: right;
-    color: var(--avd-academy-color-ink-muted);
-  }
-  .lc__datei-zeilen b { color: var(--avd-academy-color-accent-ink); }
-
-  /* --- Zeile fuer Zeile: Datei links, was daraus entsteht rechts ----------
-     EIN Gitter fuer beide Spalten, damit jede Dockerfile-Zeile GENAU neben
-     ihrer Schicht steht. Zwei getrennte Listen nebeneinander verrutschen,
-     sobald eine Zeile umbricht - und dann stimmt die Zuordnung nicht mehr,
-     die das ganze Bild ausmacht.
-
-     `display: contents` an Liste und Eintrag: Die Listen-Semantik bleibt fuer
-     Bildschirmleser erhalten, die Zellen werden trotzdem direkte Kinder des
-     Gitters und richten sich aneinander aus. */
-  /* DIE ACHSE STEHT NEBEN DEM GITTER, NICHT DARIN. Sie war einmal die dritte
-     Spalte mit `grid-row: 1 / -1`. Das greift nicht: Ohne explizite Zeilen
-     zeigt `-1` auf die einzige Zeilenlinie des Gitters, die Achse belegte nur
-     die erste Zeile - und in die freien Zellen der dritten Spalte lief alles
-     Weitere hinein. Statt Zeilen fest zu verdrahten (und sie beim naechsten
-     Zeile-mehr wieder nachzuziehen), steht die Achse jetzt als Nachbar. */
-  .lc__zuordnung {
-    display: flex;
-    align-items: stretch;
-    gap: var(--avd-academy-space-5, 1.25rem);
-    text-align: left;
-    margin: var(--avd-academy-space-8) auto;
-  }
-  /* Das Gitter ist die Liste selbst: zwei Spalten, eine Reihe je Zeile. */
-  ol.lc__zu-liste {
-    flex: 1 1 auto;
-    display: grid;
-    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
-    gap: var(--avd-academy-space-2) var(--avd-academy-space-4);
-    align-items: center;
-    list-style: none;
-    margin: 0; padding: 0;
-  }
-  .lc__zu-liste > li { display: contents; }
-  .lc__zu-liste code {
-    padding: var(--avd-academy-space-2) var(--avd-academy-space-3);
-    border-radius: var(--avd-academy-radius);
-    background: var(--avd-academy-code-bg, var(--avd-academy-color-bg-subtle));
-    font-size: var(--avd-academy-fs-sm);
-    white-space: nowrap;
-  }
-  .lc__zeilennr {
-    display: inline-block;
-    width: 1.6rem; margin-right: var(--avd-academy-space-3);
-    padding-right: var(--avd-academy-space-2);
-    border-right: 1px solid var(--avd-academy-color-border);
-    text-align: right;
-    color: var(--avd-academy-color-ink-muted);
-  }
-  .lc__zu-liste b { color: var(--avd-academy-color-accent-ink); }
-
-  /* Rechts steht nur noch, WAS entsteht - die Zeile selbst steht ja daneben. */
-  .lc__typ {
-    display: flex; align-items: center; gap: var(--avd-academy-space-3);
-    padding: var(--avd-academy-space-2) var(--avd-academy-space-3);
-    border: 1px solid var(--avd-academy-color-border);
-    border-radius: var(--avd-academy-radius);
-    font-size: var(--avd-academy-fs-sm);
-  }
-  .lc__sinnbild { flex: 0 0 auto; width: 1.1em; height: 1.1em; fill: currentColor; }
-
-  /* --- Der Cache entscheidet je Schicht -----------------------------------
-     NICHT "schon da" an jeder Zeile - das war eine Behauptung, kein Bild. Hier
-     stehen beide Seiten der Entscheidung nebeneinander: links, was lokal liegt
-     (darunter zwei Schichten aus einem FREMDEN Image - genau das ist der
-     Gewinn), rechts die Kette des gewuenschten Images mit dem Befund je Zeile.
-     Verglichen wird der Hash, nicht der Name. */
-  .lc__cache { max-width: 46rem; margin: var(--avd-academy-space-6) auto; text-align: left; }
-  /* EIN Gitter fuer alle drei Spalten: Schicht, Pfeil, Cache-Eintrag. Nur so
-     steht der Eintrag GENAU neben seiner Schicht - und der Hash steht auf
-     beiden Seiten am selben Rand, weil er in der Schicht rechts sitzt. */
-  ol.lc__cache-liste {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto auto;
-    gap: 2px var(--avd-academy-space-3);
-    align-items: center;
-    list-style: none; margin: 0; padding: 0;
-  }
-  .lc__cache-liste > li { display: contents; }
-  .lc__cache-kopf .lc__titel { font-size: var(--avd-academy-fs-sm); }
-
-  /* DIE RICHTUNG IST DIE AUSSAGE, deshalb keine Beschriftung: Was im Cache
-     liegt, kommt VON DORT (Pfeil nach links). Was fehlt, wandert nach dem Holen
-     DORTHIN (Pfeil nach rechts, in der Farbe des Fehlenden). */
-  .lc__pfeil {
-    position: relative; display: block;
-    width: 2.6rem; height: 2px;
-    background: var(--avd-academy-color-border);
-  }
-  .lc__pfeil::after {
-    content: ""; position: absolute; top: 50%;
-    width: 0.5rem; height: 0.5rem;
-    border-top: 2px solid var(--avd-academy-color-border);
-    border-right: 2px solid var(--avd-academy-color-border);
-  }
-  .lc__pfeil--links::after  { left: 0;  transform: translate(0, -50%) rotate(-135deg); }
-  .lc__pfeil--rechts::after { right: 0; transform: translate(0, -50%) rotate(45deg); }
-  .lc__pfeil--holen { background: var(--avd-academy-color-warning); }
-  .lc__pfeil--holen::after {
-    border-top-color: var(--avd-academy-color-warning);
-    border-right-color: var(--avd-academy-color-warning);
-  }
-
-  ul.lc__chips { list-style: none; margin: 0; padding: 0;
-    display: flex; flex-direction: column; gap: 2px; }
-  .lc__chip {
-    display: flex; flex-direction: column;
-    padding: var(--avd-academy-space-2) var(--avd-academy-space-3);
-    border: 1px dashed var(--avd-academy-color-border);
-    border-radius: var(--avd-academy-radius);
-    font-size: var(--avd-academy-fs-sm);
-    color: var(--avd-academy-color-ink-muted);
-  }
-  .lc__chip.is-treffer {
-    border-style: solid;
-    border-color: var(--avd-academy-color-accent);
-    color: var(--avd-academy-color-ink);
-  }
-  /* Der leere Platz sagt: hier ist noch nichts - der Pfeil sagt, dass sich das
-     gleich aendert. Er braucht eine Hoehe, sonst faellt die Zeile zusammen. */
-  .lc__chip--leer { min-height: 2.1rem; border-color: var(--avd-academy-color-warning); }
-
-  .lc__cache .lc__titel { margin-bottom: var(--avd-academy-space-2); }
-
-  /* --- Wie aus drei Zeilen vier Schichten werden --------------------------
-     EINE `FROM`-Zeile bringt MEHRERE Schichten mit. Zwei Listen nebeneinander
-     legten nahe, dass Zeile 1 zu Schicht 1 gehoert - und genau das stimmt hier
-     nicht. Deshalb ein Gitter, in dem die `FROM`-Zeile ueber ZWEI Zeilen geht,
-     und eine Klammer, die diese beiden zusammenfasst.
-
-     Die Spalten stehen ausdruecklich (`grid-column`), die Zeilen nicht: So
-     rutscht nichts, wenn eine Schicht dazukommt - und `grid-row: 1 / -1`, das
-     ohne feste Zeilen nicht traegt, wird gar nicht erst gebraucht. */
-  /* MEHR BREITE, NUR WO SIE GEBRAUCHT WIRD. Das Theme deckelt die
-     Inhaltsspalte einer Folie auf 1100px; hier steht sie auf 46rem, damit Text
-     und Bild auf einer Spalte liegen. Fuer dieses eine Diagramm ist das zu eng
-     - vier Spalten mit Code darin. `:has()` weitet genau die Folie, auf der es
-     steht, statt alle Folien fuer ein Bild zu verbreitern. */
-  .avd-academy-slide:has(.lc__ableitung) .avd-academy-slide__inner { max-width: 58rem; }
-  .lc__ableitung {
-    display: grid;
-    /* Alle Spalten so breit wie ihr Inhalt: Eine `1fr`-Spalte machte die
-       Schichten kuenstlich breit, und in der Mitte stand nichts. */
-    grid-template-columns: auto auto auto auto;
-    justify-content: center;
-    /* KEIN Zeilenabstand: Die Dateispalte soll als DATEI durchlaufen; die
-       Schichten bekommen ihren Abstand selbst. */
-    gap: 0 var(--avd-academy-space-4);
-    align-items: center;
-    margin: var(--avd-academy-space-6) auto;
-    text-align: left;
-  }
-  .lc__ab-kopf { grid-column: 1; font-size: var(--avd-academy-fs-sm); }
-  .lc__ab-kopf--rechts { grid-column: 3; }
-  /* Die linke Spalte ist eine Datei: Zeilennummer, durchlaufender Grund,
-     aussen gerundet. Sie muss trotzdem Zelle bleiben - nur so stehen COPY und
-     CMD auf derselben Hoehe wie ihre Schicht. */
-  .lc__ab-datei {
-    grid-column: 1;
-    padding: var(--avd-academy-space-2) var(--avd-academy-space-3);
-    background: var(--avd-academy-code-bg, var(--avd-academy-color-bg-subtle));
-    font-size: var(--avd-academy-fs-sm);
-    white-space: nowrap;
-    align-self: stretch;
-    display: flex; align-items: center;
-  }
-  .lc__ab-datei:last-of-type { border-radius: 0 0 var(--avd-academy-radius) var(--avd-academy-radius); }
-  /* FALLE: In einem Flex-Kasten faellt der Leerraum ZWISCHEN den Kindern weg -
-     aus `<b>FROM</b> meine-basis` wurde "FROMmeine-basis". Deshalb steht der
-     Rest der Zeile in einer eigenen Spanne und ist damit EIN Kind. */
-  .lc__ab-datei > span:last-child { white-space: pre; }
-  .lc__ab-datei b { color: var(--avd-academy-color-accent-ink); }
-  .lc__ab-kopf:not(.lc__ab-kopf--rechts) {
-    margin: 0;
-    padding: var(--avd-academy-space-2) var(--avd-academy-space-3);
-    background: var(--avd-academy-color-bg-subtle);
-    border-bottom: 1px solid var(--avd-academy-color-border);
-    border-radius: var(--avd-academy-radius) var(--avd-academy-radius) 0 0;
-    font-family: var(--avd-academy-font-mono);
-    color: var(--avd-academy-color-ink-muted);
-  }
-  /* Die Verbinderspalte rueckt nach rechts: Datei und Schichten sollen sich
-     nicht beruehren, und der Abstand gehoert zwischen die beiden Spalten. */
-  .lc__ab-klammer, .lc__ab-strich { grid-column: 2; margin-left: var(--avd-academy-space-6); }
-  .lc__ab-schicht { grid-column: 3; margin: 1px 0; }
-  /* Schmal halten: Ohne diese Regel dehnt die mittlere Spanne die Schicht und
-     zwischen Anweisung und Hash klafft eine Luecke. */
-  .lc__ableitung .lc__layer > span { flex: 0 0 auto; }
-  .lc__ableitung .lc__hash { margin-left: var(--avd-academy-space-4); }
-  .lc__ab-name { grid-column: 4; }
-  /* Die Zeile, die zwei Schichten mitbringt, steht ueber beiden. */
-  .lc__ab-hoch, .lc__ab-klammer { grid-row: span 2; }
-  /* Die Klammer fasst zusammen: nach rechts offen, damit sie die Schichten
-     umarmt statt sie abzugrenzen. */
-  .lc__ab-klammer {
-    width: 0.55rem; align-self: stretch;
-    border: 2px solid var(--avd-academy-color-accent);
-    border-right: 0;
-    border-radius: var(--avd-academy-radius) 0 0 var(--avd-academy-radius);
-  }
-  .lc__ab-strich { width: 0.55rem; height: 2px; background: var(--avd-academy-color-border); }
-  /* Kurze Beschriftungen halten die Schichten flach - deshalb `RUN apk add …`
-     statt der ganzen Zeile. */
-  .lc__ableitung .lc__layer code { white-space: nowrap; }
-
-  /* --- Der Name zeigt auf eine Schicht -----------------------------------
-     DIE UMDEFINITION ALS BILD: Zwei Namen, zwei Schichten, EINE Kette. Wie bei
-     der Zuordnung ein Gitter mit `display: contents`, damit der Name genau
-     neben seiner Schicht steht - eine frei positionierte Beschriftung
-     verrutschte, sobald eine Zeile umbricht. */
-  .lc__zeigt { max-width: 42rem; margin: var(--avd-academy-space-8) auto; text-align: left; }
-  ol.lc__zeigt-liste {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 2px var(--avd-academy-space-3);
-    align-items: center;
-    list-style: none; margin: 0; padding: 0;
-  }
-  .lc__zeigt-liste > li { display: contents; }
-  /* Der Strich fuehrt vom Namen zur Schicht - gezeichnet, nicht getippt: Ein
-     Pfeil als Zeichen wuerde vorgelesen. */
-  .lc__zeiger { display: flex; align-items: center; gap: var(--avd-academy-space-2);
-    font-size: var(--avd-academy-fs-sm); }
-  .lc__zeiger::before {
-    content: ""; flex: 0 0 1.4rem; height: 2px;
-    background: var(--avd-academy-color-accent);
-  }
-  .lc__zeiger code {
-    padding: 0.1rem 0.45rem;
-    border: 1px solid var(--avd-academy-color-accent);
-    border-radius: var(--avd-academy-radius);
-    color: var(--avd-academy-color-accent-ink);
-  }
-
-  /* --- Zum Mitnehmen: ein kleines Manifest -------------------------------
-     Die fuenf Saetze sind nummeriert, weil sie aufeinander aufbauen: Aus den
-     ersten dreien (wie es funktioniert) folgen die letzten beiden (was man
-     deshalb tut). Eine Aufzaehlung mit Punkten stellte sie nebeneinander. */
-  /* FALLE, ZWEIMAL ZUGESCHLAGEN: Ein Eintrag enthaelt FLIESSTEXT mit
-     `<strong>` darin - also gemischte Inline-Inhalte. Weder `display: contents`
-     noch `display: flex` duerfen an ihn.
-
-     `contents` machte jedes Textstueck zu einer eigenen Gitterzelle (die Saetze
-     rissen auseinander, der Zaehler stand auf 0). `flex` machte jedes
-     Textstueck und jedes `<strong>` zu einem eigenen Flex-Element - mit `gap`
-     DAZWISCHEN: grosse Luecken zwischen den Woertern und falsche Umbrueche.
-
-     Der Text muss im normalen Fluss bleiben. Die Nummer haengt deshalb
-     absolut daneben, der Eintrag macht nur Platz dafuer. */
-  ol.lc__manifest {
-    display: flex; flex-direction: column;
-    gap: var(--avd-academy-space-4);
-    list-style: none;
-    counter-reset: satz;
-    margin: var(--avd-academy-space-6) auto 0;
-    padding: 0;
-    max-width: 46rem;
-    text-align: left;
-  }
-  .lc__manifest > li {
-    counter-increment: satz;
-    position: relative;
-    margin: 0;
-    padding-left: 3rem;
-  }
-  .lc__manifest > li::before {
-    content: counter(satz);
-    position: absolute;
-    left: 0; top: 0;
-    width: 2rem;
-    text-align: right;
-    font-family: var(--avd-academy-font-mono);
-    font-size: 1.4em; font-weight: var(--avd-academy-fw-bold);
-    line-height: inherit;
-    color: var(--avd-academy-color-accent);
-  }
-
-  /* Die Fussnote erlaeutert das Bild, sie gehoert nicht hinein - deshalb
-     kleiner, leiser und dicht darunter. */
-  .lc__fussnote {
-    max-width: 44rem;
-    margin: 0 auto var(--avd-academy-space-6);
-    font-size: var(--avd-academy-fs-sm);
-    color: var(--avd-academy-color-ink-muted);
-  }
-  .lc__typ--fs   { color: var(--avd-academy-color-accent-ink); }
-  .lc__typ--meta { color: var(--avd-academy-color-ink-muted); border-style: dashed; }
-
-  /* DIE BASIS IST SELBST EIN STAPEL. `FROM` holt kein einzelnes Blatt, sondern
-     ein Image - und das bringt seine eigenen Schichten mit. Als Miniatur aus
-     flachen Kaesten gezeichnet: Sie zeigt "mehrere", ohne eine Zahl zu
-     behaupten, und bleibt flach genug, um neben eine Zeile zu passen. */
-  /* OHNE RAHMEN: Die Basis ist keine Schicht, die dieses Dockerfile anlegt -
-     sie ist der Grund, auf dem es aufsetzt. Ein Kasten stellte sie in eine
-     Reihe mit den anderen. Die Andeutung der Schichtchen genuegt, und der Text
-     dazu spricht mit derselben Stimme wie die Beschriftung der Achse: eine
-     Erlaeuterung am Bild, keine Beschriftung eines Kastens. */
-  .lc__typ--basis {
-    align-items: center;
-    border: 0;
-    padding-left: 0; padding-right: 0;
-    color: var(--avd-academy-color-ink-muted);
-  }
-  .lc__mini { flex: 0 0 auto; display: flex; flex-direction: column; gap: 2px; width: 2.4rem; }
-  .lc__mini i {
-    display: block; height: 4px;
-    border: 1px solid var(--avd-academy-color-border);
-    border-radius: 2px;
-    background: var(--avd-academy-color-bg);
-  }
-
-  /* Die Achse steht neben ALLEN Zeilen, nicht in einer davon. */
-  /* --- Die Achse -----------------------------------------------------------
-     DIE ZEICHNUNG ERKLAERT SICH NICHT SELBST, DIE ACHSE TUT ES. Das Bild folgt
-     der Datei; dass frueher Gebautes IM IMAGE weiter unten liegt, steht als
-     Pfeil daneben - einmal, an dieser Stelle, statt als Satz unter jedem Bild. */
-  .lc__achse { display: flex; flex-direction: column; }
-  .lc__achse-teil {
-    flex: 1 1 50%;
-    position: relative;
-    display: flex; align-items: center;
-    padding-left: 1.5rem;
-    font-size: var(--avd-academy-fs-sm);
-    color: var(--avd-academy-color-ink-muted);
-  }
-  /* Der Strich laeuft durch, die Spitze sitzt am jeweiligen Ende. */
-  .lc__achse-teil::before {
-    content: ""; position: absolute; left: 0.5rem; top: 0; bottom: 0;
-    border-left: 2px solid var(--avd-academy-color-border);
-  }
-  .lc__achse-teil::after {
-    content: ""; position: absolute; left: 0.5rem;
-    width: 0.6rem; height: 0.6rem;
-    border-top: 2px solid var(--avd-academy-color-border);
-    border-right: 2px solid var(--avd-academy-color-border);
-  }
-  .lc__achse-teil--hoch::after   { top: 0;    transform: translate(-50%, 1px) rotate(-45deg); }
-  .lc__achse-teil--runter::after { bottom: 0; transform: translate(-50%, -1px) rotate(135deg); }
-
-  .lc__nr {
-    flex: 0 0 auto;
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 1.4rem; height: 1.4rem; border-radius: 50%;
-    font-family: var(--avd-academy-font-sans);
-    font-size: 0.75rem; font-weight: var(--avd-academy-fw-bold);
-    color: var(--avd-academy-color-accent-ink);
-    background: var(--avd-academy-color-accent-soft);
-  }
-  /* Die BESCHRIFTUNG dehnt sich, nicht der Hash: Sonst waechst die letzte
-     Spalte und ihr Text klebt am Namen statt am rechten Rand. */
-  .lc__layer > span:nth-child(2) { flex: 1 1 auto; }
-  .lc__hash { margin-left: auto; text-align: right; }
-
-  /* Metadaten sind keine Schicht - das muss man sehen. */
-  .lc__layer--meta {
-    background: none;
-    border-style: dashed;
-    color: var(--avd-academy-color-ink-muted);
-  }
-
-  .lc__formel {
-    margin: var(--avd-academy-space-6) 0;
-    padding: var(--avd-academy-space-4);
-    border-left: 3px solid var(--avd-academy-color-accent);
-    background: var(--avd-academy-color-bg-subtle);
-    font-family: var(--avd-academy-font-mono);
-    font-size: var(--avd-academy-fs-sm);
-  }
-  .lc__hash {
-    flex: 0 0 auto;
-    font-family: var(--avd-academy-font-mono);
-    font-size: 0.78em;
-    color: var(--avd-academy-color-ink-muted);
-  }
-  .lc__spalte--einzeln { max-width: 42rem; margin: var(--avd-academy-space-6) auto; }
-
-  /* --- Geteilte Basis: Zweige oben, gemeinsamer Grund unten --------------- */
-  .lc__teilen { margin: var(--avd-academy-space-6) auto; max-width: 42rem; }
-  .lc__zweige {
-    display: grid; grid-template-columns: repeat(2, 1fr);
-    gap: var(--avd-academy-space-4);
-    margin-top: 2px;
-  }
-  .lc__zweige--eins { grid-template-columns: 1fr; }
-  .lc__zweig-name {
-    margin: var(--avd-academy-space-2) 0 0;
-    font-size: var(--avd-academy-fs-sm);
-  }
-  .lc__kopf {
-    margin: 0 0 var(--avd-academy-space-2);
-    font-size: var(--avd-academy-fs-sm);
-    color: var(--avd-academy-color-ink-muted);
-  }
-  .lc__layer--eigen { background: var(--avd-academy-color-bg); }
-  /* Der gemeinsame Grund traegt beide Zweige - deshalb die Akzentkante. */
-  ul.lc__stapel--basis > .lc__layer {
-    border-color: color-mix(in srgb, var(--avd-academy-color-accent) 55%, var(--avd-academy-color-border));
-  }
-
-  /* --- Die Wahl: was hat sich geaendert? ---------------------------------- */
-  /* Die Zeile soll nach EINGABE aussehen, nicht nach Fliesstext: eigener
-     Grund, Rahmen, Kante in der Akzentfarbe - wie ein Infobalken. */
-  .lc__wahl {
-    display: flex; flex-wrap: wrap; gap: var(--avd-academy-space-2);
-    justify-content: center;
-    align-items: center;
-    padding: var(--avd-academy-space-3) var(--avd-academy-space-4);
-    background: var(--avd-academy-color-bg-subtle);
-    border: 1px solid var(--avd-academy-color-border);
-    border-left: 4px solid var(--avd-academy-color-accent);
-    border-radius: 0 var(--avd-academy-radius) var(--avd-academy-radius) 0;
-    margin: var(--avd-academy-space-6) 0;
-    align-items: center;
-  }
-  /* Die Frage steht vor den Knoepfen, nicht darueber: So liest sich die Zeile
-     als ein Satz - "Entwickler aendert: nichts / Anwendungscode / ...". */
-  .lc__wahl-frage {
-    font-weight: var(--avd-academy-fw-bold);
-    color: var(--avd-academy-color-headline);
-  }
-  .lc__knopf {
-    padding: 0.45rem 0.9rem;
-    font: inherit;
-    font-size: var(--avd-academy-fs-sm);
-    color: var(--avd-academy-color-ink);
-    background: var(--avd-academy-color-bg);
-    border: 2px solid var(--avd-academy-color-border);
-    border-radius: var(--avd-academy-radius);
-    cursor: pointer;
-    transition: border-color var(--avd-academy-transition),
-                background var(--avd-academy-transition);
-  }
-  .lc__knopf:hover { border-color: var(--avd-academy-color-accent); }
-  .lc__knopf[aria-pressed="true"] {
-    border-color: var(--avd-academy-color-accent);
-    background: var(--avd-academy-color-accent-soft);
-    color: var(--avd-academy-color-accent-ink);
-    font-weight: var(--avd-academy-fw-bold);
-  }
-  .lc__knopf:focus-visible {
-    outline: 2px solid var(--avd-academy-color-accent); outline-offset: 2px;
-  }
-  /* Die Schicht wechselt ihren Zustand - eine kurze Blende macht sichtbar,
-     WELCHE sich geaendert hat, statt das Bild springen zu lassen. */
-  .lc__layer { transition: border-color var(--avd-academy-transition),
-                           background var(--avd-academy-transition); }
-  @media (prefers-reduced-motion: reduce) { .lc__layer { transition: none; } }
-
-  @media (max-width: 40rem) {
-    .lc__zweige { grid-template-columns: 1fr; }
-  }
-
-  /* --- EINE SPALTE, MITTIG ------------------------------------------------
-     Das Theme gibt der Folie eine Inhaltsspalte von 1100px. Der Text lief
-     darin ueber die volle Breite, waehrend die Bilder bei 42rem mittig
-     standen - das liest sich als linksbuendiger Text neben zentrierten
-     Bildern. Eine gemeinsame Breite raeumt das auf: Text, Code und Bilder
-     stehen auf derselben Spalte, und die Spalte steht in der Mitte.
-
-     Die Zahl kommt vom breitesten Element, dem Vergleich: zwei Spalten zu je
-     19rem plus 2rem Abstand. Wer sie aendert, rechnet dort nach. */
-  .avd-academy-slide__inner {
-    max-width: 46rem;
-    /* KEINE eigene Textausrichtung: Es gilt der Standard des Themes
-       (linksbuendig). Zentrierte Zeilen waren einmal gesetzt und wieder
-       verworfen - Fliesstext liest sich linksbuendig besser, und diese Folien
-       tragen mehr als eine Zeile. Mittig steht nur, was zu einem Bild gehoert:
-       Bildtitel, Bilanz, Quellenzeile. NICHT erneut `text-align: center` hier
-       setzen. */
-  }
-
-  /* LUFT, WO PLATZ IST. Eine Folie traegt EINE Aussage; die Abstaende duerfen
-     das zeigen. Das Theme rechnet fuer Doku-Seiten enger. */
-  .avd-academy-slide h2 {
-    margin-bottom: var(--avd-academy-space-8);
-    /* Das Theme setzt `text-wrap: balance` fuer alle Ueberschriften. Auf einer
-       Doku-Seite ist das schoen; hier steht unter der Ueberschrift ein Strich
-       ueber die volle Breite, und eine ausgewogen umgebrochene Zeile darueber
-       sieht aus wie ein Fehler. Also normal umbrechen - erst am Rand. */
-    text-wrap: normal;
-  }
-  /* NUR DIE ABSAETZE DER FOLIE SELBST. `.avd-academy-slide p` traefe auch
-     jeden Absatz INNERHALB eines Bausteins - und weil das Theme dafuer
-     ohnehin schon `margin: 0 0 space-4` setzt (Klasse plus Element, 0-1-1),
-     verlieren die Bausteinregeln mit ihrer einen Klasse. Genau daran stand
-     ueber der ersten Dockerfile-Zeile eine Luecke. */
-  .avd-academy-slide__inner > p { margin-bottom: var(--avd-academy-space-6); }
-
-  /* DIE ABSAETZE IN DEN BAUSTEINEN BRINGEN IHRE ABSTAENDE SELBST MIT - und
-     brauchen dafuer zwei Klassen, um die Regel des Themes zu ueberbieten. */
-  .lc__datei .lc__datei-name,
-  .lc__achse .lc__achse-teil,
-  .lc__spalte .lc__titel,
-  .lc__cache .lc__titel,
-  .lc__spalte .lc__unter,
-  .lc__spalte .lc__bildtext,
-  .lc__teilen .lc__kopf,
-  .lc__teilen .lc__zweig-name,
-  .lc__spalte .lc__leserichtung,
-  .lc__spalte .lc__bilanz,
-  .lc__druck .lc__druck-fall { margin: 0; }
-  /* ENG HALTEN: Titel, Untertitel und Stapel gehoeren zusammen - hier kostet
-     jeder Abstand Folienhoehe, und die Folie ist ohnehin die vollste. */
-  .lc__spalte .lc__titel { margin-bottom: var(--avd-academy-space-1); }
-  .lc__spalte .lc__unter { margin-bottom: var(--avd-academy-space-2); }
-  .lc__teilen .lc__kopf { margin-bottom: var(--avd-academy-space-2); }
-  .lc__teilen .lc__zweig-name { margin-top: var(--avd-academy-space-2); }
-  .lc__spalte .lc__leserichtung,
-  .lc__spalte .lc__bildtext { margin-top: var(--avd-academy-space-2); }
-  .lc__spalte .lc__bilanz { margin-top: var(--avd-academy-space-4); }
-  /* Diese beiden stehen frei auf der Folie und sollen mittig bleiben - das
-     Theme setzt die Kurzform `margin` und nimmt ihnen sonst das `auto`. */
-  .avd-academy-slide .lc__fussnote { margin: 0 auto var(--avd-academy-space-6); }
-  .avd-academy-slide .lc__bildtext { max-width: 46rem; margin: 0 auto; }
-  /* Der Callout ist ein Baustein des Themes - hier nur in die Mitte gerueckt. */
-  .avd-academy-slide .avd-academy-callout { max-width: 46rem; margin: var(--avd-academy-space-6) auto 0; }
-  .avd-academy-slide .lc__formel { margin: var(--avd-academy-space-6) auto; }
-  .avd-academy-slide__inner > :last-child { margin-bottom: 0; }
-  .lc__mit-achse, .lc__teilen, .lc__spalte--einzeln {
-    margin-top: var(--avd-academy-space-8);
-    margin-bottom: var(--avd-academy-space-8);
-  }
-  .lc { margin-top: var(--avd-academy-space-8); }
-  .lc__wahl { margin: var(--avd-academy-space-6) 0 0; }
-  /* Der Vergleich ist so breit wie die Spalte - sonst steht er wieder eingerueckt. */
-  .lc { margin-left: auto; margin-right: auto; }
-  /* Ueberschrift und Kernsatz stehen mittig ueber dem Bild, das sie beschreiben. */
-  .lc__bilanz, .lc__quelle { text-align: center; }
-
-  /* --- Auf Papier stehen ALLE DREI FAELLE ---------------------------------
-     Am Bildschirm waehlt man einen; auf dem Papier kann niemand klicken. Die
-     drei Fassungen entstehen beim Laden aus demselben Markup (siehe Skript) -
-     eine zweite, von Hand gepflegte Kopie waere binnen einer Aenderung falsch.
-
-     `break-inside: auto` hebt die Regel des Themes fuer GENAU DIESE Folie auf:
-     Drei Faelle passen nicht zuverlaessig auf eine Seite, und ein abgeschnittener
-     Fall waere schlimmer als ein Seitenumbruch. */
-  .lc__druck { display: none; }
-  @media print {
-    .lc__wahl, #lc-vergleich, .lc__quelle--nurbild { display: none !important; }
-    .lc__druck { display: block; }
-    .avd-academy-slide:has(.lc__druck) { break-inside: auto; }
-    .lc__druck .lc { gap: var(--avd-academy-space-4); margin: 0 0 0.5cm; }
-    .lc__druck-fall {
-      margin: 0.5cm 0 0.15cm;
-      font-weight: var(--avd-academy-fw-bold);
-      border-bottom: 1px solid var(--avd-academy-color-border);
-    }
-    .lc__druck .lc__layer { padding: 0.1cm 0.2cm; }
-    .lc__druck .lc__titel { font-size: 1em; }
-    .lc__druck .lc__unter { display: none; }
-  }
-</style>
-
 <h2 id="dockerfile--liste-von-schritten">Dockerfile – Liste von Schritten</h2>
-
 <p>Jeder Schritt geht vom Ergebnis des vorherigen aus:</p>
-
 <div class="lc__datei">
   <p class="lc__datei-name">Dockerfile</p>
   <ol class="lc__datei-zeilen">
@@ -1096,17 +314,12 @@ Wer das versteht, versteht den Rest von selbst.</p>
     <li><code><b>CMD</b> ["node", "server.js"]</code></li>
   </ol>
 </div>
-
 <p class="lc__quelle">Alle Anweisungen und ihre Feinheiten stehen in der
 <a href="https://docs.docker.com/reference/dockerfile/" target="_blank" rel="noopener">offiziellen Dockerfile-Referenz</a>.
 Für diese Seite genügen die sechs oben.</p>
-
 <h2 id="jede-zeile-legt-eine-schicht-an">Jede Zeile legt eine Schicht an</h2>
-
 <p>Links die Datei, rechts was daraus entsteht – Zeile für Zeile:</p>
-
 <div class="lc__zuordnung">
-
 <ol class="lc__zu-liste">
   <li>
     <code><span class="lc__zeilennr">1</span><b>FROM</b> node:20-alpine</code>
@@ -1114,53 +327,44 @@ Für diese Seite genügen die sechs oben.</p>
   </li>
   <li>
     <code><span class="lc__zeilennr">2</span><b>WORKDIR</b> /app</code>
-    <span class="lc__typ lc__typ--meta"><svg class="lc__sinnbild" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="3" width="12" height="1.8" rx="0.9" /><rect x="2" y="7.1" width="12" height="1.8" rx="0.9" /><rect x="2" y="11.2" width="7" height="1.8" rx="0.9" /></svg><span>Metadaten</span></span>
+    <span class="lc__typ lc__typ--meta"><svg class="lc__sinnbild" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="3" width="12" height="1.8" rx="0.9"/><rect x="2" y="7.1" width="12" height="1.8" rx="0.9"/><rect x="2" y="11.2" width="7" height="1.8" rx="0.9"/></svg><span>Metadaten</span></span>
   </li>
   <li>
     <code><span class="lc__zeilennr">3</span><b>COPY</b> package*.json ./</code>
-    <span class="lc__typ lc__typ--fs"><svg class="lc__sinnbild" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="6" width="13" height="4" rx="1.3" /></svg><span>Dateisystem</span></span>
+    <span class="lc__typ lc__typ--fs"><svg class="lc__sinnbild" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="6" width="13" height="4" rx="1.3"/></svg><span>Dateisystem</span></span>
   </li>
   <li>
     <code><span class="lc__zeilennr">4</span><b>RUN</b> npm install</code>
-    <span class="lc__typ lc__typ--fs"><svg class="lc__sinnbild" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="6" width="13" height="4" rx="1.3" /></svg><span>Dateisystem</span></span>
+    <span class="lc__typ lc__typ--fs"><svg class="lc__sinnbild" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="6" width="13" height="4" rx="1.3"/></svg><span>Dateisystem</span></span>
   </li>
   <li>
     <code><span class="lc__zeilennr">5</span><b>COPY</b> . .</code>
-    <span class="lc__typ lc__typ--fs"><svg class="lc__sinnbild" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="6" width="13" height="4" rx="1.3" /></svg><span>Dateisystem</span></span>
+    <span class="lc__typ lc__typ--fs"><svg class="lc__sinnbild" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="6" width="13" height="4" rx="1.3"/></svg><span>Dateisystem</span></span>
   </li>
   <li>
     <code><span class="lc__zeilennr">6</span><b>CMD</b> ["node", "server.js"]</code>
-    <span class="lc__typ lc__typ--meta"><svg class="lc__sinnbild" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="3" width="12" height="1.8" rx="0.9" /><rect x="2" y="7.1" width="12" height="1.8" rx="0.9" /><rect x="2" y="11.2" width="7" height="1.8" rx="0.9" /></svg><span>Metadaten</span></span>
+    <span class="lc__typ lc__typ--meta"><svg class="lc__sinnbild" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="3" width="12" height="1.8" rx="0.9"/><rect x="2" y="7.1" width="12" height="1.8" rx="0.9"/><rect x="2" y="11.2" width="7" height="1.8" rx="0.9"/></svg><span>Metadaten</span></span>
   </li>
 </ol>
-
   <div class="lc__achse">
     <p class="lc__achse-teil lc__achse-teil--hoch">untere Schichten</p>
     <p class="lc__achse-teil lc__achse-teil--runter">obere Schichten</p>
   </div>
-
 </div>
-
 <p class="lc__fussnote">Eine Dateisystem-Schicht legen nur <code>RUN</code>,
 <code>COPY</code> und <code>ADD</code> an; alles andere schreibt Metadaten.
 <code>WORKDIR</code> ist dabei der Grenzfall: Es schreibt Metadaten, legt das
 Verzeichnis aber an, wenn es fehlt – und es bestimmt, worauf sich die folgenden
 <code>COPY</code>- und <code>RUN</code>-Zeilen beziehen.</p>
-
 <p><strong>Die Pfeile geben die Sprache vor:</strong> <code>FROM</code> ist die <strong>unterste</strong> Schicht, die
 letzte Zeile die <strong>oberste</strong> – gemeint ist die frühere und die spätere Zeile.</p>
-
 <h2 id="jeder-layer-trägt-einen-hash">Jeder Layer trägt einen Hash</h2>
-
 <p>Beim Bauen bekommt jede Schicht eine Prüfsumme – einen <strong>Hash</strong>. Er entsteht aus
 <strong>zwei</strong> Dingen: aus dem Inhalt der Schicht selbst <strong>und</strong> aus dem Hash der
 Schicht, auf der sie liegt.</p>
-
 <p class="lc__formel">Hash(Schicht) = ƒ( Inhalt der Schicht, Hash der Schicht darunter )</p>
-
 <p>Zwei Bauläufe, bei denen dieselben Schritte auf demselben Grund landen, ergeben
 denselben Hash:</p>
-
 <div class="lc__spalte lc__spalte--einzeln lc__spalte--hash">
   <ul class="lc__stapel">
     <li class="lc__layer"><span class="lc__nr">1</span><span><code><b>FROM</b> node:20-alpine</code></span><span class="lc__hash">sha256:1f4c…</span></li>
@@ -1172,13 +376,10 @@ denselben Hash:</p>
   </ul>
   <p class="lc__leserichtung">Jeder Hash steckt in den Hashes darunter mit drin.</p>
 </div>
-
 <h2 id="geänderter-hash--alles-spätere-neu">Geänderter Hash – alles Spätere neu</h2>
-
 <p>Ändert sich eine Schicht, ändert sich ihr Hash – und damit der Hash <strong>jeder
 darüberliegenden</strong>, auch wenn deren Anweisung Wort für Wort dieselbe ist. Sie
 steht ja auf einem anderen Grund.</p>
-
 <div class="lc__spalte lc__spalte--einzeln lc__spalte--bruch">
   <ul class="lc__stapel">
     <li class="lc__layer"><span class="lc__nr">1</span><span><code><b>FROM</b> node:20-alpine</code></span><span class="lc__hash">sha256:1f4c…</span><span class="lc__marke">unverändert</span></li>
@@ -1190,12 +391,9 @@ steht ja auf einem anderen Grund.</p>
   </ul>
   <p class="lc__bildtext">Eine Zeile geändert – ab dort bekommt jede Schicht einen neuen Hash.</p>
 </div>
-
 <h2 id="caching-bekannter-hash-nichts-zu-tun">Caching: Bekannter Hash, nichts zu tun</h2>
-
 <p>Vor dem Holen vergleicht Docker <strong>Hashes, keine Namen</strong>. Was schon auf der
 Platte liegt, wird nicht noch einmal geladen:</p>
-
 <div class="lc__cache">
   <ol class="lc__cache-liste">
     <li class="lc__cache-kopf"><span class="lc__titel"><code>meine-app:2.0</code> soll her</span><span></span><span class="lc__titel">Cache</span></li>
@@ -1207,15 +405,11 @@ Platte liegt, wird nicht noch einmal geladen:</p>
     <li><span class="lc__layer lc__layer--neu"><span class="lc__nr">6</span><span><code>CMD ["node", "server.js"]</code></span><span class="lc__hash">sha256:44a9…</span></span><span class="lc__pfeil lc__pfeil--rechts lc__pfeil--holen" aria-hidden="true"></span><span class="lc__chip lc__chip--leer"></span></li>
   </ol>
 </div>
-
 <p class="lc__bildtext">Vier Schichten liegen schon da. Die beiden fehlenden
 werden geholt – und landen danach ebenfalls im Cache.</p>
-
 <h2 id="was-ein-image-wirklich-ist">Was ein Image wirklich ist</h2>
-
 <p>Ein Image ist kein Klotz, sondern <strong>ein Name auf einer Schicht – samt allem,
 was unter ihr liegt</strong>.</p>
-
 <div class="lc__zeigt">
   <ol class="lc__zeigt-liste">
     <li><span class="lc__layer"><span class="lc__nr">1</span><span><code><b>FROM</b> node:20-alpine</code></span></span><span class="lc__zeiger"><code>node:20-alpine</code></span></li>
@@ -1226,17 +420,13 @@ was unter ihr liegt</strong>.</p>
     <li><span class="lc__layer"><span class="lc__nr">6</span><span><code>CMD ["node", "server.js"]</code></span></span><span class="lc__zeiger"><code>meine-app:2.0</code></span></li>
   </ol>
 </div>
-
 <p>Deshalb zeigen zwei Namen auf dieselbe Kette, nur an verschiedenen Stellen – und
 deshalb entsteht ein <strong>neues Image</strong> auch dann, wenn sich nur der Startbefehl
 ändert.</p>
-
 <h2 id="zwei-images-ein-gemeinsamer-grund">Zwei Images, ein gemeinsamer Grund</h2>
-
 <p>Zwei Images, die auf demselben Grund aufsetzen, <strong>teilen</strong> sich dessen Schichten
 – derselbe Hash, dieselben Daten, einmal auf der Platte. Darüber hat jedes seine
 eigenen Zeilen und damit eigene Hashes:</p>
-
 <div class="lc__teilen">
   <p class="lc__kopf">Gemeinsamer Grund – einmal vorhanden, von beiden benutzt:</p>
   <ul class="lc__stapel lc__stapel--basis">
@@ -1259,81 +449,61 @@ eigenen Zeilen und damit eigene Hashes:</p>
     </div>
   </div>
 </div>
-
 <p>Deshalb geht das Herunterladen des zweiten Images so viel schneller als das des
 ersten: Was schon liegt, wird nicht noch einmal geholt.</p>
-
 <h2 id="ein-image-als-grund-für-das-nächste">Ein Image als Grund für das nächste</h2>
-
 <p>Und weil ein Image nur eine Kette ist, kann ein Dockerfile auch auf einem
 <strong>eigenen</strong> Image aufsetzen statt auf einem fremden:</p>
-
 <div class="lc__ableitung">
-
   <p class="lc__ab-kopf lc__titel">Dockerfile</p>
   <p class="lc__ab-kopf lc__ab-kopf--rechts lc__titel">Schichten des Images</p>
-
   <code class="lc__ab-datei lc__ab-hoch"><span class="lc__zeilennr">1</span><span><b>FROM</b> meine-basis:1.0</span></code>
   <span class="lc__ab-klammer" aria-hidden="true"></span>
   <span class="lc__ab-schicht lc__layer"><span><code><b>FROM</b> node:20-alpine</code></span><span class="lc__hash">sha256:1f4c…</span></span>
   <span class="lc__ab-schicht lc__layer"><span><code><b>RUN</b> apk add …</code></span><span class="lc__hash">sha256:8b3f…</span></span>
   <span class="lc__ab-name lc__zeiger"><code>meine-basis:1.0</code></span>
-
   <code class="lc__ab-datei"><span class="lc__zeilennr">2</span><span><b>COPY</b> . .</span></code>
   <span class="lc__ab-strich" aria-hidden="true"></span>
   <span class="lc__ab-schicht lc__layer lc__layer--eigen"><span><code><b>COPY</b> . .</code></span><span class="lc__hash">sha256:3e8b…</span></span>
-
   <code class="lc__ab-datei"><span class="lc__zeilennr">3</span><span><b>CMD</b> ["node", …]</span></code>
   <span class="lc__ab-strich" aria-hidden="true"></span>
   <span class="lc__ab-schicht lc__layer lc__layer--eigen"><span><code><b>CMD</b> […]</code></span><span class="lc__hash">sha256:44a9…</span></span>
   <span class="lc__ab-name lc__zeiger"><code>meine-app:2.0</code></span>
-
 </div>
-
 <p>So arbeiten Häuser mit vielen Anwendungen:</p>
-
-<div class="avd-academy-callout avd-academy-callout--warning">
-  <p><strong>Ein</strong> gepflegtes Basis-Image, darauf viele dünne Anwendungs-Images. Wird die
+<div class="skr-callout skr-callout--warning">
+<p><strong>Ein</strong> gepflegtes Basis-Image, darauf viele dünne Anwendungs-Images. Wird die
 Basis erneuert, erben es alle – und <strong>alle müssen neu gebaut werden!</strong></p>
 </div>
-
 <h2 id="die-reihenfolge-entscheidet">Die Reihenfolge entscheidet!</h2>
-
 <p><strong>Wähle das Szenario.</strong></p>
-
 <div class="lc__wahl" role="group" aria-label="Was hat der Entwickler seit dem letzten Build geändert?">
   <span class="lc__wahl-frage">Entwickler ändert:</span>
   <button type="button" class="lc__knopf" data-lc-wahl="nichts" aria-pressed="true">nichts</button>
   <button type="button" class="lc__knopf" data-lc-wahl="code" aria-pressed="false">Anwendungscode</button>
   <button type="button" class="lc__knopf" data-lc-wahl="deps" aria-pressed="false">die Abhängigkeiten (package.json)</button>
 </div>
-
 <div class="lc" id="lc-vergleich">
-
   <div class="lc__spalte">
     <div class="lc__loesung">
     <p class="lc__titel">Naheliegend – und teuer</p>
     <p class="lc__unter">Erst alles kopieren, dann installieren.</p>
-
     <ul class="lc__stapel" data-lc-stapel="teuer">
       <li class="lc__layer" data-lc-enthaelt=""><span><code><b>FROM</b> node:20-alpine</code></span><span class="lc__marke">aus dem Cache</span></li>
       <li class="lc__layer" data-lc-enthaelt="code deps"><span><code><b>COPY</b> . .</code></span><span class="lc__marke">aus dem Cache</span></li>
       <li class="lc__layer" data-lc-enthaelt=""><span><code><b>RUN</b> npm install</code></span><span class="lc__marke">aus dem Cache</span></li>
     </ul>
     </div>
-
     <div class="lc__fazit">
-      <div class="avd-academy-callout avd-academy-callout--success lc__panel" data-lc-fall="nichts"><p class="lc__urteil"><svg class="lc__urteil-bild" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg><span>läuft optimal</span></p><p class="lc__grund">Der ganze Stapel kommt aus dem Cache. Der Build dauert Sekunden.</p></div>
-      <div class="avd-academy-callout avd-academy-callout--warning lc__panel" data-lc-fall="code" hidden=""><p class="lc__urteil"><svg class="lc__urteil-bild" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6.4" /><path d="M5.6 6.2h.01M10.4 6.2h.01" stroke-width="2" /><path d="M5.6 11c1.3-1 3.4-1.4 5-.4" /></svg><span>installiert ohne Grund</span></p><p class="lc__grund">Eine Zeile Code geändert – und die Abhängigkeiten werden erneut heruntergeladen und installiert. Bei jedem Build. Jeden Tag.</p></div>
-      <div class="avd-academy-callout avd-academy-callout--warning lc__panel" data-lc-fall="deps" hidden=""><p class="lc__urteil"><svg class="lc__urteil-bild" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6.4" /><path d="M5.6 6.2h.01M10.4 6.2h.01" stroke-width="2" /><path d="M5.6 11c1.3-1 3.4-1.4 5-.4" /></svg><span>kein Unterschied</span></p><p class="lc__grund">Hier wie dort dasselbe Bild: Diese Reihenfolge kann die beiden Fälle gar nicht unterscheiden.</p></div>
+      <div class="skr-callout skr-callout--success lc__panel" data-lc-fall="nichts"><p class="lc__urteil"><svg class="lc__urteil-bild" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>läuft optimal</span></p><p class="lc__grund">Der ganze Stapel kommt aus dem Cache. Der Build dauert Sekunden.</p></div>
+      <div class="skr-callout skr-callout--warning lc__panel" data-lc-fall="code" hidden><p class="lc__urteil"><svg class="lc__urteil-bild" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6.4"/><path d="M5.6 6.2h.01M10.4 6.2h.01" stroke-width="2"/><path d="M5.6 11c1.3-1 3.4-1.4 5-.4"/></svg><span>installiert ohne Grund</span></p><p class="lc__grund">Eine Zeile Code geändert – und die Abhängigkeiten werden erneut heruntergeladen und installiert. Bei jedem Build. Jeden Tag.</p></div>
+      <div class="skr-callout skr-callout--warning lc__panel" data-lc-fall="deps" hidden><p class="lc__urteil"><svg class="lc__urteil-bild" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6.4"/><path d="M5.6 6.2h.01M10.4 6.2h.01" stroke-width="2"/><path d="M5.6 11c1.3-1 3.4-1.4 5-.4"/></svg><span>kein Unterschied</span></p><p class="lc__grund">Hier wie dort dasselbe Bild: Diese Reihenfolge kann die beiden Fälle gar nicht unterscheiden.</p></div>
     </div>
   </div>
-
   <div class="lc__spalte">
     <div class="lc__loesung">
     <p class="lc__titel">Stabiles zuerst</p>
     <p class="lc__unter">Erst die Abhängigkeitsliste, dann installieren, dann der Rest.</p>
-
     <ul class="lc__stapel" data-lc-stapel="stabil">
       <li class="lc__layer" data-lc-enthaelt=""><span><code><b>FROM</b> node:20-alpine</code></span><span class="lc__marke">aus dem Cache</span></li>
       <li class="lc__layer" data-lc-enthaelt="deps"><span><code><b>COPY</b> package*.json ./</code></span><span class="lc__marke">aus dem Cache</span></li>
@@ -1341,118 +511,23 @@ Basis erneuert, erben es alle – und <strong>alle müssen neu gebaut werden!</s
       <li class="lc__layer" data-lc-enthaelt="code deps"><span><code><b>COPY</b> . .</code></span><span class="lc__marke">aus dem Cache</span></li>
     </ul>
     </div>
-
     <div class="lc__fazit">
-      <div class="avd-academy-callout avd-academy-callout--success lc__panel" data-lc-fall="nichts"><p class="lc__urteil"><svg class="lc__urteil-bild" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg><span>läuft optimal</span></p><p class="lc__grund">Alles aus dem Cache, wie nebenan.</p></div>
-      <div class="avd-academy-callout avd-academy-callout--success lc__panel" data-lc-fall="code" hidden=""><p class="lc__urteil"><svg class="lc__urteil-bild" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg><span>nur die Dateien</span></p><p class="lc__grund">Der teure Schritt bleibt liegen, weil die Abhängigkeitsliste unberührt ist.</p></div>
-      <div class="avd-academy-callout avd-academy-callout--success lc__panel" data-lc-fall="deps" hidden=""><p class="lc__urteil"><svg class="lc__urteil-bild" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg><span>zu Recht installiert</span></p><p class="lc__grund">Die Liste hat sich geändert, also muss sie neu aufgelöst werden. Der Preis fällt nur an, wenn er anfällt.</p></div>
+      <div class="skr-callout skr-callout--success lc__panel" data-lc-fall="nichts"><p class="lc__urteil"><svg class="lc__urteil-bild" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>läuft optimal</span></p><p class="lc__grund">Alles aus dem Cache, wie nebenan.</p></div>
+      <div class="skr-callout skr-callout--success lc__panel" data-lc-fall="code" hidden><p class="lc__urteil"><svg class="lc__urteil-bild" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>nur die Dateien</span></p><p class="lc__grund">Der teure Schritt bleibt liegen, weil die Abhängigkeitsliste unberührt ist.</p></div>
+      <div class="skr-callout skr-callout--success lc__panel" data-lc-fall="deps" hidden><p class="lc__urteil"><svg class="lc__urteil-bild" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>zu Recht installiert</span></p><p class="lc__grund">Die Liste hat sich geändert, also muss sie neu aufgelöst werden. Der Preis fällt nur an, wenn er anfällt.</p></div>
     </div>
   </div>
-
 </div>
-
 <noscript>
 <p class="lc__quelle">Ohne JavaScript steht oben der Ausgangsfall: Es hat sich
 nichts geändert.</p>
 </noscript>
-
 <div class="lc__druck" id="lc-druck" aria-hidden="true"></div>
-
-<script>
-(function () {
-  "use strict";
-  /* WAS WIRD NEU GEBAUT? Die Regel steht auf der Folie davor, hier wird sie
-     gerechnet - fuer beide Reihenfolgen zugleich. Man sieht dadurch nicht ZWEI
-     Bilder, sondern DIESELBE Regel auf zwei Anordnungen.
-
-     Gerechnet wird von der Basis abwaerts (im Bild von oben nach unten): Die
-     erste Schicht, die das Geaenderte enthaelt, wird neu gebaut - und mit ihr
-     alles, was auf ihr steht.
-
-     `COPY . .` traegt BEIDES (`code deps`): Es kopiert die Abhaengigkeitsliste
-     mit. Ohne diese Feinheit saehe die linke Spalte bei einer geaenderten Liste
-     faelschlich gut aus. */
-  var FAELLE = [
-    { wert: "nichts", name: "Nichts geändert" },
-    { wert: "code",   name: "Eine Quelldatei geändert" },
-    { wert: "deps",   name: "Die Abhängigkeitsliste geändert" }
-  ];
-
-  var vergleich = document.getElementById("lc-vergleich");
-  var knoepfe   = [].slice.call(document.querySelectorAll("[data-lc-wahl]"));
-  if (!vergleich || !knoepfe.length) return;
-
-  /* Rechnet EINEN Fall in EINEM Baum durch - derselbe Code fuer den Bildschirm
-     und fuer die drei Fassungen auf dem Papier. */
-  function zeichne(wurzel, fall) {
-    [].slice.call(wurzel.querySelectorAll("[data-lc-stapel]")).forEach(function (liste) {
-      var betroffen = false;
-      [].slice.call(liste.children).forEach(function (schicht) {
-        if (schicht.classList.contains("lc__layer--meta")) return;
-        var enthaelt = (schicht.getAttribute("data-lc-enthaelt") || "").split(" ");
-        if (fall !== "nichts" && enthaelt.indexOf(fall) !== -1) betroffen = true;
-        schicht.classList.toggle("lc__layer--neu", betroffen);
-        var marke = schicht.querySelector(".lc__marke");
-        if (marke) marke.textContent = betroffen ? "neu gebaut" : "aus dem Cache";
-      });
-    });
-    [].slice.call(wurzel.querySelectorAll("[data-lc-fall]")).forEach(function (t) {
-      t.hidden = t.getAttribute("data-lc-fall") !== fall;
-    });
-  }
-
-  /* AUF PAPIER STEHEN ALLE DREI FAELLE. Sie entstehen beim Laden aus demselben
-     Markup - eine von Hand gepflegte Kopie waere binnen einer Aenderung falsch.
-     Erzeugt wird hier und nicht erst bei `beforeprint`: Bleibt das Ereignis aus
-     (es kommt nicht in jedem Browser), fehlten sonst zwei Drittel. */
-  var druck = document.getElementById("lc-druck");
-  if (druck) {
-    FAELLE.forEach(function (fall) {
-      var titel = document.createElement("p");
-      titel.className = "lc__druck-fall";
-      titel.textContent = fall.name;
-      var kopie = vergleich.cloneNode(true);
-      kopie.removeAttribute("id");
-      zeichne(kopie, fall.wert);
-      /* Die Kennungen der Kopie muessen weg: Sonst faende die Bedienung oben
-         die Kopien mit und zeichnete sie mit um. */
-      [].slice.call(kopie.querySelectorAll("[data-lc-stapel]")).forEach(function (el) {
-        el.removeAttribute("data-lc-stapel");
-      });
-      druck.appendChild(titel);
-      druck.appendChild(kopie);
-    });
-  }
-
-  var wahl = "nichts";               /* der Stand, in dem das Markup ausgeliefert wird */
-  function umschalten(neuerFall) {
-    wahl = neuerFall;
-    knoepfe.forEach(function (k) {
-      k.setAttribute("aria-pressed", k.getAttribute("data-lc-wahl") === wahl ? "true" : "false");
-    });
-    zeichne(vergleich, wahl);
-  }
-
-  knoepfe.forEach(function (k) {
-    k.addEventListener("click", function () { umschalten(k.getAttribute("data-lc-wahl")); });
-  });
-
-  umschalten(wahl);
-
-  /* KEIN ZUSTAND IN DER ADRESSE. Auf einer Praesentation gehoert das Fragment
-     dem Layout (`#/3` ist die Foliennummer); `AvdAcademyState` haelt dort
-     ausdruecklich still. Ein zweiter Schreiber zerschoesse die Foliennummer. */
-})();
-</script>
-
 <h2 id="löschen-macht-ein-image-nicht-kleiner">Löschen macht ein Image nicht kleiner</h2>
-
 <p>Ein Layer, in dem eine Datei <strong>gelöscht</strong> wird, macht das Image nicht kleiner. Die
 Datei steckt weiterhin im Layer darunter – der obere merkt sich nur, dass sie
 nicht mehr zu sehen ist.</p>
-
 <div class="lc" id="lc-loeschen">
-
   <div class="lc__spalte">
     <div class="lc__loesung">
       <p class="lc__titel">2 Layer</p>
@@ -1463,13 +538,12 @@ nicht mehr zu sehen ist.</p>
       </ul>
     </div>
     <div class="lc__fazit">
-      <div class="avd-academy-callout avd-academy-callout--warning lc__panel">
-        <p class="lc__urteil"><svg class="lc__urteil-bild" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6.4" /><path d="M5.6 6.2h.01M10.4 6.2h.01" stroke-width="2" /><path d="M5.6 11c1.3-1 3.4-1.4 5-.4" /></svg><span>Ballast bleibt</span></p>
+      <div class="skr-callout skr-callout--warning lc__panel">
+        <p class="lc__urteil"><svg class="lc__urteil-bild" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6.4"/><path d="M5.6 6.2h.01M10.4 6.2h.01" stroke-width="2"/><path d="M5.6 11c1.3-1 3.4-1.4 5-.4"/></svg><span>Ballast bleibt</span></p>
         <p class="lc__grund">Die Paketlisten stecken weiter im Layer darunter – der obere merkt sich nur, dass sie nicht mehr zu sehen sind.</p>
       </div>
     </div>
   </div>
-
   <div class="lc__spalte">
     <div class="lc__loesung">
       <p class="lc__titel">1 Layer</p>
@@ -1479,17 +553,14 @@ nicht mehr zu sehen ist.</p>
       </ul>
     </div>
     <div class="lc__fazit">
-      <div class="avd-academy-callout avd-academy-callout--success lc__panel">
-        <p class="lc__urteil"><svg class="lc__urteil-bild" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg><span>Ballast weg</span></p>
+      <div class="skr-callout skr-callout--success lc__panel">
+        <p class="lc__urteil"><svg class="lc__urteil-bild" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Ballast weg</span></p>
         <p class="lc__grund">Aufgeräumt wird im selben Layer, in dem der Ballast entstanden ist – dann taucht er gar nicht erst auf.</p>
       </div>
     </div>
   </div>
-
 </div>
-
 <h2 id="zum-mitnehmen">Zum Mitnehmen</h2>
-
 <ol class="lc__manifest">
   <li>Ein <strong>Image</strong> ist ein Name auf einer Schicht – samt allem, was unter ihr liegt.</li>
   <li>Jede Schicht trägt einen <strong>Hash</strong> aus ihrem Inhalt und dem Hash der Schicht darunter.</li>
@@ -1499,19 +570,19 @@ nicht mehr zu sehen ist.</p>
 </ol>
 
   </main>
-
-  <nav class="avd-academy-present__controls" aria-label="Foliennavigation" hidden data-avd-academy-present-controls>
-    <button type="button" class="avd-academy-present__nav" data-avd-academy-present-prev
-            title="Vorherige Folie (←)" aria-label="Vorherige Folie">‹</button>
-    <button type="button" class="avd-academy-present__nav" data-avd-academy-present-next
-            title="Nächste Folie (→)" aria-label="Nächste Folie">›</button>
+  <nav class="skr-present__controls" aria-label="Foliennavigation" hidden data-skr-present-controls>
+    <button type="button" class="skr-present__nav" data-skr-present-prev
+            title="Vorherige Folie (←)" aria-label="Vorherige Folie"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <button type="button" class="skr-present__nav" data-skr-present-next
+            title="Nächste Folie (→)" aria-label="Nächste Folie"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></button>
   </nav>
-
-  <div class="avd-academy-present__progress" aria-hidden="true">
-    <div class="avd-academy-present__progress-fill" data-avd-academy-present-progress></div>
-  </div><div class="avd-academy-print-contact" aria-hidden="true">
-    <span>Kontakt: https://academy.atvantage-academy.workers.dev/</span>
-    <span>academy@atvantage.com</span>
+  <div class="skr-present__progress" aria-hidden="true">
+    <div class="skr-present__progress-fill" data-skr-present-progress></div>
   </div>
+  <div class="skr-print-contact" aria-hidden="true">
+  <span>Kontakt: https://www.atvantage.com</span>
+  <span>academy@atvantage.com</span>
+</div>
+
 </body>
 </html>

@@ -1,0 +1,377 @@
+/* =========================================================================
+   EINFUEHRUNG – Bilder zur Herleitung
+   Alle Farben aus den Tokens des Skriptoriums (`--skr-*`).
+   ========================================================================= */
+/* Die Herleitung läuft im Z: Diagramm links, rechts daneben „Agilität“,
+   darunter „Häufig liefern“, links daneben „Also selbst ausliefern“ und
+   zuletzt über die ganze Breite der DevOps-Hinweis. Schmal gestapelt kippt
+   das Z in eine Spalte – dann zeigen alle Pfeile nach unten. */
+.wc__z {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  gap: var(--skr-space-2) var(--skr-space-3);
+  max-width: 52rem;
+  margin: var(--skr-space-4) auto 0;
+  text-align: left;
+}
+/* Der geschwungene Pfeil zwischen den Gliedern: Das ist eine Folge, kein
+   Nebeneinander. Die Grundform zeigt nach RECHTS und wird gedreht - schmal
+   und in der Spalte nach unten (90°), im Z quer nach links (180°).
+   REIHENFOLGE BEACHTEN: Die Drehungen stehen NACH dieser Regel, sonst
+   gewinnt bei gleicher Spezifität wieder die 90°. */
+.wc__folgepfeil {
+  display: flex; align-items: center; justify-content: center;
+  /* Der gedrehte Pfeil braucht die Höhe seiner Breite - sonst ragt er in den
+     Abstand der Nachbarzeile. */
+  min-height: 3.75rem;
+}
+.wc__folgepfeil svg {
+  display: block;
+  width: 3.5rem;
+  height: auto;
+  transform: rotate(90deg);
+}
+.wc__folgepfeil-bogen {
+  fill: none;
+  stroke: var(--skr-color-accent);
+  stroke-width: 8;
+  stroke-linecap: round;
+}
+.wc__folgepfeil-spitze { fill: var(--skr-color-accent); }
+@media (min-width: 48rem) {
+  .wc__z { grid-template-columns: 1fr auto 1fr; }
+  /* Das Bild ist das hohe Element; es trägt die ersten beiden Zeilen. */
+  .wc__z-bild   { grid-area: 1 / 1 / 3 / 2; align-self: center; }
+  /* „Agilität“ sitzt am UNTEREN Rand seiner Zeile - direkt über dem Pfeil. */
+  .wc__z-1      { grid-area: 1 / 3; align-self: end; }
+  .wc__z-ab1    { grid-area: 2 / 3; }
+  .wc__z-2      { grid-area: 3 / 3; }
+  .wc__z-quer   { grid-area: 3 / 2; }
+  .wc__z-3      { grid-area: 3 / 1; }
+  .wc__z-ab3    { grid-area: 4 / 1; }
+  .wc__z-devops { grid-area: 5 / 1 / auto / -1; }
+  .wc__folgepfeil--quer svg { transform: rotate(180deg); }
+}
+.wc__glied {
+  padding: var(--skr-space-4);
+  border: 2px solid var(--skr-color-border);
+  border-radius: var(--skr-radius);
+  background: var(--skr-color-bg);
+}
+.wc__glied--ziel { border-color: var(--skr-color-accent); }
+.wc__glied p { margin: 0; }
+.wc__glied strong { display: block; margin-bottom: var(--skr-space-2);
+  color: var(--skr-color-headline); }
+
+/* Die Mauer: zwei Seiten, dazwischen eine Wand. */
+.wc__mauer {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: var(--skr-space-4);
+  align-items: stretch;
+  max-width: 52rem;
+  margin: var(--skr-space-8) auto;
+  text-align: left;
+}
+.wc__seite {
+  padding: var(--skr-space-4);
+  border: 2px solid var(--skr-color-border);
+  border-radius: var(--skr-radius);
+}
+.wc__seite p { margin: var(--skr-space-2) 0 0; }
+.wc__seite ul {
+  margin: var(--skr-space-3) 0 0;
+  padding-left: 1.1em;
+  font-size: var(--skr-fs-sm);
+  color: var(--skr-color-ink-muted);
+}
+.wc__seite li + li { margin-top: var(--skr-space-1); }
+/* Statt einer glatten Wand: die gemauerte Wand mit der Code Bomb im Flug.
+   Sie steht MITTIG zwischen den beiden Seiten, nicht gestreckt - sonst
+   zieht das Bild die Zeile in die Länge. */
+.wc__bombe { width: 14rem; align-self: center; }
+.wc__bombe svg { display: block; width: 100%; height: auto; }
+.wc__ziegel {
+  fill: var(--skr-color-bg-subtle);
+  stroke: var(--skr-color-border);
+  stroke-width: 2;
+}
+.wc__fuge { stroke: var(--skr-color-border); stroke-width: 1.5; }
+.wc__boden { stroke: var(--skr-color-border); stroke-width: 2; }
+.wc__flug {
+  fill: none;
+  stroke: var(--skr-color-ink-muted);
+  stroke-width: 2;
+  stroke-dasharray: 6 5;
+}
+.wc__flug-spitze { fill: var(--skr-color-ink-muted); }
+.wc__bombe-koerper { fill: var(--skr-color-ink); }
+.wc__bombe-text {
+  fill: var(--skr-color-bg);
+  font-size: 15px;
+  font-weight: var(--skr-fw-bold);
+}
+.wc__lunte {
+  fill: none;
+  stroke: var(--skr-color-ink-muted);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.wc__mensch {
+  fill: none;
+  stroke: var(--skr-color-ink);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.wc__kopf { fill: var(--skr-color-bg); }
+.wc__funke { fill: var(--skr-color-warning); }
+.wc__strahl {
+  fill: none;
+  stroke: var(--skr-color-warning);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+@media (max-width: 48rem) {
+  .wc__mauer { grid-template-columns: 1fr; justify-items: center; }
+  .wc__seite { width: 100%; }
+}
+
+/* Die Liste mit dem Rahmen darum - das Bild der Einheit. */
+.wc__rahmen {
+  max-width: 44rem;
+  margin: var(--skr-space-6) auto;
+  padding: var(--skr-space-4);
+  border: 3px solid var(--skr-color-accent);
+  border-radius: var(--skr-radius-lg);
+  text-align: left;
+}
+.wc__rahmen-kopf {
+  margin: 0 0 var(--skr-space-3);
+  font-weight: var(--skr-fw-bold);
+  color: var(--skr-color-accent-ink);
+}
+ul.wc__braucht {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: var(--skr-space-2);
+  list-style: none; margin: 0; padding: 0;
+}
+.wc__braucht li {
+  margin: 0;
+  padding: var(--skr-space-2) var(--skr-space-3);
+  border: 1px solid var(--skr-color-border);
+  border-radius: var(--skr-radius);
+  background: var(--skr-color-bg-subtle);
+  font-size: var(--skr-fs-sm);
+}
+.wc__aussen {
+  max-width: 44rem; margin: var(--skr-space-3) auto 0;
+  font-size: var(--skr-fs-sm);
+  color: var(--skr-color-ink-muted);
+  text-align: left;
+}
+
+/* Warenverkehr früher/heute - die beiden Bilder aus dem alten Foliensatz.
+   Feste Bildhöhe + object-fit, damit das Paar trotz unterschiedlicher
+   Seitenverhältnisse auf einer Linie liegt. */
+.wc__warenverkehr {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: var(--skr-space-4);
+  max-width: 50rem;
+  margin: var(--skr-space-6) auto;
+  text-align: left;
+}
+.wc__warenverkehr figure { margin: 0; }
+.wc__warenverkehr img {
+  display: block;
+  width: 100%;
+  height: 11rem;
+  object-fit: cover;
+  border: 2px solid var(--skr-color-border);
+  border-radius: var(--skr-radius);
+}
+.wc__warenverkehr figcaption {
+  margin-top: var(--skr-space-2);
+  font-size: var(--skr-fs-sm);
+  color: var(--skr-color-ink-muted);
+}
+
+/* Bauplan und Ausprägung. */
+.wc__paar {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: var(--skr-space-6);
+  max-width: 48rem; margin: var(--skr-space-8) auto;
+  text-align: left;
+}
+.wc__karte {
+  padding: var(--skr-space-4);
+  border: 2px solid var(--skr-color-border);
+  border-radius: var(--skr-radius);
+}
+.wc__karte h3 { margin: 0 0 var(--skr-space-2); color: var(--skr-color-headline); }
+.wc__karte p { margin: 0 0 var(--skr-space-2); }
+.wc__karte p:last-child { margin-bottom: 0; }
+.wc__karte code { font-size: 0.9em; }
+
+/* Die Schleife: Agilität dreht dieselbe Runde öfter. Skizze als
+   Gedankenstütze für den Trainer – Tests entstehen VOR dem Design und
+   laufen gegen die Implementierung (TDD). */
+.wc__schleife {
+  max-width: 22rem;
+  margin: 0;
+}
+.wc__schleife svg { display: block; width: 100%; height: auto; }
+.wc__schleife figcaption {
+  margin-top: var(--skr-space-2);
+  font-size: var(--skr-fs-sm);
+  color: var(--skr-color-ink-muted);
+}
+.wc__station {
+  fill: var(--skr-color-bg-subtle);
+  stroke: var(--skr-color-border);
+  stroke-width: 2;
+}
+.wc__station-text {
+  fill: var(--skr-color-headline);
+  font-size: 19px;
+  font-weight: var(--skr-fw-medium);
+}
+.wc__bogen { fill: none; stroke: var(--skr-color-accent); stroke-width: 3; }
+.wc__spitze { fill: var(--skr-color-accent); }
+.wc__tdd {
+  stroke: var(--skr-color-ink-muted);
+  stroke-width: 2;
+  stroke-dasharray: 6 5;
+}
+.wc__chip { fill: var(--skr-color-bg); }
+.wc__chip-text { fill: var(--skr-color-ink-muted); font-size: 15px; }
+
+/* Aufbau eines Containers: Oben, was IM Container steckt, unten dasselbe
+   beim Host - verbunden durch die Zuordnung dazwischen. Die Symbole sind
+   EINMAL definiert und werden zweimal benutzt (<use>): Nur so ist auf einen
+   Blick zu sehen, dass es dieselbe Sache ist, einmal abgegrenzt. */
+/* Diese Folie bricht aus der 52rem-Spalte aus: Tabelle und Skizze stehen
+   nebeneinander, sonst wird die Folie zu hoch. `margin-inline-start: 50%`
+   plus Rückversatz zentriert den breiteren Block über der schmalen Spalte. */
+.wc__breit {
+  /* Die Breite der Folie MINUS ihres Innenrands (derselbe clamp-Ausdruck wie
+     in presentation.css) und ein Rest für die Bildlaufleiste. Ein fester
+     vw-Anteil war zu großzügig: Bei ~1200 px lief der Block über den Rand. */
+  --wc-rand: clamp(1.5rem, 1rem + 4vw, 5rem);
+  width: min(74rem, calc(100vw - 2 * var(--wc-rand) - 1rem));
+  margin-inline-start: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  grid-template-columns: minmax(18rem, 1fr) minmax(20rem, 1.1fr);
+  gap: var(--skr-space-6);
+  align-items: center;
+  text-align: left;
+}
+@media (max-width: 62rem) {
+  .wc__breit {
+    width: 100%;
+    margin-inline-start: 0;
+    transform: none;
+    grid-template-columns: 1fr;
+  }
+}
+/* Vergleichstabelle: VM vorn, Container HINTEN - die Folie läuft auf den
+   Container zu, deshalb steht er in der letzten Spalte und ist betont. */
+.wc__tabelle {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--skr-fs-sm);
+}
+.wc__tabelle th,
+.wc__tabelle td {
+  border: 1px solid var(--skr-color-border);
+  padding: var(--skr-space-2) var(--skr-space-3);
+  text-align: left;
+  vertical-align: top;
+}
+.wc__tabelle thead th {
+  background: var(--skr-color-bg-subtle);
+  color: var(--skr-color-headline);
+  font-weight: var(--skr-fw-bold);
+}
+.wc__tabelle tbody th {
+  color: var(--skr-color-ink-muted);
+  font-weight: var(--skr-fw-medium);
+}
+.wc__tabelle thead th:last-child { color: var(--skr-color-accent-ink); }
+.wc__tabelle tbody td:last-child { color: var(--skr-color-ink); }
+.wc__aufbau { margin: 0; }
+.wc__aufbau svg { display: block; width: 100%; height: auto; }
+.wc__aufbau figcaption {
+  margin-top: var(--skr-space-2);
+  font-size: var(--skr-fs-sm);
+  color: var(--skr-color-ink-muted);
+  text-align: left;
+}
+.wc__kasten { fill: none; stroke: var(--skr-color-accent); stroke-width: 3; }
+.wc__kasten-titel {
+  fill: var(--skr-color-accent-ink);
+  font-size: 17px;
+  font-weight: var(--skr-fw-bold);
+}
+.wc__host {
+  fill: var(--skr-color-bg-subtle);
+  stroke: var(--skr-color-border);
+  stroke-width: 2;
+}
+.wc__host-titel {
+  fill: var(--skr-color-headline);
+  font-size: 17px;
+  font-weight: var(--skr-fw-bold);
+}
+/* Die Symbole erben Strich und Füllung vom <use> - deshalb steht die Farbe
+   hier und nicht an den Pfaden in <defs>. */
+.wc__ico {
+  fill: none;
+  stroke: var(--skr-color-accent);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.wc__ico--host { stroke: var(--skr-color-ink-muted); }
+.wc__ico-text { fill: var(--skr-color-ink); font-size: 13px; }
+.wc__ico-text--host { fill: var(--skr-color-ink-muted); font-size: 13px; }
+.wc__zuordnung {
+  fill: none;
+  stroke: var(--skr-color-ink-muted);
+  stroke-width: 2;
+  stroke-dasharray: 6 5;
+}
+.wc__zuordnung-spitze { fill: var(--skr-color-ink-muted); }
+.wc__zuordnung-feld { fill: var(--skr-color-bg); }
+.wc__zuordnung-text { fill: var(--skr-color-ink-muted); font-size: 12.5px; }
+/* Der Kernel ist die Schicht, DURCH die die Zuordnung läuft: Er wird VOR den
+   Pfeilen gezeichnet, damit sie sichtbar hindurchgehen. */
+.wc__kernel {
+  fill: var(--skr-color-bg-subtle);
+  stroke: var(--skr-color-ink-muted);
+  stroke-width: 2;
+}
+.wc__kernel-titel {
+  fill: var(--skr-color-headline);
+  font-size: 15px;
+  font-weight: var(--skr-fw-bold);
+}
+/* Umgebungsvariablen gehen NICHT durch den Kernel - das Zeichen dafür. */
+.wc__gesperrt {
+  fill: none;
+  stroke: var(--skr-color-ink-muted);
+  stroke-width: 2.5;
+}
+.wc__os {
+  fill: var(--skr-color-bg);
+  stroke: var(--skr-color-border);
+  stroke-width: 2;
+}
+.wc__os-text { fill: var(--skr-color-ink); font-size: 13px; }
+
+.skr-slide__inner { max-width: 52rem; margin-block: auto; }
+.skr-slide h2 { margin-bottom: var(--skr-space-8); text-wrap: normal; }
+.skr-slide__inner > p { margin-bottom: var(--skr-space-6); }

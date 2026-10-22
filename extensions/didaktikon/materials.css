@@ -1,0 +1,77 @@
+/* Skriptorium: in der Schicht skr.extensions – extensions/didaktikon/materials.css. */
+@layer skr.tokens, skr.base, skr.components, skr.theme, skr.extensions;
+@layer skr.extensions {
+.skr-didaktikon-materials__topic { margin: var(--skr-space-8) 0 0; }
+.skr-didaktikon-materials__topic > h3 {
+  margin: 0 0 var(--skr-space-3);
+  padding-bottom: .35rem;
+  font-size: 1.1rem;
+  border-bottom: 2px solid var(--skr-color-accent);
+}
+
+.skr-didaktikon-materials {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1.2rem, .8rem + 2vw, 2.5rem);
+}
+/* Themenblöcke ohne Nachschlage-Spalte behalten die Spaltenbreite – die
+   Übungsspalte soll von Block zu Block nicht springen. Erst auf schmalen
+   Anzeigen fallen die Spalten untereinander. */
+@media (max-width: 768px) {
+  .skr-didaktikon-materials { grid-template-columns: 1fr; gap: var(--skr-space-6); }
+}
+
+/* `display: block` gilt für beide Formen: Als `<p>` ist der Kopf ohnehin ein
+   Block, als `<span>` (Span-Form, siehe unten) würde er sonst mit dem ersten
+   Verweis in einer Zeile zusammenlaufen.
+   Gedämpft über das Token, nicht über `opacity`: Durchscheinende Schrift hält ihren
+   Kontrast nur auf Weiß, auf dem getönten Grund einer internen Site nicht (#375).
+   `--skr-color-ink-muted` ist auf beiden Gründen als Textkontrast zugesagt. */
+.skr-didaktikon-materials__head {
+  display: block;
+  margin: 0 0 var(--skr-space-2);
+  font-size: .68rem;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--skr-color-ink-muted);
+}
+
+/* Das Icon des Links trägt die Typunterscheidung – Aufzählungspunkte wären
+   daneben ein zweiter, stummer Marker. */
+.skr-didaktikon-materials__col ul { list-style: none; margin: 0; padding: 0; }
+.skr-didaktikon-materials__col li { margin: 0 0 .45rem; }
+
+/* SPAN-FORM. Wo nur Span-Auszeichnung erlaubt ist – in einer `markdown="span"`-
+   Zelle der gruppierten Tabelle, etwa der Inhaltszelle einer Modulzeile –, steht
+   dieselbe Übersicht aus `<span>` und `<a>`: `span.skr-didaktikon-materials` mit
+   `span.…__col`, darin `span.…__head` und die Verweise DIREKT, ohne Liste.
+   Dieselben Klassen, keine neuen: Was die Form trägt, ist der Aufbau, nicht ein
+   Modifier. Ein Verweis direkt in der Spalte steht deshalb als eigene Zeile –
+   wie ein Listeneintrag der Block-Form, mit demselben Abstand. `width: fit-content`
+   hält die Klickfläche beim Text, statt sie über die Spalte zu ziehen. */
+.skr-didaktikon-materials__col > .skr-doclink {
+  display: flex;
+  width: fit-content;
+  margin: 0 0 .45rem;
+}
+/* Die Span-Form folgt in ihrer Zelle auf Text – der Modultitel steht davor.
+   Abstand darüber und ein knapperer Spaltenabstand, weil die Zelle schmaler ist
+   als die Seite. Die Block-Form bleibt unberührt: Sie ist immer ein `<div>`. */
+span.skr-didaktikon-materials {
+  margin-top: var(--skr-space-2);
+  gap: var(--skr-space-2) var(--skr-space-6);
+}
+@media (max-width: 768px) {
+  span.skr-didaktikon-materials { gap: var(--skr-space-3); }
+}
+
+@media print {
+  .skr-didaktikon-materials__topic { break-inside: avoid; margin-top: 10pt; }
+  .skr-didaktikon-materials__topic > h3 { font-size: 11pt; margin-bottom: 5pt; }
+  .skr-didaktikon-materials { grid-template-columns: 1fr 1fr; gap: 12pt; }
+  span.skr-didaktikon-materials { margin-top: 4pt; gap: 4pt 12pt; }
+  .skr-didaktikon-materials__col li,
+  .skr-didaktikon-materials__col > .skr-doclink { margin-bottom: 2pt; font-size: 9pt; }
+}
+}

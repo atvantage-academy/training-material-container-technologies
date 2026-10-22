@@ -1,0 +1,21 @@
+/* Erzeugt vom Skriptorium: die Arten von Dokumentlinks dieser Unterlage. */
+@layer skr.tokens, skr.base, skr.components, skr.theme, skr.extensions;
+@layer skr.components {
+.skr-doclink:is(.skr-doclink--slides, .skr-doclink--guide, .skr-doclink--overview, .skr-doclink--exercise, .skr-doclink--visualization, .skr-doclink--simulation, .skr-doclink--quiz, .skr-doclink--crossword)::after { content: ""; }
+.skr-doclink--slides { --skr-doclink-icon: url("../themes/default/doclinks/slides.svg"); }
+.skr-doclink--guide { --skr-doclink-icon: url("../themes/default/doclinks/guide.svg"); }
+.skr-doclink--overview { --skr-doclink-icon: url("../themes/default/doclinks/overview.svg"); }
+.skr-doclink--exercise { --skr-doclink-icon: url("../extensions/didaktikon/doclinks/exercise.svg"); }
+.skr-doclink--visualization { --skr-doclink-icon: url("../extensions/didaktikon/doclinks/visualization.svg"); }
+.skr-doclink--simulation { --skr-doclink-icon: url("../extensions/didaktikon/doclinks/simulation.svg"); }
+.skr-doclink--quiz { --skr-doclink-icon: url("../extensions/didaktikon/doclinks/quiz.svg"); }
+.skr-doclink--crossword { --skr-doclink-icon: url("../extensions/didaktikon/doclinks/crossword.svg"); }
+.skr-doclink--slides:lang(de)::before { content: "" / "Präsentation"; }
+.skr-doclink--guide:lang(de)::before { content: "" / "Anleitung"; }
+.skr-doclink--overview:lang(de)::before { content: "" / "Übersicht"; }
+.skr-doclink--exercise:lang(de)::before { content: "" / "Übung"; }
+.skr-doclink--visualization:lang(de)::before { content: "" / "Visualisierung"; }
+.skr-doclink--simulation:lang(de)::before { content: "" / "Simulation"; }
+.skr-doclink--quiz:lang(de)::before { content: "" / "Wissens-Check"; }
+.skr-doclink--crossword:lang(de)::before { content: "" / "Kreuzworträtsel"; }
+}

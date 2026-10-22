@@ -1,0 +1,20 @@
+/* Skriptorium: in der Schicht skr.components – skriptorium/diagrams.css. */
+@layer skr.tokens, skr.base, skr.components, skr.theme, skr.extensions;
+@layer skr.components {
+.skr-diagram { margin: 1.5rem 0; overflow-x: auto; }
+.skr-diagram img { display: block; max-width: 100%; height: auto; }
+.skr-diagram img.skr-diagram__dark { display: none; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-skr-theme="light"]) .skr-diagram img.skr-diagram__light { display: none; }
+  :root:not([data-skr-theme="light"]) .skr-diagram img.skr-diagram__dark { display: block; }
+}
+:root[data-skr-theme="dark"] .skr-diagram img.skr-diagram__light { display: none; }
+:root[data-skr-theme="dark"] .skr-diagram img.skr-diagram__dark { display: block; }
+
+/* Papier ist hell. */
+@media print {
+  .skr-diagram img.skr-diagram__light { display: block !important; }
+  .skr-diagram img.skr-diagram__dark { display: none !important; }
+}
+}

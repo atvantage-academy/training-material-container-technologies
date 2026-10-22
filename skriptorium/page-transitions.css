@@ -1,0 +1,28 @@
+/* Skriptorium: in der Schicht skr.components – skriptorium/page-transitions.css. */
+@layer skr.tokens, skr.base, skr.components, skr.theme, skr.extensions;
+@layer skr.components {
+.skr-header { view-transition-name: skr-header; }
+
+::view-transition { background-color: var(--skr-color-bg); }
+
+::view-transition-old(root) {
+  animation-name: skr-ausblenden;
+  animation-duration: 0.22s;
+  animation-timing-function: ease-in;
+  animation-fill-mode: both;
+}
+::view-transition-new(root) {
+  animation-name: skr-einblenden;
+  animation-duration: 0.28s;
+  animation-delay: 0.22s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
+}
+::view-transition-group(skr-header),
+::view-transition-old(skr-header),
+::view-transition-new(skr-header) { animation: none; }
+::view-transition-old(skr-header) { display: none; }
+
+@keyframes skr-ausblenden { from { opacity: 1; } to { opacity: 0; } }
+@keyframes skr-einblenden { from { opacity: 0; } to { opacity: 1; } }
+}

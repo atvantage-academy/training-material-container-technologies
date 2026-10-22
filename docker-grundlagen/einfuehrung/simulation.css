@@ -1,0 +1,849 @@
+/* Nur Anordnung, Zeichnung und Zustand. Farben kommen aus den
+   Tokens des Skriptoriums (`--skr-*`) – kein Hex, kein Hartkodieren, sonst kippt das dunkle Schema.
+
+   DREI SPALTEN, und die mittlere ist der Punkt: Registry und Zielsystem sind
+   zwei ORTE, zwischen denen etwas uebertragen wird. Stuenden sie ohne Abstand
+   nebeneinander, waere die Uebertragung ein Sprung; mit der Leitung dazwischen
+   ist sie ein Weg. */
+.lz {
+  display: grid;
+  grid-template-columns: minmax(0, 0.34fr) clamp(3rem, 6vw, 7rem) minmax(0, 1fr);
+  gap: clamp(0.5rem, 0.3rem + 0.8vw, 1rem);
+  align-content: center;
+  min-height: 100%;
+}
+@media (max-width: 60rem) {
+  .lz { grid-template-columns: 1fr; }
+}
+
+/* --- Die beiden Orte ------------------------------------------------------
+   Sie sind keine Sache, sondern ein Ort – deshalb eine eigene, ruhige Flaeche
+   mit Kopfzeile und Sinnbild statt eines weiteren Kastens im Kasten. */
+.lz__ort {
+  display: flex;
+  flex-direction: column;
+  gap: var(--skr-space-3);
+  padding: clamp(0.45rem, 0.3rem + 0.6vw, 0.85rem);
+  border: 1px solid var(--skr-color-border);
+  border-radius: var(--skr-radius-lg);
+  background:
+    linear-gradient(160deg,
+      color-mix(in srgb, var(--lz-ort-ton, var(--skr-color-ink)) 7%, transparent),
+      transparent 62%),
+    var(--skr-color-bg);
+  box-shadow: var(--skr-shadow-1);
+}
+.lz__ort--registry { --lz-ort-ton: var(--skr-didaktikon-tone-1); align-self: start; }
+.lz__ort--ziel     { --lz-ort-ton: var(--skr-color-accent); }
+
+.lz__ort-titel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: var(--skr-fs-sm);
+  font-weight: var(--skr-fw-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--skr-color-ink);
+}
+.lz__ort-titel svg {
+  flex: 0 0 auto;
+  width: 1.35em; height: 1.35em;
+  color: var(--lz-ort-ton);
+}
+.lz__ort-titel span {
+  letter-spacing: 0;
+  text-transform: none;
+  font-weight: var(--skr-fw-normal);
+  color: var(--skr-color-ink-muted);
+}
+/* Der Verweis auf eine echte Registry macht den Ort konkret – ohne ihn bleibt
+   "Registry" eine Vokabel. Er oeffnet in einem neuen Tab: Ein Klick mitten in
+   der Vorfuehrung darf die Simulation nicht wegnehmen. */
+.lz__ort-titel a {
+  color: var(--skr-color-accent-ink, var(--skr-color-ink));
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* DIE GASSE ist die mittlere Gitterspalte des Daemon-Kastens. Der
+   «instanceof»-Pfeil gehoert zu einer einzelnen Container-Zelle, zeigt aber
+   aus ihr heraus auf die Image-Tafel – er braucht Platz AUSSERHALB der Zelle.
+   Die Gasse liest sich wie die Leitung weiter links: eine Bahn, auf der
+   Beziehungen laufen.
+
+   Images links oben, Container rechts ueber BEIDE Zeilen. */
+.lz__daemon > .skr-didaktikon-simulation-panel:first-of-type { grid-column: 1; grid-row: 1; }
+.lz__daemon > .skr-didaktikon-simulation-panel:last-of-type {
+  grid-column: 3;
+  grid-row: 1 / 3;
+  display: flex;
+  flex-direction: column;
+}
+@media (max-width: 48rem) {
+  .lz__daemon { grid-template-columns: 1fr; grid-template-rows: auto auto auto; }
+  .lz__daemon > .skr-didaktikon-simulation-panel:first-of-type  { grid-column: 1; grid-row: 1; }
+  .lz__daemon-titel                                    { grid-column: 1; grid-row: 2; }
+  .lz__daemon > .skr-didaktikon-simulation-panel:last-of-type   { grid-column: 1; grid-row: 3; }
+}
+
+/* --- Der Daemon ist der Rahmen, nicht eine Tafel unter anderen -------------
+   Images und Container gehoeren dem DIENST. Sie stehen deshalb IN seinem
+   Kasten, und die Konsole steht daneben und spricht mit ihm. Das ist genau
+   die Aussage aus dem Begriffskapitel: `docker` tut nichts selbst, es fragt. */
+/* DER DAEMON IST SELBST DAS GITTER. Vorher stand die Beschriftung als eigene
+   Zeile unter BEIDEN Tafeln und kostete Hoehe, die der Container-Tafel
+   fehlte. Jetzt sitzt sie linksbuendig unter den Images, und die
+   Container-Tafel reicht daneben bis zum unteren Rand des Kastens – gleicher
+   Abstand wie oben. Das ist genau die Hoehe, die zwei Container brauchen.
+   Die mittlere Spalte ist die Gasse fuer die «instanceof»-Pfeile. */
+.lz__daemon {
+  display: grid;
+  grid-template-columns: 1fr 4rem 1fr;
+  grid-template-rows: auto auto;
+  row-gap: var(--skr-space-2);
+  padding: clamp(0.4rem, 0.28rem + 0.5vw, 0.7rem);
+  border: 1px solid color-mix(in srgb, var(--skr-didaktikon-tone-1) 45%, transparent);
+  border-radius: var(--skr-radius-lg);
+  background: color-mix(in srgb, var(--skr-didaktikon-tone-1) 5%, transparent);
+}
+/* DIE BESCHRIFTUNG STEHT UNTEN, nicht oben – und das ist keine Kosmetik:
+   Direkt darunter kommt der Draht von der Konsole an. Wer den Befehl mit den
+   Augen verfolgt, trifft als Erstes auf den Namen dessen, der ihn annimmt.
+   Stuende die Beschriftung oben, liefe der Blick am Empfaenger vorbei.
+
+   `order` statt Umstellen im Markup: Fuer Screenreader bleibt der Name VOR
+   dem Inhalt, den er benennt. Fokussierbares gibt es hier nicht, die
+   Reihenfolge kann also gefahrlos auseinandergehen. */
+.lz__daemon-titel {
+  grid-column: 1;
+  grid-row: 2;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.45rem;
+  margin: 0;
+  padding-top: 0.15rem;
+  font-size: 0.78em;
+  font-weight: var(--skr-fw-bold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--skr-color-ink);
+}
+.lz__daemon-titel svg { flex: 0 0 auto; width: 1.25em; height: 1.25em; color: var(--skr-didaktikon-tone-1); }
+.lz__daemon-titel span {
+  letter-spacing: 0; text-transform: none;
+  font-weight: var(--skr-fw-normal);
+  color: var(--skr-color-ink-muted);
+}
+
+/* --- Die mittlere Spalte traegt die Verbindungen ---------------------------
+   Oben die Leitung zur Registry, unten der Mensch. Beides sind Dinge ZWISCHEN
+   den Orten und gehoeren deshalb weder in den einen noch in den anderen. */
+.lz__mitte {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 0;
+}
+
+/* --- Der Mensch sitzt AUSSERHALB des Zielsystems ---------------------------
+   Er bedient es, er ist nicht Teil davon – deshalb steht er in der mittleren
+   Spalte und nicht im gestrichelten Kasten. Der Draht nach rechts laeuft auf
+   das Zielsystem zu und endet an dessen Kante: Die Eingabe ueberquert eine
+   Grenze, und genau das soll man sehen. */
+.lz__nutzer {
+  margin: 0 0 0.4rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  color: var(--skr-color-ink-muted);
+  position: relative;
+}
+.lz__nutzer svg { width: 100%; max-width: 3.4rem; height: auto; display: block; }
+.lz__nutzer-text {
+  font-size: 0.62em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: var(--skr-fw-bold);
+}
+/* Der Draht zum Zielsystem – gestrichelt wie alle Verbindungen hier. */
+.lz__nutzer::after {
+  content: "";
+  position: absolute;
+  left: 100%;
+  top: 45%;
+  width: calc(var(--skr-space-4) + 0.5rem);
+  height: 2px;
+  background: repeating-linear-gradient(90deg,
+    var(--skr-color-border) 0 4px, transparent 4px 8px);
+}
+@media (max-width: 60rem) {
+  .lz__nutzer::after { display: none; }
+}
+
+/* Der Draht zwischen Konsole und Dienst. In BEIDE Richtungen: Der Client
+   fragt, der Dienst antwortet – deshalb zwei Pfeilspitzen. */
+.lz__draht {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  margin: 0;
+  color: var(--skr-color-ink-muted);
+}
+.lz__draht svg { width: 0.85rem; height: clamp(1.1rem, 3.4vh, 1.7rem); display: block; }
+.lz__draht-text { font-size: 0.68em; letter-spacing: 0.04em; text-transform: uppercase; }
+
+/* Tafel-Ueberschrift mit Sinnbild. */
+.skr-didaktikon-simulation-panel__title svg {
+  width: 1.15em; height: 1.15em;
+  vertical-align: -0.2em;
+  margin-right: 0.35em;
+}
+
+/* --- Die Leitung ----------------------------------------------------------
+   Sie liegt in der mittleren Spalte und trifft die Registry auf Hoehe ihrer
+   Image-Liste. Das Paket laeuft nur, wenn wirklich etwas uebertragen wird –
+   eine Leitung, auf der staendig etwas blinkt, sagt nichts mehr aus. */
+.lz__leitung {
+  position: relative;
+  /* KEIN `align-self` HIER. Die Leitung war einmal ein Gitter-Element, dort
+     hiess `align-self: start` "oben in der Zeile". Seit sie in `.lz__mitte`
+     liegt – einer Flex-SPALTE – meint dieselbe Angabe die Querachse, also
+     WAAGERECHT: Die Leitung schrumpfte damit auf die Breite ihres Inhalts,
+     und der ist leer. Sie war schlicht unsichtbar. Die senkrechte Lage macht
+     jetzt `margin-top` plus `justify-content` der Spalte. */
+  margin-top: 4.2rem;
+  height: 3px;
+  border-radius: 2px;
+  background: repeating-linear-gradient(90deg,
+    var(--skr-color-border) 0 6px, transparent 6px 12px);
+}
+.lz__leitung::before,
+.lz__leitung::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 9px; height: 9px;
+  margin-top: -4.5px;
+  border-radius: 50%;
+  background: var(--skr-color-bg);
+  border: 2px solid var(--skr-color-border);
+}
+.lz__leitung::before { left: -4.5px; }
+.lz__leitung::after  { right: -4.5px; }
+
+/* Das Paket traegt die Farbe des Images, das gerade wandert. */
+.lz__paket {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 1.1rem; height: 1.1rem;
+  margin-top: -0.55rem;
+  margin-left: -0.55rem;
+  color: var(--lz-bindung, var(--skr-color-accent));
+  opacity: 0;
+}
+.lz__paket svg { width: 100%; height: 100%; }
+/* ZWEI WEGE, NICHT EINER. Ein `pull` ist kein Geschenk, das von selbst
+   ankommt: Erst geht die ANFRAGE vom Zielsystem zur Registry, dann kommt das
+   Image zurueck. Wer nur den Rueckweg zeigt, legt nahe, die Registry habe von
+   sich aus geschickt – und verliert damit, wer hier eigentlich fragt. */
+.lz__anfrage {
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: 0.5rem; height: 0.5rem;
+  margin-top: -0.25rem;
+  margin-left: -0.25rem;
+  border-radius: 50%;
+  background: var(--skr-color-ink-muted);
+  opacity: 0;
+}
+.lz__leitung.is-anfrage .lz__anfrage {
+  animation: lz-anfrage 450ms cubic-bezier(0.4, 0, 0.6, 1);
+}
+@keyframes lz-anfrage {
+  0%   { left: 100%; opacity: 0; }
+  15%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { left: 0;    opacity: 0; }
+}
+
+.lz__leitung.is-transfer .lz__paket {
+  animation: lz-transfer 900ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.lz__leitung.is-anfrage,
+.lz__leitung.is-transfer {
+  background: repeating-linear-gradient(90deg,
+    var(--skr-color-accent) 0 6px, transparent 6px 12px);
+}
+@keyframes lz-transfer {
+  0%   { left: 0;    opacity: 0; transform: scale(0.5) rotate(-20deg); }
+  12%  { opacity: 1; transform: scale(1) rotate(0deg); }
+  88%  { opacity: 1; transform: scale(1) rotate(0deg); }
+  100% { left: 100%; opacity: 0; transform: scale(0.5) rotate(20deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lz__leitung.is-transfer .lz__paket,
+  .lz__leitung.is-anfrage .lz__anfrage { animation: none; opacity: 1; left: 50%; }
+}
+/* Untereinander gestapelt ist die waagerechte Leitung sinnlos – dann traegt
+   der Abstand allein. */
+@media (max-width: 60rem) {
+  .lz__leitung { display: none; }
+}
+
+/* --- Jede Flaeche haelt von Anfang an ihre ENDGUELTIGE Hoehe ----------------
+   Sonst waechst die Buehne mit jedem Schritt, und weil sie senkrecht zentriert
+   steht, rutscht bei jedem Wachsen ALLES nach oben. Das sieht aus wie eine
+   zweite Animation und lenkt von der einen ab, auf die es ankommt. */
+/* An die FENSTERHOEHE gekoppelt, nicht nur an rem: Die Buehne soll bei 100 %
+   Zoom ohne Scrollen hineinpassen, und auf einem knappen Bildschirm ist eine
+   feste rem-Zahl genau das, was sie sprengt. `clamp` haelt eine Untergrenze
+   (darunter wird es unleserlich) und eine Obergrenze (darueber wird es leer). */
+/* `height`, NICHT `min-height` – das war der Fehler: Eine Mindesthoehe ist ein
+   Boden, keine Decke. Kam ein zweiter Eintrag dazu, wuchs die Tafel trotzdem
+   und schob alles darunter weg. Mit fester Hoehe bleibt die Flaeche gleich,
+   ganz gleich wie viel darin steht; `overflow-y: auto` ist das Sicherheitsventil
+   fuer den Fall, dass es doch einmal nicht reicht – dann rollt der Inhalt IN
+   der Tafel, statt die Buehne zu sprengen. */
+/* Eine Image-Karte traegt Kennung, Tag-Etiketten UND die Umgebungsvariable -
+   rund 4.8rem. Die Registry steht oben in ihrer Spalte (`align-self: start`),
+   ihre Hoehe kostet die Buehne also nichts; lieber grosszuegig als knapp. */
+/* Eine kompakte Karte: Polster 1rem + Kopfzeile ~1.35 + Etiketten ~1 +
+   ENV-Schild ~1 + zwei Abstaende ~0.6 = rund 4.3rem. Zwei davon plus Abstand
+   ergeben knapp 9.4rem - reserviert wird mehr, damit es LOCKER passt. */
+/* KEIN Rollbereich auf den Image-Tafeln – dieselbe Falle wie bei der
+   Container-Tafel: Die Etiketten sitzen halb ausserhalb ihrer Karte, und ein
+   Rollbereich haette sie abgeschnitten. Gegen das Mitwachsen genuegt die
+   feste `height`. */
+/* GROSSZUEGIG, und das kostet nichts: Die Registry steht oben in ihrer Spalte
+   (`align-self: start`), ihre Hoehe geht also nicht von der Buehne ab. Eine
+   Karte misst rund 4.5rem; in der schmalen Spalte kann ihre Kopfzeile aber
+   umbrechen, und dann wird sie hoeher. Deshalb hier lieber ein Stueck zu viel
+   als eine Karte, die nicht mehr hineinpasst. */
+#reg-images   { height: clamp(6.4rem, 17vh, 8rem);     overflow: visible; }
+#reg-images-2 { height: clamp(13.2rem, 34vh, 15.5rem); overflow: visible; }
+/* NACHGERECHNET, nicht geschaetzt – hier lag der Fehler: Der zweite Container
+   liess die Tafel wachsen und schob die Konsole nach unten.
+
+   Eine Container-Zelle:
+     Polster            2 x space-2            = 1.00rem
+     Kopfzeile (Name, Status)                  ~ 1.10rem
+     Abstand            gap                    = 0.35rem
+     Kachelreihe: Polster 0.34 + Bild <=1.5
+                  + Text 2.4em (~0.85) + Wert 1.2em (~0.42)
+                  + 2 Abstaende 0.30           ~ 3.41rem
+     ---------------------------------------------------- ~ 5.86rem
+
+   Zwei Zellen plus den Abstand dazwischen (space-3, 0.75rem) ergeben rund
+   12.5rem. Reserviert wird 13rem plus Luft nach oben; die vh-Bindung haelt
+   es auf flachen Bildschirmen im Rahmen. */
+#lok-images, #lok-images-2 {
+  height: clamp(11.5rem, 30vh, 14rem);
+  overflow: visible;
+}
+/* KEIN Rollbereich auf der Container-Tafel – und das ist kein Versehen:
+   `overflow-y: auto` macht die Tafel zum Rollbereich, und ein Rollbereich
+   BESCHNEIDET, was aus ihr herausragt. Genau das sind hier der
+   «instanceof»-Pfeil links und der Stecker rechts; beide waren damit weg.
+
+   Gegen das Mitwachsen genuegt die feste `height` allein. Damit sie auch auf
+   flachen Bildschirmen reicht, liegt die Untergrenze bei den nachgerechneten
+   12.6rem (zwei Zellen zu ~5.9rem plus Abstand) statt bei 11 – lieber eine
+   etwas hoehere Buehne als ein abgeschnittener Pfeil. */
+/* Die Hoehe kommt jetzt aus dem Gitter (Images + Beschriftung), nicht aus
+   einer Zahl – deshalb `flex: 1`, nicht `height`. Mitwachsen kann sie
+   trotzdem nicht: Was der Kasten hergibt, steht oben fest.
+
+   ZWEI FESTE PLAETZE. Wird der erste Container geloescht, soll der zweite
+   BLEIBEN, wo er ist, statt nach oben zu rutschen – ein Container wandert
+   nicht, wenn nebenan einer verschwindet. Jede Zelle traegt ihren Platz als
+   Zeilennummer. */
+#lok-container, #lok-container-2 {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: visible;
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  align-items: start;
+  gap: var(--skr-space-3);
+}
+.lz-ctr { grid-row: var(--lz-platz, auto); }
+/* Eine Zelle darf nicht mehr ueber ihren Inhalt hinauswachsen wollen: In einer
+   Flex-Spalte mit fester Hoehe wuerde sie sonst gestaucht statt gerollt. */
+.lz-ctr, .lz-img { flex: 0 0 auto; }
+
+/* --- Image-Zeile: ein Stapel, kein Wort ------------------------------------
+   Ein Image ist eine Schichtung. Das hier ist noch KEIN Layer-Unterricht (der
+   kommt in einem spaeteren Modul), sondern nur das Sinnbild, das spaeter
+   wiedererkannt wird. */
+/* --- Die Image-Karte, kompakt -----------------------------------------------
+   Drei Zeilen statt Sinnbild-neben-Block: oben Marke und Kennung, darunter
+   die Etiketten, ganz unten die Umgebungsvariable. So passen zwei Karten
+   nebeneinander in die schmale Registry-Spalte, ohne dass etwas quetscht. */
+.lz-img {
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.28rem;
+  padding: var(--skr-space-2);
+  /* LUFT NACH UNTEN. Die Etiketten sitzen mittig auf der Kante, ragen also
+     etwa ihre halbe Hoehe (~0.45rem) in die Karte hinein. Bei 0.7rem Polster
+     blieb zwischen ihnen und dem ENV-Schild ein Viertelmillimeter – sie
+     beruehrten sich. 1.2rem lassen gut 0.75rem Luft. */
+  padding-bottom: 1.2rem;
+}
+.lz-img__kopf {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 0;
+}
+.lz-img__marke { display: flex; align-items: center; gap: 0.35rem; min-width: 0; }
+.lz-img__stapel {
+  flex: 0 0 auto;
+  width: 1.35rem; height: 1.35rem;
+  color: var(--lz-bindung, var(--skr-color-ink-muted));
+}
+.lz-img__stapel svg { width: 100%; height: 100%; }
+
+/* --- EIN Image, mehrere Tags ----------------------------------------------
+   Der Hash ist das Image. Die Tags sind Etiketten, die daran haengen – und
+   genau das muss man sehen: `1.0` und `latest` sind nicht zwei Images,
+   sondern zwei Zettel an demselben.
+
+   Die Form ist die der Seiten-Tags des Themes (`skr-badge`): rund
+   umrahmt mit Flaeche. Eingefaerbt wird in der Bindungsfarbe des Images, an
+   dem sie haengen – dann wandert in Szenario 2 sichtbar ein Zettel von einer
+   Karte zur anderen. */
+/* DIE ETIKETTEN SITZEN AUF DER KANTE. Sie haengen am Image, sie sind nicht
+   sein Inhalt – deshalb stehen sie nicht IM Kasten, sondern auf seinem unteren
+   Rand, rechts und mittig darueber. Das liest sich wie ein angehefteter
+   Zettel, und genau das sind sie.
+
+   Weil sie damit aus der Karte herausragen, darf die Tafel darueber NICHT
+   beschneiden – siehe die Regel bei `#lok-images` weiter unten. */
+.lz-img__tags {
+  position: absolute;
+  right: var(--skr-space-3);
+  bottom: 0;
+  transform: translateY(50%);
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.25rem;
+  z-index: 1;
+}
+/* --- Ein Etikett sieht aus wie ein Etikett ---------------------------------
+   Anhaengerform mit Spitze links und Oese: Das ist kein Schmuck, sondern die
+   Aussage der ganzen Karte – ein Tag HAENGT am Image, er ist nicht sein Name.
+   Wer die Form einmal gesehen hat, verwechselt Tag und Image nicht mehr.
+
+   GEZEICHNET WIRD MIT `clip-path`, nicht mit einem Bild: keine Datei, keine
+   hartkodierte Farbe, und die Form kippt mit dem Farbschema mit. Der Rand
+   kommt dabei NICHT von `border` – den wuerde der Beschnitt an der Spitze
+   abschneiden –, sondern von einem `drop-shadow` ohne Versatz: Der folgt der
+   beschnittenen Silhouette und umrandet damit auch die Spitze sauber. */
+.lz-tag.lz-tag {
+  position: relative;
+  font-size: 0.68em;
+  font-family: var(--skr-font-mono);
+  font-weight: var(--skr-fw-bold);
+  padding: 0.16em 0.7em 0.16em 1.55em;
+  border: 0;
+  border-radius: 0;
+  white-space: nowrap;
+  clip-path: polygon(0.85em 0, 100% 0, 100% 100%, 0.85em 100%, 0 50%);
+  background: color-mix(in srgb, var(--lz-bindung) 38%, var(--skr-color-bg));
+  color: var(--lz-bindung-ink, var(--skr-color-headline));
+  filter:
+    drop-shadow( 0.5px 0 0 color-mix(in srgb, var(--lz-bindung) 85%, transparent))
+    drop-shadow(-0.5px 0 0 color-mix(in srgb, var(--lz-bindung) 85%, transparent))
+    drop-shadow(0  0.5px 0 color-mix(in srgb, var(--lz-bindung) 85%, transparent))
+    drop-shadow(0 -0.5px 0 color-mix(in srgb, var(--lz-bindung) 85%, transparent))
+    drop-shadow(0 1px 2px color-mix(in srgb, var(--lz-bindung) 30%, transparent));
+}
+/* Die Oese, durch die die Schnur ginge. */
+.lz-tag.lz-tag::before {
+  content: "";
+  position: absolute;
+  left: 1em;
+  top: 50%;
+  width: 0.44em; height: 0.44em;
+  margin-top: -0.22em;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--lz-bindung) 88%, var(--skr-color-bg));
+}
+
+/* Ein Image ohne Tag ist nicht weg – es ist nur nicht mehr adressierbar. */
+.lz-img__ohne {
+  font-size: 0.68em;
+  font-style: italic;
+  color: var(--skr-color-ink-muted);
+}
+.lz-img__repo {
+  font-weight: var(--skr-fw-bold);
+  font-size: 0.88em;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+/* Die Kennung klein und in der Code-Schrift, oben rechts: Sie ist ein
+   Fingerabdruck, kein Name. */
+.lz-img__hash {
+  flex: 0 0 auto;
+  font-family: var(--skr-font-mono);
+  font-weight: var(--skr-fw-bold);
+  font-size: 0.68em;
+  color: var(--lz-bindung-ink, var(--skr-color-ink));
+}
+
+/* --- Die Bindung Container -> Image ---------------------------------------
+   Ein Container ist an das Image gebunden, aus dem er erzeugt wurde. Als Text
+   ("aus a1b2c3") stuende das da, aber man saehe es nicht – und in Szenario 2
+   haengt genau daran die Pointe: Der laufende Container zeigt nach dem `pull`
+   weiter auf das Image, das gerade seinen Namen verloren hat.
+
+   Deshalb traegt die Bindung eine FARBE, auf beiden Seiten dieselbe: im
+   Stapelbild, im Randstreifen und in der Plakette mit der Kennung. */
+.lz-bindung--0 { --lz-bindung: var(--skr-didaktikon-tone-4); --lz-bindung-ink: var(--skr-didaktikon-tone-4-ink); }
+.lz-bindung--1 { --lz-bindung: var(--skr-didaktikon-tone-3); --lz-bindung-ink: var(--skr-didaktikon-tone-3-ink); }
+
+.lz-img[class*="lz-bindung--"] { border-left: 4px solid var(--lz-bindung); }
+
+/* --- Der Container ist eine Ausprägung seines Images -----------------------
+   In UML ist das ein gestrichelter Pfeil mit offener Spitze und dem
+   Stereotyp «instanceof». Genau das steht hier: Der Pfeil zeigt aus dem
+   Container nach links zur Image-Tafel, in der Farbe des Images, an dem er
+   haengt. Damit ist die Bindung nicht nur gleichfarbig, sondern GERICHTET –
+   ein Container zeigt auf ein Image, nie umgekehrt. */
+/* Der Pfeil sitzt in der Gasse, auf Hoehe des Container-NAMENS – er geht von
+   `web-1` aus, nicht von der Zelle als Ganzem. Ueber ihm das Stereotyp, unter
+   ihm die Kennung des Images, auf das er zeigt: So steht beides AM PFEIL und
+   nicht im Container, und die Zuordnung haengt nicht allein an der Farbe. */
+/* DER PFEIL REICHT VON KASTEN ZU KASTEN. Er beginnt an der linken Kante der
+   Container-Zelle und endet in der Images-Tafel – dazwischen liegen die Gasse
+   und die Innenpolster beider Tafeln. Deshalb eine Rechnung statt einer Zahl:
+   Aendert sich die Gasse, wandert der Pfeil mit. Das Stueck extra sorgt dafuer,
+   dass die Spitze die Image-Karte BERUEHRT statt davor zu enden. */
+/* Lage UND Hoehe setzt das Skript: Der Pfeil spannt von der Namenszeile des
+   Containers bis zur Mitte seiner Image-Karte. Hier steht nur, wo er breit
+   ist – von der linken Kante der Zelle durch die Gasse bis in die Tafel. */
+.lz-ctr__pfeil {
+  position: absolute;
+  right: calc(100% + var(--skr-space-4));
+  width: calc(4rem + 2 * var(--skr-space-4));
+  top: 0.3rem;
+  height: 1.1rem;
+  color: var(--lz-bindung, var(--skr-color-border));
+}
+.lz-ctr__pfeil svg { width: 100%; height: 100%; display: block; }
+.lz-ctr__pfeil-text {
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: translateY(-115%);
+  font-family: var(--skr-font-mono);
+  font-size: 0.6em;
+  line-height: 1.2;
+  white-space: nowrap;
+  font-style: italic;
+  color: var(--skr-color-ink-muted);
+}
+/* Gestapelt zeigt der Pfeil ins Leere – die Aussage traegt dann der
+   Screenreader-Text, der ohnehin an der Zelle haengt. */
+@media (max-width: 48rem) {
+  .lz-ctr__pfeil { display: none; }
+}
+
+
+/* --- Der Status als Zeichen, nicht als Wort --------------------------------
+   Aus drei Metern liest niemand "angehalten". Das Wort bleibt fuer
+   Screenreader erhalten. */
+.lz-status { display: inline-flex; align-items: center; }
+.lz-status__zeichen {
+  display: inline-block;
+  width: 0.8rem; height: 0.8rem;
+  border-radius: 50%;
+  position: relative;
+}
+.lz-status--laeuft .lz-status__zeichen {
+  background: var(--skr-color-success);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--skr-color-success) 28%, transparent);
+  animation: lz-puls 2.4s ease-in-out infinite;
+}
+@keyframes lz-puls {
+  0%, 100% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--skr-color-success) 28%, transparent); }
+  50%      { box-shadow: 0 0 0 6px color-mix(in srgb, var(--skr-color-success) 12%, transparent); }
+}
+/* Pausenzeichen: zwei Balken. */
+.lz-status--angehalten .lz-status__zeichen { border-radius: 0; width: 0.72rem; }
+.lz-status--angehalten .lz-status__zeichen::before,
+.lz-status--angehalten .lz-status__zeichen::after {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 0.25rem;
+  border-radius: 1px;
+  background: var(--skr-color-ink-muted);
+}
+.lz-status--angehalten .lz-status__zeichen::before { left: 0; }
+.lz-status--angehalten .lz-status__zeichen::after  { right: 0; }
+
+
+/* --- Was in einem Container steckt ----------------------------------------
+   "laeuft" und "angehalten" sind Worte; was sie BEDEUTEN, sieht man erst an
+   dem, was drin ist. Drei Bilder im Container und ein Stecker an seinem Rand:
+
+     Dateisystem   ein Baum – angelegt beim Erzeugen, ueberlebt `stop`
+     Umgebung      Etiketten – dito, sie gehoert zur Festlegung
+     Prozesse      parallele Faeden – NUR waehrend er laeuft
+     Port          ein Stecker AM RAND – nur waehrend er laeuft ist er gesteckt
+
+   Beim `stop` erloeschen zwei von vieren, beim `rm` alle. Wer das sieht,
+   braucht die Erklaerung nicht mehr. */
+.lz-ctr {
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35rem;
+  padding: var(--skr-space-2);
+  /* Platz fuer den Stecker, der rechts heraussteht. Links braucht es nichts:
+     Der Pfeil liegt in der Gasse zwischen den Tafeln. */
+  margin-right: 0.85rem;
+}
+.lz-ctr__kopf { display: flex; justify-content: space-between; gap: 0.5rem; }
+/* Container-Marke wie die Image-Marke: Sinnbild plus Name, gleiche Groesse.
+   Beides sind Karten derselben Buehne und sollen sich auch so lesen. */
+.lz-ctr__marke { display: flex; align-items: center; gap: 0.35rem; min-width: 0; }
+.lz-ctr__sinnbild {
+  flex: 0 0 auto;
+  width: 1.35rem; height: 1.35rem;
+  color: var(--skr-color-ink-muted);
+}
+.lz-ctr__sinnbild svg { width: 100%; height: 100%; }
+.lz-zeile__name {
+  font-weight: var(--skr-fw-bold);
+  font-size: 0.88em;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.lz-zeile__links, .lz-zeile__rechts {
+  display: flex; flex-direction: column; gap: 0.15rem; min-width: 0;
+}
+.lz-zeile__rechts { align-items: flex-end; text-align: right; }
+
+.lz-ctr__innen {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.25rem;
+}
+.lz-teil {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.18rem 0.1rem 0.16rem;
+  border-radius: var(--skr-radius-sm, 3px);
+  border: 1px solid transparent;
+}
+.lz-teil svg { width: 100%; height: clamp(1.05rem, 3.2vh, 1.5rem); }
+/* Zwei Zeilen fest reserviert: "Umgebungsvariablen" passt bei breiter Buehne
+   in eine, bei schmaler in zwei – ohne Reservierung waere die Zelle mal so
+   und mal so hoch, und das Bild spraenge beim Umschalten. */
+.lz-teil__text {
+  font-size: 0.55em;
+  line-height: 1.2;
+  min-height: 2.4em;
+  text-align: center;
+  letter-spacing: 0.01em;
+  overflow-wrap: anywhere;
+}
+/* Nur die Umgebungsvariable traegt einen konkreten Wert. Er steht unter der
+   Beschriftung und ist leer bei den anderen beiden – der Platz bleibt
+   trotzdem reserviert, damit die drei Kacheln gleich hoch sind. */
+.lz-teil__wert {
+  min-height: 1.2em;
+  font-family: var(--skr-font-mono);
+  font-size: 0.52em;
+  line-height: 1.2;
+  text-align: center;
+  overflow-wrap: anywhere;
+  color: var(--skr-color-ink-muted);
+}
+.lz-teil.is-an .lz-teil__wert { color: var(--skr-color-ink); }
+
+/* --- Das ENV-Schild ---------------------------------------------------------
+   Wie ein Etikett gerahmt, aber zweigeteilt: links die Sorte (fett, auf
+   dunklerem Grund), rechts der Wert. Der Trennstrich hat die Farbe des
+   Rahmens, damit die beiden Haelften ein Schild bleiben und nicht zwei Dinge
+   werden. Es steht links unten in der Karte, unter Sinnbild und Marke. */
+.lz-img__env {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: stretch;
+  max-width: 100%;
+  border: 1px solid var(--skr-color-border);
+  border-radius: var(--skr-radius-sm, 3px);
+  overflow: hidden;
+  font-size: 0.6em;
+  line-height: 1.7;
+}
+.lz-img__env[hidden] { display: none; }
+.lz-img__env-schild {
+  flex: 0 0 auto;
+  padding: 0 0.45em;
+  font-weight: var(--skr-fw-bold);
+  letter-spacing: 0.04em;
+  color: var(--skr-color-ink);
+  background: color-mix(in srgb, var(--skr-color-ink) 14%, transparent);
+  border-right: 1px solid var(--skr-color-border);
+}
+.lz-img__env-wert {
+  padding: 0 0.5em;
+  font-family: var(--skr-font-mono);
+  color: var(--skr-color-ink-muted);
+  overflow-wrap: anywhere;
+}
+/* LAEUFT: alles lebt. Die Flaeche nimmt die Erfolgsfarbe auf und glimmt
+   leicht – ein laufender Container soll auf einen Blick warm wirken. */
+.lz-teil.is-an {
+  color: var(--skr-color-ink);
+  background: color-mix(in srgb, var(--skr-color-success) 12%, transparent);
+  border-color: color-mix(in srgb, var(--skr-color-success) 42%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--skr-color-success) 18%, transparent),
+              0 0 10px color-mix(in srgb, var(--skr-color-success) 22%, transparent);
+}
+/* ANGEHALTEN: alles kalt – auch Dateisystem und Umgebungsvariablen. Ein
+   angehaltener Container tut NICHTS, und das soll man sehen.
+
+   Dass er trotzdem nicht leer ist, sagt der INHALT: Der Baum behaelt seinen
+   dritten Ast, die Etiketten bleiben gezeichnet. Weg ist erst, was nach `rm`
+   weg ist – dann naemlich die ganze Zelle. So bleibt der Unterschied zwischen
+   `stop` und `rm` sichtbar, ohne dass "angehalten" faelschlich warm wirkt.
+
+   KEIN `opacity` – das zoege die Schrift unter die Kontrastschwelle; die
+   gestrichelte Kante und die gedaempfte Farbe tragen die Aussage. */
+.lz-teil.is-aus {
+  color: var(--skr-color-ink-muted);
+  background: transparent;
+  border-style: dashed;
+  border-color: var(--skr-color-border);
+}
+.lz-teil { transition: background var(--skr-transition), border-color var(--skr-transition), box-shadow var(--skr-transition); }
+@media (prefers-reduced-motion: reduce) { .lz-teil { transition: none; } }
+/* DAS HOCHFAHREN. Drei Pulse ueber den GANZEN Kasten, bevor er warm dasteht –
+   ein Container startet nicht in null Zeit, und das Bild soll das sagen. */
+.lz-ctr.is-startet {
+  animation: lz-hochfahren 700ms ease-in-out 3;
+}
+/* Breit und langsam. Ein schmaler, schneller Puls liest sich wie ein Flackern –
+   hier faehrt etwas HOCH, und das dauert. Der Ring waechst nach aussen, statt
+   nur die Kante zu faerben. */
+@keyframes lz-hochfahren {
+  0%, 100% { box-shadow: var(--skr-shadow-1); }
+  50% {
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--skr-color-success) 40%, transparent),
+                0 0 34px 6px color-mix(in srgb, var(--skr-color-success) 45%, transparent);
+  }
+}
+
+/* Kurzes Aufblinken, wenn im Dateisystem etwas dazugekommen ist. Ohne das
+   uebersieht man die Aenderung in einem Bild, das ohnehin schon voll ist. */
+.lz-teil.is-frisch { animation: lz-frisch 330ms ease-in-out 3; }
+@keyframes lz-frisch {
+  0%, 100% { border-color: color-mix(in srgb, var(--skr-color-success) 42%, transparent); }
+  50%      { border-color: var(--skr-color-accent);
+             background: color-mix(in srgb, var(--skr-color-accent) 20%, transparent); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lz-ctr.is-startet, .lz-teil.is-frisch { animation: none; }
+}
+
+/* Die Faeden laufen, solange Prozesse laufen. */
+.lz-teil.is-an .lz-faden { animation: lz-faden 1.8s linear infinite; }
+@keyframes lz-faden { to { stroke-dashoffset: -12; } }
+@media (prefers-reduced-motion: reduce) {
+  .lz-teil.is-an .lz-faden { animation: none; }
+  .lz-status--laeuft .lz-status__zeichen { animation: none; }
+}
+
+/* Der Stecker sitzt AM RAND des Containers und steht halb heraus – ein Port
+   ist die Stelle, an der die Aussenwelt andockt, nicht etwas im Inneren. */
+.lz-ctr__port {
+  position: absolute;
+  right: -0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.6rem; height: 1.6rem;
+  display: flex; align-items: center; justify-content: center;
+}
+.lz-ctr__port svg { width: 100%; height: 100%; }
+.lz-ctr__port.is-an  { color: var(--skr-color-success); filter: drop-shadow(0 0 4px color-mix(in srgb, var(--skr-color-success) 45%, transparent)); }
+.lz-ctr__port.is-aus { color: var(--skr-color-border); }
+.lz-ctr__portnr {
+  position: absolute;
+  right: -0.6rem; top: calc(50% + 0.85rem);
+  font-family: var(--skr-font-mono);
+  font-size: 0.56rem;
+  color: var(--skr-color-ink-muted);
+  white-space: nowrap;
+}
+
+/* --- Die Konsole ----------------------------------------------------------
+   Sie steht INNERHALB des Zielsystems, und das ist keine Kosmetik: Wer sie
+   daneben setzt, legt nahe, man tippe von aussen auf die Registry. Getippt
+   wird auf dem Zielsystem, und der Client dort spricht mit allem anderen. */
+#term, #term-2 {
+  gap: 0;
+  padding: var(--skr-space-3);
+  border-radius: var(--skr-radius);
+  background: var(--skr-code-bg);
+  font-family: var(--skr-font-mono);
+  font-size: clamp(0.66rem, 0.56rem + 0.3vw, 0.82rem);
+  line-height: 1.5;
+}
+.lz-cmd { display: flex; gap: 0.55em; color: var(--skr-color-ink-muted); }
+.lz-cmd__prompt { flex: 0 0 auto; }
+.lz-cmd__text { overflow-wrap: anywhere; }
+.lz-cmd.is-active { color: var(--skr-color-ink); }
+.lz-cmd.is-active .lz-cmd__prompt { color: var(--skr-color-accent); }
+.lz-cmd.is-active .lz-cmd__text { font-weight: var(--skr-fw-bold); }
+#term:empty::before, #term-2:empty::before {
+  content: "$";
+  color: var(--skr-color-accent);
+}
+/* Die Konsole ist die einzige Flaeche, die WIRKLICH waechst – und damit die
+   Hauptquelle des Ruckelns. `em` rechnet in ihrer eigenen Schriftgroesse:
+   Zeilenzahl x Zeilenhoehe (1.75) plus das Polster. Szenario 1 tippt 8
+   Befehle, Szenario 2 deren 5. */
+/* DIE KONSOLE IST BEWUSST KLEIN. Sie war die hoechste Flaeche der Buehne und
+   hat den Platz gekostet, den die Container brauchen – dabei ist sie die
+   EINZIGE, in der Rollen nichts kostet: Die aelteren Befehle bleiben lesbar,
+   man muss nur wischen. Ein halb abgeschnittener Container dagegen ist ein
+   Fehler im Bild.
+
+   Sichtbar sind damit rund vier bis fuenf Zeilen; der jeweils neue Befehl
+   wird von `ansEnde()` hereingerollt. */
+#term, #term-2 {
+  height: clamp(4.4rem, 15vh, 7.2rem);
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  #term, #term-2 { scroll-behavior: auto; }
+}
+
+/* Nebenbemerkung in der Erklaerspalte: leiser als die Aussage des Schritts.
+   Die Erklaerspalte liegt im selben Dokument, diese Regel greift also dort. */
+.lz-nb { font-size: 0.88em; color: var(--skr-color-ink-muted); }
+
+.lz-nur-sr {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap; border: 0;
+}

@@ -1,0 +1,34 @@
+/* Skriptorium: in der Schicht skr.theme – themes/atvantage/theme.css. */
+@layer skr.tokens, skr.base, skr.components, skr.theme, skr.extensions;
+@layer skr.theme {
+:root {
+  --skr-anthracite: var(--avd-anthracite);
+  --skr-ink: var(--avd-ink);
+  --skr-slate: var(--avd-slate);
+  --skr-orange: var(--avd-orange);
+  --skr-white: var(--avd-white);
+  --skr-blue-light: var(--avd-blue-light);
+  --skr-gray-card: var(--avd-gray-card);
+  --skr-gray-metanav: var(--avd-gray-metanav);
+  --skr-gray-footer: var(--avd-gray-footer);
+  --skr-red: var(--avd-red);
+
+  /* Überschriften im Inhalt: --hN-base setzt hN. Die Stufen der Marke (h2 34 px, h3
+     28 px) wären im Fließtext zu groß – im Inhalt gelten h2 28 px und h3 22 px. */
+  --h2-base: 28px;
+  --h3-base: 22px;
+
+  /* Der Akzent ist das Marken-Orange, kein abgeleiteter Grundton. Den Grundton des
+     Standard-Themes deshalb zurücknehmen – ohne ihn nimmt das Skriptorium den Akzent
+     aus der Marke. Ein abgeleitetes Theme darf wieder einen setzen. */
+  --skr-accent-base: initial;
+}
+
+/* Schrift im Akzent: Das Marken-Orange trägt als Schrift auf Weiß nur 3,2:1. Verweise und
+   Schrift im Akzent nehmen im hellen Schema ein dunkleres Orange (6,0:1 auf Weiß, 5,0:1 auf
+   den grauen Karten), im dunklen ein helleres (5,0:1 auf den getönten Flächen); Linien,
+   Flächen und Wortmarke bleiben im Marken-Orange. */
+:root {
+  --skr-color-accent-text: light-dark(#b33b00, #ff6a1f);
+}
+}

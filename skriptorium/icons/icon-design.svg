@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Design-Fundament">
+  <!-- Feste Farben im Asset, denn ein <img> erbt keine Tokens: die dunkle Fläche #33424d und der Akzent #00b4cc des Standard-Themes (Akzent im dunklen Schema, 4,1:1 auf der Fläche). -->
+  <rect width="32" height="32" fill="#33424d"/>
+  <!-- Drei Farbfelder = die Tokens, aus denen jede Unterlage ihre Farben nimmt. -->
+  <rect x="7"  y="9" width="6" height="14" rx="1.5" fill="#00b4cc"/>
+  <rect x="15" y="9" width="4" height="14" rx="1.5" fill="#ffffff"/>
+  <rect x="21" y="9" width="4" height="14" rx="1.5" fill="none" stroke="#ffffff" stroke-width="2"/>
+</svg>
