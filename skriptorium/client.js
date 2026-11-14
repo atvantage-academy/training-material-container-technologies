@@ -100,6 +100,14 @@
     var owner = null;     /* das Layout, dem der Teil vor `?` gehört: {read, apply} */
     var ready = false;    /* erst nach dem ersten `apply()` wird geschrieben */
     var applying = false;
+    var registrations = 0;      /* Zahl der Anmeldungen (Bausteine, Schlüssel, Layout) */
+    var lastRegistration = 0;   /* performance.now() der letzten Anmeldung */
+
+    /* Eine Anmeldung zählen – für `_registered()`. */
+    function noted() {
+      registrations += 1;
+      lastRegistration = (window.performance && window.performance.now) ? window.performance.now() : 0;
+    }
 
     function foreignFragment() {
       var block = document.getElementById("skr-page-info");
@@ -299,13 +307,14 @@
       }
     };
 
-    return {
+    var api = {
       /* Ein Baustein, der auf- und zugeht. `id` ist die ID des Elements, das in
          der Adresse steht - sie muss auf der Seite eindeutig sein. */
       openable: function (o) {
         if (!o || !o.id) { return; }
         o.defaultOpen = !!o.isOpen();
         disclosures.push(o);
+        noted();
         if (parts.indexOf(openPart) === -1) {
           openPart.standard = "";
           parts.push(openPart);
@@ -325,6 +334,7 @@
         try { value = t.read(); } catch (e) { value = ""; }
         t.standard = (value === null || value === undefined) ? "" : String(value);
         parts.push(t);
+        noted();
         backfill(t);
       },
       /* Das Layout, dem der Teil des Fragments vor `?` gehört (`#/3?…`). Höchstens
@@ -337,6 +347,7 @@
           return;
         }
         owner = o;
+        noted();
         applyOwner();
       },
       /* Nach jeder Bedienung aufrufen - Bausteine wie Layouts. */
@@ -357,6 +368,26 @@
       /* Ab hier darf geschrieben werden (nach dem ersten Herstellen). */
       ready: function () { ready = true; }
     };
+
+    /* INTERN, FÜR DIE VERWEISPRÜFUNG (checks/link-states.mjs), NICHT TEIL DER CLIENT-API –
+       darum nicht aufzählbar. Was die Seite bis jetzt angemeldet hat: Schlüssel, Kennungen
+       in `open`, ob ein Layout den Teil vor `?` führt, die Zahl der Anmeldungen und wie
+       lange die letzte her ist (ms). Daran erkennt die Prüfung, wann die Seite ruhig ist. */
+    Object.defineProperty(api, "_registered", {
+      enumerable: false,
+      value: function () {
+        var now = (window.performance && window.performance.now) ? window.performance.now() : 0;
+        return {
+          ready: ready,
+          layout: !!owner,
+          keys: parts.map(function (t) { return t.key; }),
+          open: disclosures.map(function (o) { return o.id; }),
+          count: registrations,
+          since: now - lastRegistration
+        };
+      }
+    });
+    return api;
   })();
 
   /* Am Namensraum `skr` (skr.js): für Seiten und Extensions, unabhängig von client_api. */
