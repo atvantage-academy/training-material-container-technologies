@@ -243,31 +243,31 @@
     emit("step", ctx);
   }
 
-  /* Die aktuelle Schrittnummer steht im Fragment (#/3) – reload-fest und
-     verlinkbar. `replaceState` löst kein `hashchange` aus; der QR-Code der
-     Seitenadresse (theme/academy/atvantage.js) hört deshalb zusätzlich auf das
-     eigene Ereignis `skr-urlchange` und zeigt so stets auf den Schritt,
-     der gerade an der Wand steht. */
+  /* Der aktuelle Schritt steht im Fragment (#/3) – reload-fest und verlinkbar.
+     Die Adresse schreibt `skr.state`: Die Simulation meldet sich dort als Layout an
+     (start()) und liefert mit `path()` den Teil zwischen `#/` und `?`; dahinter
+     steht der Zustand der Bausteine auf der Bühne (#/3?open=loesung). `skr.state`
+     sendet danach `skr-urlchange` – darauf hört der QR-Code, damit er stets auf den
+     Schritt zeigt, der gerade an der Wand steht. */
   function hash() {
-    var h;
-    if (overview) h = "#/overview";
-    else if (several() && scenario().id) h = "#/" + scenario().id + "/" + (index + 1);
-    else h = "#/" + (index + 1);
-    if (location.hash !== h) {
-      history.replaceState(null, "", h);
-      window.dispatchEvent(new CustomEvent("skr-urlchange"));
-    }
+    window.skr.state.update();
   }
 
-  /* Erlaubte Formen: `#/3` (eine Simulation ohne Szenarien), `#/«id»/3` und
-     `#/overview`. Die Kennung statt einer Nummer, damit ein Verweis aus dem
+  function path() {
+    if (overview) return "overview";
+    if (several() && scenario().id) return scenario().id + "/" + (index + 1);
+    return String(index + 1);
+  }
+
+  /* Erlaubte Formen: `3` (eine Simulation ohne Szenarien), `«id»/3` und
+     `overview` – der Teil der Adresse zwischen `#/` und `?`, wie `skr.state` ihn
+     hereinreicht. Die Kennung statt einer Nummer, damit ein Verweis aus dem
      Regiebuch das Umsortieren der Szenarien überlebt. */
-  function fromHash() {
-    var h = location.hash || "";
-    if (/^#\/overview\/?$/.test(h)) {
+  function fromPath(p) {
+    if (/^overview\/?$/.test(p)) {
       if (several()) { overview = true; return; }
     }
-    var m = /^#\/([A-Za-z0-9_-]+)\/(\d+)$/.exec(h);
+    var m = /^([A-Za-z0-9_-]+)\/(\d+)$/.exec(p);
     if (m) {
       var hit = -1;
       for (var i = 0; i < scenarios.length; i++) if (scenarios[i].id === m[1]) hit = i;
@@ -278,11 +278,26 @@
       }
       return;
     }
-    m = /^#\/(\d+)$/.exec(h);
+    m = /^(\d+)$/.exec(p);
     if (m) {
       overview = false;
       index = limit(parseInt(m[1], 10) - 1);
     }
+  }
+
+  /* Den Teil aus der Adresse herstellen – beim Anmelden, nach dem Laden und bei
+     jedem `hashchange` (Vor/Zurück, ein Verweis auf derselben Seite). Beim Anmelden
+     zeichnet start() selbst; danach wird nur bei einem Wechsel neu gezeichnet. */
+  var shown = false;
+  function fromAddress(p) {
+    var previous = index, wasOverview = overview, wasScenario = scIndex;
+    fromPath(p);
+    if (!shown) return;
+    if (previous === index && wasOverview === overview && wasScenario === scIndex) return;
+    pause();
+    // Nur innerhalb desselben Szenarios hat ein Wechsel eine Richtung.
+    var same = !wasOverview && !overview && wasScenario === scIndex;
+    draw(same ? previous : index, same ? (index > previous ? 1 : -1) : 0);
   }
 
   function limit(n) {
@@ -838,7 +853,7 @@
     buildTabs();
     buildIntro();
     // Mit mehreren Szenarien beginnt die Simulation auf der Übersicht: erst die
-    // Landkarte, dann der Weg. Ein Fragment in der Adresse sticht das (ausHash).
+    // Landkarte, dann der Weg. Ein Fragment in der Adresse sticht das (fromPath).
     if (several()) overview = true;
 
     if (el.reset) el.reset.addEventListener("click", reset);
@@ -893,18 +908,25 @@
     // mit, sonst steht die Bühne zu hoch oder wieder darunter.
     window.addEventListener("resize", captionSlot);
 
-    window.addEventListener("hashchange", function () {
-      var previous = index;
-      fromHash();
-      if (previous !== index) { pause(); draw(previous, index > previous ? 1 : -1); }
-    });
-
-    fromHash();
     // `?capture` in der Adresse startet direkt im Aufzeichnungs-Zustand – ohne
     // Hinweis-Einblendung, die sonst mit im Bild wäre.
     if (/[?&]capture(=|&|$)/.test(location.search)) setCapture(true, false);
     playButton();
+
+    /* ERST HIER ANMELDEN, nicht in `skr.ready`: Das liefe vor diesem `start()` (skr.js
+       lädt vor diesem Skript und hört zuerst auf `DOMContentLoaded`), und `skr.state`
+       stellte den Schritt her, bevor es die Bühne gibt. `skr.state` gibt es hier sicher –
+       der Kern (`client.js`, defer) läuft vor `DOMContentLoaded`. Die Anmeldung stellt
+       den Teil aus der Adresse sofort her; `hashchange` übernimmt danach `skr.state`. */
+    window.skr.state.layout({ read: path, apply: fromAddress });
     draw(index, 0);
+    shown = true;
+    // Der Kern stellt im selben `DOMContentLoaded` her und schreibt bis zum nächsten Takt
+    // nichts – das `update()` der ersten Zeichnung verfiele, und `#/1` (oder `#/overview`)
+    // stünde erst nach der ersten Bedienung da. Nur ohne Fragment nachholen: `update()`
+    // schreibt allein die Werte angemeldeter Bausteine, und ein Baustein, der sich später
+    // anmeldet, fände seinen Wert sonst nicht mehr in der Adresse.
+    if (!location.hash) window.setTimeout(hash, 0);
   }
 
   /* --- Öffentliche Schnittstelle ---------------------------------------------- */

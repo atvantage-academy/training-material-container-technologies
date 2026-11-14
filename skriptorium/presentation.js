@@ -10,7 +10,9 @@
    2) BLÄTTERN: Alle Folien liegen nebeneinander auf einer Schiene, die um
       n × 100 % verschoben wird – die alte Folie wandert nach links aus dem Bild.
    3) BEDIENEN: ← → (auch Leertaste, Bild ↑/↓, Pos1/Ende), Schaltflächen,
-      Wischgesten; F schaltet Vollbild. Die Folie steht im Hash (#/3).
+      Wischgesten; F schaltet Vollbild. Die Folie steht im Hash (#/3) – geschrieben
+      von `skr.state` (client.js), bei dem sich die Präsentation als Layout anmeldet;
+      dahinter darf der Zustand der Bausteine stehen (#/3?open=…).
 
    Ohne dieses Skript bleibt die Seite ein normales, scrollbares Dokument – die
    CSS-Regeln für die Bühne hängen an `data-ready`, das erst hier gesetzt wird.
@@ -121,17 +123,10 @@
     } else {
       root.removeAttribute("data-at-title");
     }
-    var hash = "#/" + (index + 1);
-    if (location.hash !== hash) {
-      history.replaceState(null, "", hash);
-      /* `replaceState` löst KEIN `hashchange` aus – wer auf die Adresse angewiesen
-         ist, erfährt den Folienwechsel sonst nie. Das betrifft den QR-Code der
-         Seitenadresse (skriptorium/client.js): Er soll auf die Folie zeigen,
-         die gerade an der Wand steht, nicht auf die, mit der begonnen wurde.
-         Bewusst ein EIGENES Ereignis und kein nachgebautes `hashchange`: Letzteres
-         liefe in den Zuhörer weiter unten und damit zurück in `render()`. */
-      window.dispatchEvent(new CustomEvent("skr-urlchange"));
-    }
+    /* Die Adresse schreibt `skr.state`: Es setzt die Folie und den Zustand der
+       Bausteine zusammen und meldet den Wechsel mit `skr-urlchange` – darauf hört
+       der QR-Code, der auf die Folie zeigen soll, die gerade an der Wand steht. */
+    window.skr.state.update();
   }
 
   function go(to) {
@@ -168,21 +163,20 @@
   function dragThreshold() { return Math.min(80, (deck.clientWidth || 1) * 0.12); }
   function swipeThreshold() { return Math.min(50, (deck.clientWidth || 1) * 0.06); }
 
-  function fromHash() {
-    var m = /^#\/(\d+)$/.exec(location.hash || "");
-    if (!m) return;
-    var n = parseInt(m[1], 10) - 1;
-    if (!isNaN(n)) index = Math.max(0, Math.min(slides.length - 1, n));
+  /* Die Folie aus der Adresse: Den Teil `3` aus `#/3?…` reicht `skr.state` herein –
+     gleich beim Anmelden, beim Aufbau der Seite und bei jedem `hashchange`. */
+  function fromPath(path) {
+    if (!/^\d+$/.test(path)) return;
+    var n = Math.max(0, Math.min(slides.length - 1, parseInt(path, 10) - 1));
+    if (n !== index) { index = n; render(); }
   }
 
-  fromHash();
+  window.skr.state.layout({
+    read: function () { return String(index + 1); },
+    apply: fromPath
+  });
   render();
   ready();
-  window.addEventListener("hashchange", function () {
-    var before = index;
-    fromHash();
-    if (before !== index) render();
-  });
 
   /* --- 3) Bedienung --------------------------------------------------------- */
   if (prevBtn) prevBtn.addEventListener("click", function () { go(index - 1); });
@@ -202,6 +196,9 @@
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     var t = e.target;
     if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+    // Ein offenes Panel (`skr-reveal`) liegt über der Folie: Die Tasten gehören
+    // ihm, die Folie dahinter bleibt stehen.
+    if (deck.querySelector("details.skr-reveal[open]")) return;
 
     switch (e.key) {
       case "ArrowRight":
@@ -307,6 +304,7 @@
   // Zeiger wieder über die Folie bewegte.
   document.addEventListener("wheel", function (e) {
     if (e.ctrlKey) return;                                   // Pinch-Zoom
+    if (deck.querySelector("details.skr-reveal[open]")) return; // Panel darüber
     var dx = e.deltaX, dy = e.deltaY;
     if (e.deltaMode === 1) { dx *= 16; dy *= 16; }                                  // Zeilen
     else if (e.deltaMode === 2) { dx *= deck.clientWidth; dy *= deck.clientHeight; } // Seiten
@@ -381,6 +379,7 @@
 
   document.addEventListener("touchstart", function (e) {
     if (e.touches.length !== 1) { if (tActive) { dragOff(); render(); } return; }
+    if (deck.querySelector("details.skr-reveal[open]")) return;   // Panel darüber
     tActive = true; tAxis = 0; tDelta = 0;
     tStartX = e.touches[0].clientX;
     tStartY = e.touches[0].clientY;

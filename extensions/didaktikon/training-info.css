@@ -1,0 +1,15 @@
+/* Skriptorium: in der Schicht skr.extensions – extensions/didaktikon/training-info.css. */
+@layer skr.tokens, skr.base, skr.components, skr.theme, skr.extensions;
+@layer skr.extensions {
+.skr-didaktikon-duration {
+  display: inline-block;
+  margin: var(--skr-space-4) 0 0;
+  padding: .4rem 1.1rem;
+  border: 2px solid var(--skr-color-accent);
+  border-radius: 999px;
+  color: var(--skr-color-accent-text);
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+}

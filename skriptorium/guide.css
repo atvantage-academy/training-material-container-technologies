@@ -228,7 +228,7 @@
    erlauben. Die Grid-Spalte ist schon korrekt (`minmax(0, 1fr)` + `min-width: 0`) –
    ueberlaufen kann trotzdem eine Tabelle mit `width: 100%`, weil sie nicht unter ihre
    MIN-CONTENT-Breite geht: Ein langer Bezeichner in einer Zelle
-   (`search.scope.includes`) setzt eine Untergrenze, und die Tabelle legt sich
+   (`indexing.search_scope.includes`) setzt eine Untergrenze, und die Tabelle legt sich
    sichtbar ueber die Sidebar.
    Der Hebel ist `overflow-wrap: anywhere` – und zwar genau dort: Nur dieser Wert
    senkt laut Spezifikation die min-content-Breite, `break-word` tut es NICHT. Deshalb

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 80" role="img" aria-label="ATVANTAGE">
+  <rect width="128" height="80" fill="#ffffff"/>
+  <rect width="128" height="5" fill="#f4f4f4"/>
+  <rect x="8" y="9" width="30" height="5" rx="1" fill="#ff5401"/>
+  <rect x="76" y="10" width="12" height="3" rx="1.5" fill="#343e3f"/>
+  <rect x="92" y="10" width="12" height="3" rx="1.5" fill="#343e3f"/>
+  <rect x="108" y="10" width="12" height="3" rx="1.5" fill="#343e3f"/>
+  <rect y="19" width="128" height="20" fill="#303e4f"/>
+  <rect x="8" y="25" width="54" height="5" rx="1" fill="#ffffff"/>
+  <rect x="8" y="33" width="22" height="2" fill="#ff5401"/>
+  <rect x="8" y="46" width="40" height="4" rx="1" fill="#1a2627"/>
+  <rect x="8" y="55" width="112" height="2.5" rx="1.25" fill="#909090"/>
+  <rect x="8" y="61" width="104" height="2.5" rx="1.25" fill="#909090"/>
+  <rect x="8" y="67" width="36" height="2.5" rx="1.25" fill="#b33b00"/>
+  <rect x="48" y="67" width="60" height="2.5" rx="1.25" fill="#909090"/>
+</svg>

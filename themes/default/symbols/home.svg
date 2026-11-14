@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="#0f6e7a" role="img" aria-label="Startseite">
+  <!-- Die Füllfarbe gilt nur, wenn die Datei für sich geöffnet wird: der Grundton des Akzents im Standard-Theme. Im Menü zeigt der Kern das Zeichen als Maske in der Farbe des Eintrags (components.css), ohne Maskenunterstützung gar nicht. -->
+  <!-- Haus mit Satteldach und Tür – der Weg zur Startseite. -->
+  <path d="M2.34 10.75L12 2.16L21.66 10.75A1 1 0 0 1 20.34 12.25L12 4.84L3.66 12.25A1 1 0 0 1 2.34 10.75Z"/>
+  <path d="M6 10L6 19L18 19L18 10L20 10L20 21L4 21L4 10L6 10Z"/>
+  <path d="M10.5 14H13.5A0.5 0.5 0 0 1 14 14.5V20A0.5 0.5 0 0 1 13.5 20.5H10.5A0.5 0.5 0 0 1 10 20V14.5A0.5 0.5 0 0 1 10.5 14Z"/>
+</svg>

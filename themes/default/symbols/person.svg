@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="#0f6e7a" role="img" aria-label="Person">
+  <!-- Die Füllfarbe gilt nur, wenn die Datei für sich geöffnet wird: der Grundton des Akzents im Standard-Theme. Im Menü zeigt der Kern das Zeichen als Maske in der Farbe des Eintrags (components.css), ohne Maskenunterstützung gar nicht. -->
+  <!-- Kopf und Schultern im Umriss – eine Person allgemein, kein Bildnis. -->
+  <path d="M7.5 7.5A4.5 4.5 0 1 1 16.5 7.5A4.5 4.5 0 1 1 7.5 7.5ZM9.5 7.5A2.5 2.5 0 1 0 14.5 7.5A2.5 2.5 0 1 0 9.5 7.5Z"/>
+  <path d="M4 21A8 8 0 0 1 20 21A1 1 0 0 1 18 21A6 6 0 0 0 6 21A1 1 0 0 1 4 21Z"/>
+</svg>

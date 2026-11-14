@@ -6,8 +6,10 @@
    spezifische Logik gehört in das Skript der jeweiligen Unterlage.
 
    Aktuell enthalten:
-     - Theme-Umschaltung  (Elemente mit [data-skr-theme-toggle])
+     - Farbschema-Umschaltung (Elemente mit [data-skr-scheme-toggle])
+     - Themes zur Wahl     (Menü [data-skr-themes], Einträge [data-skr-theme-choice])
      - "Kopieren"-Buttons an Code-Blöcken (<pre>)
+     - Verkleinerte Bilder vergrößern (Bilder im Inhalt, `skr-zoom`)
      - Mobiles Aufklappen der Header-Navigation ([data-skr-nav-toggle])
      - "Markdown kopieren" auf Übungsseiten ([data-skr-copy-md])
      - QR-Code der Seiten-URL ([data-skr-qr])
@@ -79,14 +81,23 @@
      leer (`open=`) bedeutet dann "alles zu", sonst ließe sich ein geschlossener
      Standard-Aufklapper nicht ausdrücken.
 
-     AUF LAYOUTS MIT EIGENEN FRAGMENTEN HÄLT DIESE STELLE STILL. Meldet ein Layout
-     Fragmente an, die erst im Browser entstehen (`fragments`, etwa `#/3`
-     der Präsentation), gehört das Fragment ihm, und ein zweiter Schreiber
-     zerschösse die Folien- oder Schrittnummer.
+     LAYOUTS MIT EIGENEN FRAGMENTEN DELEGIEREN IHREN TEIL. Meldet ein Layout
+     Fragmente an, die erst im Browser entstehen (`fragments`, etwa `#/3` der
+     Präsentation), schreibt es sie nicht selbst, sondern meldet sich hier an:
+
+         skr.state.layout({ read, apply })
+             - `read` liefert den Teil des Layouts (`3`), `apply` stellt ihn her.
+
+     Dann gehört ihm der Teil zwischen `#/` und `?` - an der Stelle, an der sonst
+     die Sprungmarke steht -, den Bausteinen der Teil ab `?`: `#/3?open=a,b`. So
+     bleibt es bei EINEM Schreiber, und keiner zerschießt dem anderen seinen Teil.
+     Ein Layout, das Fragmente anmeldet, ohne sich anzumelden, behält das Fragment
+     für sich allein: Dort hält diese Stelle still.
      ========================================================================== */
   var State = (function () {
     var parts = [];        /* {key, read, apply, standard} */
     var disclosures = [];    /* {id, exclusive, isOpen, set} */
+    var owner = null;     /* das Layout, dem der Teil vor `?` gehört: {read, apply} */
     var ready = false;    /* erst nach dem ersten `apply()` wird geschrieben */
     var applying = false;
 
@@ -96,12 +107,29 @@
       try { return ((JSON.parse(block.textContent) || {}).runtimeFragments || []).length > 0; } catch (e) { return false; }
     }
 
+    /* Was das Layout liefert, steht genau so in der Adresse; leer heißt: kein Teil. */
+    function ownerPath() {
+      var value;
+      try { value = owner.read(); } catch (e) { return ""; }
+      return (value === null || value === undefined) ? "" : String(value);
+    }
+
+    /* Den Teil des Layouts herstellen - VOR den Bausteinen, denn die stehen womöglich
+       auf einer Folie oder in einem Schritt, den erst das Layout herstellt. */
+    function applyOwner() {
+      if (!owner) { return; }
+      var path = address().path;
+      if (!path) { return; }
+      try { owner.apply(path); } catch (e) { /* ein Layout darf scheitern */ }
+    }
+
     /* Aus dem Fragment werden Sprungmarke und Werte. Alles, was nicht mit `/`
-       beginnt, ist eine gewöhnliche Sprungmarke und hat keine Werte. */
+       beginnt, ist eine gewöhnliche Sprungmarke und hat keine Werte. Hat sich ein
+       Layout angemeldet, ist der Teil vor `?` seiner (`path`) und keine Sprungmarke. */
     function address() {
       var raw = location.hash || "";
       if (raw.charAt(0) === "#") { raw = raw.slice(1); }
-      if (raw.charAt(0) !== "/") { return { anchor: decode(raw), values: {} }; }
+      if (raw.charAt(0) !== "/") { return { anchor: owner ? "" : decode(raw), path: "", values: {} }; }
       raw = raw.slice(1);
       var sep = raw.indexOf("?");
       var anchor = decode(sep === -1 ? raw : raw.slice(0, sep));
@@ -114,7 +142,7 @@
           values[k] = decode(i === -1 ? "" : pair.slice(i + 1));
         });
       }
-      return { anchor: anchor, values: values };
+      return owner ? { anchor: "", path: anchor, values: values } : { anchor: anchor, path: "", values: values };
     }
 
     /* Eine von Hand getippte Adresse darf kaputt sein - sie führt dann in den
@@ -126,6 +154,12 @@
     function encode(text) {
       /* Kommas bleiben lesbar: `open=a,b` ist eine Liste, keine Kodierung. */
       return encodeURIComponent(text).replace(/%2C/g, ",");
+    }
+
+    /* Der Teil des Layouts behält seine Schrägstriche: `schritte/2` steht so in der
+       Adresse, wie das Layout es unter `fragments` anmeldet. */
+    function encodePath(text) {
+      return encode(text).replace(/%2F/g, "/");
     }
 
     function valuesNow() {
@@ -146,15 +180,17 @@
          `update()` in dem Moment, in dem die halbe Seite hergestellt ist. Wer
          dann schreibt, ueberschreibt die Adresse mit einem Zwischenstand - und
          der Rest der Liste ist danach weg. */
-      if (!ready || applying || foreignFragment()) { return; }
+      if (!ready || applying || (!owner && foreignFragment())) { return; }
       var now = address();
       var values = valuesNow();
       var key = Object.keys(values);
+      /* Mit Layout steht vorn sein Teil, sonst die Sprungmarke. */
+      var head = owner ? encodePath(ownerPath()) : encode(now.anchor);
       var fresh;
       if (!key.length) {
-        fresh = now.anchor ? "#" + encode(now.anchor) : "";
+        fresh = !head ? "" : owner ? "#/" + head : "#" + head;
       } else {
-        fresh = "#/" + encode(now.anchor) + "?" + key.map(function (k) {
+        fresh = "#/" + head + "?" + key.map(function (k) {
           return encode(k) + "=" + encode(values[k]);
         }).join("&");
       }
@@ -166,12 +202,27 @@
       window.dispatchEvent(new CustomEvent("skr-urlchange"));
     }
 
+    /* NUR DER TEIL DES LAYOUTS, der Rest ab `?` bleibt, wie er dasteht: Ein Baustein,
+       der sich erst später anmeldet, fände seinen Wert sonst nicht mehr vor. */
+    function writeOwner() {
+      if (!owner || !ready) { return; }
+      var raw = location.hash || "";
+      var rest = raw.charAt(1) === "/" ? raw.replace(/^[^?]*/, "") : "";
+      var head = ownerPath();
+      var fresh = head || rest ? "#/" + encodePath(head) + rest : "";
+      if (fresh === raw) { return; }
+      if (!window.history || !window.history.replaceState) { return; }
+      window.history.replaceState(null, "", fresh || (location.pathname + location.search));
+      window.dispatchEvent(new CustomEvent("skr-urlchange"));
+    }
+
     /* NUR SCHLÜSSEL, DIE DASTEHEN, werden angewendet. Ein fehlender Schlüssel ist
        keine Aussage "alles zu", sondern gar keine - sonst schlösse der erste
        Seitenaufruf jeden Abschnitt, den der Autor offen geschrieben hat. */
     function apply() {
       applying = true;
       window.setTimeout(function () { applying = false; }, 0);
+      applyOwner();
       var values = address().values;
       parts.forEach(function (t) {
         if (!Object.prototype.hasOwnProperty.call(values, t.key)) { return; }
@@ -184,7 +235,7 @@
        Zustand aufgeht. Deshalb erst anwenden, dann springen. */
     function jump() {
       var raw = location.hash || "";
-      if (raw.slice(0, 2) !== "#/") { return; }
+      if (raw.slice(0, 2) !== "#/" || owner) { return; }
       var anchor = address().anchor;
       if (!anchor) { return; }
       var target = document.getElementById(anchor);
@@ -276,14 +327,33 @@
         parts.push(t);
         backfill(t);
       },
-      /* Nach jeder Bedienung aufrufen. */
+      /* Das Layout, dem der Teil des Fragments vor `?` gehört (`#/3?…`). Höchstens
+         eines je Seite. Sein Teil wird sofort hergestellt - das Layout soll nicht
+         erst mit der ersten Folie aufbauen und dann springen. */
+      layout: function (o) {
+        if (!o || typeof o.read !== "function" || typeof o.apply !== "function") { return; }
+        if (owner) {
+          if (window.console) { window.console.warn("skr.state.layout: an dieser Seite hat sich schon ein Layout angemeldet"); }
+          return;
+        }
+        owner = o;
+        applyOwner();
+      },
+      /* Nach jeder Bedienung aufrufen - Bausteine wie Layouts. */
       update: writeState,
       /* Die Sprungmarke der Adresse - für Bausteine, die tiefe Verweise auf
-         Inhalte in sich selbst auflösen müssen. */
+         Inhalte in sich selbst auflösen müssen. Gehört der Teil einem Layout, leer. */
       anchor: function () { return address().anchor; },
       /* Zustand aus der Adresse herstellen. Ruft das Theme selbst auf: einmal nach
          dem Aufbau der Seite und bei jedem `hashchange`. */
-      restore: function () { apply(); jump(); },
+      restore: function () {
+        apply();
+        jump();
+        /* MIT LAYOUT STEHT SEIN TEIL IMMER DA (`#/1` schon beim Laden, `#/99` wird
+           zur letzten Folie). Erst nach dem Herstellen: Bis dahin ist nicht klar,
+           wo das Layout steht. */
+        if (owner) { window.setTimeout(writeOwner, 0); }
+      },
       /* Ab hier darf geschrieben werden (nach dem ersten Herstellen). */
       ready: function () { ready = true; }
     };
@@ -344,7 +414,7 @@
     return !!(carrier && carrier.getAttribute("data-skr-state") === "off");
   }
 
-  /* --- Theme-Umschaltung -------------------------------------------------- */
+  /* --- Farbschema-Umschaltung ---------------------------------------------- */
   /* EIN WEG ZUM ABLAGEFACH - fuer alle drei Kopierknoepfe.
 
      `navigator.clipboard` gibt es NUR im sicheren Kontext. Eine aus dem
@@ -413,32 +483,32 @@
      sie trotzdem noch einmal gelesen: für Seiten ohne dieses Include, etwa die
      eigenständigen Vorlagen. */
   /* Der Weg, den Schalter UND Client-API nehmen: `choose("dark" | "light" | null)`,
-     null heisst Systemeinstellung. Gesetzt von `initThemeToggle`. */
+     null heisst Systemeinstellung. Gesetzt von `initSchemeToggle`. */
   var ColorScheme = { choose: null };
 
-  function initThemeToggle() {
+  function initSchemeToggle() {
     var root = document.documentElement;
     var system = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
     function current() {
-      var chosen = root.getAttribute("data-skr-theme");
+      var chosen = root.getAttribute("data-skr-scheme");
       if (chosen === "dark" || chosen === "light") return chosen;
       return system && system.matches ? "dark" : "light";
     }
-    var buttons = document.querySelectorAll("[data-skr-theme-toggle]");
+    var buttons = document.querySelectorAll("[data-skr-scheme-toggle]");
     function sync() {
       var dark = current() === "dark" ? "true" : "false";
       buttons.forEach(function (btn) { btn.setAttribute("aria-pressed", dark); });
     }
     try {
-      var saved = localStorage.getItem("skr-theme");
-      if (saved) root.setAttribute("data-skr-theme", saved);
+      var saved = localStorage.getItem("skr-scheme");
+      if (saved === "dark" || saved === "light") root.setAttribute("data-skr-scheme", saved);
     } catch (e) { /* egal */ }
     function choose(choice) {
-      if (choice) root.setAttribute("data-skr-theme", choice);
-      else root.removeAttribute("data-skr-theme");
+      if (choice) root.setAttribute("data-skr-scheme", choice);
+      else root.removeAttribute("data-skr-scheme");
       try {
-        if (choice) localStorage.setItem("skr-theme", choice);
-        else localStorage.removeItem("skr-theme");
+        if (choice) localStorage.setItem("skr-scheme", choice);
+        else localStorage.removeItem("skr-scheme");
       } catch (e) { /* egal */ }
       sync();
     }
@@ -449,6 +519,114 @@
       });
     });
     if (system && system.addEventListener) system.addEventListener("change", sync);
+    sync();
+  }
+
+  /* --- Themes zur Wahl -----------------------------------------------------
+     Bietet die Unterlage mehrere Themes an, nennt sie `<meta name="skr-themes">` (das erste
+     ist der Standard). Das gewählte steht als `data-skr-theme` am <html> – ohne Attribut gilt
+     das erste – und im Browser unter `skr-theme`; skr.js setzt es vor dem ersten Malen. Die
+     Stylesheets jedes Themes gelten nur unter ihm, die Teile seiner Marke blendet themes.css
+     ein und aus – umgeschaltet wird allein am Attribut.
+
+     DER WEG, den Menü UND Client-API nehmen: `ThemeChoice.choose(name)`. Ein Wechsel meldet
+     sich mit `skr-themechange` am window; das Theme liest `skr.theme()`. */
+  var ThemeChoice = { choose: null };
+
+  function themeNames() {
+    var m = document.querySelector('meta[name="skr-themes"]');
+    return m ? (m.getAttribute("content") || "").split(/\s+/).filter(Boolean) : [];
+  }
+
+  function currentTheme() {
+    var names = themeNames();
+    var set = document.documentElement.getAttribute("data-skr-theme");
+    return names.indexOf(set) >= 0 ? set : names[0];
+  }
+
+  /* FARBFELDER: Akzent und Grund jedes Themes in beiden Farbschemata, gemessen an einer
+     unsichtbaren Probe – das Attribut wechselt nur für die Messung, in derselben Aufgabe, und
+     ist danach wie zuvor; gemalt wird dazwischen nicht. */
+  function measureSwatches(menu) {
+    var root = document.documentElement;
+    var theme = root.getAttribute("data-skr-theme");
+    var scheme = root.getAttribute("data-skr-scheme");
+    var probe = document.createElement("span");
+    probe.setAttribute("aria-hidden", "true");
+    probe.style.cssText = "position:absolute;width:0;height:0;overflow:hidden;visibility:hidden;transition:none;" +
+      "color:var(--skr-color-accent);background-color:var(--skr-color-bg)";
+    document.body.appendChild(probe);
+    try {
+      menu.querySelectorAll("[data-skr-theme-choice]").forEach(function (item) {
+        root.setAttribute("data-skr-theme", item.getAttribute("data-skr-theme-choice"));
+        item.querySelectorAll("[data-skr-swatch]").forEach(function (swatch) {
+          root.setAttribute("data-skr-scheme", swatch.getAttribute("data-skr-swatch"));
+          var c = getComputedStyle(probe);
+          swatch.style.backgroundColor = c.color;
+          swatch.style.setProperty("--skr-swatch-ground", c.backgroundColor);
+        });
+      });
+    } finally {
+      if (theme === null) root.removeAttribute("data-skr-theme"); else root.setAttribute("data-skr-theme", theme);
+      if (scheme === null) root.removeAttribute("data-skr-scheme"); else root.setAttribute("data-skr-scheme", scheme);
+      probe.remove();
+    }
+  }
+
+  function initThemeChoice() {
+    var names = themeNames();
+    if (names.length < 2) return;
+    var root = document.documentElement;
+    var menus = document.querySelectorAll("[data-skr-themes]");
+    function sync() {
+      var current = currentTheme();
+      document.querySelectorAll("[data-skr-theme-choice]").forEach(function (item) {
+        item.setAttribute("aria-checked", item.getAttribute("data-skr-theme-choice") === current ? "true" : "false");
+      });
+    }
+    ThemeChoice.choose = function (name) {
+      if (name === currentTheme()) return;
+      root.setAttribute("data-skr-theme", name);
+      try { localStorage.setItem("skr-theme", name); } catch (e) { /* egal */ }
+      sync();
+      window.dispatchEvent(new CustomEvent("skr-themechange"));
+    };
+    menus.forEach(function (menu) {
+      var button = menu.querySelector(".skr-tool--themes");
+      var list = menu.querySelector(".skr-themes__list");
+      var items = Array.prototype.slice.call(list.querySelectorAll("[data-skr-theme-choice]"));
+      var measured = false;
+      function close(focus) {
+        if (list.hidden) return;
+        list.hidden = true;
+        button.setAttribute("aria-expanded", "false");
+        if (focus) button.focus();
+      }
+      function open() {
+        if (!measured) { measureSwatches(list); measured = true; }
+        list.hidden = false;
+        button.setAttribute("aria-expanded", "true");
+        var checked = list.querySelector('[aria-checked="true"]') || items[0];
+        if (checked) checked.focus();
+      }
+      button.addEventListener("click", function () { if (list.hidden) open(); else close(true); });
+      items.forEach(function (item) {
+        item.addEventListener("click", function () {
+          ThemeChoice.choose(item.getAttribute("data-skr-theme-choice"));
+          close(true);
+        });
+      });
+      list.addEventListener("keydown", function (e) {
+        var i = items.indexOf(document.activeElement);
+        if (e.key === "Escape") { e.preventDefault(); close(true); }
+        else if (e.key === "ArrowDown") { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+        else if (e.key === "ArrowUp") { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+        else if (e.key === "Home") { e.preventDefault(); items[0].focus(); }
+        else if (e.key === "End") { e.preventDefault(); items[items.length - 1].focus(); }
+        else if (e.key === "Tab") close(false);
+      });
+      document.addEventListener("click", function (e) { if (!menu.contains(e.target)) close(false); });
+    });
     sync();
   }
 
@@ -466,10 +644,10 @@
   var TEXTS = {
     de: { copy: "Kopieren", copied: "Kopiert!", close: "Schließen",
           step: "Arbeitsschritt",
-          moreTabs: "Weitere Reiter", cancel: "Abbrechen" },
+          moreTabs: "Weitere Reiter", cancel: "Abbrechen", zoom: "Vergrößern" },
     en: { copy: "Copy",     copied: "Copied!",  close: "Close",
           step: "Step",
-          moreTabs: "More tabs", cancel: "Cancel" }
+          moreTabs: "More tabs", cancel: "Cancel", zoom: "Enlarge" }
   };
   var T = TEXTS[(document.documentElement.getAttribute("lang") || "de").split("-")[0].toLowerCase()] || TEXTS.de;
 
@@ -553,6 +731,159 @@
     document.addEventListener("click", function (e) {
       if (!e.target.closest(".skr-header")) closeAllNavs();
     });
+  }
+
+  /* --- Bilder vergrößern (`skr-zoom`) --------------------------------------
+     EIN BILD, DAS DIE SEITE VERKLEINERT ZEIGT, LÄSST SICH GROSS ANSEHEN – in einem
+     Popup über der Seite, in voller Größe und bei Bedarf scrollbar. Gilt für jedes
+     Bild im Inhalt (`#skr-content`, `#skr-deck`), auch für die Diagramme aus Mermaid:
+     Deren zwei Fassungen sind Bilder, und geöffnet wird die sichtbare – die des
+     aktuellen Farbschemas.
+
+     VERKLEINERT HEISST: Die Eigengröße ist größer als die Darstellung. Das steht erst
+     fest, wenn das Bild geladen ist, und ändert sich mit der Breite der Spalte – ein
+     ResizeObserver prüft nach. Ein Bild, das in voller Größe dasteht, bleibt ein
+     Bild; der Knopf entsteht nur, wo es etwas zu vergrößern gibt.
+
+     AUSLÖSER IST DAS BILD SELBST: Es wird zum Knopf (`role="button"`, `tabindex`) und
+     öffnet per Klick, `Enter` oder Leertaste. Ist es schon ein Verweis, gehört der
+     Klick dem Verweis; dann steht eine Lupe daneben – außerhalb des <a>, denn ein
+     Knopf im Verweis ist kein gültiges HTML. Den Rahmen um beide (`skr-zoom-frame`)
+     legt das Skript an und nimmt ihn wieder weg, wenn das Bild nicht mehr verkleinert ist.
+
+     ABSCHALTEN: `skr-zoom--none` am Bild, am Verweis oder an einem Element darum.
+     Ausgenommen sind außerdem das Icon einer Karte und Bilder in einem Bedienelement.
+
+     OHNE SKRIPT bleibt alles, wie es ist: Knöpfe, Lupe und Popup entstehen hier.
+     Die Tasten im Popup bleiben im Popup – sonst blätterte die Präsentation dahinter
+     (presentation.js hört am Dokument). Gestaltet in site.css (`skr-zoom`). */
+  var zoomObserver = window.ResizeObserver ? new ResizeObserver(function (entries) {
+    entries.forEach(function (e) { updateZoom(e.target); });
+  }) : null;
+
+  function zoomLabel(img) {
+    var alt = (img.getAttribute("alt") || "").trim();
+    return alt ? T.zoom + ": " + alt : T.zoom;
+  }
+
+  /* Knopf oder Bild – je nachdem, ob es gerade verkleinert dasteht. */
+  function updateZoom(img) {
+    var shown = img.getClientRects().length > 0;
+    var scaled = shown && img.complete && (img.naturalWidth > img.clientWidth + 1 || img.naturalHeight > img.clientHeight + 1);
+    var link = img.closest("a[href]");
+    if (link) {
+      var lens = link.parentElement.classList.contains("skr-zoom-frame") && link.parentElement.querySelector(":scope > .skr-zoom-lens");
+      /* Nicht mehr verkleinert: Rahmen und Lupe gehen, der Verweis steht wieder an seinem Platz. */
+      if (lens && !scaled) {
+        var old = link.parentElement;
+        old.parentNode.insertBefore(link, old);
+        old.remove();
+        return;
+      }
+      if (!lens && scaled) {
+        var frame = document.createElement("span");
+        frame.className = "skr-zoom-frame";
+        link.parentNode.insertBefore(frame, link);
+        frame.appendChild(link);
+        lens = document.createElement("button");
+        lens.type = "button";
+        lens.className = "skr-zoom-lens";
+        lens.setAttribute("aria-haspopup", "dialog");
+        lens.skrZoomImage = img;
+        frame.appendChild(lens);
+      }
+      if (lens) {
+        lens.setAttribute("aria-label", zoomLabel(img));
+        lens.title = T.zoom;
+      }
+      return;
+    }
+    if (scaled) {
+      img.classList.add("skr-zoom");
+      img.setAttribute("role", "button");
+      img.setAttribute("tabindex", "0");
+      img.setAttribute("aria-haspopup", "dialog");
+      img.setAttribute("aria-label", zoomLabel(img));
+    } else if (img.classList.contains("skr-zoom")) {
+      img.classList.remove("skr-zoom");
+      ["role", "tabindex", "aria-haspopup", "aria-label"].forEach(function (a) { img.removeAttribute(a); });
+    }
+  }
+
+  function initZoom(root) {
+    (root && root.querySelectorAll ? root : document).querySelectorAll("#skr-content img, #skr-deck img").forEach(function (img) {
+      /* Das Icon einer Karte (`skr-linkicon`) ist mit Absicht klein – kein Bild zum Vergrößern.
+         Ein Bild in einem Bedienelement (`summary`, `label`, `button`) gehört dessen Klick;
+         ein Knopf darin wäre ein Knopf im Knopf. */
+      if (img.skrZoom || img.closest(".skr-zoom--none, .skr-linkicon, button, summary, label, dialog")) return;
+      img.skrZoom = true;
+      img.addEventListener("load", function () { updateZoom(img); });
+      img.addEventListener("keydown", function (e) {
+        if (!img.classList.contains("skr-zoom") || (e.key !== "Enter" && e.key !== " ")) return;
+        e.preventDefault();
+        e.stopPropagation();
+        openZoom(img, img);
+      });
+      if (zoomObserver) zoomObserver.observe(img);
+      updateZoom(img);
+    });
+  }
+
+  /* Wie beim Kopieren: Inhalt, den ein Baustein erst im Browser einhängt, wird mit erfasst. */
+  document.addEventListener("skr-content-added", function (e) { initZoom(e.target); });
+
+  document.addEventListener("click", function (e) {
+    var lens = e.target.closest && e.target.closest(".skr-zoom-lens");
+    if (lens && lens.skrZoomImage) { openZoom(lens.skrZoomImage, lens); return; }
+    var img = e.target.closest && e.target.closest("img.skr-zoom");
+    if (img) openZoom(img, img);
+  });
+
+  function openZoom(img, trigger) {
+    var alt = (img.getAttribute("alt") || "").trim();
+    var d = document.createElement("dialog");
+    d.className = "skr-zoom-dialog";
+    d.setAttribute("aria-label", alt || T.zoom);
+    var close = document.createElement("button");
+    close.type = "button";
+    close.className = "skr-btn skr-btn--ghost skr-zoom-dialog__close";
+    close.setAttribute("aria-label", T.close);
+    close.title = T.close;
+    close.textContent = "×";
+    var scroll = document.createElement("div");
+    scroll.className = "skr-zoom-dialog__scroll";
+    /* Ein Bereich, der scrollt, muss mit der Tastatur erreichbar sein (axe:
+       `scrollable-region-focusable`). */
+    scroll.tabIndex = 0;
+    var big = document.createElement("img");
+    big.src = img.currentSrc || img.src;
+    big.alt = alt;
+    big.width = img.naturalWidth;
+    big.height = img.naturalHeight;
+    scroll.appendChild(big);
+    d.appendChild(close);
+    d.appendChild(scroll);
+    var done = false;
+    function finish() {
+      if (done) return;
+      done = true;
+      if (d.open) d.close();
+      d.remove();
+      if (trigger && trigger.focus && document.contains(trigger)) trigger.focus();
+    }
+    close.addEventListener("click", finish);
+    d.addEventListener("cancel", function (e) { e.preventDefault(); finish(); });
+    d.addEventListener("click", function (e) {
+      if (e.target !== d) return;
+      var r = d.getBoundingClientRect();
+      if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) finish();
+    });
+    ["keydown", "touchstart", "touchmove", "touchend"].forEach(function (type) {
+      d.addEventListener(type, function (e) { e.stopPropagation(); });
+    });
+    document.body.appendChild(d);
+    d.showModal();
+    close.focus();
   }
 
   /* --- Auswahldialog (#394) ------------------------------------------------
@@ -862,6 +1193,105 @@
 
      ZWEITENS: Faehrt das Menue der dritten Ebene nach rechts oder nach links aus?
      Das entscheidet der Platz bis zum Fensterrand, und den kennt erst der Browser. */
+  /* --- Beschriftung der Rollen: in der Mitte gekürzt --------------------------
+     Ein Segment des Umschalters hat eine Höchstbreite und schrumpft, wenn es eng wird
+     (components.css). Lange Titel – etwa „Gast – Rolle“ eines zusammengesetzten Gasts –
+     beginnen oft gleich; am Ende gekürzt sähen alle Segmente gleich aus. Deshalb kürzt
+     das Skript IN DER MITTE: Anfang und Ende bleiben sichtbar, dazwischen steht „…“.
+     Der volle Titel bleibt der zugängliche Name (`aria-label`) und steht im Tooltip –
+     vor der Beschreibung der Rolle, die sonst allein dort steht. Ohne Skript kürzt das
+     CSS am Ende.
+
+     Gemessen wird in zwei Schritten: erst alle Segmente mit vollem Titel, damit jedes
+     seine verfügbare Breite zeigt (sie hängt von den Nachbarn ab), dann je Segment die
+     längste Kürzung, die hineinpasst – per Halbierung über die Zahl der Zeichen.
+
+     ZU ENG FÜR SEGMENTE: Bleiben in einem Segment weniger Zeichen als
+     `--skr-header-role-min-chars` (Token, ohne Angabe 10), oder läuft der Umschalter
+     über, steht statt seiner die Auswahlliste (`skr-header--role-select`); ihre
+     Einträge sind auf dieselbe Weise gekürzt. */
+  function roleMinChars(header) {
+    var n = parseInt(getComputedStyle(header).getPropertyValue("--skr-header-role-min-chars"), 10);
+    return n > 0 ? n : 10;
+  }
+
+  function middleCut(label, n) {
+    var head = Math.ceil(n / 2);
+    return label.slice(0, head).replace(/\s+$/, "") + "…" + label.slice(label.length - (n - head)).replace(/^\s+/, "");
+  }
+
+  /* Längste Kürzung, die `fits` erfüllt; ohne Kürzung passend: der volle Titel. */
+  function fitLabel(label, fits) {
+    if (fits(label)) return { text: label, chars: label.length, cut: false };
+    var lo = 1, hi = label.length - 1, best = { text: middleCut(label, 1), chars: 1, cut: true };
+    while (lo <= hi) {
+      var mid = (lo + hi) >> 1;
+      var text = middleCut(label, mid);
+      if (fits(text)) { best = { text: text, chars: mid, cut: true }; lo = mid + 1; }
+      else hi = mid - 1;
+    }
+    return best;
+  }
+
+  function fitRoleSegments(buttons) {
+    var fewest = Infinity;
+    buttons.forEach(function (k) {
+      if (!k.hasAttribute("data-skr-role-label")) {
+        k.setAttribute("data-skr-role-label", k.textContent.trim());
+        k.setAttribute("data-skr-role-description", k.getAttribute("title") || "");
+      }
+      k.textContent = k.getAttribute("data-skr-role-label");
+    });
+    var rooms = Array.prototype.map.call(buttons, function (k) { return k.clientWidth; });
+    buttons.forEach(function (k, i) {
+      var label = k.getAttribute("data-skr-role-label");
+      var description = k.getAttribute("data-skr-role-description");
+      var fit = fitLabel(label, function (text) { k.textContent = text; return k.scrollWidth <= rooms[i] + 1; });
+      k.textContent = fit.text;
+      if (fit.cut) { k.setAttribute("aria-label", label); fewest = Math.min(fewest, fit.chars); }
+      else k.removeAttribute("aria-label");
+      var title = fit.cut ? label + (description ? " – " + description : "") : description;
+      if (title) k.setAttribute("title", title); else k.removeAttribute("title");
+    });
+    return fewest;
+  }
+
+  /* Die Auswahlliste zeigt den Titel der gewählten Option; gekürzt wird über
+     `option.label`, gemessen mit der Schrift der Liste auf einer Leinwand. */
+  function fitRoleSelect(select) {
+    var style = getComputedStyle(select);
+    var room = select.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+    var ctx = document.createElement("canvas").getContext("2d");
+    ctx.font = style.fontWeight + " " + style.fontSize + " " + style.fontFamily;
+    Array.prototype.forEach.call(select.options, function (o) {
+      if (!o.hasAttribute("data-skr-role-label")) o.setAttribute("data-skr-role-label", o.textContent.trim());
+      var label = o.getAttribute("data-skr-role-label");
+      var fit = fitLabel(label, function (text) { return ctx.measureText(text).width <= room; });
+      if (fit.cut) o.label = fit.text; else o.removeAttribute("label");
+    });
+    var chosen = select.options[select.selectedIndex];
+    if (chosen) {
+      var label = chosen.getAttribute("data-skr-role-label");
+      var description = chosen.getAttribute("title");
+      select.title = label + (description ? " – " + description : "");
+    }
+  }
+
+  function fitRoleLabels() {
+    var header = document.querySelector("[data-skr-header]");
+    var group = document.querySelector("[data-skr-roles]");
+    if (!header || !group) return;
+    var buttons = group.querySelectorAll("[data-skr-role-choice]");
+    var select = header.querySelector("[data-skr-role-select]");
+    header.classList.remove("skr-header--role-select");
+    var fewest = fitRoleSegments(buttons);
+    var overflow = group.scrollWidth > group.clientWidth + 1;
+    if (select && (fewest < roleMinChars(header) || overflow)) {
+      header.classList.add("skr-header--role-select");
+      fitRoleSelect(select);
+    }
+  }
+
   /* --- Rollen der Navigation (`nav.roles`) -----------------------------------
      Die Rolle steht an <html data-skr-role> (gesetzt im Kopf, vor dem ersten
      Malen); das CSS dort blendet die Einträge der übrigen Rollen aus. Der
@@ -873,19 +1303,25 @@
     /* Je Site gemerkt – unter dem Pfad ihrer Wurzel: Mehrere Unterlagen unter einer
        Domain wählen getrennt. Derselbe Schlüssel wie im Kopf der Seite (head.html). */
     var key = "skr-role:" + new URL(window.skr._root()).pathname;
+    var select = document.querySelector("[data-skr-role-select]");
     function show(role) {
       buttons.forEach(function (k) {
         k.setAttribute("aria-checked", k.getAttribute("data-skr-role-choice") === role ? "true" : "false");
       });
+      if (select) select.value = role;
+    }
+    function choose(role) {
+      document.documentElement.setAttribute("data-skr-role", role);
+      try { localStorage.setItem(key, role); } catch (e) { /* ohne Speicher */ }
+      show(role);
+      window.dispatchEvent(new Event("resize"));
     }
     show(document.documentElement.getAttribute("data-skr-role"));
+    fitRoleLabels();
+    if (select) select.addEventListener("change", function () { choose(select.value); });
     buttons.forEach(function (k, i) {
       k.addEventListener("click", function () {
-        var role = k.getAttribute("data-skr-role-choice");
-        document.documentElement.setAttribute("data-skr-role", role);
-        try { localStorage.setItem(key, role); } catch (e) { /* ohne Speicher */ }
-        show(role);
-        window.dispatchEvent(new Event("resize"));
+        choose(k.getAttribute("data-skr-role-choice"));
       });
       /* Pfeiltasten wie in jeder Gruppe von Optionsfeldern. */
       k.addEventListener("keydown", function (e) {
@@ -904,43 +1340,64 @@
     var nav = header.querySelector(".skr-header__nav");
     if (!nav) return;
 
-    /* PASST DIE LEISTE IN EINE ZEILE?
-       Nicht ausgerechnet, sondern abgelesen: Liegt der letzte Eintrag tiefer als
-       der erste, hat die Leiste umgebrochen. Das ist genau die Frage, und es ist
-       die einzige Rechnung, die nicht daneben liegen kann - eine Schaetzung aus
-       Header-Breite minus Wortmarke minus Werkzeuge vergisst Innenabstaende und
-       Abstaende und sagte bei 950 px noch "passt", waehrend die Leiste bereits
-       dreizeilig war (gemessen).
-
-       Gemessen wird OHNE `--compact`: Mit der Klasse liegt die Leiste als Spalte,
-       und jede Zeile stuende tiefer als die vorige - das Ergebnis waere immer
-       "umgebrochen" und der Zustand schwankte. Zwischen Abnehmen und Wiederanlegen
-       liegt kein `await` und kein Ereignis, der Browser malt also nichts davon. */
-    function fitsInOneLine() {
-      var previousCompact = header.classList.contains("skr-header--compact");
-      header.classList.remove("skr-header--compact");
+    /* BRICHT DIE LEISTE UM? Nicht ausgerechnet, sondern abgelesen: Liegt ein
+       sichtbarer Eintrag tiefer als der erste, hat die Leiste umgebrochen – gemessen
+       im Zustand, der gerade anliegt. Eine Schätzung aus Header-Breite minus
+       Wortmarke minus Werkzeuge vergisst Innenabstände und Abstände und sagte bei
+       950 px noch „passt“, während die Leiste bereits dreizeilig war (gemessen). */
+    function navWraps() {
       /* Nur, was sichtbar ist: Mit Rollen liegen die Einträge der anderen Rollen
          ausgeblendet in der Leiste und haben keine Lage. */
       var children = Array.prototype.filter.call(nav.children, function (k) { return k.offsetParent !== null; });
-      var wrap = false;
-      if (children.length > 1) {
-        var top = children[0].offsetTop;
-        for (var i = 1; i < children.length; i++) {
-          if (children[i].offsetTop > top + 2) { wrap = true; break; }
-        }
+      if (children.length < 2) return false;
+      var top = children[0].offsetTop;
+      for (var i = 1; i < children.length; i++) {
+        if (children[i].offsetTop > top + 2) return true;
       }
-      if (previousCompact) header.classList.add("skr-header--compact");
-      return !wrap;
+      return false;
+    }
+
+    /* DREI ZUSTÄNDE, in dieser Reihenfolge: im Balken, als eigene Zeile darunter
+       (`--stacked`), im Burger (`--compact`). Gemessen wird ohne `--compact` – mit der
+       Klasse liegt die Leiste als Spalte, und jede Zeile stünde tiefer als die vorige.
+       Zwischen Abnehmen und Wiederanlegen liegt kein `await` und kein Ereignis, der
+       Browser malt also nichts davon. */
+    function layoutState() {
+      header.classList.remove("skr-header--compact", "skr-header--stacked");
+      if (!navWraps()) return "bar";
+      header.classList.add("skr-header--stacked");
+      var wraps = navWraps();
+      header.classList.remove("skr-header--stacked");
+      return wraps ? "compact" : "stacked";
+    }
+
+    /* HÖHE DES BALKENS: `--topnav-height` aus Theme oder Kern, gelesen, bevor dieses
+       Skript es am Wurzelelement überschreibt. In der eigenen Zeile trägt es die
+       tatsächliche Höhe der Kopfzeile, damit Sprungziele und Seitenleiste ihr folgen. */
+    var root = document.documentElement;
+    var barHeight = getComputedStyle(root).getPropertyValue("--topnav-height").trim() || "72px";
+    header.style.setProperty("--skr-header-bar-height", barHeight);
+
+    function apply(state) {
+      header.classList.toggle("skr-header--compact", state === "compact");
+      header.classList.toggle("skr-header--stacked", state === "stacked");
+      if (state === "stacked") root.style.setProperty("--topnav-height", header.offsetHeight + "px");
+      else root.style.removeProperty("--topnav-height");
     }
 
     function remeasure() {
       /* Unter der Media-Query-Schwelle misst niemand: Dort gilt ohnehin der
          Burger, und die Leiste ist ausgeblendet - jede Messung waere Unsinn. */
       if (window.matchMedia && window.matchMedia("(max-width: 600px)").matches) {
-        header.classList.remove("skr-header--compact");
+        apply("bar");
+        fitRoleLabels();
         return;
       }
-      header.classList.toggle("skr-header--compact", !fitsInOneLine());
+      /* Erst die Rollen kürzen, dann messen – und nach dem Wechsel des Zustands noch
+         einmal, denn in der eigenen Zeile haben die Rollen mehr Platz. */
+      fitRoleLabels();
+      apply(layoutState());
+      fitRoleLabels();
       /* DAS KLAPPFELD GEHOERT UNTER DEN KNOPF. Wo der steht, weiß nur das
          Layout - CSS kann die Stelle nicht ausrechnen. Deshalb kommt sie als
          Custom Property herein; das Stylesheet setzt sie ein. */
@@ -963,11 +1420,21 @@
     }
 
     var waiting = false;
-    window.addEventListener("resize", function () {
+    function schedule() {
       if (waiting) return;
       waiting = true;
       window.requestAnimationFrame(function () { waiting = false; remeasure(); });
-    });
+    }
+    window.addEventListener("resize", schedule);
+
+    /* UND WENN DIE WORTMARKE DA IST. Ihre Bilder haben keine feste Breite; lädt eines
+       erst nach dem ersten Messen, wird der Balken breiter – ohne `resize`, und
+       `fonts.ready` wartet nicht auf Bilder. Die Leiste blieb dann zweizeilig, bis das
+       Fenster sich änderte (skriptorium#215); aus dem Cache trat es nicht auf.
+       `ResizeObserver` meldet jede Änderung ihrer Breite, auch die Wortmarke eines
+       anderen Themes nach dem Wechsel. */
+    var brand = header.querySelector(".skr-header__brand");
+    if (brand && window.ResizeObserver) new ResizeObserver(schedule).observe(brand);
 
     /* Seite des seitlichen Menues. Beim Oeffnen und beim Ueberfahren pruefen, ob
        rechts noch Platz ist; sonst nach links. */
@@ -1013,9 +1480,10 @@
     }
 
     /* --- Kurze Menues ---------------------------------------------------------
-       Ein Aufklappmenue zeigt hoechstens `nav.menu.rows` Zeilen
-       (von der Kopfzeile als `data-skr-menu-visible`). Jedes Ziel ist eine Zeile,
-       die Ueberschrift eines eingebetteten Menues ebenso; Trennstriche zaehlen nicht.
+       Ein Aufklappmenue zeigt hoechstens so viele Zeilen, wie `--skr-menu-rows` des
+       Themes oder `nav.menu.rows` der Unterlage (an der Kopfzeile `data-skr-menu-visible`)
+       sagt. Jedes Ziel ist eine Zeile, die Ueberschrift eines eingebetteten Menues ebenso;
+       Trennstriche zaehlen nicht.
        Hat es mehr – oder passt es nicht ins Fenster –, wird es auf genau diese Hoehe
        begrenzt, GEMESSEN an der ersten Zeile, die nicht mehr hineingehoert, und bekommt
        oben und unten ein Dreieck. Zeigen auf ein Dreieck laesst es laufen; am Rand ist
@@ -1032,13 +1500,20 @@
       if (header.classList.contains("skr-header--compact")) return false;
       return !(window.matchMedia && window.matchMedia("(max-width: 600px)").matches);
     }
-    /* Der Wert gilt, wie ihn die Konfiguration nennt: Das Schema verlangt ab 1, der Bau
+    /* Der Wert der Unterlage (`nav.menu`, an der Kopfzeile) geht vor, sonst gilt das Token des
+       Themes (`--skr-menu-rows`, `--skr-menu-speed`) – gelesen bei jedem Öffnen, damit es dem
+       gewählten Theme folgt. Er gilt, wie er dasteht: Das Schema verlangt ab 1, der Bau
        bricht sonst ab – das Skript setzt keine eigene Untergrenze. */
+    function setting(attribute, token) {
+      var own = header.getAttribute(attribute);
+      return own !== null ? own : getComputedStyle(header).getPropertyValue(token).trim();
+    }
     function visibleRows() {
-      return parseInt(header.getAttribute("data-skr-menu-visible"), 10);
+      var n = parseInt(setting("data-skr-menu-visible", "--skr-menu-rows"), 10);
+      return n > 0 ? n : 7;
     }
     function pace() {
-      var t = parseFloat(header.getAttribute("data-skr-menu-speed"));
+      var t = parseFloat(setting("data-skr-menu-speed", "--skr-menu-speed"));
       return t > 0 ? t : 1;
     }
     function rowsOf(menu) { return menu.querySelectorAll(ROWS); }
@@ -1576,9 +2051,9 @@
          auf eine Folie, die längst weitergeblättert ist.
 
          Zwei Ereignisse, weil eines nicht genügt: `hashchange` deckt Sprungmarken
-         und Vor/Zurück ab; die Präsentation setzt das Fragment aber per
+         und Vor/Zurück ab; `skr.state` setzt das Fragment aber per
          `history.replaceState`, und das löst kein `hashchange` aus – dafür sendet
-         presentation.js `skr-urlchange`. */
+         es `skr-urlchange`. */
       window.addEventListener("hashchange", render);
       window.addEventListener("skr-urlchange", render);
 
@@ -1625,6 +2100,7 @@
      Inhalt ist dann erreichbar, nur nicht mittig. Kein Schulungsinhalt hängt
      also am JavaScript. */
   function initReveals() {
+    var lifted = [];
     document.querySelectorAll("details.skr-reveal").forEach(function (details, index) {
       if (inPresentation(details)) { return; }
       var summary = details.querySelector(":scope > summary");
@@ -1672,9 +2148,35 @@
         body.appendChild(button);
       }
 
+      /* IN DER PRÄSENTATION IN DIE OBERSTE EBENE (#406). Die Schiene der Folien
+         trägt `transform` und wird damit zum Bezugsrahmen alles Fixierten darin:
+         Panel und Abdunkelung lägen neben der verschobenen Schiene, weit außerhalb
+         des Bildes. Eine Ebene (`__layer`) als Popover liegt in der obersten Ebene
+         des Browsers, die nur das Fenster kennt; sie dunkelt ab und fängt den
+         Klick daneben – der `::backdrop` eines Popovers kann das nicht, er lässt
+         Klicks durch. Beim Drucken bleibt sie unten, print.css bettet den Inhalt
+         in die Folie ein. */
+      if (details.closest(".skr-deck") && "showPopover" in body) {
+        var layer = document.createElement("div");
+        layer.className = "skr-reveal__layer";
+        layer.popover = "manual";
+        details.insertBefore(layer, body);
+        layer.appendChild(body);
+        details.classList.add("skr-reveal--lifted");
+        var sync = function () {
+          var show = details.open && !inPrint;
+          if (show !== layer.matches(":popover-open")) {
+            if (show) { layer.showPopover(); } else { layer.hidePopover(); }
+          }
+        };
+        details.addEventListener("toggle", sync);
+        lifted.push(sync);
+        sync();
+      }
+
       /* Klick NEBEN das Panel schließt. Der Klick auf die Abdunkelung landet am
-         `details` selbst (sie ist dessen ::before), Klicks im Panel nicht – die
-         fängt der zweite Handler ab. */
+         `details` selbst (sie ist dessen ::before oder die Ebene darin), Klicks
+         im Panel nicht – die fängt der zweite Handler ab. */
       details.addEventListener("click", function (event) {
         if (!details.open) return;
         if (event.target === summary || summary.contains(event.target)) return;
@@ -1749,12 +2251,14 @@
         d.open = true;
         openedForPrint.push(d);
       });
+      lifted.forEach(function (sync) { sync(); });
     }
     function afterPrint() {
       if (!inPrint) { return; }
       inPrint = false;
       openedForPrint.forEach(function (d) { d.open = false; });
       openedForPrint = [];
+      lifted.forEach(function (sync) { sync(); });
       /* Erst schließen, dann die Namen zurueck: Andersherum schloesse der
          Browser beim Setzen des Namens selbst Geschwister und der Zustand von
          vor dem Druck waere nicht wiederhergestellt, sondern geraten. */
@@ -2448,16 +2952,36 @@
       audience: data.audience === undefined ? null : data.audience,
       languages: data.languages || [],
       themes: data.themes || [],
+      themeOptions: data.themeOptions || (data.theme ? [data.theme] : []),
       extensions: data.extensions || [],
       internal: data.internal === true,
       effects: fx.split(/\s+/).filter(Boolean)
     });
   }
 
+  /* Die Themes der Unterlage – mit einer Auswahl die angebotenen, das erste ist der Standard;
+     sonst das eine. Je Aufruf eine neue Liste. */
+  function themes() {
+    var names = themeNames();
+    return names.length ? names : buildInfo().themeOptions.slice();
+  }
+
+  /* Das Theme lesen oder setzen – beim Namen, wie `themes()` es nennt. Ein Name, den die
+     Unterlage nicht anbietet, ändert nichts und wirft. */
+  function theme(name) {
+    var names = themes();
+    if (arguments.length === 0) return currentTheme() || names[0] || null;
+    if (names.indexOf(name) < 0) {
+      throw new RangeError('skr.theme: "' + name + '" wird nicht angeboten – angeboten: ' + names.join(", "));
+    }
+    if (ThemeChoice.choose) ThemeChoice.choose(name);
+    return name;
+  }
+
   function colorScheme(choice) {
     var root = document.documentElement;
     if (arguments.length === 0) {
-      var set = root.getAttribute("data-skr-theme");
+      var set = root.getAttribute("data-skr-scheme");
       return set === "dark" || set === "light" ? set : "auto";
     }
     if (choice !== "dark" && choice !== "light" && choice !== "auto") {
@@ -2488,7 +3012,7 @@
     if (!document.querySelector("[data-skr-present]")) return null;
     function slides() { return document.querySelectorAll(".skr-deck__track > .skr-slide").length; }
     function current() {
-      var m = /^#\/(\d+)$/.exec(location.hash || "");
+      var m = /^#\/(\d+)(?:\?|$)/.exec(location.hash || "");
       return m ? parseInt(m[1], 10) : 1;
     }
     function button(name) {
@@ -2501,7 +3025,9 @@
       goTo: function (n) {
         var number = Math.round(Number(n));
         if (!isFinite(number)) throw new TypeError("skr.presentation.goTo: Foliennummer erwartet");
-        location.hash = "#/" + Math.max(1, Math.min(slides() || 1, number));
+        /* Der Zustand der Seite ab `?` bleibt stehen. */
+        var rest = (location.hash || "").replace(/^[^?]*/, "");
+        location.hash = "#/" + Math.max(1, Math.min(slides() || 1, number)) + rest;
       },
       next: function () { button("next"); },
       prev: function () { button("prev"); }
@@ -2565,15 +3091,17 @@
   function currentLanguage() { return pageBlock().language || null; }
 
   /* EIN SEITENOBJEKT, EINE FORM: `currentPage` und `findPage()` liefern dasselbe. */
-  function pageObject(slug, language, s, languages) {
-    return freeze({
+  function pageObject(slug, language, s, languages, more) {
+    return freeze(Object.assign({
       pageId: slug || null, language: language || null, url: absolute(s.url),
       title: s.title || null, layout: s.layout || null,
       description: s.description === undefined ? null : s.description,
       duration: s.duration === undefined ? null : s.duration,
       topics: Array.isArray(s.topics) ? s.topics.slice() : [],
-      languages: (languages || []).slice()
-    });
+      languages: (languages || []).slice(),
+      /* Eine unübersetzte Fassung (ADR-0200): die Sprache ihres Inhalts, sonst null. */
+      untranslated: s.untranslated || null
+    }, more));
   }
 
   /* Seite nach Kennung und Sprache (Vorgabe: die aktuelle). null, wenn es sie nicht gibt. */
@@ -2581,7 +3109,7 @@
     var per = index && index.pages && index.pages[slug];
     if (!per || !per[language]) return null;
     return pageObject(slug, language, per[language],
-      (index.languages || []).filter(function (c) { return !!per[c]; }));
+      (index.languages || []).filter(function (c) { return !!per[c] && !per[c].untranslated; }));
   }
 
   function pageInfo(slug, language) {
@@ -2652,12 +3180,19 @@
         if (arguments.length) return g("colorScheme", colorScheme).apply(null, arguments);
         return colorScheme();
       },
+      theme: function () {
+        if (arguments.length) return g("theme", theme).apply(null, arguments);
+        return theme();
+      },
+      themes: themes,
       search: g("search", search),
       qrCode: g("qrCode", qrCode),
       currentLanguage: (function () { var b = pageBlock(); return b.language && b.language !== b.defaultLanguage ? b.language : null; })(),
       supportedLanguages: freeze((buildInfo().languages || []).slice()),
       defaultLanguage: pageBlock().defaultLanguage || null,
-      currentPage: (function () { var b = pageBlock(); return pageObject(b.pageId, b.language, b, b.languages); })(),
+      /* Die aktuelle Seite trägt dazu ihre Felder je Paket – nur die für den Browser
+         freigegebenen (`x-skr-browser`), so wie der Seitenblock sie nennt. */
+      currentPage: (function () { var b = pageBlock(); return pageObject(b.pageId, b.language, b, b.languages, { fields: JSON.parse(JSON.stringify(b.fields || {})) }); })(),
       findPage: pageInfo,
       navItems: navigation,
       goToPage: g("goToPage", goTo),
@@ -2670,8 +3205,10 @@
 
   function init() {
     initBackButtons();
-    initThemeToggle();
+    initSchemeToggle();
+    initThemeChoice();
     initCopyButtons();
+    initZoom();
     initNavToggle();
     initNavDropdown();
     initRoles();

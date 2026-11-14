@@ -4,19 +4,22 @@
    Gehoert zu `crossword.css`. Das Skriptorium laedt beides auf jeder Seite, deren
    Inhalt das Merkmal `skr-didaktikon-crossword` enthaelt (extension.yml), nach `payload.js`.
 
-   DAS MARKUP IST EINE MARKDOWN-DEFINITIONSLISTE – vorgegeben ist nur der Rahmen:
+   DER AUTOR SCHREIBT YAML (schemas/crossword.schema.json):
 
-     <div class="skr-didaktikon-crossword" id="tag-1" data-skr-didaktikon-crossword-solution="POD" markdown="1">
-     POD
-     : Kleinste deploybare Einheit
-     </div>
+     ```skr-didaktikon-crossword {#tag-1}
+     solution: POD
+     terms:
+       - term: POD
+         clue: Kleinste deploybare Einheit
+     ```
 
-   Der Begriff ist die Antwort, die Beschreibung der Hinweis. Das Lösungswort ist
+   Der Begriff ist die Antwort, `clue` der Hinweis (Inline-Markdown). Das Lösungswort ist
    optional: Seine Buchstaben werden im Gitter markiert und ergeben es.
 
-   EINE NUTZLAST GEHT VOR: Trägt der Rahmen das Rätsel als Base64-Nutzlast, daneben ein
-   Rückfall nur mit den Hinweisen, dekodiert sie `skr.ext.didaktikon.payload`
-   (payload.js); Klartext geht ebenso.
+   EINE NUTZLAST GEHT VOR: Nach dem Bau trägt der Rahmen das Rätsel als Base64-Nutzlast
+   (`{ terms, solution }`), daneben einen Rückfall nur mit den Hinweisen; dekodiert von
+   `skr.ext.didaktikon.payload` (payload.js). In der Vorschau trägt er die Daten selbst
+   (`skr.componentData`).
 
    DAS GITTER ENTSTEHT HIER, DETERMINISTISCH: Begriffe nach Länge (bei gleicher Länge in
    der Reihenfolge des Autors), jeder an der ersten passenden Kreuzung – kein Zufall.
@@ -54,21 +57,13 @@
     return e;
   }
 
-  /* --- Das Markup lesen: Begriff (`dt`), Hinweis (`dd`) ------------------- */
-  function lesen(dl) {
-    var eintraege = [], aktuell = null;
-    Array.prototype.forEach.call(dl.children, function (k) {
-      if (k.tagName === "DT") {
-        aktuell = { wort: begriff(k.textContent), hinweis: [] };
-        eintraege.push(aktuell);
-      } else if (k.tagName === "DD" && aktuell) {
-        var knoten = Array.prototype.slice.call(k.childNodes);
-        /* Ein Hinweis in einem `<p>` (lockere Liste) – in der Schaltfläche zählt nur der Inhalt. */
-        if (knoten.length === 1 && knoten[0].tagName === "P") { knoten = Array.prototype.slice.call(knoten[0].childNodes); }
-        aktuell.hinweis = aktuell.hinweis.concat(knoten);
-      }
-    });
-    return eintraege.filter(function (e) { return e.wort.length >= 2; });
+  /* --- Die Daten lesen: Begriff (`term`), Hinweis (`clue`, Inline-HTML) -------- */
+  function lesen(begriffe) {
+    return (Array.isArray(begriffe) ? begriffe : []).map(function (b) {
+      var t = document.createElement("template");
+      t.innerHTML = typeof b.clue === "string" ? b.clue : "";
+      return { wort: begriff(b.term || ""), hinweis: Array.prototype.slice.call(t.content.childNodes) };
+    }).filter(function (e) { return e.wort.length >= 2; });
   }
 
   /* --- Das Gitter legen (deterministisch) --------------------------------- */
@@ -225,13 +220,13 @@
 
   document.querySelectorAll(".skr-didaktikon-crossword").forEach(function (wurzel, index) {
     var ext = window.skr && window.skr.ext && window.skr.ext.didaktikon;
+    /* Nach dem Bau die Nutzlast, in der Vorschau die Daten am Element (`skr.componentData`). */
     var nutzlast = ext && ext.payload ? ext.payload(wurzel) : null;
-    if (nutzlast && typeof nutzlast.html === "string") { wurzel.innerHTML = nutzlast.html; }
-    var loesungRoh = (nutzlast && nutzlast.solution) || wurzel.getAttribute("data-skr-didaktikon-crossword-solution") || "";
-
-    var dl = wurzel.querySelector(":scope > dl");
-    if (!dl) { return; }
-    var eintraege = lesen(dl);
+    var daten = nutzlast && Array.isArray(nutzlast.terms) ? nutzlast
+      : (window.skr && window.skr.componentData ? window.skr.componentData(wurzel) : null);
+    if (!daten) { return; }
+    var loesungRoh = daten.solution || "";
+    var eintraege = lesen(daten.terms);
     if (!eintraege.length) { return; }
     var lage = legen(eintraege);
     zaehler++;
@@ -374,7 +369,7 @@
     var aufloesen = knopf(T("crosswordReveal"), "reveal");
     var neu = knopf(T("crosswordRestart"), "reset");
     bedienung.appendChild(leiste);
-    dl.parentNode.insertBefore(bedienung, dl.nextSibling);
+    wurzel.appendChild(bedienung);
 
     /* --- Zustand -------------------------------------------------------------- */
     var aktuell = felder[0], richtung = "H", aufgeloest = false;

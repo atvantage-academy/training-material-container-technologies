@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="skr-root" content="../../">
-<script src="../../skriptorium/skr.js?v=dfcd09dd"></script>
+<script src="../../skriptorium/skr.js?v=f901f1a0"></script>
 <title>Layer und Build-Cache · Containertechnologien (Academy)</title>
 <meta name="description" content="Wie aus einem Dockerfile ein Stapel wird, warum jeder Layer einen Hash aus sich und allem darunter trägt – und was daraus für Cache, geteilte Basis-Images und die Reihenfolge der Zeilen folgt.">
 
@@ -13,33 +13,33 @@
 <meta property="og:description" content="Wie aus einem Dockerfile ein Stapel wird, warum jeder Layer einen Hash aus sich und allem darunter trägt – und was daraus für Cache, geteilte Basis-Images und die Reihenfolge der Zeilen folgt.">
 <meta property="og:type" content="website">
 <link rel="preload" href="../../themes/atvantage/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../../themes/default/theme.css?v=b795c99c">
-<link rel="stylesheet" href="../../themes/atvantage/fonts.css?v=0f189d71">
-<link rel="stylesheet" href="../../themes/atvantage/tokens/colors.css?v=8ed47a94">
-<link rel="stylesheet" href="../../themes/atvantage/tokens/typography.css?v=6445d4d3">
-<link rel="stylesheet" href="../../themes/atvantage/tokens/spacing.css?v=58e35278">
-<link rel="stylesheet" href="../../themes/atvantage/tokens/components.css?v=3fcd65a3">
-<link rel="stylesheet" href="../../themes/atvantage/tokens/base.css?v=b47b1e2d">
-<link rel="stylesheet" href="../../themes/atvantage/theme.css?v=e7026433">
-<link rel="stylesheet" href="../../themes/didaktikon/theme.css?v=4a593b58">
-<link rel="stylesheet" href="../../skriptorium/tokens.css?v=e74fbfe2">
+<link rel="stylesheet" href="../../themes/default/theme.css?v=b795c99c" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/fonts.css?v=0f189d71" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/colors.css?v=8ed47a94" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/typography.css?v=6445d4d3" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/spacing.css?v=58e35278" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/components.css?v=3fcd65a3" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/base.css?v=b47b1e2d" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/theme.css?v=e7026433" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/didaktikon/theme.css?v=4a593b58" data-skr-source="theme">
+<link rel="stylesheet" href="../../skriptorium/tokens.css?v=976961fc">
 <link rel="stylesheet" href="../../extensions/didaktikon/tokens.css?v=5966d76a">
 <link rel="stylesheet" href="../../skriptorium/base.css?v=86e37c43">
-<link rel="stylesheet" href="../../skriptorium/components.css?v=b86ac9ad">
+<link rel="stylesheet" href="../../skriptorium/components.css?v=dd0c549b">
 <link rel="stylesheet" href="../../skriptorium/doclinks.css?v=2ef23515">
-<link rel="stylesheet" href="../../skriptorium/linkmarks.css?v=31148a87">
-<link rel="stylesheet" href="../../skriptorium/site.css?v=d11b6ac6">
+<link rel="stylesheet" href="../../skriptorium/linkmarks.css?v=1643f80a">
+<link rel="stylesheet" href="../../skriptorium/site.css?v=dc500458">
 <link rel="stylesheet" href="../../skriptorium/logo.css?v=43a7fbaf">
-<link rel="stylesheet" media="print" href="../../skriptorium/print.css?v=856e77e0">
-<meta name="generator" content="Skriptorium 1.5.0">
-<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"1.0.0"}],"internal":false,"languages":["de"],"skriptorium":"1.5.0","theme":"didaktikon","themes":[{"name":"didaktikon","version":"1.0.0"},{"name":"atvantage","version":"1.0.0"},{"name":"default","version":"1.5.0"}]}</script>
-<script type="application/json" id="skr-page-info">{"clientApi":"full","defaultLanguage":"de","description":"Wie aus einem Dockerfile ein Stapel wird, warum jeder Layer einen Hash aus sich und allem darunter trägt – und was daraus für Cache, geteilte Basis-Images und die Reihenfolge der Zeilen folgt.","duration":null,"fields":null,"language":"de","languages":["de"],"layout":"skriptorium.presentation","pageAssets":[{"path":"docker-grundlagen/best-practices/praesentation.css","src":"praesentation.css","type":"style"},{"path":"docker-grundlagen/best-practices/praesentation.js","src":"praesentation.js","type":"script"}],"pageId":null,"runtimeFragments":["^/\\d+$"],"siteIndex":"/skriptorium/site.json","title":"Layer und Build-Cache","topics":null,"url":"/docker-grundlagen/best-practices/praesentation.html"}</script>
-<script type="application/json" id="skr-texts">{"didaktikon.capture":"Capture-Modus","didaktikon.captureExit":"beenden","didaktikon.captureText":"Text einblenden","didaktikon.crosswordAcross":"Waagerecht","didaktikon.crosswordCellAcross":"{number} waagerecht, Buchstabe {position}","didaktikon.crosswordCellDown":"{number} senkrecht, Buchstabe {position}","didaktikon.crosswordDown":"Senkrecht","didaktikon.crosswordHintLetter":"Tipp: Buchstabe","didaktikon.crosswordHintWord":"Tipp: Wort","didaktikon.crosswordRestart":"Neu beginnen","didaktikon.crosswordRestartText":"Deine Eingaben in diesem Rätsel werden gelöscht.","didaktikon.crosswordRestartTitle":"Kreuzworträtsel neu beginnen?","didaktikon.crosswordReveal":"Auflösen","didaktikon.crosswordRevealText":"Alle Felder werden ausgefüllt.","didaktikon.crosswordRevealTitle":"Kreuzworträtsel auflösen?","didaktikon.crosswordSolution":"Lösungswort","didaktikon.crosswordSolutionCell":"Lösungswort, Buchstabe {position}","didaktikon.crosswordSolved":"Gelöst – alle Begriffe stimmen.","didaktikon.doclinkCrossword":"Kreuzworträtsel","didaktikon.doclinkExercise":"Übung","didaktikon.doclinkQuiz":"Wissens-Check","didaktikon.doclinkSimulation":"Simulation","didaktikon.doclinkVisualization":"Visualisierung","didaktikon.exerciseObjectives":"Lernziele","didaktikon.exerciseQuestionsDone":"Du hast die Kontrollfragen beantwortet","didaktikon.exerciseReflectiveQuestions":"Reflexionsfragen","didaktikon.quizAgain":"Noch einmal","didaktikon.quizCorrect":"Richtig.","didaktikon.quizCorrectCount":"{count} richtig","didaktikon.quizCorrectWouldBe":"Richtig wäre gewesen:","didaktikon.quizDone":"Fertig","didaktikon.quizEvaluate":"Auswertung","didaktikon.quizNext":"Weiter","didaktikon.quizProgress":"Fortschritt","didaktikon.quizQuestionOf":"Frage {current} von {total}","didaktikon.quizRestart":"Neu beginnen","didaktikon.quizRestartText":"Deine Antworten in diesem Wissens-Check werden gelöscht.","didaktikon.quizRestartTitle":"Wissens-Check neu beginnen?","didaktikon.quizResult":"{correct} von {total} richtig","didaktikon.quizResultLong":"{correct} von {total} Fragen richtig","didaktikon.quizWrong":"Nicht ganz.","didaktikon.scenarios":"Szenarien","didaktikon.simAllScenarios":"Alle Szenarien (Taste 0)","didaktikon.simControls":"Simulation steuern","didaktikon.simNext":"Schritt vor (→)","didaktikon.simNextAria":"Schritt vor","didaktikon.simOverview":"Übersicht","didaktikon.simPause":"Pause (Leertaste)","didaktikon.simPauseAria":"Pause","didaktikon.simPlay":"Abspielen (Leertaste)","didaktikon.simPlayAria":"Abspielen","didaktikon.simPrev":"Schritt zurück (←)","didaktikon.simPrevAria":"Schritt zurück","didaktikon.simPrintHint":"Diese Simulation lebt von der Bewegung. Auf Papier steht nur der gerade sichtbare Schritt – der QR-Code oben führt zurück zur laufenden Fassung.","didaktikon.simReset":"Zurück auf Anfang (Taste R)","didaktikon.simResetAria":"Zurück auf Anfang","didaktikon.simScenarioCount":"{count} Szenarien","didaktikon.simScenarioKey":"{title} (Taste {number})","didaktikon.simScenarioTitle":"Szenario {number}","didaktikon.simSpeed":"Tempo wählen (Taste T)","didaktikon.simSpeedAria":"Tempo wählen","didaktikon.simSpeedMenu":"Tempo","didaktikon.simStepCount":"{count} Schritte","didaktikon.simStepCountOne":"{count} Schritt","didaktikon.simStepCounter":"Schritt {current} / {total}","didaktikon.speedFast":"zügig","didaktikon.speedNormal":"normal","didaktikon.speedSlow":"langsam","didaktikon.speedTurbo":"im Zeitraffer","didaktikon.speedValue":"{speed}×","didaktikon.stepNote":"Erklärung zum aktuellen Schritt"}</script>
+<link rel="stylesheet" media="print" href="../../skriptorium/print.css?v=675441b6">
+<meta name="generator" content="Skriptorium 2.0.0-rc.13">
+<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"2.0.0-rc.10"}],"internal":false,"languages":["de"],"skriptorium":"2.0.0-rc.13","theme":"didaktikon","themeOptions":["didaktikon"],"themes":[{"name":"didaktikon","version":"2.0.0-rc.10"},{"name":"atvantage","version":"2.2.0"},{"name":"default","version":"2.0.0-rc.13"}]}</script>
+<script type="application/json" id="skr-page-info">{"clientApi":"full","defaultLanguage":"de","description":"Wie aus einem Dockerfile ein Stapel wird, warum jeder Layer einen Hash aus sich und allem darunter trägt – und was daraus für Cache, geteilte Basis-Images und die Reihenfolge der Zeilen folgt.","duration":null,"fields":null,"language":"de","languages":["de"],"layout":"skriptorium.presentation","pageAssets":[{"path":"docker-grundlagen/best-practices/praesentation.css","src":"praesentation.css","type":"style"},{"path":"docker-grundlagen/best-practices/praesentation.js","src":"praesentation.js","type":"script"}],"pageId":"docker-grundlagen-best-practices-praesentation","runtimeFragments":["^/\\d+$"],"siteIndex":"/skriptorium/site.json","title":"Layer und Build-Cache","topics":null,"untranslated":null,"url":"/docker-grundlagen/best-practices/praesentation.html"}</script>
+<script type="application/json" id="skr-texts">{"didaktikon.capture":"Capture-Modus","didaktikon.captureExit":"beenden","didaktikon.captureText":"Text einblenden","didaktikon.crosswordAcross":"Waagerecht","didaktikon.crosswordCellAcross":"{number} waagerecht, Buchstabe {position}","didaktikon.crosswordCellDown":"{number} senkrecht, Buchstabe {position}","didaktikon.crosswordDown":"Senkrecht","didaktikon.crosswordHintLetter":"Tipp: Buchstabe","didaktikon.crosswordHintWord":"Tipp: Wort","didaktikon.crosswordRestart":"Neu beginnen","didaktikon.crosswordRestartText":"Deine Eingaben in diesem Rätsel werden gelöscht.","didaktikon.crosswordRestartTitle":"Kreuzworträtsel neu beginnen?","didaktikon.crosswordReveal":"Auflösen","didaktikon.crosswordRevealText":"Alle Felder werden ausgefüllt.","didaktikon.crosswordRevealTitle":"Kreuzworträtsel auflösen?","didaktikon.crosswordSolution":"Lösungswort","didaktikon.crosswordSolutionCell":"Lösungswort, Buchstabe {position}","didaktikon.crosswordSolved":"Gelöst – alle Begriffe stimmen.","didaktikon.doclinkCrossword":"Kreuzworträtsel","didaktikon.doclinkExercise":"Übung","didaktikon.doclinkQuiz":"Wissens-Check","didaktikon.doclinkSimulation":"Simulation","didaktikon.doclinkVisualization":"Visualisierung","didaktikon.exerciseObjectives":"Lernziele","didaktikon.exerciseQuestionsDone":"Du hast die Kontrollfragen beantwortet","didaktikon.exerciseReflectiveQuestions":"Reflexionsfragen","didaktikon.exerciseUserStory":"User Story","didaktikon.moduleBlock":"Grobthema: {block}","didaktikon.moduleDuration":"{minutes} Minuten","didaktikon.moduleMaterial":"Material","didaktikon.moduleMaterialOver":"Das Material dauert zusammen {material}′ – länger als das Modul mit {module}′.","didaktikon.quizAgain":"Noch einmal","didaktikon.quizCorrect":"Richtig.","didaktikon.quizCorrectCount":"{count} richtig","didaktikon.quizCorrectWouldBe":"Richtig wäre gewesen:","didaktikon.quizDone":"Fertig","didaktikon.quizEvaluate":"Auswertung","didaktikon.quizJump":"Zu Frage springen","didaktikon.quizNext":"Weiter","didaktikon.quizOverview":"Alle Fragen","didaktikon.quizOverviewClose":"Zurück zum Check","didaktikon.quizOverviewCorrect":"(richtig)","didaktikon.quizOverviewGoTo":"Zu dieser Frage","didaktikon.quizProgress":"Fortschritt","didaktikon.quizQuestionOf":"Frage {current} von {total}","didaktikon.quizRestart":"Neu beginnen","didaktikon.quizRestartText":"Deine Antworten in diesem Wissens-Check werden gelöscht.","didaktikon.quizRestartTitle":"Wissens-Check neu beginnen?","didaktikon.quizResult":"{correct} von {total} richtig","didaktikon.quizResultLong":"{correct} von {total} Fragen richtig","didaktikon.quizTrainerOnly":"Nur für Trainer:innen","didaktikon.quizWrong":"Nicht ganz.","didaktikon.scenarios":"Szenarien","didaktikon.simAllScenarios":"Alle Szenarien (Taste 0)","didaktikon.simControls":"Simulation steuern","didaktikon.simNext":"Schritt vor (→)","didaktikon.simNextAria":"Schritt vor","didaktikon.simOverview":"Übersicht","didaktikon.simPause":"Pause (Leertaste)","didaktikon.simPauseAria":"Pause","didaktikon.simPlay":"Abspielen (Leertaste)","didaktikon.simPlayAria":"Abspielen","didaktikon.simPrev":"Schritt zurück (←)","didaktikon.simPrevAria":"Schritt zurück","didaktikon.simPrintHint":"Diese Simulation lebt von der Bewegung. Auf Papier steht nur der gerade sichtbare Schritt – der QR-Code oben führt zurück zur laufenden Fassung.","didaktikon.simReset":"Zurück auf Anfang (Taste R)","didaktikon.simResetAria":"Zurück auf Anfang","didaktikon.simScenarioCount":"{count} Szenarien","didaktikon.simScenarioKey":"{title} (Taste {number})","didaktikon.simScenarioTitle":"Szenario {number}","didaktikon.simSpeed":"Tempo wählen (Taste T)","didaktikon.simSpeedAria":"Tempo wählen","didaktikon.simSpeedMenu":"Tempo","didaktikon.simStepCount":"{count} Schritte","didaktikon.simStepCountOne":"{count} Schritt","didaktikon.simStepCounter":"Schritt {current} / {total}","didaktikon.speedFast":"zügig","didaktikon.speedNormal":"normal","didaktikon.speedSlow":"langsam","didaktikon.speedTurbo":"im Zeitraffer","didaktikon.speedValue":"{speed}×","didaktikon.stepNote":"Erklärung zum aktuellen Schritt","didaktikon.trainerNoteClose":"Schließen","didaktikon.trainerNoteOpen":"Hinweis für Trainer:innen anzeigen","didaktikon.trainerNoteTitle":"Hinweis für Trainer:innen","didaktikon.trainingCatalogEmpty":"Hier gibt es noch keine Schulung.","didaktikon.trainingCatalogTrainings":"Schulungen","didaktikon.trainingDays":"{days} Tage","didaktikon.trainingDaysOne":"{days} Tag","didaktikon.trainingHomeInfo":"Kursbeschreibung","didaktikon.trainingHomeManifest":"Didaktisches Manifest","didaktikon.trainingHomeSales":"Sales-Asset","didaktikon.trainingInfoAudience":"Zielgruppe","didaktikon.trainingInfoObjectives":"Lernziele","didaktikon.trainingInfoObjectivesLead":"Die Lernenden …","didaktikon.trainingInfoOverview":"Überblick","didaktikon.trainingInfoPrerequisites":"Voraussetzungen","didaktikon.trainingMaterials":"Kursmaterial","didaktikon.trainingMaterialsExercises":"Übungen","didaktikon.trainingMaterialsLead":"Links stehen die **Übungen**, an denen Du selbst arbeitest, rechts das **Material zum Nachschlagen**.","didaktikon.trainingMaterialsMore":"Weitere Themen","didaktikon.trainingMaterialsOther":"Sonstige Unterlagen","didaktikon.trainingMaterialsReference":"Zum Nachschlagen","didaktikon.trainingModules":"Module","didaktikon.trainingModulesBlock":"Grobthema","didaktikon.trainingModulesDuration":"Dauer","didaktikon.trainingModulesMaterial":"Material","didaktikon.trainingModulesModule":"Modul","didaktikon.trainingModulesOver":"länger als das Modul","didaktikon.trainingSalesBuyers":"Käufer","didaktikon.trainingSalesPitch":"Pitch","didaktikon.trainingSalesPricing":"Preisrahmen","didaktikon.trainingSalesUsp":"Unterscheidungsmerkmale","didaktikon.trainingSalesValueProposition":"Nutzenversprechen"}</script>
 
-<script src="../../skriptorium/client.js?v=82492cae" defer></script>
+<script src="../../skriptorium/client.js?v=394fe386" defer></script>
 <script src="../../skriptorium/site.js?v=6472c794" defer></script>
 <script src="../../skriptorium/search-trail.js?v=31279378" data-skr-search-trail
-        data-base="../../" data-index="../../skriptorium/search/de.json?v=07ea62a4" defer></script>
+        data-base="../../" data-index="../../skriptorium/search/de.json?v=005dc747" defer></script>
 <link rel="stylesheet" href="../../skriptorium/highlight.css?v=f8a3fc05">
 <script type="module" src="../../skriptorium/highlight.js?v=0b2d40aa" data-skr-highlight="[&#34;bash&#34;,&#34;dockerfile&#34;,&#34;python&#34;,&#34;sql&#34;,&#34;yaml&#34;]"></script>
 <link rel="apple-touch-icon" sizes="180x180" href="../../themes/atvantage/assets/icon-180.png">
@@ -47,7 +47,7 @@
 <link rel="icon" sizes="16x16" href="../../themes/atvantage/assets/icon-16.png">
 
 <link rel="stylesheet" href="../../skriptorium/presentation.css?v=fc13e38e">
-<script src="../../skriptorium/presentation.js?v=59ada18d" defer></script>
+<script src="../../skriptorium/presentation.js?v=e656ad72" defer></script>
 
 <link rel="stylesheet" href="../../docker-grundlagen/best-practices/praesentation.css?v=fa112c6a">
 <script src="../../docker-grundlagen/best-practices/praesentation.js?v=395c63f5" defer></script>
@@ -66,7 +66,7 @@
 <button type="button" class="skr-qr" data-skr-qr hidden
         title="Diese Seite auf Deinem Smartphone öffnen"
         aria-label="Diese Seite auf Deinem Smartphone öffnen"></button>
-<button type="button" class="skr-tool skr-tool--theme" data-skr-theme-toggle
+<button type="button" class="skr-tool skr-tool--scheme" data-skr-scheme-toggle
         title="Farbschema umschalten (hell/dunkel)"
         aria-label="Dunkles Farbschema"><svg viewBox="0 0 24 24" width="1em" height="1em"
         fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"
@@ -82,223 +82,7 @@
 </div>
   </header>
   <main class="skr-deck" id="skr-deck" data-skr-deck>
-    <!--
-===============================================================================
-ANFORDERUNGEN AN DIESE UNTERLAGE
--------------------------------------------------------------------------------
-Steht hier und nicht in der AGENTS.md, weil eine Anforderung dort niemand
-findet, der diese Datei bearbeitet. Die AGENTS.md verweist nur hierher.
-
-Als HTML-Kommentar: Auf der Seite erscheint er nicht, im Quelltext der
-ausgelieferten Seite steht er aber – nichts hineinschreiben, was Lernende
-nicht lesen sollen.
-
-FORM
-- `layout: presentation`, eine Seite, daneben nur Stylesheet und Skript
-  gleichen Namens (`styles:`/`scripts:`), keine Bibliothek.
-  JEDES `##` beginnt eine Folie; alles vor dem ersten `##` ist die Titelfolie.
-  Eine Folie traegt EINE Aussage und passt auf EINEN Bildschirm - wer Text
-  ergaenzt, schneidet stattdessen eine neue Folie.
-- Kein `audiences:`, kein `duration` (die Zeit steht in der Kapitel-Dauer des
-  Moduls), keine Verortung im Ablauf ("Tag 1", "nach der Pause").
-- Farben AUSSCHLIESSLICH aus den `--skr-*`-Token. Kein Hex, kein rgb().
-- FALLE: Das Theme setzt fuer diese Seite
-  `.skr-guide-main ul, .skr-guide-main ol { display: flex;
-  flex-direction: column; gap: 8px; padding-left: 22px }` - SPEZIFISCHER als
-  eine einzelne Klasse. Regeln fuer eine Liste deshalb als `ul.lc__stapel`
-  schreiben, sonst greifen weder Abstand noch Einzug.
-
-REIHENFOLGE DER ABSCHNITTE - DIE IST DER INHALT
-1. AUFBAU: Erst das Dockerfile (mit Verweis auf die offizielle Referenz), dann
-   das Bild vom Stapel.
-
-   DIE BASIS STEHT OBEN - IN JEDEM BILD DIESER SEITE, ausnahmslos. Die
-   Zeichnung folgt damit der Datei: erste Zeile oben, letzte unten, wie im
-   Editor; die "darueberliegenden" Schichten stehen im Bild DARUNTER. Kein
-   Stapel wird gedreht, und es wird auch nicht erklaert, warum er gedreht
-   waere: Zwei Leserichtungen nebeneinander waren genau das, was hier
-   verwirrt hat.
-
-   Die Begriffe "untere/obere Schicht" traegt die ACHSE neben dem ersten Bild -
-   ein Pfeil nach oben "untere Schichten", einer nach unten "obere Schichten".
-   Einmal, an dieser Stelle. Keine Fussnote unter jedem weiteren Bild.
-2. HASH: Jeder Layer traegt eine Pruefsumme aus seinem Inhalt UND dem Hash des
-   Layers darunter. Daraus folgt beides - der Cache UND die Ungueltigkeit nach
-   oben. Die Regel wird hier hergeleitet, nicht behauptet.
-3. IMAGE: Ein Image ist ein Layer samt allem darunter. Daraus folgen geteilte
-   Basis-Layer und Images, die ganz auf anderen aufbauen.
-4. Erst DANACH die Best Practice (Reihenfolge im Dockerfile) und der
-   Nebenbefund zum Loeschen.
-
-INTERAKTION - DER GRUND, WARUM DAS EINE VISUALISIERUNG IST
-- Im Cache-Abschnitt waehlt man, WAS sich geaendert hat (nichts / Quelldatei /
-  Abhaengigkeitsliste). BEIDE Spalten rechnen daraufhin dieselbe Regel: Die
-  erste Schicht, die das Geaenderte enthaelt, wird neu gebaut, und mit ihr
-  alles darunter im Bild. Man sieht dadurch nicht zwei Bilder, sondern
-  dieselbe Regel auf zwei Anordnungen - das ist der Lerngewinn gegenueber
-  zwei festen Bildern.
-- `COPY . .` traegt `data-lc-enthaelt="code deps"`: Es kopiert die
-  Abhaengigkeitsliste mit. Ohne diese Feinheit saehe die linke Spalte bei einer
-  geaenderten Liste faelschlich gut aus.
-- VOREINSTELLUNG IST "nichts": der Ausgangszustand, von dem aus man die
-  Aenderungen durchspielt. Das Markup wird in genau diesem Stand ausgeliefert.
-- DIE KNOPFZEILE SIEHT NACH EINGABE AUS (Grund, Rahmen, Akzentkante wie ein
-  Infobalken) - sonst liest sie sich als Fliesstext und niemand klickt.
-- BEIDE SPALTEN TEILEN SICH DIE ZEILEN DES VERGLEICHS (`subgrid`). Ohne das
-  beginnen die Stapel auf verschiedener Hoehe, sobald ein Untertitel umbricht -
-  und dann steht `FROM` nicht mehr neben `FROM`. Wo `subgrid` fehlt, bleibt es
-  beim bisherigen Fluss; das Bild ist dann versetzt, aber nicht falsch.
-- FALLE BEI `display: contents`: Es taugt nur, wenn JEDES Kind des Eintrags ein
-  ELEMENT ist (so wie in der Zuordnung auf Folie 3: zwei Zellen, sonst nichts).
-  Steht im Eintrag Text mit `<strong>` dazwischen, wird jedes Textstueck zu
-  einer eigenen Gitterzelle - der Satz reisst auseinander, und der Zaehler
-  zeigt 0. Genau das ist beim Manifest passiert.
-- DIE LETZTE FOLIE IST EIN KLEINES MANIFEST: fuenf NUMMERIERTE Aussagen, die
-  aufeinander aufbauen - erst drei zur Funktionsweise (Image, Hash, Cache),
-  dann zwei Folgen daraus (Reihenfolge, Aufraeumen). Eine Aufzaehlung mit
-  Punkten stellte sie nebeneinander, als waeren es fuenf gleichrangige Tipps.
-- OHNE "OBEN" UND "UNTEN", wo kein Bild danebensteht. Auf der letzten Folie
-  heisst es "kommt in Basis-Layer" und "moeglichst spaet" - die Achse, die
-  "unten" erklaert, ist dort laengst nicht mehr zu sehen.
-- EINE SCHICHT SIEHT UEBERALL GLEICH AUS: Schluesselwort fett und in der
-  Akzentfarbe, der Rest der Zeile normal, der Hash grau und kleiner. Das gilt
-  fuer JEDE Folie - sonst sieht dieselbe Sache dreimal anders aus.
-- MARKEN IN DEN SCHICHTEN NUR, WENN SIE ETWAS SAGEN, das man nicht sieht ("aus
-  dem Cache", "neu gebaut"). "Basis", "sauber" oder "nur unsichtbar" wiederholten
-  bloss die Anweisung daneben - sie sind entfallen.
-- DAS FAZIT IST EIN CALLOUT DES THEMES - gruen, wo es laeuft, gelb, wo Aufwand
-  ohne Gegenwert entsteht. Urteil und Begruendung stehen zusammen in EINEM
-  Kasten; getrennt las sich das eine als Ueberschrift des anderen.
-- DAS URTEIL GEHOERT INS BILD: Welche Reihenfolge besser ist, soll man sehen,
-  nicht aus zwei Bilanzsaetzen erschliessen. Gruener Haken, wo es richtig
-  laeuft; skeptisches Gesicht, wo Aufwand ohne Gegenwert entsteht. Beides haengt
-  am selben Schalter wie die Schichten. OHNE AENDERUNG bekommen BEIDE den Haken
-  - ein Urteil aus Prinzip waere unehrlich, dort ist nichts zu tun.
-- DIE KNOEPFE SIND AUSFUEHRLICH BESCHRIFTET und stehen hinter der Frage
-  ("Entwickler aendert: nichts / Anwendungscode / die Abhaengigkeiten
-  (package.json)") - die Zeile liest sich als ein Satz. "eine Quelldatei" sagte
-  nicht, wer da was tut.
-- DIE CMD-ZEILE STEHT NICHT im Vergleich: Sie traegt zur Aussage ueber die
-  Reihenfolge nichts bei und kostet nur Hoehe.
-- OHNE JAVASCRIPT bleibt der Fall "Quelldatei geaendert" stehen - der
-  haeufigste. Deshalb wird das Markup in genau diesem Zustand ausgeliefert und
-  die Bilanzsaetze stehen als Text im Dokument (`hidden`), nicht im Skript.
-- AUF PAPIER STEHEN ALLE DREI FAELLE. Sie entstehen BEIM LADEN aus demselben
-  Markup (Klon + `zeichne()`), nicht bei `beforeprint`: Bleibt das Ereignis aus,
-  fehlten sonst zwei Drittel. Eine von Hand gepflegte zweite Kopie waere binnen
-  einer Aenderung falsch.
-- KEIN Zustand in der Adresse: Auf einer Praesentation gehoert das Fragment dem
-  Layout (`#/3` ist die Foliennummer), und `AvdAcademyState` haelt dort still.
-
-INHALT
-- NUR RUN, COPY und ADD erzeugen eine DATEISYSTEM-SCHICHT; FROM setzt den
-  Grund, alles andere schreibt METADATEN. Das wird gezeigt
-  (`lc__layer--meta`), nicht verschwiegen - sonst entsteht das falsche Bild
-  "jede Zeile ein Layer".
-- DIE DEFINITION BLEIBT KURZ: "ein Name auf einer Schicht - samt allem, was
-  unter ihr liegt". Die Metadaten werden NICHT eigens angehaengt: Im Bild dieser
-  Folien ist eine Metadaten-Zeile eine Zeile wie jede andere, mit eigenem Hash.
-  Wer sie in der Definition nachtraegt, macht aus dem einen Satz zwei Begriffe.
-  Die genaue Unterscheidung steht dort, wo sie hingehoert - in der Fussnote
-  unter der Zuordnung.
-- DIE DATEI SIEHT WIE EINE DATEI AUS: Dateiname ueber dem Rahmen,
-  Zeilennummern in eigener Spalte (aus einem CSS-Zaehler, nicht im Text). Die
-  Schluesselwoerter stehen DORT - und die Nummern sind die Verbindung zur
-  Schichten-Spalte daneben.
-- FOLIE 3 ordnet ZEILE FUER ZEILE zu: EIN Gitter, links die Dockerfile-Zeile,
-  rechts GENAU daneben, was daraus entsteht. Zwei getrennte Listen verrutschen,
-  sobald eine Zeile umbricht - und dann stimmt die Zuordnung nicht mehr, die das
-  ganze Bild ausmacht. Das Gitter ist die LISTE SELBST (zwei Spalten), der
-  Eintrag ist `display: contents` - so bleibt die Listen-Semantik erhalten und
-  die Zellen liegen trotzdem im Gitter.
-- FALLE, die schon zugeschlagen hat: Die Achse gehoert NEBEN das Gitter, nicht
-  als dritte Spalte hinein. Als Spalte braeuchte sie `grid-row: 1 / -1`, und das
-  greift ohne explizite Zeilen NICHT - `-1` zeigt dann auf die einzige
-  Zeilenlinie. Die Achse belegte die erste Zeile, und in die freien Zellen der
-  dritten Spalte lief alles Weitere hinein: Das Bild war zerschossen.
-- RECHTS STEHT NUR DER TYP (Dateisystem oder Metadaten), je mit Sinnbild - die
-  Anweisung steht ja daneben. Sie dort zu wiederholen war der Fehler davor.
-- `WORKDIR` IST DER GRENZFALL der Zweiteilung und wird als solcher benannt (in
-  der Fussnote unter dem Bild): Es schreibt Metadaten, legt das Verzeichnis aber
-  an, wenn es fehlt, und bestimmt, worauf sich die folgenden COPY/RUN beziehen.
-  Nicht stillschweigend als reine Metadaten-Zeile fuehren - danach wurde
-  gefragt, und die Frage ist berechtigt.
-- `FROM` ist kein einzelnes Blatt: Die Basis bringt eigene Schichten mit. Als
-  MINIATUR aus flachen Kaesten gezeichnet - sie zeigt "mehrere", ohne eine Zahl
-  zu behaupten. KEINE verdeckten Karten (Schatten hinter dem Kasten): Das las
-  sich als Bildfehler, nicht als Stapel.
-- FUER DEN CACHE WIRD NICHT NACH SORTE UNTERSCHIEDEN. Jede geaenderte Zeile
-  entwertet alles darunter - ob sie eine Schicht anlegt oder nur Metadaten
-  schreibt, spielt dort keine Rolle. Eine eigene Folie dafuer gab es einmal;
-  sie ist entfallen, weil sie eine Ausnahme nahelegte, die es nicht gibt.
-  Was von ihr bleibt, steht in der Fussnote unter der Zuordnung.
-- DIE HASH-FOLIE BLEIBT BEIM DURCHGAENGIGEN BEISPIEL: dieselben sechs Zeilen wie
-  auf der Zuordnung, mit Kommando links und Hash rechts. Ein zweites Beispiel
-  nur fuer die Hashes zwaenge dazu, sich neu einzufinden. Das gilt fuer JEDES
-  Bild dieser Folien - auch die beiden Folge-Bilder zeigen dieselben sechs
-  Zeilen, nur anders markiert.
-- JEDE SCHLUSSFOLGERUNG BEKOMMT EINE EIGENE FOLIE UND EIN BILD. "Geaenderter
-  Hash" und "Caching" sind die beiden Kernaussagen der Unterlage; zusammen auf
-  einer Folie waren sie zwei Stichpunkte, die man ueberliest.
-- REIHENFOLGE: "Geaenderter Hash - alles Spaetere neu" steht DIREKT hinter der
-  Hash-Folie, denn es ist deren Zusatzerklaerung. Der Cache kommt danach.
-- DER TITEL NENNT DAS THEMA, nicht nur die Pointe ("Caching: Bekannter Hash,
-  nichts zu tun"). Der Trainer blaettert und muss wissen, wo er ist; eine Folie
-  mit reiner Pointenueberschrift zwingt ihn, den Inhalt zu lesen.
-- DIE DATEI STEHT NEBEN DEN SCHICHTEN, wo es etwas zu vergleichen gibt. Auf der
-  Zuordnung ZEILE FUER ZEILE; bei "Image als Grund" geht die `FROM`-Zeile ueber
-  ZWEI Schichten, und eine KLAMMER fasst sie zusammen - dort ist die
-  Zeilengleichheit nicht nur unnoetig, sondern falsch. Die Namen haengen wie auf
-  der Umdefinitions-Folie als Zeiger an ihrer Schicht.
-- BREITE: Die Inhaltsspalte steht auf 46rem (Theme: 1100px), damit Text und Bild
-  auf einer Spalte liegen. Braucht EIN Bild mehr, bekommt die betreffende Folie
-  sie per `:has()` - nicht alle Folien fuer ein Bild verbreitern. Und die
-  Beschriftungen in den Schichten bleiben KURZ (`RUN apk add …`), sonst brechen
-  sie um und die Kaesten werden hoch.
-- SPALTEN SO BREIT WIE IHR INHALT (`auto`, kein `1fr`): Eine `1fr`-Spalte dehnt
-  die Schicht, und zwischen Anweisung und Hash klafft eine Luecke. Dasselbe gilt
-  INNERHALB der Schicht - dort darf sich keine Spanne dehnen.
-- FALLE IM FLEX-KASTEN: Der Leerraum ZWISCHEN den Kindern faellt weg - aus
-  `<b>FROM</b> meine-basis` wurde "FROMmeine-basis". Der Rest der Zeile steht
-  deshalb in einer eigenen Spanne und ist damit EIN Kind.
-- Die Dateispalte ist eine DATEI: Zeilennummer, durchlaufender Grund, aussen
-  gerundet. Sie bleibt trotzdem Zelle fuer Zelle im Gitter - nur so stehen COPY
-  und CMD auf derselben Hoehe wie ihre Schicht. Ein Kasten drumherum waere
-  einfacher und wuerde genau das aufgeben.
-- JEDE SKIZZE NENNT DIE ANWEISUNG UND DEN HASH - auch die beiden zum Teilen.
-  Ohne die Anweisung fehlt der Bezug zum Dockerfile, ohne den Hash der Bezug zur
-  Hash-Folie; der gemeinsame Grund traegt in beiden Bildern DENSELBEN Hash wie
-  im durchgaengigen Beispiel, sonst ist es nicht derselbe Grund.
-- DAS CACHE-BILD ZEIGT EINE ENTSCHEIDUNG, keine Behauptung: LINKS die Kette des
-  gewuenschten Images, RECHTS der Cache - dort, wo in der Schicht auch der Hash
-  steht. Dazwischen PFEILE, und die tragen die Aussage: nach links, was aus dem
-  Cache kommt; nach rechts (in der Farbe des Fehlenden), was noch geholt wird
-  und danach dort landet. KEIN Text in den Schichten - eine Marke "im Cache" an
-  jeder Zeile behauptete das Ergebnis, statt es herzuleiten.
-- DIE CACHE-SPALTE ZEIGT NUR DIESE KETTE. Eintraege fremder Images standen
-  einmal darunter; sie kosteten Platz und trugen auf dieser Folie nichts bei -
-  dass Images sich Schichten teilen, ist das Thema einer eigenen Folie weiter
-  hinten. Die Hashes beider Seiten muessen zusammenpassen; die Pruefung
-  vergleicht sie wirklich.
-- DIE UMDEFINITION DES IMAGES ist ebenso eine Kernaussage und steht deshalb in
-  derselben Reihe - mit Skizze: zwei NAMEN zeigen auf zwei verschiedene Schichten
-  DERSELBEN Kette. Das ist der ganze Punkt; als Definitionssatz war es Prosa.
-- DIE FORMEL benutzt ein FUNKTIONSZEICHEN (ƒ), kein kleines f, und spricht von
-  der "Schicht darunter" - der Sprache der Achse, nicht der Lage im Bild.
-- KEINE eigene Textausrichtung auf den Folien - es gilt der Theme-Standard
-  (linksbuendig). Zentrierte Zeilen waren gesetzt und wurden verworfen.
-- FALLE BEI ABSTAENDEN: Das Theme setzt `.skr-slide p { margin: 0 0
-  space-4 }` - Klasse plus Element, 0-1-1. Eine Bausteinregel mit EINER Klasse
-  verliert dagegen, auch wenn sie spaeter steht. Absaetze in Bausteinen deshalb
-  mit ZWEI Klassen ansprechen (`.lc__datei .lc__datei-name`), und eine eigene
-  Folienregel nur als `.skr-slide__inner > p` schreiben - sonst trifft
-  sie auch die Bausteine. Genau daran stand ueber der ersten Dockerfile-Zeile
-  eine Luecke, die wie eine leere Zeile aussah.
-- Das Beispiel bleibt ueber alle Abschnitte DASSELBE (node-Anwendung), damit
-  man die Stapel vergleichen kann.
-===============================================================================
--->
-<h1 id="layer-und-build-cache">Layer und Build-Cache</h1>
+    <h1 id="layer-und-build-cache">Layer und Build-Cache</h1>
 <p>Ein Image entsteht nicht in einem Stück, sondern Schicht für Schicht.
 Wer das versteht, versteht den Rest von selbst.</p>
 <h2 id="dockerfile--liste-von-schritten">Dockerfile – Liste von Schritten</h2>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="#0f6e7a" role="img" aria-label="Externer Verweis">
+  <!-- Die Füllfarbe gilt nur, wenn die Datei für sich geöffnet wird: der Grundton des Akzents im Standard-Theme. Im Menü zeigt der Kern das Zeichen als Maske in der Farbe des Eintrags (components.css), ohne Maskenunterstützung gar nicht. -->
+  <!-- Kasten, an der Ecke oben rechts offen; aus seiner Mitte zeigt ein Pfeil schräg hinaus – ein Ziel außerhalb der Unterlage. -->
+  <path d="M12 7L5 7L5 19L17 19L17 11A1 1 0 0 1 19 11L19 21L3 21L3 5L12 5A1 1 0 0 1 12 7Z"/>
+  <path d="M10.29 12.29L19.79 2.79A1 1 0 0 1 21.21 4.21L11.71 13.71A1 1 0 0 1 10.29 12.29Z"/>
+  <path d="M15.5 2L22 2L22 8.5A1 1 0 0 1 20 8.5L20 4L15.5 4A1 1 0 0 1 15.5 2Z"/>
+</svg>

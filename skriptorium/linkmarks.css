@@ -152,4 +152,6 @@
 :where(.skr-guide-main a[href*=".docker.com"]).skr-linkmark--none,
 .skr-linkmark--none .skr-linkmark--docker,
 .skr-linkmark--docker.skr-linkmark--none { padding-left: 0; }
+:where(.skr-guide-main a:has(> .skr-symbol):not([class*="skr-linkmark--"])) { padding-left: 0; }
+:where(.skr-guide-main a:has(> .skr-symbol):not([class*="skr-linkmark--"]))::before { content: none; }
 }

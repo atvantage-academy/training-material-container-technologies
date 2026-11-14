@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="#0f6e7a" role="img" aria-label="Suche">
+  <!-- Die Füllfarbe gilt nur, wenn die Datei für sich geöffnet wird: der Grundton des Akzents im Standard-Theme. Im Menü zeigt der Kern das Zeichen als Maske in der Farbe des Eintrags (components.css), ohne Maskenunterstützung gar nicht. -->
+  <!-- Lupe mit Griff nach rechts unten – die Suche. -->
+  <path d="M3 10.5A7.5 7.5 0 1 1 18 10.5A7.5 7.5 0 1 1 3 10.5ZM5 10.5A5.5 5.5 0 1 0 16 10.5A5.5 5.5 0 1 0 5 10.5Z"/>
+  <path d="M16.21 14.79L21.21 19.79A1 1 0 0 1 19.79 21.21L14.79 16.21A1 1 0 0 1 16.21 14.79Z"/>
+</svg>

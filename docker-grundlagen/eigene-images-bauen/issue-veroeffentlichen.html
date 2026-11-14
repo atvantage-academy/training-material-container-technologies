@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="skr-root" content="../../">
-<script src="../../skriptorium/skr.js?v=dfcd09dd"></script>
+<script src="../../skriptorium/skr.js?v=f901f1a0"></script>
 <title>Ein Image versioniert in eine Registry pushen · Containertechnologien (Academy)</title>
 <meta name="description" content="Das selbst gebaute Image in eine Registry pushen – mit einem unveränderlichen Versions-Tag und einem beweglichen Zeiger daneben.">
 
@@ -13,34 +13,34 @@
 <meta property="og:description" content="Das selbst gebaute Image in eine Registry pushen – mit einem unveränderlichen Versions-Tag und einem beweglichen Zeiger daneben.">
 <meta property="og:type" content="article">
 <link rel="preload" href="../../themes/atvantage/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="../../themes/default/theme.css?v=b795c99c">
-<link rel="stylesheet" href="../../themes/atvantage/fonts.css?v=0f189d71">
-<link rel="stylesheet" href="../../themes/atvantage/tokens/colors.css?v=8ed47a94">
-<link rel="stylesheet" href="../../themes/atvantage/tokens/typography.css?v=6445d4d3">
-<link rel="stylesheet" href="../../themes/atvantage/tokens/spacing.css?v=58e35278">
-<link rel="stylesheet" href="../../themes/atvantage/tokens/components.css?v=3fcd65a3">
-<link rel="stylesheet" href="../../themes/atvantage/tokens/base.css?v=b47b1e2d">
-<link rel="stylesheet" href="../../themes/atvantage/theme.css?v=e7026433">
-<link rel="stylesheet" href="../../themes/didaktikon/theme.css?v=4a593b58">
-<link rel="stylesheet" href="../../skriptorium/tokens.css?v=e74fbfe2">
+<link rel="stylesheet" href="../../themes/default/theme.css?v=b795c99c" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/fonts.css?v=0f189d71" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/colors.css?v=8ed47a94" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/typography.css?v=6445d4d3" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/spacing.css?v=58e35278" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/components.css?v=3fcd65a3" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/base.css?v=b47b1e2d" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/theme.css?v=e7026433" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/didaktikon/theme.css?v=4a593b58" data-skr-source="theme">
+<link rel="stylesheet" href="../../skriptorium/tokens.css?v=976961fc">
 <link rel="stylesheet" href="../../extensions/didaktikon/tokens.css?v=5966d76a">
 <link rel="stylesheet" href="../../skriptorium/base.css?v=86e37c43">
-<link rel="stylesheet" href="../../skriptorium/components.css?v=b86ac9ad">
+<link rel="stylesheet" href="../../skriptorium/components.css?v=dd0c549b">
 <link rel="stylesheet" href="../../skriptorium/doclinks.css?v=2ef23515">
-<link rel="stylesheet" href="../../skriptorium/linkmarks.css?v=31148a87">
-<link rel="stylesheet" href="../../skriptorium/site.css?v=d11b6ac6">
+<link rel="stylesheet" href="../../skriptorium/linkmarks.css?v=1643f80a">
+<link rel="stylesheet" href="../../skriptorium/site.css?v=dc500458">
 <link rel="stylesheet" href="../../skriptorium/logo.css?v=43a7fbaf">
-<link rel="stylesheet" href="../../skriptorium/guide.css?v=d99cc970">
-<link rel="stylesheet" media="print" href="../../skriptorium/print.css?v=856e77e0">
-<meta name="generator" content="Skriptorium 1.5.0">
-<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"1.0.0"}],"internal":false,"languages":["de"],"skriptorium":"1.5.0","theme":"didaktikon","themes":[{"name":"didaktikon","version":"1.0.0"},{"name":"atvantage","version":"1.0.0"},{"name":"default","version":"1.5.0"}]}</script>
-<script type="application/json" id="skr-page-info">{"clientApi":"full","defaultLanguage":"de","description":"Das selbst gebaute Image in eine Registry pushen – mit einem unveränderlichen Versions-Tag und einem beweglichen Zeiger daneben.","duration":30,"fields":{"didaktikon":{"objectives":["Du meldest Dich an einer Registry an und legst dort ein Repository an.","Du veröffentlichst ein Image in der Registry.","Du begründest, warum ein Verlass auf `latest` ein Zurückrollen unmöglich macht."],"reflective_questions":["Wie weist Du einem bereits gepushten Image zusätzlich das Tag `latest` zu? Musst Du es dafür neu bauen?","Welche Schritte führst Du aus, um eine Änderung als Version `1.0.1` zu veröffentlichen und `latest` mitzuziehen?","Was passiert, wenn Du ein Image nur mit dem Tag `latest` pushst und dieses Tag bei jeder Änderung verschiebst?","Warum war der zweite Push so viel schneller als der erste?","Was passiert, wenn Du im Dockerfile bei `FROM` das Tag weglässt? Warum ist das für einen Build, den jemand in einem halben Jahr wiederholt, ein Problem?"],"user_story":"**Als** Entwickler **möchte ich** mein Image an einem Ort ablegen, an den andere herankommen, **damit** nicht jeder es selbst bauen muss – und **damit** später nachvollziehbar bleibt, welche Fassung wo lief."},"skriptorium":{"definition_of_done":["Du bist an der Registry angemeldet und hast dort ein Repository `meine-website` angelegt.","Dein Image liegt in der Registry unter dem Tag `1.0.0`.","Eine zweite Fassung liegt als `1.0.1` in der Registry, und `latest` zeigt auf sie."]}},"language":"de","languages":["de"],"layout":"didaktikon.exercise","pageId":null,"runtimeFragments":null,"siteIndex":"/skriptorium/site.json","title":"Ein Image versioniert in eine Registry pushen","topics":["Registry","Tagging","Versionierung"],"url":"/docker-grundlagen/eigene-images-bauen/issue-veroeffentlichen.html"}</script>
-<script type="application/json" id="skr-texts">{"didaktikon.capture":"Capture-Modus","didaktikon.captureExit":"beenden","didaktikon.captureText":"Text einblenden","didaktikon.crosswordAcross":"Waagerecht","didaktikon.crosswordCellAcross":"{number} waagerecht, Buchstabe {position}","didaktikon.crosswordCellDown":"{number} senkrecht, Buchstabe {position}","didaktikon.crosswordDown":"Senkrecht","didaktikon.crosswordHintLetter":"Tipp: Buchstabe","didaktikon.crosswordHintWord":"Tipp: Wort","didaktikon.crosswordRestart":"Neu beginnen","didaktikon.crosswordRestartText":"Deine Eingaben in diesem Rätsel werden gelöscht.","didaktikon.crosswordRestartTitle":"Kreuzworträtsel neu beginnen?","didaktikon.crosswordReveal":"Auflösen","didaktikon.crosswordRevealText":"Alle Felder werden ausgefüllt.","didaktikon.crosswordRevealTitle":"Kreuzworträtsel auflösen?","didaktikon.crosswordSolution":"Lösungswort","didaktikon.crosswordSolutionCell":"Lösungswort, Buchstabe {position}","didaktikon.crosswordSolved":"Gelöst – alle Begriffe stimmen.","didaktikon.doclinkCrossword":"Kreuzworträtsel","didaktikon.doclinkExercise":"Übung","didaktikon.doclinkQuiz":"Wissens-Check","didaktikon.doclinkSimulation":"Simulation","didaktikon.doclinkVisualization":"Visualisierung","didaktikon.exerciseObjectives":"Lernziele","didaktikon.exerciseQuestionsDone":"Du hast die Kontrollfragen beantwortet","didaktikon.exerciseReflectiveQuestions":"Reflexionsfragen","didaktikon.quizAgain":"Noch einmal","didaktikon.quizCorrect":"Richtig.","didaktikon.quizCorrectCount":"{count} richtig","didaktikon.quizCorrectWouldBe":"Richtig wäre gewesen:","didaktikon.quizDone":"Fertig","didaktikon.quizEvaluate":"Auswertung","didaktikon.quizNext":"Weiter","didaktikon.quizProgress":"Fortschritt","didaktikon.quizQuestionOf":"Frage {current} von {total}","didaktikon.quizRestart":"Neu beginnen","didaktikon.quizRestartText":"Deine Antworten in diesem Wissens-Check werden gelöscht.","didaktikon.quizRestartTitle":"Wissens-Check neu beginnen?","didaktikon.quizResult":"{correct} von {total} richtig","didaktikon.quizResultLong":"{correct} von {total} Fragen richtig","didaktikon.quizWrong":"Nicht ganz.","didaktikon.scenarios":"Szenarien","didaktikon.simAllScenarios":"Alle Szenarien (Taste 0)","didaktikon.simControls":"Simulation steuern","didaktikon.simNext":"Schritt vor (→)","didaktikon.simNextAria":"Schritt vor","didaktikon.simOverview":"Übersicht","didaktikon.simPause":"Pause (Leertaste)","didaktikon.simPauseAria":"Pause","didaktikon.simPlay":"Abspielen (Leertaste)","didaktikon.simPlayAria":"Abspielen","didaktikon.simPrev":"Schritt zurück (←)","didaktikon.simPrevAria":"Schritt zurück","didaktikon.simPrintHint":"Diese Simulation lebt von der Bewegung. Auf Papier steht nur der gerade sichtbare Schritt – der QR-Code oben führt zurück zur laufenden Fassung.","didaktikon.simReset":"Zurück auf Anfang (Taste R)","didaktikon.simResetAria":"Zurück auf Anfang","didaktikon.simScenarioCount":"{count} Szenarien","didaktikon.simScenarioKey":"{title} (Taste {number})","didaktikon.simScenarioTitle":"Szenario {number}","didaktikon.simSpeed":"Tempo wählen (Taste T)","didaktikon.simSpeedAria":"Tempo wählen","didaktikon.simSpeedMenu":"Tempo","didaktikon.simStepCount":"{count} Schritte","didaktikon.simStepCountOne":"{count} Schritt","didaktikon.simStepCounter":"Schritt {current} / {total}","didaktikon.speedFast":"zügig","didaktikon.speedNormal":"normal","didaktikon.speedSlow":"langsam","didaktikon.speedTurbo":"im Zeitraffer","didaktikon.speedValue":"{speed}×","didaktikon.stepNote":"Erklärung zum aktuellen Schritt"}</script>
+<link rel="stylesheet" href="../../skriptorium/guide.css?v=1237e482">
+<link rel="stylesheet" media="print" href="../../skriptorium/print.css?v=675441b6">
+<meta name="generator" content="Skriptorium 2.0.0-rc.13">
+<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"2.0.0-rc.10"}],"internal":false,"languages":["de"],"skriptorium":"2.0.0-rc.13","theme":"didaktikon","themeOptions":["didaktikon"],"themes":[{"name":"didaktikon","version":"2.0.0-rc.10"},{"name":"atvantage","version":"2.2.0"},{"name":"default","version":"2.0.0-rc.13"}]}</script>
+<script type="application/json" id="skr-page-info">{"clientApi":"full","defaultLanguage":"de","description":"Das selbst gebaute Image in eine Registry pushen – mit einem unveränderlichen Versions-Tag und einem beweglichen Zeiger daneben.","duration":30,"fields":null,"language":"de","languages":["de"],"layout":"didaktikon.exercise","pageId":"docker-grundlagen-eigene-images-bauen-issue-veroeffentlichen","runtimeFragments":null,"siteIndex":"/skriptorium/site.json","title":"Ein Image versioniert in eine Registry pushen","topics":["Registry","Tagging","Versionierung"],"untranslated":null,"url":"/docker-grundlagen/eigene-images-bauen/issue-veroeffentlichen.html"}</script>
+<script type="application/json" id="skr-texts">{"didaktikon.capture":"Capture-Modus","didaktikon.captureExit":"beenden","didaktikon.captureText":"Text einblenden","didaktikon.crosswordAcross":"Waagerecht","didaktikon.crosswordCellAcross":"{number} waagerecht, Buchstabe {position}","didaktikon.crosswordCellDown":"{number} senkrecht, Buchstabe {position}","didaktikon.crosswordDown":"Senkrecht","didaktikon.crosswordHintLetter":"Tipp: Buchstabe","didaktikon.crosswordHintWord":"Tipp: Wort","didaktikon.crosswordRestart":"Neu beginnen","didaktikon.crosswordRestartText":"Deine Eingaben in diesem Rätsel werden gelöscht.","didaktikon.crosswordRestartTitle":"Kreuzworträtsel neu beginnen?","didaktikon.crosswordReveal":"Auflösen","didaktikon.crosswordRevealText":"Alle Felder werden ausgefüllt.","didaktikon.crosswordRevealTitle":"Kreuzworträtsel auflösen?","didaktikon.crosswordSolution":"Lösungswort","didaktikon.crosswordSolutionCell":"Lösungswort, Buchstabe {position}","didaktikon.crosswordSolved":"Gelöst – alle Begriffe stimmen.","didaktikon.doclinkCrossword":"Kreuzworträtsel","didaktikon.doclinkExercise":"Übung","didaktikon.doclinkQuiz":"Wissens-Check","didaktikon.doclinkSimulation":"Simulation","didaktikon.doclinkVisualization":"Visualisierung","didaktikon.exerciseObjectives":"Lernziele","didaktikon.exerciseQuestionsDone":"Du hast die Kontrollfragen beantwortet","didaktikon.exerciseReflectiveQuestions":"Reflexionsfragen","didaktikon.exerciseUserStory":"User Story","didaktikon.moduleBlock":"Grobthema: {block}","didaktikon.moduleDuration":"{minutes} Minuten","didaktikon.moduleMaterial":"Material","didaktikon.moduleMaterialOver":"Das Material dauert zusammen {material}′ – länger als das Modul mit {module}′.","didaktikon.quizAgain":"Noch einmal","didaktikon.quizCorrect":"Richtig.","didaktikon.quizCorrectCount":"{count} richtig","didaktikon.quizCorrectWouldBe":"Richtig wäre gewesen:","didaktikon.quizDone":"Fertig","didaktikon.quizEvaluate":"Auswertung","didaktikon.quizJump":"Zu Frage springen","didaktikon.quizNext":"Weiter","didaktikon.quizOverview":"Alle Fragen","didaktikon.quizOverviewClose":"Zurück zum Check","didaktikon.quizOverviewCorrect":"(richtig)","didaktikon.quizOverviewGoTo":"Zu dieser Frage","didaktikon.quizProgress":"Fortschritt","didaktikon.quizQuestionOf":"Frage {current} von {total}","didaktikon.quizRestart":"Neu beginnen","didaktikon.quizRestartText":"Deine Antworten in diesem Wissens-Check werden gelöscht.","didaktikon.quizRestartTitle":"Wissens-Check neu beginnen?","didaktikon.quizResult":"{correct} von {total} richtig","didaktikon.quizResultLong":"{correct} von {total} Fragen richtig","didaktikon.quizTrainerOnly":"Nur für Trainer:innen","didaktikon.quizWrong":"Nicht ganz.","didaktikon.scenarios":"Szenarien","didaktikon.simAllScenarios":"Alle Szenarien (Taste 0)","didaktikon.simControls":"Simulation steuern","didaktikon.simNext":"Schritt vor (→)","didaktikon.simNextAria":"Schritt vor","didaktikon.simOverview":"Übersicht","didaktikon.simPause":"Pause (Leertaste)","didaktikon.simPauseAria":"Pause","didaktikon.simPlay":"Abspielen (Leertaste)","didaktikon.simPlayAria":"Abspielen","didaktikon.simPrev":"Schritt zurück (←)","didaktikon.simPrevAria":"Schritt zurück","didaktikon.simPrintHint":"Diese Simulation lebt von der Bewegung. Auf Papier steht nur der gerade sichtbare Schritt – der QR-Code oben führt zurück zur laufenden Fassung.","didaktikon.simReset":"Zurück auf Anfang (Taste R)","didaktikon.simResetAria":"Zurück auf Anfang","didaktikon.simScenarioCount":"{count} Szenarien","didaktikon.simScenarioKey":"{title} (Taste {number})","didaktikon.simScenarioTitle":"Szenario {number}","didaktikon.simSpeed":"Tempo wählen (Taste T)","didaktikon.simSpeedAria":"Tempo wählen","didaktikon.simSpeedMenu":"Tempo","didaktikon.simStepCount":"{count} Schritte","didaktikon.simStepCountOne":"{count} Schritt","didaktikon.simStepCounter":"Schritt {current} / {total}","didaktikon.speedFast":"zügig","didaktikon.speedNormal":"normal","didaktikon.speedSlow":"langsam","didaktikon.speedTurbo":"im Zeitraffer","didaktikon.speedValue":"{speed}×","didaktikon.stepNote":"Erklärung zum aktuellen Schritt","didaktikon.trainerNoteClose":"Schließen","didaktikon.trainerNoteOpen":"Hinweis für Trainer:innen anzeigen","didaktikon.trainerNoteTitle":"Hinweis für Trainer:innen","didaktikon.trainingCatalogEmpty":"Hier gibt es noch keine Schulung.","didaktikon.trainingCatalogTrainings":"Schulungen","didaktikon.trainingDays":"{days} Tage","didaktikon.trainingDaysOne":"{days} Tag","didaktikon.trainingHomeInfo":"Kursbeschreibung","didaktikon.trainingHomeManifest":"Didaktisches Manifest","didaktikon.trainingHomeSales":"Sales-Asset","didaktikon.trainingInfoAudience":"Zielgruppe","didaktikon.trainingInfoObjectives":"Lernziele","didaktikon.trainingInfoObjectivesLead":"Die Lernenden …","didaktikon.trainingInfoOverview":"Überblick","didaktikon.trainingInfoPrerequisites":"Voraussetzungen","didaktikon.trainingMaterials":"Kursmaterial","didaktikon.trainingMaterialsExercises":"Übungen","didaktikon.trainingMaterialsLead":"Links stehen die **Übungen**, an denen Du selbst arbeitest, rechts das **Material zum Nachschlagen**.","didaktikon.trainingMaterialsMore":"Weitere Themen","didaktikon.trainingMaterialsOther":"Sonstige Unterlagen","didaktikon.trainingMaterialsReference":"Zum Nachschlagen","didaktikon.trainingModules":"Module","didaktikon.trainingModulesBlock":"Grobthema","didaktikon.trainingModulesDuration":"Dauer","didaktikon.trainingModulesMaterial":"Material","didaktikon.trainingModulesModule":"Modul","didaktikon.trainingModulesOver":"länger als das Modul","didaktikon.trainingSalesBuyers":"Käufer","didaktikon.trainingSalesPitch":"Pitch","didaktikon.trainingSalesPricing":"Preisrahmen","didaktikon.trainingSalesUsp":"Unterscheidungsmerkmale","didaktikon.trainingSalesValueProposition":"Nutzenversprechen"}</script>
 
-<script src="../../skriptorium/client.js?v=82492cae" defer></script>
+<script src="../../skriptorium/client.js?v=394fe386" defer></script>
 <script src="../../skriptorium/site.js?v=6472c794" defer></script>
 <script src="../../skriptorium/search-trail.js?v=31279378" data-skr-search-trail
-        data-base="../../" data-index="../../skriptorium/search/de.json?v=07ea62a4" defer></script>
+        data-base="../../" data-index="../../skriptorium/search/de.json?v=005dc747" defer></script>
 <link rel="stylesheet" href="../../skriptorium/highlight.css?v=f8a3fc05">
 <script type="module" src="../../skriptorium/highlight.js?v=0b2d40aa" data-skr-highlight="[&#34;bash&#34;,&#34;dockerfile&#34;,&#34;python&#34;,&#34;sql&#34;,&#34;yaml&#34;]"></script>
 <link rel="apple-touch-icon" sizes="180x180" href="../../themes/atvantage/assets/icon-180.png">
@@ -49,18 +49,18 @@
 
   <style>@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }</style>
   <link rel="stylesheet" href="../../skriptorium/page-transitions.css?v=716872f0">
-<link rel="stylesheet" href="../../skriptorium/guide-layout.css?v=04cc011a">
-<link rel="stylesheet" href="../../extensions/didaktikon/exercise.css?v=d44ba6e9">
-<script src="../../skriptorium/guide-layout.js?v=207db517" defer></script>
+<link rel="stylesheet" href="../../skriptorium/guide-layout.css?v=cc0ce1dd">
+<link rel="stylesheet" href="../../extensions/didaktikon/exercise.css?v=485b7c1d">
+<script src="../../skriptorium/guide-layout.js?v=00fd0360" defer></script>
 
 
 </head><body class="skr-guide" data-skr-layout="didaktikon.exercise" data-skr-layouts="didaktikon.exercise skriptorium.guide skriptorium.page" data-skr-lang="de" data-skr-audience="learner">
 <div class="skr-reading-progress" aria-hidden="true"></div>
   <a class="skr-skip-link" href="#skr-content">Zum Inhalt springen</a>
   <div class="skr-metanav"><span>ATVANTAGE Academy</span></div>
-  <header class="skr-header"
-        data-skr-menu-visible="7" data-skr-menu-speed="1" data-skr-header>
-  <a class="skr-header__brand" href="../../" aria-label="Startseite"><img class="skr-header__logo" src="../../themes/didaktikon/assets/logo-schulung.svg" alt="ATVANTAGE Academy"><span class="skr-header__logo-mask" role="img" aria-label="ATVANTAGE Academy" data-skr-logo-mask></span><img class="skr-header__mark" src="../../themes/atvantage/assets/icon-180.png" alt="">
+  <header class="skr-header" data-skr-header>
+  <a class="skr-header__brand" href="../../" aria-label="Startseite"><img class="skr-header__logo" src="../../themes/didaktikon/assets/logo-schulung.svg" alt="ATVANTAGE Academy"><span class="skr-header__logo-mask" role="img" aria-label="ATVANTAGE Academy" data-skr-logo-mask></span>
+    <img class="skr-header__mark" src="../../themes/atvantage/assets/icon-180.png" alt="">
   </a>
   <button class="skr-tool skr-header__burger" data-skr-nav-toggle="#skr-main-nav"
           aria-label="Navigation umschalten" aria-expanded="false"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
@@ -68,7 +68,7 @@
       <a href="../../">Start</a>
       <div class="skr-header__group" data-skr-menu>
         <button type="button" class="skr-header__grouptoggle"
-                aria-expanded="false" aria-haspopup="true">Allgemeines<span class="skr-header__caret" aria-hidden="true"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path fill="currentColor" stroke="none" d="M5 8h14l-7 9z"/></svg></span></button>
+                aria-expanded="false" aria-haspopup="true">Schulungsumgebung<span class="skr-header__caret" aria-hidden="true"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path fill="currentColor" stroke="none" d="M5 8h14l-7 9z"/></svg></span></button>
         <div class="skr-header__submenu" role="menu">
           <a role="menuitem" href="../../shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a>
         </div>
@@ -78,7 +78,7 @@
   <div class="skr-header__tools">
 <div class="skr-search" data-skr-search hidden
      data-mode="expand" data-shortcut="double_shift"
-     data-index="../../skriptorium/search/de.json?v=07ea62a4"
+     data-index="../../skriptorium/search/de.json?v=005dc747"
      data-base="../../">
   <button type="button" class="skr-tool skr-tool--search" data-skr-search-toggle
           aria-expanded="false" aria-controls="skr-search-dialog"
@@ -105,11 +105,11 @@
     <ul class="skr-search__results" data-skr-search-results aria-label="Suchergebnisse"></ul>
   </dialog>
 </div>
-<script src="../../skriptorium/search.js?v=07b9ef3e" defer></script>
+<script src="../../skriptorium/search.js?v=2be133a6" defer></script>
 <button type="button" class="skr-qr" data-skr-qr hidden
         title="Diese Seite auf Deinem Smartphone öffnen"
         aria-label="Diese Seite auf Deinem Smartphone öffnen"></button>
-<button type="button" class="skr-tool skr-tool--theme" data-skr-theme-toggle
+<button type="button" class="skr-tool skr-tool--scheme" data-skr-scheme-toggle
         title="Farbschema umschalten (hell/dunkel)"
         aria-label="Dunkles Farbschema"><svg viewBox="0 0 24 24" width="1em" height="1em"
         fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"
@@ -118,7 +118,6 @@
 </header>
 <section class="skr-guide-hero"
          aria-labelledby="skr-page-title"><nav class="skr-guide-hero__crumbs" aria-label="Brotkrumen"><a href="../../docker-grundlagen/">Docker-Grundlagen</a><span>/</span><span aria-current="page">Ein Image versioniert in eine Registry pushen</span></nav>
-
   <div class="skr-guide-hero__meta">
     <div class="skr-guide-hero__tags"><span class="skr-tag skr-tag--time">ca. 30 Minuten</span><span class="skr-tag">Registry</span><span class="skr-tag">Tagging</span><span class="skr-tag">Versionierung</span>
     </div>
@@ -131,27 +130,34 @@
 </section>
 
   <div class="skr-guide-layout">
-    <main class="skr-guide-main" id="skr-content"><div class="skr-didaktikon-content-top" data-skr-slot="content.top">
+    <main class="skr-guide-main" id="skr-content"><div class="skr-guide-panels" data-skr-arrangement="fold">
+<details class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
+<summary>User Story</summary>
 <div class="skr-didaktikon-user-story" data-skr-field="didaktikon.user_story">
 <p><strong>Als</strong> Entwickler <strong>möchte ich</strong> mein Image an einem Ort ablegen, an den andere herankommen, <strong>damit</strong> nicht jeder es selbst bauen muss – und <strong>damit</strong> später nachvollziehbar bleibt, welche Fassung wo lief.</p>
 </div>
-<div class="skr-callout skr-didaktikon-objectives" data-skr-field="didaktikon.objectives">
-<h2 id="lernziele">Lernziele</h2>
+</details>
+<details class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
+<summary>Lernziele</summary>
+<div class="skr-didaktikon-objectives" data-skr-field="didaktikon.objectives">
 <ul>
 <li>Du meldest Dich an einer Registry an und legst dort ein Repository an.</li>
 <li>Du veröffentlichst ein Image in der Registry.</li>
 <li>Du begründest, warum ein Verlass auf <code>latest</code> ein Zurückrollen unmöglich macht.</li>
 </ul>
 </div>
-</div>
+</details>
+<details class="skr-fold">
+<summary>Definition of Done</summary>
 <div class="skr-guide-done">
-<h2 id="definition-of-done">Definition of Done</h2>
 <ul class="task-list">
 <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Du bist an der Registry angemeldet und hast dort ein Repository meine-website angelegt." disabled="disabled"> Du bist an der Registry angemeldet und hast dort ein Repository <code>meine-website</code> angelegt.</li>
 <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Dein Image liegt in der Registry unter dem Tag 1.0.0." disabled="disabled"> Dein Image liegt in der Registry unter dem Tag <code>1.0.0</code>.</li>
 <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Eine zweite Fassung liegt als 1.0.1 in der Registry, und latest zeigt auf sie." disabled="disabled"> Eine zweite Fassung liegt als <code>1.0.1</code> in der Registry, und <code>latest</code> zeigt auf sie.</li>
 <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Du hast die Kontrollfragen beantwortet" disabled="disabled"> Du hast die Kontrollfragen beantwortet</li>
 </ul>
+</div>
+</details>
 </div>
 <h2 id="arbeitsschritte">Arbeitsschritte</h2>
 <h3 id="ein-repository-anlegen-und-sich-anmelden">Ein Repository anlegen und sich anmelden</h3>
@@ -227,7 +233,7 @@ bekommen? Und wie fändest Du das heute noch heraus?</p>
 </code></pre>
 <pre><code class="language-bash">docker image ls
 </code></pre>
-<div class="skr-didaktikon-content-after" data-skr-slot="content.after">
+<div class="skr-didaktikon-guide-review" data-skr-slot="guide.review">
 <h2 id="reflexionsfragen">Reflexionsfragen</h2>
 <div class="skr-didaktikon-reflective-questions" data-skr-field="didaktikon.reflective_questions">
 <ul>
@@ -240,7 +246,10 @@ bekommen? Und wie fändest Du das heute noch heraus?</p>
 </div>
 </div>
 <textarea id="skr-md-source" hidden aria-hidden="true"># Ein Image versioniert in eine Registry pushen
-&lt;div class=&#34;skr-didaktikon-content-top&#34; data-skr-slot=&#34;content.top&#34; markdown=&#34;1&#34;&gt;
+&lt;div class=&#34;skr-guide-panels&#34; data-skr-arrangement=&#34;fold&#34; markdown=&#34;1&#34;&gt;
+
+&lt;details class=&#34;skr-fold skr-didaktikon-guide-about&#34; data-skr-slot=&#34;guide.about&#34; markdown=&#34;1&#34;&gt;
+&lt;summary markdown=&#34;span&#34;&gt;User Story&lt;/summary&gt;
 
 &lt;div class=&#34;skr-didaktikon-user-story&#34; data-skr-field=&#34;didaktikon.user_story&#34; markdown=&#34;1&#34;&gt;
 
@@ -248,9 +257,12 @@ bekommen? Und wie fändest Du das heute noch heraus?</p>
 
 &lt;/div&gt;
 
-&lt;div class=&#34;skr-callout skr-didaktikon-objectives&#34; data-skr-field=&#34;didaktikon.objectives&#34; markdown=&#34;1&#34;&gt;
+&lt;/details&gt;
 
-## Lernziele
+&lt;details class=&#34;skr-fold skr-didaktikon-guide-about&#34; data-skr-slot=&#34;guide.about&#34; markdown=&#34;1&#34;&gt;
+&lt;summary markdown=&#34;span&#34;&gt;Lernziele&lt;/summary&gt;
+
+&lt;div class=&#34;skr-didaktikon-objectives&#34; data-skr-field=&#34;didaktikon.objectives&#34; markdown=&#34;1&#34;&gt;
 
 - Du meldest Dich an einer Registry an und legst dort ein Repository an.
 - Du veröffentlichst ein Image in der Registry.
@@ -258,11 +270,12 @@ bekommen? Und wie fändest Du das heute noch heraus?</p>
 
 &lt;/div&gt;
 
-&lt;/div&gt;
+&lt;/details&gt;
+
+&lt;details class=&#34;skr-fold&#34; markdown=&#34;1&#34;&gt;
+&lt;summary markdown=&#34;span&#34;&gt;Definition of Done&lt;/summary&gt;
 
 &lt;div class=&#34;skr-guide-done&#34; markdown=&#34;1&#34;&gt;
-
-## Definition of Done
 
 - [ ] Du bist an der Registry angemeldet und hast dort ein Repository `meine-website` angelegt.
 - [ ] Dein Image liegt in der Registry unter dem Tag `1.0.0`.
@@ -270,6 +283,14 @@ bekommen? Und wie fändest Du das heute noch heraus?</p>
 - [ ] Du hast die Kontrollfragen beantwortet
 
 &lt;/div&gt;
+
+&lt;/details&gt;
+
+&lt;/div&gt;
+
+
+
+
 
 
 ## Arbeitsschritte
@@ -389,7 +410,7 @@ docker image ls
 ```
 
 
-&lt;div class=&#34;skr-didaktikon-content-after&#34; data-skr-slot=&#34;content.after&#34; markdown=&#34;1&#34;&gt;
+&lt;div class=&#34;skr-didaktikon-guide-review&#34; data-skr-slot=&#34;guide.review&#34; markdown=&#34;1&#34;&gt;
 
 ## Reflexionsfragen
 
@@ -414,7 +435,7 @@ docker image ls
   <details class="skr-guide-side skr-guide-side--toc skr-fold" data-skr-toc-box
            data-skr-toc-limit="12" open>
     <summary class="skr-guide-side__label">Auf dieser Seite</summary>
-    <nav class="skr-toc skr-fold__body" data-skr-toc aria-label="Inhaltsverzeichnis"><a href="#definition-of-done">Definition of Done</a><a href="#arbeitsschritte">Arbeitsschritte</a><a href="#ein-repository-anlegen-und-sich-anmelden" class="skr-toc--h3">Ein Repository anlegen und sich anmelden</a><a href="#dem-image-den-namen-seines-ziels-geben" class="skr-toc--h3">Dem Image den Namen seines Ziels geben</a><a href="#das-image-veröffentlichen" class="skr-toc--h3">Das Image veröffentlichen</a><a href="#einen-beweglichen-zeiger-daneben-setzen" class="skr-toc--h3">Einen beweglichen Zeiger daneben setzen</a><a href="#eine-zweite-fassung-veröffentlichen" class="skr-toc--h3">Eine zweite Fassung veröffentlichen</a><a href="#optional-das-image-zurückholen" class="skr-toc--h3">Optional: Das Image zurückholen</a><a href="#reflexionsfragen">Reflexionsfragen</a></nav>
+    <nav class="skr-toc skr-fold__body" data-skr-toc aria-label="Inhaltsverzeichnis"><a href="#arbeitsschritte">Arbeitsschritte</a><a href="#ein-repository-anlegen-und-sich-anmelden" class="skr-toc--h3">Ein Repository anlegen und sich anmelden</a><a href="#dem-image-den-namen-seines-ziels-geben" class="skr-toc--h3">Dem Image den Namen seines Ziels geben</a><a href="#das-image-veröffentlichen" class="skr-toc--h3">Das Image veröffentlichen</a><a href="#einen-beweglichen-zeiger-daneben-setzen" class="skr-toc--h3">Einen beweglichen Zeiger daneben setzen</a><a href="#eine-zweite-fassung-veröffentlichen" class="skr-toc--h3">Eine zweite Fassung veröffentlichen</a><a href="#optional-das-image-zurückholen" class="skr-toc--h3">Optional: Das Image zurückholen</a><a href="#reflexionsfragen">Reflexionsfragen</a></nav>
   </details>
   <section class="skr-guide-side skr-guide-side--bordered skr-guide-progress" data-skr-card="skriptorium.progress"
            aria-labelledby="skr-card-skriptorium-progress" data-skr-progress-text="{done} / {total} erledigt">
@@ -450,7 +471,8 @@ docker image ls
       <strong>Kontakt</strong>
       <p><a href="https://www.atvantage.com" target="_blank" rel="noopener">Website</a><br><a href="mailto:academy@atvantage.com">academy@atvantage.com</a><br>
       </p>
-    </div></div>
+    </div>
+  </div>
   <div class="skr-footer__legal">
     © <span data-skr-year>2026</span> ATVANTAGE
   </div>

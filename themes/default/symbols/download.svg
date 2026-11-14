@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="#0f6e7a" role="img" aria-label="Herunterladen">
+  <!-- Die Füllfarbe gilt nur, wenn die Datei für sich geöffnet wird: der Grundton des Akzents im Standard-Theme. Im Menü zeigt der Kern das Zeichen als Maske in der Farbe des Eintrags (components.css), ohne Maskenunterstützung gar nicht. -->
+  <!-- Pfeil nach unten in eine Ablage – eine Datei zum Herunterladen. -->
+  <path d="M11 14.5L11 3A1 1 0 0 1 13 3L13 14.5A1 1 0 0 1 11 14.5Z"/>
+  <path d="M7.71 9.29L12 13.59L16.29 9.29A1 1 0 0 1 17.71 10.71L12 16.41L6.29 10.71A1 1 0 0 1 7.71 9.29Z"/>
+  <path d="M5 15L5 19L19 19L19 15A1 1 0 0 1 21 15L21 21L3 21L3 15A1 1 0 0 1 5 15Z"/>
+</svg>

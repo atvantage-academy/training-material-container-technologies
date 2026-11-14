@@ -50,7 +50,7 @@
 
    Bis Theme 2.x trugen die Knöpfe zusätzlich `skr-theme-toggle` und
    `skr-print-btn`. Beide sind mit 3.0 entfallen; wer sie in seiner
-   assets/custom.css selektiert, schreibt auf `.skr-tool--theme` bzw.
+   assets/custom.css selektiert, schreibt auf `.skr-tool--scheme` bzw.
    `.skr-tool--print` um. */
 .skr-tool {
   display: inline-flex; align-items: center; justify-content: center;
@@ -95,6 +95,56 @@
   letter-spacing: .02em;
 }
 
+/* THEMES ZUR WAHL – neben dem Farbschema, nur wenn die Unterlage mehrere Themes anbietet
+   (tools.html, bedient von client.js). Ein Menü unter dem Knopf, je Theme ein Eintrag mit
+   Vorschaubild oder zwei Farbfeldern (Akzent auf Grund, hell und dunkel – gemessen von
+   client.js, `--skr-swatch-ground`) und dem Namen. Der gewählte trägt `aria-checked`. */
+.skr-themes { position: relative; display: inline-flex; }
+.skr-themes__list {
+  position: absolute; top: 100%; right: 0; z-index: 60;
+  min-width: 12rem; margin: 8px 0 0; padding: 6px;
+  list-style: none;
+  background: var(--skr-topbar-bg);
+  border: 1px solid var(--skr-border-soft);
+  border-radius: var(--skr-radius);
+  box-shadow: var(--skr-shadow-2);
+}
+.skr-themes__list[hidden] { display: none; }
+.skr-themes__item {
+  display: flex; align-items: center; gap: .6rem; width: 100%;
+  padding: .4rem .5rem;
+  border: 1px solid transparent; border-radius: var(--skr-radius);
+  background: transparent; color: var(--skr-header-text, var(--skr-color-headline));
+  font: inherit; font-size: .9rem; text-align: left; cursor: pointer;
+}
+.skr-themes__item:hover,
+.skr-themes__item:focus-visible { border-color: currentColor; }
+.skr-themes__item[aria-checked="true"] { font-weight: 600; }
+/* Der Haken als Maske in currentColor – kein Schriftzeichen. */
+.skr-themes__item[aria-checked="true"]::after {
+  content: ""; width: 1em; height: 1em; margin-left: auto; flex: 0 0 auto;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='4 12 10 18 20 6'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='4 12 10 18 20 6'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.skr-themes__swatches { display: inline-flex; gap: 3px; flex: 0 0 auto; }
+.skr-themes__swatch {
+  width: 1.4rem; height: 1.4rem; border-radius: 50%;
+  background: var(--skr-color-border);
+  border: 4px solid var(--skr-swatch-ground, var(--skr-color-bg));
+  box-shadow: 0 0 0 1px var(--skr-border-soft);
+}
+.skr-themes__preview { width: 64px; height: 40px; object-fit: cover; border-radius: 3px; flex: 0 0 auto; }
+/* VORSCHAUBILD JE FARBSCHEMA (`preview: {light, dark}`): beide Bilder stehen im Eintrag, das
+   passende zeigt sich – nach der Systemeinstellung oder der Wahl des Umschalters. */
+.skr-themes__preview--dark { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-skr-scheme="light"]) .skr-themes__preview--light { display: none; }
+  :root:not([data-skr-scheme="light"]) .skr-themes__preview--dark { display: block; }
+}
+:root[data-skr-scheme="dark"] .skr-themes__preview--light { display: none; }
+:root[data-skr-scheme="dark"] .skr-themes__preview--dark { display: block; }
+
 /* Drucken – kompakter Icon-Button wie die Kopier-Buttons: Icon als CSS-Maske in
    currentColor, KEIN Emoji. Beschriftung nur als Tooltip und aria-label.
    Verdrahtet von client.js ([data-skr-print]) bzw. presentation.js
@@ -122,6 +172,15 @@
 /* LAGE: oben rechts im Block, über die Stellschrauben `--skr-copy-top` und
    `--skr-copy-right` (stabil) – kein `style` des Skripts steht dagegen. */
 pre:has(> .skr-copy) { position: relative; }
+/* FEST BEIM SCROLLEN: Ein absolut gesetztes Kind scrollt mit dem Inhalt seines
+   Scroll-Containers mit. Darum scrollt in einem Block mit Knopf nicht das `pre`,
+   sondern das `code` darin – der Knopf bleibt am rechten Rand stehen. Die
+   Spezifität (0,1,2) liegt über `.skr-guide-main pre` und `.skr-slide pre` in
+   derselben Schicht;
+   `min-width: 0` hält das `pre` als Flex- oder Grid-Element schmal, was
+   zuvor `overflow-x: auto` am `pre` besorgte. */
+pre:has(> code):has(> .skr-copy) { overflow-x: visible; min-width: 0; }
+pre:has(> .skr-copy) > code { display: block; overflow-x: auto; }
 pre > .skr-copy {
   position: absolute;
   top: var(--skr-copy-top, 0.5rem);
@@ -206,8 +265,8 @@ pre > .skr-copy.is-copied { opacity: 1; }
 
 /* --- Dokumentlinks (`skr-doclink`) ------------------------------------------
    Ein Verweis, dem die ART seines Ziels vorangestellt ist: Präsentation, Übersicht –
-   und was Extensions an Arten mitbringen. Gesetzt vom Bau (ein Listenpunkt aus
-   genau einem Verweis bekommt die Art seines Ziels) oder von Hand
+   und was Extensions an Arten mitbringen. Gesetzt vom Bau (jeder interne Verweis im
+   Inhalt bekommt die Art seines Ziels) oder von Hand
    (`{: .skr-doclink .skr-doclink--«art»}`).
 
    HIER STEHEN NUR FORM UND FARBE. Welche Arten es gibt, ihr Icon und ihre
@@ -218,37 +277,43 @@ pre > .skr-copy.is-copied { opacity: 1; }
 
    DAS SYMBOL IN ZWEI SCHICHTEN: die KACHEL als Hintergrundfarbe
    (`--skr-doclink-tile`) und darüber das ZEICHEN – das Icon als Maske in
-   `--skr-doclink-glyph`. `::after` liegt per `order` und negativem Rand genau auf
-   `::before`; beide richten sich gleich an der Grundlinie aus. Im dunklen Schema
-   liefe die Kachel mit dem Seitenhintergrund zusammen, deshalb der feine Ring.
-   Gedruckt erscheint das Symbol, weil print.css `print-color-adjust: exact`
-   global setzt. */
+   `--skr-doclink-glyph`. Wie bei den Linkmarken steht der PLATZ AM VERWEIS und das
+   Symbol absolut darüber: Der Verweis bricht im Satz um wie jeder andere, nie aber
+   zwischen Symbol und erstem Wort. Die Größe folgt der Schrift (`em`), auch in einer
+   Überschrift. Im dunklen Schema liefe die Kachel mit dem Seitenhintergrund zusammen,
+   deshalb der feine Ring. Gedruckt erscheint das Symbol, weil print.css
+   `print-color-adjust: exact` global setzt.
+
+   ABSCHALTEN: `skr-doclink--none` am Verweis lässt der Bau ohne Marke; an einem
+   Vorfahren nimmt es die Marken aller Verweise darin weg – samt ihrem Platz. Die
+   wiederholte Klasse hebt die Regel über die je Art in doclinks.css (Zeichen und
+   Bezeichnung je Sprache), die in derselben Schicht später stehen. */
 .skr-doclink {
-  display: inline-flex;
-  align-items: baseline;
-  gap: var(--skr-space-2);
+  position: relative;
+  padding-left: calc(1.05em + var(--skr-space-2));
 }
 .skr-doclink::before,
 .skr-doclink::after {
-  flex: none;
-  width: 1.05rem;
-  height: 1.05rem;
+  position: absolute;
+  left: 0;
+  top: .15em;
+  width: 1.05em;
+  height: 1.05em;
   border-radius: 3px;
-  transform: translateY(.15rem);
 }
 .skr-doclink::before {
   content: "";
-  order: -2;
   background: var(--skr-doclink-tile);
   box-shadow: 0 0 0 1px var(--skr-color-border);
 }
 /* Ohne `content`: Das Zeichen erscheint erst, wenn doclinks.css die Art kennt. */
 .skr-doclink::after {
-  order: -1;
-  margin-left: calc(-1.05rem - var(--skr-space-2));
   background: var(--skr-doclink-glyph);
   mask: var(--skr-doclink-icon) center / contain no-repeat;
 }
+.skr-doclink--none .skr-doclink.skr-doclink.skr-doclink { padding-left: 0; }
+.skr-doclink--none .skr-doclink.skr-doclink.skr-doclink::before,
+.skr-doclink--none .skr-doclink.skr-doclink.skr-doclink::after { content: none; }
 
 /* --- Linkmarken (`skr-linkmark`) ------------------------------------
    EIN ICON VOR EINEM VERWEIS, ABGELEITET AUS SEINEM ZIEL. Wer auf ein Repository,
@@ -400,7 +465,8 @@ code + .skr-reveal--info { vertical-align: baseline; }
 /* Das Panel: mittig, begrenzt in Breite und Höhe, innen scrollbar. Ohne das
    Skript (kein `__body`) greift dieselbe Regel für die direkten Kinder – dann
    liegt der Inhalt ebenfalls mittig, nur ohne eigene Fläche pro Block. */
-.skr-reveal[open] > .skr-reveal__body {
+.skr-reveal[open] > .skr-reveal__body,
+.skr-reveal__layer > .skr-reveal__body {
   position: fixed; inset: 0; margin: auto; z-index: 61;
   /* `height: fit-content` ist nötig, nicht Kosmetik: Mit `inset: 0` sind oben UND
      unten gesetzt, dadurch streckt sich das Panel bei `height: auto` über die
@@ -413,12 +479,24 @@ code + .skr-reveal--info { vertical-align: baseline; }
   border-radius: var(--radius-dark, 6px);
   box-shadow: 0 24px 70px rgba(0, 0, 0, .35);
 }
+/* `--lifted`: In einer Präsentation liegt das Panel in einer Ebene
+   (`__layer`), die client.js als Popover in die oberste Ebene des Browsers
+   hebt. Die Ebene füllt das Fenster und dunkelt ab; das Fixierte am `details`
+   entfällt dort. Das Panel darin steht wie sonst – fixiert, nun am Fenster. */
+.skr-reveal--lifted[open]::before { display: none; }
+.skr-reveal__layer {
+  position: fixed; inset: 0; width: auto; height: auto;
+  max-width: none; max-height: none; margin: 0; padding: 0; border: 0;
+  overflow: visible; color: inherit;
+  background: rgba(2, 6, 23, .6);
+}
 /* `--wide`: ein breiteres Panel fuer BREITEN Inhalt - eine Vergleichstabelle mit
    mehreren Spalten steht in 780px entweder gequetscht oder im Scrollbereich, und
    beides nimmt ihr genau das, wofuer man sie oeffnet. Die Vorgabe bleibt schmal:
    Fuer die haeufige Info-Schaltflaeche mit zwei Saetzen waere eine lange Zeile
    schlechter zu lesen, nicht besser. */
-.skr-reveal--wide[open] > .skr-reveal__body { width: min(96vw, 1180px); }
+.skr-reveal--wide[open] > .skr-reveal__body,
+.skr-reveal--wide > .skr-reveal__layer > .skr-reveal__body { width: min(96vw, 1180px); }
 .skr-reveal__body > :first-child { margin-top: 0; }
 .skr-reveal__body > :last-child { margin-bottom: 0; }
 /* Der Titel wird im Panel wiederholt, damit sichtbar bleibt, was man geöffnet
@@ -485,21 +563,21 @@ code + .skr-reveal--info { vertical-align: baseline; }
 .skr-header__logo { height: var(--skr-logo-height); width: auto; display: block; }
 /* WORTMARKE JE FARBSCHEMA: Hat die Marke eine eigene für das dunkle Schema
    (`brand.logo.dark`), steht sie als zweites Bild daneben und tauscht die helle aus –
-   nach der Systemeinstellung oder der Wahl des Umschalters (`data-skr-theme`).
+   nach der Systemeinstellung oder der Wahl des Umschalters (`data-skr-scheme`).
    Gedruckt wird immer die helle. Gilt in Kopfzeile, Folien und eigenständigen Layouts. */
 .skr-logo--dark { display: none !important; }
 @media screen and (prefers-color-scheme: dark) {
-  :root:not([data-skr-theme="light"]) .skr-logo--light { display: none !important; }
-  :root:not([data-skr-theme="light"]) .skr-logo--dark { display: block !important; }
+  :root:not([data-skr-scheme="light"]) .skr-logo--light { display: none !important; }
+  :root:not([data-skr-scheme="light"]) .skr-logo--dark { display: block !important; }
 }
 @media screen {
-  :root[data-skr-theme="dark"] .skr-logo--light { display: none !important; }
-  :root[data-skr-theme="dark"] .skr-logo--dark { display: block !important; }
+  :root[data-skr-scheme="dark"] .skr-logo--light { display: none !important; }
+  :root[data-skr-scheme="dark"] .skr-logo--dark { display: block !important; }
 }
 
 /* GEFÄRBTE WORTMARKE – nur mit `brand.logo.tint`. Ein <img> lädt das SVG als EIGENES
    Dokument: Dort sind weder die Tokens der Seite noch `currentColor` noch
-   `data-skr-theme` sichtbar. Eine Farbe im SVG selbst wäre ein zweiter Handwert neben
+   `data-skr-scheme` sichtbar. Eine Farbe im SVG selbst wäre ein zweiter Handwert neben
    `--skr-accent-base`.
 
    Deshalb liegt die gefärbte Fassung als MASKE auf einem <span> NEBEN dem Bild. Nicht
@@ -513,6 +591,12 @@ code + .skr-reveal--info { vertical-align: baseline; }
 
    Der span ist STANDARDMÄSSIG UNSICHTBAR und das <img> sichtbar: Kann der Browser keine
    Masken, bleibt es beim unveränderten Bild. */
+/* TEILE EINES THEMES DER AUSWAHL – die Marke je Theme, wenn die Unterlage mehrere anbietet:
+   eine Hülle ohne eigene Box. Ihre Kinder stehen im Layout, als gäbe es sie nicht; Regeln
+   über Geschwister (Bild und Maske) bleiben unter sich. Welche sichtbar ist, entscheidet
+   themes.css (vom Adapter erzeugt). */
+.skr-theme-part { display: contents; }
+
 .skr-header__logo-mask { display: none; }
 
 @supports (mask: url("#x") no-repeat) {
@@ -554,27 +638,61 @@ code + .skr-reveal--info { vertical-align: baseline; }
    Ein Umschalter aus Segmenten vor der Leiste: die gewählte Rolle im Akzent gefüllt, die
    übrigen ruhig. Er bleibt auch schmal sichtbar – er bestimmt, was der Burger zeigt. Die
    Wahl ist eine Gruppe von Optionsfeldern (role="radio"), mit Pfeiltasten bedienbar. */
+/* Wird es eng, SCHRUMPFEN DIE SEGMENTE unter ihre Höchstbreite, bis auf eine
+   Mindestbreite – statt die Werkzeuge aus dem Fenster zu schieben. */
 .skr-header__roles {
-  display: inline-flex; flex: none; align-items: center; gap: 2px;
+  display: inline-flex; flex: 0 1 auto; min-width: 0; align-items: center; gap: 2px;
   margin-left: var(--skr-space-4, 1rem); padding: 3px;
   border: 1px solid var(--skr-color-border); border-radius: 999px;
   background: var(--skr-color-bg-subtle);
 }
+/* HÖCHSTBREITE je Segment: „Entwickler“ passt bequem hinein, gut ein Viertel Luft
+   dazu. Längere Titel – etwa „Gast – Rolle“ eines zusammengesetzten Gasts – enden mit
+   „…“; den vollen Titel setzt client.js dann in den Tooltip. Stellschraube für Themes:
+   `--skr-header-role-max-width` (stabil). */
 .skr-header__role {
   border: 0; border-radius: 999px; padding: 0.3rem 0.85rem;
   background: none; color: var(--skr-color-ink-muted);
   font: inherit; font-size: 0.875rem; font-weight: 600; line-height: 1.2;
   white-space: nowrap; cursor: pointer;
+  flex: 0 1 auto; min-width: 4em; max-width: var(--skr-header-role-max-width, 9.5em);
+  overflow: hidden; text-overflow: ellipsis;
   transition: background-color var(--skr-transition, 160ms ease), color var(--skr-transition, 160ms ease);
 }
 .skr-header__role:hover { color: var(--skr-color-ink); }
-.skr-header__role[aria-checked="true"] { background: var(--skr-color-accent); color: var(--skr-color-accent-contrast); }
+/* Die gewählte Rolle schrumpft nicht – sie bleibt lesbar, die übrigen geben nach. */
+.skr-header__role[aria-checked="true"] { flex-shrink: 0; background: var(--skr-color-accent); color: var(--skr-color-accent-contrast); }
 .skr-header__role:focus-visible { outline: 2px solid var(--skr-color-accent); outline-offset: 2px; }
 @media (max-width: 600px) {
   .skr-header__roles { margin-left: var(--skr-space-2, 0.5rem); }
   .skr-header__role { padding: 0.25rem 0.6rem; font-size: 0.8125rem; }
 }
-@media print { .skr-header__roles { display: none; } }
+/* AUSWAHLLISTE statt Segmenten, wenn diese auch in der Mitte gekürzt nicht mehr
+   lesbar wären (client.js setzt `skr-header--role-select`). Dieselbe Pille, ein Pfeil
+   am Ende; die Einträge kürzt client.js in der Mitte, der volle Titel steht im Tooltip.
+   Stellschraube für die Breite: `--skr-header-role-select-max-width` (stabil). */
+.skr-header__role-select { display: none; }
+.skr-header--role-select .skr-header__roles { display: none; }
+.skr-header--role-select .skr-header__role-select {
+  display: inline-block; flex: 0 1 auto; min-width: 8em;
+  max-width: var(--skr-header-role-select-max-width, 18em);
+  margin-left: var(--skr-space-4, 1rem);
+  padding: 0.4rem 2rem 0.4rem 0.95rem;
+  border: 1px solid var(--skr-color-border); border-radius: 999px;
+  background-color: var(--skr-color-bg-subtle);
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: right 1rem center, right 0.7rem center;
+  background-size: 0.3rem 0.3rem; background-repeat: no-repeat;
+  color: var(--skr-color-ink);
+  font: inherit; font-size: 0.875rem; font-weight: 600; line-height: 1.2;
+  appearance: none; cursor: pointer;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.skr-header__role-select:focus-visible { outline: 2px solid var(--skr-color-accent); outline-offset: 2px; }
+@media (max-width: 600px) {
+  .skr-header--role-select .skr-header__role-select { margin-left: var(--skr-space-2, 0.5rem); }
+}
+@media print { .skr-header__roles, .skr-header__role-select { display: none !important; } }
 
 /* --- Anhang der Wortmarke (`badge.label`, sonst Titel der Site) -----------------
    Durch einen Strich abgesetzt. Er WEICHT ALS ERSTES: Sein hoher Schrumpffaktor lässt
@@ -647,7 +765,76 @@ a.skr-header__badge:focus-visible { outline: 2px solid currentColor; outline-off
   text-underline-offset: var(--skr-header-nav-underline-offset, auto);
 }
 
+/* --- Bild oder Symbol vor dem Titel (`skr-header__icon`) -------------------
+   Auf jeder Ebene: Verweis, Schalter einer Gruppe, Überschrift einer eingebetteten
+   Gruppe. Größe `--skr-nav-icon-size` (stabil, Vorgabe 1.25em). Ein Bild füllt sein
+   Quadrat (`object-fit: cover`), in seinen eigenen Farben. Ein Symbol des Themes ist
+   eine Maske in der Textfarbe des Eintrags (`currentColor`) und folgt so Überfahren und
+   aktuellem Eintrag von selbst; die Datei setzt symbols.css je Theme als
+   `--skr-symbol-icon` (wie `--skr-doclink-icon`).
+
+   NIE GETRENNT VOM TITEL: Ein Eintrag mit Icon wird ein Flex-Container – das Icon
+   schrumpft nicht, der Titel bricht in seiner eigenen Spalte um, auch im Burger, wo
+   die Einträge umbrechen dürfen. Als Inline-Element stünde das Icon sonst allein am
+   Zeilenende. Einträge ohne Icon bleiben, wie sie sind (`:has`). */
+.skr-header__icon {
+  display: inline-block; flex: none;
+  inline-size: var(--skr-nav-icon-size, 1.25em); block-size: var(--skr-nav-icon-size, 1.25em);
+  vertical-align: -.25em; margin-inline-end: .5em;
+}
+.skr-header__icon--image { object-fit: cover; }
+.skr-header__icon--symbol { background: currentColor; -webkit-mask: var(--skr-symbol-icon) center / contain no-repeat; mask: var(--skr-symbol-icon) center / contain no-repeat; }
+/* Ohne Masken stünde das Symbol als Block in der Textfarbe da – dann entfällt es. Der Eintrag
+   behält seinen Text; das Symbol ist ohnehin aria-hidden. */
+@supports not ((mask: url("#x") no-repeat) or (-webkit-mask: url("#x") no-repeat)) {
+  .skr-header__icon--symbol { display: none; }
+}
+/* Erzwungene Farben setzten die Hintergrundfarbe auf die der Fläche – das Symbol
+   verschwände. Ohne Anpassung erbte es aber nicht die erzwungene Textfarbe des
+   Eintrags, sondern die ursprüngliche (gemessen); darum die Systemfarbe, die der
+   Browser dem Eintrag gibt: Verweis, Schalter, Überschrift. */
+@media (forced-colors: active) {
+  .skr-header__icon--symbol { forced-color-adjust: none; background: CanvasText; }
+  a > .skr-header__icon--symbol { background: LinkText; }
+  button > .skr-header__icon--symbol { background: ButtonText; }
+}
+.skr-header__nav a:has(> .skr-header__icon),
+.skr-header__setlabel:has(> .skr-header__icon) { display: flex; align-items: center; }
+/* Im Schalter einer Gruppe: Dort steht `gap` (`--skr-grouptoggle-gap`, intern)
+   zwischen allen Teilen, der Abstand zum Titel bleibt trotzdem .5em. `space-between` (dritte Ebene, Burger) rückte den Titel
+   zwischen Icon und Pfeil in die Mitte; ein Platzhalter vor dem Pfeil nimmt stattdessen
+   den freien Raum. Er hebt eine Lücke wieder auf, damit der Pfeil ohne freien Raum so
+   dicht am Titel steht wie ohne Icon. Bricht der Titel um (Burger), beginnen seine
+   Zeilen am Icon statt mittig wie im Knopf üblich. */
+.skr-header__grouptoggle:has(> .skr-header__icon) { text-align: start; }
+.skr-header__grouptoggle > .skr-header__icon { margin-inline-end: calc(.5em - var(--skr-grouptoggle-gap)); }
+.skr-header__grouptoggle:has(> .skr-header__icon)::before {
+  content: ""; order: 1; flex: 1 0 0; margin-inline-start: calc(-1 * var(--skr-grouptoggle-gap));
+}
+.skr-header__grouptoggle:has(> .skr-header__icon) > .skr-header__caret { order: 2; }
+
 .skr-header__burger { display: none; }
+
+/* --- Symbol des Themes im Inhalt (`skr-symbol`) -------------------------------
+   Aus `![Text](symbol:«name»)` (_markup/render-image.html): dieselbe Maske wie vor einem Eintrag der
+   Navigation, in der Farbe des umgebenden Textes, so groß wie seine Schrift und auf ihrer
+   Grundlinie – im Satz, in Tabellen, in Verweisen. Die Datei setzt symbols.css je Theme als
+   `--skr-symbol-icon`. */
+.skr-symbol {
+  display: inline-block; inline-size: 1em; block-size: 1em; vertical-align: -.125em;
+  background: currentColor; -webkit-mask: var(--skr-symbol-icon) center / contain no-repeat; mask: var(--skr-symbol-icon) center / contain no-repeat;
+}
+/* Ohne Masken stünde ein Quadrat in der Textfarbe da – dann bleibt nur sein Platz; der Name für
+   Hilfsmittel bleibt erhalten. */
+@supports not ((mask: url("#x") no-repeat) or (-webkit-mask: url("#x") no-repeat)) {
+  .skr-symbol { background: none; }
+}
+/* Erzwungene Farben: wie in der Navigation die Systemfarbe des Textes, in einem Verweis die
+   der Verweise. */
+@media (forced-colors: active) {
+  .skr-symbol { forced-color-adjust: none; background: CanvasText; }
+  a .skr-symbol { background: LinkText; }
+}
 
 /* --- Werkzeuge in der Kopfzeile ------------------------------------------
    Kleine Gruppe am rechten Rand: QR-Code der Seitenadresse + Farbschema-
@@ -696,7 +883,8 @@ a.skr-header__badge:focus-visible { outline: 2px solid currentColor; outline-off
 /* --- Header-Untermenü: Dropdown (breit) / aufklappbar (schmal) ------------ */
 .skr-header__group { position: relative; display: inline-flex; }
 .skr-header__grouptoggle {
-  display: inline-flex; align-items: center; gap: 6px;
+  --skr-grouptoggle-gap: 6px;
+  display: inline-flex; align-items: center; gap: var(--skr-grouptoggle-gap);
   background: none; border: 0; padding: 0; cursor: pointer;
   font: inherit; font-weight: 500; font-size: 1.0625rem;
   color: var(--skr-color-headline);
@@ -951,6 +1139,34 @@ a.skr-header__badge:focus-visible { outline: 2px solid currentColor; outline-off
   }
 }
 
+/* --- Eigene Zeile (`--stacked`) ------------------------------------------ *
+   Zwischen Balken und Burger: Passt die TopNav nicht mehr in die Zeile des Balkens,
+   rückt sie in eine eigene Zeile darunter – über die volle Breite des Inhalts, vor dem
+   Titelband. Wortmarke, Rollen und Werkzeuge bleiben im Balken. Erst wenn sie auch dort
+   umbricht, gilt `--compact` (client.js misst beides).
+
+   Die Kopfzeile wird dabei höher. Ihre feste Höhe gilt nur noch für den Balken
+   (`--skr-header-bar-height`, von client.js aus `--topnav-height` gelesen); die
+   tatsächliche Höhe schreibt client.js in `--topnav-height` am Wurzelelement, damit
+   Sprungziele und die Seitenleiste der Anleitung ihr folgen. */
+.skr-header--stacked {
+  height: auto;
+  flex-wrap: wrap;
+  row-gap: 0;
+}
+/* Der Balken behält seine Höhe: Die Wortmarke trägt sie, die übrigen Teile mitteln sich
+   daran aus (`align-items: center`). */
+.skr-header--stacked > .skr-header__brand { min-height: var(--skr-header-bar-height, 72px); }
+.skr-header--stacked .skr-header__tools { margin-left: auto; }
+.skr-header--stacked .skr-header__nav {
+  order: 1;
+  flex: 0 0 100%;
+  margin-left: 0;
+  justify-content: flex-start;
+  min-height: 48px;
+  border-top: 1px solid var(--skr-border-soft);
+}
+
 /* --- Burger-Fassung ------------------------------------------------------- *
    Gilt fuer schmale Viewports UND fuer `--compact`. Beide Zustaende erzeugen
    dieselbe Oberflaeche: eine Spalte, jede Ebene ein Akkordeon, jede Ebene etwas
@@ -1164,6 +1380,12 @@ a.skr-header__badge:focus-visible { outline: 2px solid currentColor; outline-off
 .skr-footer__grid p a {
   display: inline-block; min-height: 24px; padding-block: 4px;
 }
+/* Gruppen von Verweisen (`footer.groups`): Titel über der Liste wie in der Spalte
+   Kontakt, die Verweise untereinander ohne Aufzählungszeichen – ebenso mindestens 24
+   Pixel hoch. Farben wie die übrigen Verweise der Fußzeile. */
+.skr-footer__grouptitle { display: block; }
+.skr-footer__links { list-style: none; margin: 0; padding: 0; line-height: 2; }
+.skr-footer__links a { display: inline-block; min-height: 24px; padding-block: 4px; }
 .skr-footer a:hover { color: var(--skr-color-accent); }
 .skr-footer__legal { margin-top: var(--skr-space-6); text-align: center; color: rgba(255, 255, 255, 0.7); }
 

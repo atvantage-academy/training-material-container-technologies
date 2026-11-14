@@ -12,6 +12,18 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
 }
 .skr-skip-link:focus { top: var(--skr-space-2); }
 
+/* Hinweis über dem Inhalt einer unübersetzten Fassung (ADR-0200) – in der Sprache des
+   Sprachbaums, der Inhalt darunter in seiner eigenen. */
+.skr-untranslated {
+  margin: 0 0 var(--skr-space-4);
+  padding: var(--skr-space-2) var(--skr-space-3);
+  border-left: 3px solid var(--skr-color-accent);
+  background: var(--skr-color-bg-subtle);
+  color: var(--skr-color-ink-muted);
+  font-size: 0.9rem;
+}
+.skr-present__bar .skr-untranslated { margin: 0; padding: 0 var(--skr-space-2); border: 0; background: none; }
+
 .skr-toc { display: flex; flex-direction: column; gap: 10px; }
 .skr-toc a { color: var(--skr-color-ink); text-decoration: none; font-size: 1rem; }
 .skr-toc a:hover { color: var(--skr-color-accent-text); }
@@ -228,8 +240,12 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
 @media screen and (max-width: 768px) {
   .skr-header { gap: var(--skr-space-3); }
   .skr-header__brand { flex: none; }
-  .skr-header__brand > :not(.skr-header__mark) { display: none; }
-  .skr-header__brand > .skr-header__mark { display: block; width: 28px; height: 28px; }
+  /* Mit mehreren Themes steht jede Marke in der Hülle ihres Themes (`skr-theme-part`, ohne
+     eigene Box) – sie zählt hier wie ihr Inhalt. */
+  .skr-header__brand > :not(.skr-header__mark, .skr-theme-part),
+  .skr-header__brand > .skr-theme-part > :not(.skr-header__mark) { display: none; }
+  .skr-header__brand > .skr-header__mark,
+  .skr-header__brand > .skr-theme-part > .skr-header__mark { display: block; width: 28px; height: 28px; }
   .skr-header .skr-header__badge { margin-left: calc(var(--skr-space-1) - var(--skr-space-3)); }
 }
 @media screen and (max-width: 600px) {
@@ -314,4 +330,68 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
   color: var(--skr-color-ink-muted);
 }
 @media print { .skr-qr-dialog { display: none; } }
+
+/* --- Bilder vergrößern (`skr-zoom`, client.js) ------------------------------
+   Ein verkleinert dargestelltes Bild ist ein Knopf (`img.skr-zoom`); ein verlinktes
+   bekommt eine Lupe in der Ecke (`skr-zoom-lens` im Rahmen `skr-zoom-frame`). Das
+   Popup zeigt das Bild in voller Größe und scrollt, wo es größer ist als das Fenster. */
+@media screen {
+  img.skr-zoom { cursor: zoom-in; }
+}
+/* So breit wie das Bild – die Lupe sitzt auf dem Bild, auch wenn es schmaler ist als die Spalte. */
+.skr-zoom-frame { position: relative; display: block; width: fit-content; max-width: 100%; }
+.skr-zoom-lens {
+  position: absolute;
+  top: .5rem;
+  right: .5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  color: var(--skr-color-ink);
+  background: var(--skr-color-bg);
+  border: 1px solid var(--skr-color-border);
+  border-radius: var(--skr-radius);
+  cursor: zoom-in;
+}
+/* Die Lupe: ein Kreis mit Griff, gezeichnet in der Schriftfarbe. */
+.skr-zoom-lens::before {
+  content: "";
+  width: .8rem;
+  height: .8rem;
+  margin: -.2rem 0 0 -.2rem;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+}
+.skr-zoom-lens::after {
+  content: "";
+  position: absolute;
+  width: .45rem;
+  height: 2px;
+  margin: .6rem 0 0 .6rem;
+  background: currentColor;
+  transform: rotate(45deg);
+}
+.skr-zoom-dialog {
+  box-sizing: border-box;
+  max-width: 96vw;
+  max-height: 96vh;
+  padding: var(--skr-space-4, 1rem);
+  background: var(--skr-color-bg);
+  color: var(--skr-color-ink);
+  border: 1px solid var(--skr-color-border);
+  border-radius: var(--radius-dark, 6px);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .35);
+}
+.skr-zoom-dialog[open] { display: flex; flex-direction: column; align-items: flex-end; gap: .5rem; }
+.skr-zoom-dialog::backdrop { background: rgba(2, 6, 23, .6); }
+.skr-zoom-dialog__scroll {
+  max-width: calc(96vw - 2 * var(--skr-space-4, 1rem) - 2px);
+  max-height: calc(96vh - 5rem);
+  overflow: auto;
+}
+.skr-zoom-dialog__scroll img { display: block; max-width: none; height: auto; }
+@media print { .skr-zoom-dialog { display: none; } }
 }

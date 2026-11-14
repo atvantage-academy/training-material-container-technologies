@@ -34,6 +34,7 @@
   .skr-skip-link,
   .skr-copy-md,
   .skr-copy,
+  .skr-zoom-lens,
   .skr-tool,
   [data-skr-toc-box] { display: none !important; }
 
@@ -108,7 +109,8 @@
      Ein Ausdruck mit Lücken wäre wertlos: Wer eine Unterlage auf Papier
      durcharbeitet, kann nichts anklicken. */
   .skr-reveal > *:not(summary),
-  .skr-reveal[open] > .skr-reveal__body {
+  .skr-reveal[open] > .skr-reveal__body,
+  .skr-reveal__layer > .skr-reveal__body {
     display: block !important;
     position: static !important;
     inset: auto !important;

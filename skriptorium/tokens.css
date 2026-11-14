@@ -218,7 +218,7 @@
        :root { --skr-accent-base: «hex»; }
 
      Und die Regel, die man nicht sieht: WER DANEBEN EINEN
-     `[data-skr-theme="dark"]`- ODER `prefers-color-scheme`-BLOCK
+     `[data-skr-scheme="dark"]`- ODER `prefers-color-scheme`-BLOCK
      SCHREIBT, HEBELT DIE ABLEITUNG AUS. Ein solcher Block gewinnt gegen die
      Formel und friert genau einen Modus auf einen Handwert ein. Farbe ändern
      heißt: `--skr-accent-base` ändern, sonst nichts. */
@@ -273,8 +273,8 @@
    -----------------------------------------------------------------------------
    Jedes umschaltbare Token trägt beide Werte als `light-dark(«hell», «dunkel»)`.
    Welcher gilt, entscheidet `color-scheme`: ohne Wahl die Systemeinstellung, eine
-   ausdrückliche Wahl per `data-skr-theme` hat Vorrang – auch helles Theme
-   bei dunklem System. Der Druck erzwingt hell (print.css). Zwei Listen derselben
+   ausdrückliche Wahl per `data-skr-scheme` hat Vorrang – auch hell bei
+   dunklem System. Der Druck erzwingt hell (print.css). Zwei Listen derselben
    Dunkel-Werte – eine für die Systemeinstellung, eine für das Attribut – liefen
    auseinander, ohne dass ein Build es zeigt; deshalb gibt es nur diese eine.
 
@@ -283,8 +283,20 @@
    Edge 123, Firefox 120, Safari 17.5).
    ----------------------------------------------------------------------------- */
 :root { color-scheme: light dark; }
-:root[data-skr-theme="light"] { color-scheme: light; }
-:root[data-skr-theme="dark"] { color-scheme: dark; }
+:root[data-skr-scheme="light"] { color-scheme: light; }
+:root[data-skr-scheme="dark"] { color-scheme: dark; }
+
+/* -----------------------------------------------------------------------------
+   Aufklappmenüs der Kopfzeile
+   -----------------------------------------------------------------------------
+   So viele Zeilen zeigt ein Aufklappmenü, weitere rollen per Zeigen; das Tempo des
+   Rollens als Faktor. Ein Theme setzt beide; nennt die Unterlage `nav.menu`, geht ihr
+   Wert vor (client.js liest ihn an der Kopfzeile, sonst diese Tokens).
+   ----------------------------------------------------------------------------- */
+:root {
+  --skr-menu-rows:  7;
+  --skr-menu-speed: 1;
+}
 
 /* -----------------------------------------------------------------------------
    Text auf Akzentfläche – aus dem Akzent abgeleitet

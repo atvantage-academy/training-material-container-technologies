@@ -49,11 +49,19 @@
    Dieselben Klassen, keine neuen: Was die Form trägt, ist der Aufbau, nicht ein
    Modifier. Ein Verweis direkt in der Spalte steht deshalb als eigene Zeile –
    wie ein Listeneintrag der Block-Form, mit demselben Abstand. `width: fit-content`
-   hält die Klickfläche beim Text, statt sie über die Spalte zu ziehen. */
+   hält die Klickfläche beim Text, statt sie über die Spalte zu ziehen.
+   DAS SYMBOL IN DIE ERSTE ZEILE: Der Kern setzt es absolut, `.15em` unter den
+   Inline-Kasten des Verweises. Als Block ist der Kasten die ganze Zeile samt halbem
+   Durchschuss – das Symbol säße um diesen zu hoch. Deshalb hier mittig in der ersten
+   Zeile (`1lh`); `1.05em` ist die Größe des Symbols im Kern. */
 .skr-didaktikon-materials__col > .skr-doclink {
-  display: flex;
+  display: block;
   width: fit-content;
   margin: 0 0 .45rem;
+}
+.skr-didaktikon-materials__col > .skr-doclink::before,
+.skr-didaktikon-materials__col > .skr-doclink::after {
+  top: calc((1lh - 1.05em) / 2);
 }
 /* Die Span-Form folgt in ihrer Zelle auf Text – der Modultitel steht davor.
    Abstand darüber und ein knapperer Spaltenabstand, weil die Zelle schmaler ist

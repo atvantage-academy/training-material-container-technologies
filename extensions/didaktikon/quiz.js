@@ -4,22 +4,13 @@
    Gehoert zu `quiz.css`. Das Skriptorium laedt beides auf jeder Seite, deren Inhalt
    das Merkmal `skr-didaktikon-quiz` enthaelt (extension.yml), nach `payload.js`.
 
-   DAS MARKUP IST GEWOEHNLICHES MARKDOWN – vorgegeben ist nur die Klasse am Rahmen:
+   DER AUTOR SCHREIBT YAML (schemas/quiz.schema.json) – je Frage `question`, `answers` mit
+   `text`, `correct` und `reason`, dazu `note` für Trainer:innen; jeder Text ist Markdown,
+   auch mit Codeblock. Das Skript bekommt die Daten mit gerendertem HTML: nach dem Bau aus
+   der Nutzlast (`{ questions }`, payload.js), in der Vorschau aus `skr.componentData()`.
 
-     <div class="skr-didaktikon-quiz" markdown="1">
-     1. Frage – beliebiges Markdown, auch Code
-        - [ ] falsche Antwort
-          > Begruendung
-        - [x] richtige Antwort
-     </div>
-
-   Je Eintrag der nummerierten Liste eine Frage; die letzte Aufgabenliste darin sind
-   die Antworten, `[x]` die richtige; ein Zitat unter einer Antwort ihre Begruendung.
-   Alles davor ist die Frage. Das Layout „quiz“ schreibt seine Fragen aus dem Front
-   Matter in genau dieses Markup – es gibt EINE Mechanik, nicht zwei.
-
-   Fragen, Antworten und Begruendungen bleiben HTML: Das Skript KLONT sie in die
-   Bedienung, statt Text zu setzen. Codebloecke samt Hervorhebung kommen so mit.
+   Fragen, Antworten und Begründungen bleiben HTML: Das Skript KLONT sie in die
+   Bedienung, statt Text zu setzen. Codeblöcke samt Hervorhebung kommen so mit.
 
    WARUM DAS HIER LIEGT UND NICHT IN DER SEITE: Die erste Fassung stand als rund
    240 Zeilen CSS und JavaScript IN einer Unterlage. Beim zweiten Wissens-Check
@@ -36,19 +27,6 @@
   window.skr.ext.register("didaktikon", function (c) { ctx = c; return {}; });
   function T(schluessel, werte) { return ctx.text(schluessel, werte); }
 
-  /* Die Deutung am Ende ist KURSSTOFF, nicht Theme-Text: Sie verweist auf die
-     Unterlagen dieses Kurses. Das Layout „quiz“ bringt sie aus dem Front Matter mit.
-     Fehlt sie, bleibt die Auswertung bei der nackten Zahl - besser als ein Satz, der
-     auf Material verweist, das es hier nicht gibt. */
-  function deutungFinden(deutungen, anteil) {
-    var treffer = null;
-    (deutungen || []).forEach(function (d) {
-      var ab = typeof d.min === "number" ? d.min : 0;
-      if (anteil >= ab && (!treffer || ab >= treffer.min)) { treffer = { min: ab, d: d }; }
-    });
-    return treffer && treffer.d;
-  }
-
   function kinder(knoten) { return Array.prototype.slice.call(knoten.children); }
 
   /* Ein Antwortpunkt einer lockeren Liste steckt in einem `<p>` – in einer Schaltflaeche
@@ -58,41 +36,30 @@
       ? Array.prototype.slice.call(knoten[0].childNodes) : knoten;
   }
 
-  /* --- Das Markup lesen -------------------------------------------------- */
-  function lesen(liste) {
-    return kinder(liste).filter(function (li) { return li.tagName === "LI"; }).map(function (li) {
-      var aufgaben = kinder(li).filter(function (k) { return k.tagName === "UL"; });
-      var antworten = aufgaben[aufgaben.length - 1];
-      var frage = Array.prototype.slice.call(li.childNodes).filter(function (n) { return n !== antworten; });
-      var optionen = antworten ? kinder(antworten).filter(function (k) { return k.tagName === "LI"; }).map(function (punkt) {
-        var haken = punkt.querySelector("input[type=checkbox]");
-        var begruendung = [], inhalt = [];
-        Array.prototype.slice.call(punkt.childNodes).forEach(function (n) {
-          if (n === haken) { return; }
-          if (n.nodeType === 1 && n.tagName === "BLOCKQUOTE") { begruendung.push(n); return; }
-          if (n.nodeType === 1 && n.tagName === "P" && haken && n.contains(haken)) {
-            /* Lockere Liste: Haken und Text stehen im selben Absatz. */
-            Array.prototype.slice.call(n.childNodes).forEach(function (m) { if (m !== haken) { inhalt.push(m); } });
-            return;
-          }
-          inhalt.push(n);
-        });
-        return { inhalt: rand(auspacken(rand(inhalt))), begruendung: begruendung, richtig: !!(haken && haken.checked) };
-      }) : [];
-      return { frage: frage, optionen: optionen };
+  /* --- Die Daten lesen ----------------------------------------------------
+     Jeder Text kommt als HTML; das Skript macht daraus Knoten zum Klonen. Eine Antwort aus
+     einem einzigen Absatz zählt ohne ihr `<p>`. */
+  function knoten(html) {
+    var t = document.createElement("template");
+    t.innerHTML = typeof html === "string" ? html : "";
+    return Array.prototype.slice.call(t.content.childNodes);
+  }
+
+  function lesen(fragen) {
+    return (Array.isArray(fragen) ? fragen : []).map(function (f) {
+      return {
+        frage: knoten(f.question),
+        hinweis: rand(knoten(f.note)),
+        optionen: (Array.isArray(f.answers) ? f.answers : []).map(function (a) {
+          return { inhalt: rand(auspacken(rand(knoten(a.text)))), begruendung: rand(knoten(a.reason)), richtig: a.correct === true };
+        })
+      };
     }).filter(function (f) { return f.optionen.length; });
   }
 
-  /* Knoten in ein Ziel klonen. Ein Zitat gibt seinen INHALT ab, nicht sich selbst –
-     in der Rueckmeldung ist es kein Zitat mehr, sondern die Begruendung. */
+  /* Knoten in ein Ziel klonen – unverändert, auch ein Zitat, das der Autor geschrieben hat. */
   function einsetzen(ziel, knoten) {
-    knoten.forEach(function (n) {
-      if (n.nodeType === 1 && n.tagName === "BLOCKQUOTE") {
-        Array.prototype.slice.call(n.childNodes).forEach(function (m) { ziel.appendChild(m.cloneNode(true)); });
-      } else {
-        ziel.appendChild(n.cloneNode(true));
-      }
-    });
+    knoten.forEach(function (n) { ziel.appendChild(n.cloneNode(true)); });
     return ziel;
   }
 
@@ -135,31 +102,15 @@
   var zaehler = 0;
 
   document.querySelectorAll(".skr-didaktikon-quiz").forEach(function (wurzel, index) {
-    /* DIE KÄSTCHEN GEHÖREN DEM CHECK, NICHT DER AUFGABENLISTE. `[x]` markiert die
-       richtige Antwort; anklickbar gemacht, ließe sie sich vor dem Start umstellen, und
-       eine Fortschrittskarte zählte sie mit. `data-skr-tasklist="off"` nimmt den Block
-       aus – das Skriptorium hat die Kästchen beim Laden womöglich schon eingeschaltet,
-       deshalb werden sie hier wieder gesperrt. */
-    wurzel.setAttribute("data-skr-tasklist", "off");
-    wurzel.querySelectorAll('li > input[type="checkbox"]').forEach(function (k) { k.disabled = true; });
-
-    /* EINE NUTZLAST GEHT VOR (payload.js): Trägt der Rahmen den Check verschlüsselt
-       und daneben einen Rückfall ohne Lösung, ersetzt ihr Inhalt den Rückfall; sonst
-       gilt das Klartext-Markup. */
+    /* EINE NUTZLAST GEHT VOR (payload.js): Nach dem Bau trägt der Rahmen die Fragen
+       verschleiert und daneben einen Rückfall ohne Lösung; in der Vorschau trägt er die
+       Daten selbst (`skr.componentData`). */
     var ext = window.skr && window.skr.ext && window.skr.ext.didaktikon;
     var nutzlast = ext && ext.payload ? ext.payload(wurzel) : null;
-    if (nutzlast && typeof nutzlast.html === "string") { wurzel.innerHTML = nutzlast.html; }
-
-    var liste = kinder(wurzel).filter(function (k) { return k.tagName === "OL"; })[0];
-    if (!liste) { return; }
-    var FRAGEN = lesen(liste);
+    var daten = nutzlast && Array.isArray(nutzlast.questions) ? nutzlast.questions
+      : (window.skr && window.skr.componentData ? window.skr.componentData(wurzel) : null);
+    var FRAGEN = lesen(daten);
     if (!FRAGEN.length) { return; }
-
-    var DEUTUNGEN = [];
-    var deutungKnoten = wurzel.querySelector("[data-skr-didaktikon-quiz-verdicts]");
-    if (deutungKnoten) {
-      try { DEUTUNGEN = JSON.parse(deutungKnoten.textContent) || []; } catch (e) { DEUTUNGEN = []; }
-    }
 
     /* --- Die Bedienung bauen ------------------------------------------------
        Rollen und Bezuege: `progressbar` mit Wert, `status` fuer die Rueckmeldung,
@@ -183,10 +134,11 @@
     elBalkenRahmen.appendChild(elBalken);
 
     var elKarte = element("div", "skr-didaktikon-quiz__card", "card");
+    var elHinweis = null;
     var elFrage = element("div", "skr-didaktikon-quiz__question", "question");
     elFrage.id = frageId; elFrage.setAttribute("tabindex", "-1");
     var elOptionen = element("div", "skr-didaktikon-quiz__options", "options");
-    elOptionen.setAttribute("role", "group");
+    elOptionen.setAttribute("role", "radiogroup");
     elOptionen.setAttribute("aria-labelledby", frageId);
     var elFeedback = element("div", "skr-didaktikon-quiz__feedback", "feedback");
     elFeedback.setAttribute("role", "status"); elFeedback.hidden = true;
@@ -199,13 +151,48 @@
     var elTitel = element("p", "skr-didaktikon-quiz__result-title", "result-title");
     elTitel.setAttribute("tabindex", "-1");
     var elZahl = element("p", "skr-didaktikon-quiz__score", "result-score");
-    var elText = element("p", "skr-didaktikon-quiz__verdict", "result-verdict");
     var elNeu = element("button", "skr-didaktikon-quiz__next", "restart");
     elNeu.type = "button"; elNeu.textContent = T("quizAgain");
-    [elTitel, elZahl, elText, elNeu].forEach(function (e) { elErgebnis.appendChild(e); });
+    [elTitel, elZahl, elNeu].forEach(function (e) { elErgebnis.appendChild(e); });
 
-    [leiste, elBalkenRahmen, elKarte, elErgebnis].forEach(function (e) { bedienung.appendChild(e); });
-    liste.parentNode.insertBefore(bedienung, liste.nextSibling);
+    /* --- Die Ansicht für Trainer:innen (#361) ---------------------------------
+       NUR IM BAU FÜR TRAINER:INNEN (`data-skr-audience` am <body>): eine Leiste mit den
+       Nummern der Fragen – ein Klick springt zur Frage, etwa um sie im Kurs gemeinsam zu
+       besprechen – und „Alle Fragen“: die Fragen untereinander, samt Lösung und
+       Begründungen. Lernende sehen den Check unverändert: Springen höbe den Gang durch
+       die Fragen auf, die Übersicht verriete die Lösung. */
+    var TRAINER = document.body.getAttribute("data-skr-audience") === "trainer";
+    var elTrainer = null, elSprung = null, elUebersicht = null, elUebersichtKnopf = null, uebersicht = false;
+    if (TRAINER) {
+      /* DIE LEISTE IST EIN TRAINERHINWEIS ALS BOX (`--box`): Studentenhut und Rand wie jeder
+         Hinweis, den nur Trainer:innen sehen. Sein Stylesheet lädt extension.yml mit; sein
+         Skript lässt eine Box stehen, wie sie ist. */
+      elTrainer = element("div", "skr-didaktikon-trainer-note skr-didaktikon-trainer-note--box skr-didaktikon-quiz__trainer", "trainer");
+      elTrainer.setAttribute("role", "group");
+      elTrainer.setAttribute("aria-label", T("quizTrainerOnly"));
+      elSprung = element("div", "skr-didaktikon-quiz__jump", "jump");
+      elSprung.setAttribute("role", "group");
+      elSprung.setAttribute("aria-label", T("quizJump"));
+      FRAGEN.forEach(function (f, i) {
+        var knopf = element("button", "skr-didaktikon-quiz__jump-item");
+        knopf.type = "button"; knopf.textContent = String(i + 1);
+        knopf.setAttribute("aria-label", T("quizQuestionOf", { current: i + 1, total: FRAGEN.length }));
+        knopf.addEventListener("click", function () { springen(i); });
+        elSprung.appendChild(knopf);
+      });
+      elUebersicht = element("div", "skr-didaktikon-quiz__overview", "overview");
+      elUebersicht.id = (wurzel.id || "skr-didaktikon-quiz-" + zaehler) + "-overview";
+      elUebersicht.hidden = true;
+      elUebersichtKnopf = element("button", "skr-didaktikon-quiz__reset", "overview-toggle");
+      elUebersichtKnopf.type = "button"; elUebersichtKnopf.textContent = T("quizOverview");
+      elUebersichtKnopf.setAttribute("aria-expanded", "false");
+      elUebersichtKnopf.setAttribute("aria-controls", elUebersicht.id);
+      elUebersichtKnopf.addEventListener("click", function () { uebersichtZeigen(!uebersicht); });
+      elTrainer.appendChild(elSprung); elTrainer.appendChild(elUebersichtKnopf);
+    }
+
+    [leiste, elBalkenRahmen, elTrainer, elUebersicht, elKarte, elErgebnis].forEach(function (e) { if (e) { bedienung.appendChild(e); } });
+    wurzel.appendChild(bedienung);
 
     var reihenfolge = [], aktuell = 0, punkte = 0, gestartet = false, gewaehlt = [], fertig = false;
 
@@ -217,7 +204,7 @@
        Stand, der nicht mehr zum Inhalt passt. Ohne Speicher (privates Fenster,
        gesperrt) läuft der Check wie zuvor, nur ohne Gedächtnis. */
     var SCHLUESSEL = "skr-didaktikon:quiz:" + location.pathname + ":" + (wurzel.id || index);
-    var PRUEFSUMME = pruefsumme(liste.outerHTML);
+    var PRUEFSUMME = pruefsumme(JSON.stringify(daten));
     function sichern() {
       try {
         localStorage.setItem(SCHLUESSEL, JSON.stringify({
@@ -261,6 +248,7 @@
       aktuell = 0; punkte = 0; fertig = false;
       gewaehlt = FRAGEN.map(function () { return null; });
       vergessen();
+      if (uebersicht) { uebersichtZeigen(false); }
       elErgebnis.hidden = true;
       elKarte.hidden = false;
       zeigen();
@@ -278,10 +266,6 @@
       elErgebnis.hidden = true;
       elKarte.hidden = false;
       zeigen();
-      var g = gewaehlt[aktuell];
-      if (g != null && !fertig) {
-        antworten(reihenfolge[aktuell].optionen[g], elOptionen.querySelectorAll(".skr-didaktikon-quiz__option")[g], true);
-      }
       if (fertig) { beenden(true); }
     }
 
@@ -289,18 +273,31 @@
       var eintrag = reihenfolge[aktuell];
       elFrage.textContent = "";
       einsetzen(elFrage, eintrag.frage.frage);
+      /* Der Hinweis für Trainer:innen steht nur in ihrer Nutzlast – Lernende haben keinen.
+         Er steht unter der Frage, nicht in ihr: Die Frage benennt die Antworten
+         (`aria-labelledby`), der Hinweis gehört nicht in diesen Namen. */
+      if (elHinweis) { elKarte.removeChild(elHinweis); elHinweis = null; }
+      if (TRAINER && eintrag.frage.hinweis.length) { elHinweis = elKarte.insertBefore(hinweisBox(eintrag.frage.hinweis), elOptionen); }
       elFeedback.hidden = true; elFeedback.textContent = "";
       elWeiter.hidden = true;
       elOptionen.textContent = "";
 
+      /* DIE ANTWORTEN SIND AUSWAHL-KARTEN (`role="radio"`), keine Schaltflächen: Sie dürfen
+         Absätze und Codeblöcke tragen. Bedient wie eine Gruppe von Radioknöpfen – Tab
+         erreicht die Gruppe, die Pfeiltasten wandern, Leertaste oder Enter wählt. */
       eintrag.optionen.forEach(function (opt, i) {
-        var knopf = element("button", "skr-didaktikon-quiz__option");
-        knopf.type = "button";
+        var knopf = element("div", "skr-didaktikon-quiz__option");
+        knopf.setAttribute("role", "radio");
+        knopf.setAttribute("aria-checked", "false");
+        knopf.tabIndex = i === 0 ? 0 : -1;
         var marke = element("span", "skr-didaktikon-quiz__marker");
         marke.textContent = String.fromCharCode(65 + i);
         knopf.appendChild(marke);
         einsetzen(knopf, opt.inhalt);
-        knopf.addEventListener("click", function () { antworten(opt, knopf); });
+        knopf.addEventListener("click", function () {
+          if (knopf.getAttribute("aria-disabled") !== "true") { antworten(opt, knopf); }
+        });
+        knopf.addEventListener("keydown", tasten);
         elOptionen.appendChild(knopf);
       });
       faerben(elKarte);
@@ -319,7 +316,125 @@
          NICHT beim ersten Aufbau: Dort hat noch niemand etwas bedient, und ein
          Sprung in die Seite beim blossen Laden waere eine Entfuehrung. */
       if (gestartet) { elFrage.focus(); }
+
+      /* EINE BEANTWORTETE FRAGE BLEIBT BEANTWORTET – nach dem Neuladen wie nach einem
+         Sprung zurück: Sie zeigt ihre Antwort, statt ein zweites Mal zu zählen. */
+      var g = gewaehlt[aktuell];
+      if (g != null) {
+        antworten(eintrag.optionen[g], elOptionen.querySelectorAll(".skr-didaktikon-quiz__option")[g], true);
+      }
+      sprungMarkieren(aktuell);
       zurueckZeigen();
+    }
+
+    /* Die aktuelle Frage in der Leiste der Trainer:innen; nach der Auswertung keine. */
+    function sprungMarkieren(index) {
+      if (!elSprung) { return; }
+      kinder(elSprung).forEach(function (k, i) {
+        if (i === index) { k.setAttribute("aria-current", "step"); } else { k.removeAttribute("aria-current"); }
+      });
+    }
+
+    /* Zu einer Frage springen. Eine Auswertung gilt danach nicht mehr – sie kommt wieder
+       mit „Weiter“ nach der letzten Frage. */
+    function springen(index) {
+      if (uebersicht) { uebersichtZeigen(false); }
+      gestartet = true;
+      aktuell = index; fertig = false;
+      elErgebnis.hidden = true;
+      elKarte.hidden = false;
+      sichern();
+      zeigen();
+    }
+
+    /* DIE ÜBERSICHT wird bei jedem Öffnen neu gebaut – in der Reihenfolge der Antworten, die
+       der Check gerade zeigt: Die Buchstaben stimmen mit dem überein, was alle sehen. Die
+       richtige Antwort trägt ein Wort, nicht nur eine Farbe. */
+    function uebersichtBauen() {
+      elUebersicht.textContent = "";
+      var ol = element("ol", "skr-didaktikon-quiz__overview-list");
+      reihenfolge.forEach(function (eintrag, i) {
+        /* Jede Frage eine Karte wie im Check: Vier Fragen sehen aus wie vier Checks. */
+        var li = element("li", "skr-didaktikon-quiz__overview-item");
+        li.appendChild(absatz(T("quizQuestionOf", { current: i + 1, total: reihenfolge.length }), "skr-didaktikon-quiz__overview-counter"));
+        einsetzen(li.appendChild(element("div", "skr-didaktikon-quiz__question")), eintrag.frage.frage);
+        var ul = element("ul", "skr-didaktikon-quiz__overview-answers");
+        eintrag.optionen.forEach(function (opt, j) {
+          var a = element("li", "skr-didaktikon-quiz__overview-answer" + (opt.richtig ? " skr-didaktikon-quiz__overview-answer--correct" : ""));
+          var marke = element("span", "skr-didaktikon-quiz__marker");
+          marke.textContent = String.fromCharCode(65 + j);
+          a.appendChild(marke);
+          einsetzen(a, opt.inhalt);
+          if (opt.richtig) {
+            var richtig = element("strong", "skr-didaktikon-quiz__overview-correct");
+            richtig.textContent = " " + T("quizOverviewCorrect");
+            a.appendChild(richtig);
+          }
+          if (opt.begruendung.length) {
+            a.appendChild(einsetzen(element("div", "skr-didaktikon-quiz__overview-reason"), opt.begruendung));
+          }
+          ul.appendChild(a);
+        });
+        li.appendChild(ul);
+        if (eintrag.frage.hinweis.length) { li.appendChild(hinweisBox(eintrag.frage.hinweis)); }
+        var hin = element("button", "skr-didaktikon-quiz__reset");
+        hin.type = "button"; hin.textContent = T("quizOverviewGoTo");
+        hin.setAttribute("aria-label", T("quizOverviewGoTo") + ": " + T("quizQuestionOf", { current: i + 1, total: reihenfolge.length }));
+        hin.addEventListener("click", function () { springen(i); });
+        li.appendChild(hin);
+        ol.appendChild(li);
+      });
+      elUebersicht.appendChild(ol);
+      faerben(elUebersicht);
+    }
+
+    /* Die Übersicht tritt an die Stelle von Karte und Auswertung; geschlossen ist alles
+       wie vorher. `ausAdresse`: hergestellt aus der Adresse – die steht dann schon. */
+    function uebersichtZeigen(an, ausAdresse) {
+      uebersicht = an;
+      if (an) { uebersichtBauen(); } else { elUebersicht.textContent = ""; }
+      elUebersicht.hidden = !an;
+      bedienung.classList.toggle("skr-didaktikon-quiz__ui--overview", an);
+      elUebersichtKnopf.setAttribute("aria-expanded", String(an));
+      elUebersichtKnopf.textContent = an ? T("quizOverviewClose") : T("quizOverview");
+      if (!ausAdresse && window.skr && window.skr.state) { window.skr.state.update(); }
+    }
+
+    /* „ALLE FRAGEN“ STEHT IN DER ADRESSE (`#/?open=«id des Checks»-overview`): Neu geladen
+       oder als Verweis geteilt, öffnet die Seite wieder die Übersicht – etwa am Beamer.
+       Wie jedes Auf und Zu über `skr.state`, das EINE Fragment der Seite gehört allen
+       Bausteinen. Der Fortschritt bleibt im Browser (siehe oben), nicht in der Adresse. */
+    if (TRAINER && window.skr && window.skr.state) {
+      window.skr.state.openable({
+        id: elUebersicht.id,
+        isOpen: function () { return uebersicht; },
+        set: function (an) { if (an !== uebersicht) { uebersichtZeigen(an, true); } }
+      });
+    }
+
+    /* Die Tasten einer Auswahl-Karte: Pfeile, Pos1 und Ende wandern in der Gruppe,
+       Leertaste und Enter wählen. Der Fokus folgt, nur die Karte mit Fokus ist per Tab
+       erreichbar. */
+    function tasten(ev) {
+      var karten = Array.prototype.slice.call(elOptionen.querySelectorAll(".skr-didaktikon-quiz__option"));
+      var i = karten.indexOf(ev.currentTarget), ziel = null;
+      if (ev.key === "ArrowDown" || ev.key === "ArrowRight") { ziel = karten[(i + 1) % karten.length]; }
+      else if (ev.key === "ArrowUp" || ev.key === "ArrowLeft") { ziel = karten[(i - 1 + karten.length) % karten.length]; }
+      else if (ev.key === "Home") { ziel = karten[0]; }
+      else if (ev.key === "End") { ziel = karten[karten.length - 1]; }
+      else if (ev.key === " " || ev.key === "Enter") { ev.preventDefault(); ev.currentTarget.click(); return; }
+      if (!ziel) { return; }
+      ev.preventDefault();
+      karten.forEach(function (k) { k.tabIndex = k === ziel ? 0 : -1; });
+      ziel.focus();
+    }
+
+    /* Ein Hinweis für Trainer:innen als Box, wie jeder Trainerhinweis. */
+    function hinweisBox(knotenListe) {
+      var box = element("div", "skr-didaktikon-trainer-note skr-didaktikon-trainer-note--box skr-didaktikon-quiz__note");
+      box.setAttribute("role", "note");
+      box.setAttribute("aria-label", T("quizTrainerOnly"));
+      return einsetzen(box, knotenListe);
     }
 
     function absatz(text, klasse) {
@@ -334,7 +449,9 @@
       var eintrag = reihenfolge[aktuell];
 
       knoepfe.forEach(function (k, i) {
-        k.disabled = true;
+        k.setAttribute("aria-disabled", "true");
+        k.setAttribute("aria-checked", String(k === knopf));
+        k.tabIndex = k === knopf ? 0 : -1;
         /* DIE RICHTIGE ANTWORT WIRD IMMER MARKIERT - auch wenn daneben gegriffen
            wurde. Wer nur sieht, dass er falsch lag, lernt nichts. */
         if (eintrag.optionen[i].richtig) { k.classList.add("skr-didaktikon-quiz__option--correct"); }
@@ -381,12 +498,11 @@
       elZaehler.textContent = T("quizDone");
       elPunkte.textContent = T("quizResult", { correct: punkte, total: reihenfolge.length });
 
-      var deutung = deutungFinden(DEUTUNGEN, punkte / reihenfolge.length);
-      elTitel.textContent = (deutung && deutung.title) || T("quizDone");
+      elTitel.textContent = T("quizDone");
       elZahl.textContent = T("quizResultLong", { correct: punkte, total: reihenfolge.length });
-      elText.textContent = (deutung && deutung.text) || "";
       /* Auch hier wandert der Fokus mit - die Karte ist weg, die Auswertung neu. */
       if (!still) { elTitel.focus(); }
+      sprungMarkieren(-1);
       fertig = true;
       sichern();
       zurueckZeigen();
@@ -418,9 +534,9 @@
        hier nach. */
     document.addEventListener("skr-highlight-ready", function () { faerben(bedienung); });
 
-    /* ERST JETZT die Klasse setzen - sie blendet die Fragenliste aus und die
-       Bedienung ein. Bricht oben etwas ab, bleibt die Liste stehen; nie eine halbe
-       Oberflaeche. */
+    /* ERST JETZT die Klasse setzen - sie blendet den Rückfall aus und die Bedienung
+       ein. Bricht oben etwas ab, bleibt der Rückfall stehen; nie eine halbe
+       Oberfläche. */
     wurzel.classList.add("skr-didaktikon-quiz--ready");
     var stand = laden();
     if (stand) { wiederherstellen(stand); } else { starten(); }

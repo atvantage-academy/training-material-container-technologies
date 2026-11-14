@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="#0f6e7a" role="img" aria-label="Ort">
+  <!-- Die Füllfarbe gilt nur, wenn die Datei für sich geöffnet wird: der Grundton des Akzents im Standard-Theme. Im Menü zeigt der Kern das Zeichen als Maske in der Farbe des Eintrags (components.css), ohne Maskenunterstützung gar nicht. -->
+  <!-- Ortsmarke, spitz nach unten, mit einem Punkt – eine Adresse oder ein Treffpunkt. -->
+  <path d="M12 22L6 14A7.5 7.5 0 1 1 18 14ZM12 18.67L16.4 12.8A5.5 5.5 0 1 0 7.6 12.8Z"/>
+  <path d="M9.5 9.5A2.5 2.5 0 1 1 14.5 9.5A2.5 2.5 0 1 1 9.5 9.5Z"/>
+</svg>

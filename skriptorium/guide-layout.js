@@ -6,6 +6,11 @@
    verborgen in die Seitenleiste legt (`data-skr-card="skriptorium.progress"`, Schalter
    `sidebar.progress`). Ohne Kästchen bleibt sie verborgen.
 
+   AUCH IN GESCHLOSSENEN ELEMENTEN: Ordnen `arrangements.about` und `.review` Panels und
+   Definition of Done als Reiter, Overlays oder Klappzeilen an (`skr-guide-panels`), stehen
+   ihre Kästchen in einem `<details>`, das zu sein kann. Gezählt wird über das DOM, nicht über
+   das Sichtbare – ein Kästchen in einem geschlossenen Reiter zählt mit, wie im Bau.
+
    AUSGENOMMEN ist, was in einem Block mit `data-skr-tasklist="off"` steht – etwa die
    Antworten eines Wissens-Checks: Sie sind seine Lösung, keine Aufgabe.
 

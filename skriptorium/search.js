@@ -393,6 +393,8 @@
       var title = document.createElement("span");
       title.className = "skr-search__title";
       mark(title, hit.doc.t, raw);
+      /* Eine unübersetzte Fassung spricht die Sprache ihres Inhalts. */
+      if (hit.doc.l) { title.lang = hit.doc.l; }
       a.appendChild(title);
       var scopeTitle = self.scope && !self.scope.value ? self.scopeTitle(hit.doc.s) : "";
       if (scopeTitle) {
@@ -405,6 +407,7 @@
       if (text) {
         var p = document.createElement("span");
         p.className = "skr-search__snippet";
+        if (hit.doc.l) { p.lang = hit.doc.l; }
         mark(p, text, raw);
         a.appendChild(p);
       }

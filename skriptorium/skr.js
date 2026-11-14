@@ -9,11 +9,14 @@
      skr.buildInfo, skr.colorScheme() …   Client-API: Bauauskunft und Steuerung (client.js)
      skr.ext.«name»                       die Teile einer Extension
      skr.ext.register(name, function (ctx) { return { … }; })
+     skr.componentData(element)          die Daten eines Bausteins in YAML (`forms` am Baustein)
+                                          oder seine Teile (`inserts` am Baustein)
 
    `ctx` je Extension: `readonly`, `guard(part, fn)`, `sidebarCard(id, options)`
    – eine Karte in der Seitenleiste der Seite (siehe unten) –, `text(key, values)`
    – ein Text des Pakets in der Sprache der Seite – und `page.fields` – die Felder, die
-   die Extension für das Layout der Seite erklärt, mit ihren Werten.
+   die Extension für das Layout der Seite erklärt und für den Browser freigibt, mit ihren
+   Werten; `page.field(name)` – der Wert eines davon.
 
    REIHENFOLGE: Skripte mit `defer` laufen nach dem Lesen des Dokuments, in der Reihenfolge
    ihrer Einbindung – der Kern (client.js), dann Layout, Bausteine und Extensions –, und
@@ -30,7 +33,10 @@
 
    VOR DEM ERSTEN MALEN setzt diese Datei, was sonst ein Skript im Dokument täte – die
    Seiten tragen keins (Content Security Policy ohne `unsafe-inline`):
-     - das gewählte Farbschema (`data-skr-theme`, gespeichert im Browser);
+     - das gewählte Farbschema (`data-skr-scheme`, gespeichert im Browser unter `skr-scheme`);
+     - das gewählte Theme (`data-skr-theme`, gespeichert unter `skr-theme`), wenn die Unterlage
+       mehrere anbietet (`<meta name="skr-themes">`); eine Wahl, die sie nicht anbietet,
+       verschwindet – ohne Attribut gilt das erste;
      - die Rolle der Navigation (`data-skr-role`) aus dem Datenblock `skr-roles`, der vor
        dieser Datei steht: die gespeicherte Wahl je Site, sonst die erste Rolle; steht die
        Seite nur in der Navigation anderer Rollen, deren erste – ohne die Wahl zu ändern;
@@ -41,8 +47,22 @@
   "use strict";
   var h = document.documentElement;
   try {
-    var t = localStorage.getItem("skr-theme");
-    if (t === "dark" || t === "light") h.setAttribute("data-skr-theme", t);
+    var t = localStorage.getItem("skr-scheme");
+    /* Bis 1.x hieß der Eintrag `skr-theme`; heute trägt er das Theme. Ein Farbschema dort
+       zieht einmal um. */
+    var former = localStorage.getItem("skr-theme");
+    if (!t && (former === "dark" || former === "light")) {
+      t = former;
+      localStorage.setItem("skr-scheme", t);
+      localStorage.removeItem("skr-theme");
+    }
+    if (t === "dark" || t === "light") h.setAttribute("data-skr-scheme", t);
+    var offered = document.querySelector('meta[name="skr-themes"]');
+    if (offered) {
+      var theme = localStorage.getItem("skr-theme");
+      if (theme && (" " + offered.getAttribute("content") + " ").indexOf(" " + theme + " ") >= 0) h.setAttribute("data-skr-theme", theme);
+      else if (theme) localStorage.removeItem("skr-theme");
+    }
   } catch (e) { /* kein Speicher */ }
   addEventListener("unhandledrejection", function (e) {
     var r = e.reason;
@@ -191,9 +211,15 @@
         guard: function (part, fn) { return guard("ext." + name + "." + part, fn); },
         sidebarCard: function (id, o) { return card(extensionName + "." + id, o || {}); },
         text: function (key, values) { return text(extensionName, key, values); },
+        /* Die Felder der Extension für das Layout der Seite, die für den Browser freigegeben
+           sind (`x-skr-browser`) – `field(name)` liefert den Wert eines Feldes, ohne Wert oder
+           ohne Freigabe `undefined`. */
         get page() {
-          var fieldDefs = (block("skr-page-info").fields || {})[extensionName] || {};
-          return { fields: freeze(JSON.parse(JSON.stringify(fieldDefs))) };
+          var fields = freeze(JSON.parse(JSON.stringify((block("skr-page-info").fields || {})[extensionName] || {})));
+          return Object.freeze({
+            fields: fields,
+            field: function (name) { return Object.prototype.hasOwnProperty.call(fields, name) ? fields[name] : undefined; }
+          });
         }
       });
       var parts = api(ctx) || {};
@@ -233,6 +259,62 @@
     };
   }
 
+  /* DATEN EINES BAUSTEINS (`forms.yaml` am Baustein): Schreibt der Autor ihn als Codeblock,
+     trägt das Element die Daten als JSON (`data-skr-data`) und je Markdown-Feld ein verborgenes
+     Kind, das die Engine gerendert hat (`data-skr-field`, ein JSON-Pointer). componentData gibt
+     die Daten mit diesen Feldern als HTML zurück – inline ohne <p> –, wie `element.data` beim
+     Umwandeln; ohne Daten null. Ein Helfer, keine Steuerung: immer verfügbar.
+     TEILE (`inserts` am Baustein): Trägt das Element `data-skr-parts` (die Beschreibung seiner
+     Teile), gibt componentData die Teile zurück wie `element.data` beim Umwandeln
+     (componentData in authored.mjs) – je erklärtem Teil ein Schlüssel, mit `multiple` eine
+     Liste, sonst der Teil oder null; ein Teil { form: "yaml", data } oder { form: "markdown",
+     html, inserts } – `html` sein Inneres ohne die Teile darin, so, wie es jetzt im Dokument
+     steht. Ein Teil gehört dem innersten Teil oder Baustein, der ihn umschließt. */
+  function componentData(el) {
+    if (el && el.hasAttribute("data-skr-parts")) {
+      var description;
+      try { description = JSON.parse(el.getAttribute("data-skr-parts")); } catch (e) { return null; }
+      return partsOf(el, description);
+    }
+    return yamlData(el);
+  }
+  /* Die Teile, die `container` selbst gehören – nicht einem Teil oder Baustein darin. */
+  function ownParts(container) {
+    return Array.prototype.filter.call(container.querySelectorAll("[data-skr-part]"), function (p) {
+      return p.parentElement.closest("[data-skr-part], [data-skr-parts]") === container;
+    });
+  }
+  function partsOf(container, description) {
+    var own = ownParts(container), out = {};
+    Object.keys(description || {}).forEach(function (name) {
+      var d = description[name] || {};
+      var parts = own.filter(function (p) { return p.getAttribute("data-skr-part") === name; }).map(function (p) {
+        if (p.getAttribute("data-skr-form") === "yaml") return { form: "yaml", data: yamlData(p) };
+        var copy = p.cloneNode(true);
+        ownParts(copy).forEach(function (x) { x.remove(); });
+        return { form: "markdown", html: copy.innerHTML.trim(), inserts: partsOf(p, d.inserts) };
+      });
+      out[name] = d.multiple ? parts : (parts.length ? parts[0] : null);
+    });
+    return out;
+  }
+  function yamlData(el) {
+    if (!el || el.getAttribute("data-skr-form") !== "yaml") return null;
+    var data;
+    try { data = JSON.parse(el.getAttribute("data-skr-data")); } catch (e) { return null; }
+    Array.prototype.forEach.call(el.children, function (f) {
+      var pointer = f.getAttribute("data-skr-field");
+      if (pointer === null) return;
+      var html = f.innerHTML.trim();
+      if (f.getAttribute("data-skr-field-kind") === "inline") html = html.replace(/^<p>([\s\S]*)<\/p>$/, "$1");
+      var keys = pointer.split("/").slice(1).map(function (k) { return k.replace(/~1/g, "/").replace(/~0/g, "~"); });
+      var target = data;
+      for (var i = 0; i < keys.length - 1 && target; i++) target = target[keys[i]];
+      if (target && typeof target === "object" && keys.length) target[keys[keys.length - 1]] = html;
+    });
+    return data;
+  }
+
   /* BEREIT: erst der Kern, dann die übrigen Anmeldungen, zuletzt `skr-ready`. */
   var done = false, core = [], others = [];
   function run(fn) { try { fn(); } catch (e) { if (window.console && console.error) console.error(e); } }
@@ -254,6 +336,7 @@
   var skr = {};
   Object.defineProperty(skr, "ext", { value: ext, enumerable: true });
   Object.defineProperty(skr, "ready", { value: function (fn) { ready(fn, false); }, enumerable: true });
+  Object.defineProperty(skr, "componentData", { value: componentData, enumerable: true });
   /* Für den Kern: Einstellung, Schranke und Wurzel der Site – nicht Teil der öffentlichen API. */
   Object.defineProperty(skr, "_mode", { value: mode });
   Object.defineProperty(skr, "_guard", { value: guard });

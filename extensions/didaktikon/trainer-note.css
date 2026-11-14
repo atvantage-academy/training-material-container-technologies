@@ -1,0 +1,115 @@
+/* Skriptorium: in der Schicht skr.extensions – extensions/didaktikon/trainer-note.css. */
+@layer skr.tokens, skr.base, skr.components, skr.theme, skr.extensions;
+@layer skr.extensions {
+.skr-didaktikon-trainer-note__icon,
+.skr-didaktikon-trainer-note:not(.is-ready)::before {
+  display: inline-block;
+  flex: none;
+  width: 1.25em; height: 1.25em;
+  vertical-align: -0.25em;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3 1 9l11 6 9-4.91V17h2V9L12 3z'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3 1 9l11 6 9-4.91V17h2V9L12 3z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* KASTEN: ohne Skript und im Druck. */
+.skr-didaktikon-trainer-note:not(.is-ready) {
+  position: relative;
+  padding: var(--skr-space-3) var(--skr-space-4) var(--skr-space-3) calc(var(--skr-space-4) + 1.75em);
+  border: 1px solid var(--skr-color-border);
+  border-left: 4px solid var(--skr-didaktikon-tone-4);
+  border-radius: var(--skr-radius-sm);
+  background: var(--skr-color-bg-subtle);
+}
+.skr-didaktikon-trainer-note:not(.is-ready)::before {
+  content: "";
+  position: absolute;
+  left: var(--skr-space-3); top: var(--skr-space-3);
+  color: var(--skr-didaktikon-tone-4-ink);
+}
+.skr-didaktikon-trainer-note:not(.is-ready) > :first-child { margin-top: 0; }
+.skr-didaktikon-trainer-note:not(.is-ready) > :last-child { margin-bottom: 0; }
+
+/* KNOPF: der Studentenhut, so hoch wie die Zeile. */
+.skr-didaktikon-trainer-note__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.75em; min-height: 1.75em;
+  margin: 0; padding: 0.15em;
+  border: 1px solid transparent;
+  border-radius: var(--skr-radius-sm);
+  background: none;
+  color: var(--skr-didaktikon-tone-4-ink);
+  font: inherit;
+  line-height: 1;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.skr-didaktikon-trainer-note__toggle:hover { border-color: var(--skr-color-border); background: var(--skr-color-bg-subtle); }
+.skr-didaktikon-trainer-note__toggle:focus-visible { outline: 2px solid var(--skr-color-accent); outline-offset: 1px; }
+
+/* POPUP: mittig über der Seite, so breit wie eine Lesespalte. Die Mitte gibt der Browser
+   für `popover` mit `margin: auto` vor; der Reset des Kerns (`* { margin: 0 }`) nähme sie
+   weg. */
+.skr-didaktikon-trainer-note__popup {
+  margin: auto;
+  width: min(36rem, calc(100vw - 2 * var(--skr-space-4)));
+  max-height: calc(100vh - 2 * var(--skr-space-6));
+  overflow: auto;
+  padding: var(--skr-space-4);
+  border: 1px solid var(--skr-color-border);
+  border-top: 4px solid var(--skr-didaktikon-tone-4);
+  border-radius: var(--skr-radius);
+  background: var(--skr-color-bg);
+  color: var(--skr-color-ink);
+  box-shadow: var(--skr-shadow-2);
+}
+.skr-didaktikon-trainer-note__popup::backdrop { background: color-mix(in srgb, #000 25%, transparent); }
+.skr-didaktikon-trainer-note__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--skr-space-3);
+  margin-bottom: var(--skr-space-3);
+}
+.skr-didaktikon-trainer-note__title {
+  display: flex;
+  align-items: center;
+  gap: var(--skr-space-2);
+  margin: 0;
+  color: var(--skr-didaktikon-tone-4-ink);
+  font-weight: var(--skr-fw-bold, 700);
+}
+.skr-didaktikon-trainer-note__close {
+  min-width: 2rem; min-height: 2rem;
+  border: 1px solid transparent;
+  border-radius: var(--skr-radius-sm);
+  background: none;
+  color: var(--skr-color-ink-muted);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.skr-didaktikon-trainer-note__close:hover { border-color: var(--skr-color-border); color: var(--skr-color-ink); }
+.skr-didaktikon-trainer-note__close:focus-visible { outline: 2px solid var(--skr-color-accent); outline-offset: 1px; }
+.skr-didaktikon-trainer-note__body > :first-child { margin-top: 0; }
+.skr-didaktikon-trainer-note__body > :last-child { margin-bottom: 0; }
+.skr-didaktikon-trainer-note__body > * + * { margin-top: var(--skr-space-3); }
+
+/* DRUCK: kein Knopf, der Hinweis steht an seiner Stelle. */
+@media print {
+  .skr-didaktikon-trainer-note__toggle,
+  .skr-didaktikon-trainer-note__head { display: none; }
+  .skr-didaktikon-trainer-note__popup {
+    display: block;
+    position: static;
+    width: auto; max-height: none;
+    overflow: visible;
+    margin: var(--skr-space-2) 0 0;
+    border-top-width: 1px;
+    border-left: 4px solid var(--skr-didaktikon-tone-4);
+    box-shadow: none;
+  }
+}
+}

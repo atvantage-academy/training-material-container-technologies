@@ -6,11 +6,11 @@
 .skr-diagram img.skr-diagram__dark { display: none; }
 
 @media (prefers-color-scheme: dark) {
-  :root:not([data-skr-theme="light"]) .skr-diagram img.skr-diagram__light { display: none; }
-  :root:not([data-skr-theme="light"]) .skr-diagram img.skr-diagram__dark { display: block; }
+  :root:not([data-skr-scheme="light"]) .skr-diagram img.skr-diagram__light { display: none; }
+  :root:not([data-skr-scheme="light"]) .skr-diagram img.skr-diagram__dark { display: block; }
 }
-:root[data-skr-theme="dark"] .skr-diagram img.skr-diagram__light { display: none; }
-:root[data-skr-theme="dark"] .skr-diagram img.skr-diagram__dark { display: block; }
+:root[data-skr-scheme="dark"] .skr-diagram img.skr-diagram__light { display: none; }
+:root[data-skr-scheme="dark"] .skr-diagram img.skr-diagram__dark { display: block; }
 
 /* Papier ist hell. */
 @media print {

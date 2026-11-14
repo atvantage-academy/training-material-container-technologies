@@ -71,8 +71,11 @@
 
 .skr-didaktikon-quiz__options { display: grid; gap: 0.6rem; }
 
+/* EINE ANTWORT IST EINE AUSWAHL-KARTE (`role="radio"`), kein <button>: Sie darf Absätze und
+   Codeblöcke tragen, die in einer Schaltfläche ungültig wären. Abstände der Blöcke darin
+   bleiben knapp. */
 .skr-didaktikon-quiz__option {
-  font: inherit; text-align: left; cursor: pointer;
+  font: inherit; text-align: left; cursor: pointer; min-width: 0;
   padding: 0.7rem 0.9rem;
   border: 2px solid var(--skr-color-border);
   border-radius: var(--skr-radius-sm, 6px);
@@ -80,11 +83,13 @@
   color: var(--skr-color-ink);
   transition: var(--skr-transition, all 0.15s ease);
 }
-.skr-didaktikon-quiz__option:hover:not(:disabled) { border-color: var(--skr-color-accent); }
+.skr-didaktikon-quiz__option > :first-child { margin-top: 0; }
+.skr-didaktikon-quiz__option > :last-child { margin-bottom: 0; }
+.skr-didaktikon-quiz__option:hover:not([aria-disabled="true"]) { border-color: var(--skr-color-accent); }
 .skr-didaktikon-quiz__option:focus-visible {
   outline: 2px solid var(--skr-color-accent); outline-offset: 2px;
 }
-.skr-didaktikon-quiz__option:disabled { cursor: default; }
+.skr-didaktikon-quiz__option[aria-disabled="true"] { cursor: default; }
 
 /* DIE FLAECHEN SIND NUR SCHWACH GETOENT, damit die Schrift die Fliesstextfarbe
    behaelt. `--skr-color-danger` traegt als SCHRIFT in keinem der beiden
@@ -144,7 +149,78 @@
   font-weight: var(--skr-fw-bold, 700);
   margin: 0 0 0.6rem;
 }
-.skr-didaktikon-quiz__verdict { margin: 0; color: var(--skr-color-ink-muted); }
+
+/* --- Ansicht für Trainer:innen (nur in ihrem Bau, siehe quiz.js) ---------- */
+
+/* Die Leiste ist ein Trainerhinweis als Box (trainer-note.css: Studentenhut, Rand, Fläche);
+   hier steht nur die Anordnung darin. */
+.skr-didaktikon-quiz__trainer {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 0.5rem;
+  margin-bottom: var(--skr-space-4, 1rem);
+  font-size: var(--skr-fs-sm, 0.92rem);
+}
+.skr-didaktikon-quiz__jump { display: flex; flex-wrap: wrap; gap: 0.3rem; flex: 1; }
+.skr-didaktikon-quiz__jump-item {
+  font: inherit; cursor: pointer;
+  min-width: 2rem; min-height: 2rem; padding: 0 0.4rem;
+  border: 1px solid var(--skr-color-border);
+  border-radius: var(--skr-radius-sm, 6px);
+  background: var(--skr-color-bg);
+  color: var(--skr-color-ink);
+}
+.skr-didaktikon-quiz__jump-item:hover { border-color: var(--skr-color-accent); }
+.skr-didaktikon-quiz__jump-item:focus-visible { outline: 2px solid var(--skr-color-accent); outline-offset: 2px; }
+.skr-didaktikon-quiz__jump-item[aria-current] {
+  border-color: var(--skr-color-accent);
+  background: var(--skr-color-accent);
+  color: var(--skr-color-accent-contrast);
+  font-weight: var(--skr-fw-bold, 700);
+}
+
+/* Offen tritt die Übersicht an die Stelle von Karte und Auswertung. */
+.skr-didaktikon-quiz__ui--overview > .skr-didaktikon-quiz__card,
+.skr-didaktikon-quiz__ui--overview > .skr-didaktikon-quiz__result { display: none; }
+.skr-didaktikon-quiz__overview[hidden] { display: none; }
+/* JEDE FRAGE EINE KARTE, wie die Karte des Checks: Vier Fragen sehen aus wie vier
+   Checks, nicht wie eine lange Liste. Die Antworten wie die Schaltflächen dort. */
+.skr-didaktikon-quiz__overview-list {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: var(--skr-space-6, 1.5rem);
+}
+.skr-didaktikon-quiz__overview-item {
+  border: 1px solid var(--skr-color-border);
+  border-top: 4px solid var(--skr-color-accent);
+  border-radius: var(--skr-radius, 8px);
+  background: var(--skr-color-bg-subtle);
+  padding: var(--skr-space-4, 1rem);
+}
+.skr-didaktikon-quiz__overview-counter {
+  margin: 0 0 0.4rem;
+  font-size: var(--skr-fs-sm, 0.92rem);
+  color: var(--skr-color-ink-muted);
+}
+.skr-didaktikon-quiz__overview-answers {
+  list-style: none; margin: 0 0 0.6rem; padding: 0;
+  display: grid; gap: 0.6rem;
+}
+.skr-didaktikon-quiz__overview-answer {
+  padding: 0.7rem 0.9rem;
+  border: 2px solid var(--skr-color-border);
+  border-radius: var(--skr-radius-sm, 6px);
+  background: var(--skr-color-bg);
+}
+.skr-didaktikon-quiz__overview-answer--correct {
+  border-color: var(--skr-color-success);
+  background: color-mix(in srgb, var(--skr-color-success) 14%, var(--skr-color-bg));
+}
+.skr-didaktikon-quiz__overview-reason {
+  margin-top: 0.3rem;
+  color: var(--skr-color-ink-muted);
+  font-size: var(--skr-fs-sm, 0.92rem);
+}
+.skr-didaktikon-quiz__overview-reason > :first-child { margin-top: 0; }
+.skr-didaktikon-quiz__overview-reason > :last-child { margin-bottom: 0; }
 
 @media (prefers-reduced-motion: reduce) {
   .skr-didaktikon-quiz * { transition: none !important; }

@@ -5,10 +5,10 @@
    laden diese Datei vor ihrem eigenen Skript.
 
    Steht im Rahmen eines Bausteins ein `<script type="text/plain" data-skr-didaktikon-payload>`,
-   liefert `payload(wurzel)` daraus `{ html, solution }` – Base64 (UTF-8) über JSON.
-   Sonst `null`, und der Baustein liest sein Klartext-Markup wie gewohnt. So kann ein
-   Bauschritt die Lösung aus dem lesbaren HTML heraushalten, ohne dass sich an den
-   Bausteinen etwas ändert.
+   liefert `payload(wurzel)` daraus die Daten des Bausteins – Base64 (UTF-8) über JSON:
+   `{ questions }` beim Wissens-Check, `{ terms, solution }` beim Kreuzworträtsel. Sonst
+   `null`, und der Baustein liest seine Daten mit `skr.componentData(wurzel)` – so in der
+   Vorschau, die nicht umwandelt. So hält der Bau die Lösung aus dem lesbaren HTML heraus.
 
    ZWEIMAL GELADEN, EINMAL ANGEMELDET: Stehen Wissens-Check und Kreuzworträtsel auf
    derselben Seite, lädt das Skriptorium diese Datei für jeden Baustein. Derselbe Teil

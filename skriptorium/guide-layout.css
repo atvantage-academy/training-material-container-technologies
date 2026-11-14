@@ -2,15 +2,16 @@
 @layer skr.tokens, skr.base, skr.components, skr.theme, skr.extensions;
 @layer skr.components {
 [data-skr-layouts~="skriptorium.guide"] .skr-guide-main { counter-reset: skr-guide-step; }
-/* Überschriften h3 IN der Definition of Done gliedern sie nach Aufgaben – sie sind keine
-   Schritte und zählen nicht mit. */
-[data-skr-layouts~="skriptorium.guide"] .skr-guide-main h3:not(.skr-guide-done h3) {
+/* Überschriften h3 IN der Definition of Done gliedern sie nach Aufgaben, die in einem Panel
+   (`guide.about`, `guide.review`, gestapelt oder angeordnet) gehören zu dessen Inhalt – beide
+   sind keine Schritte und zählen nicht mit. */
+[data-skr-layouts~="skriptorium.guide"] .skr-guide-main h3:not(.skr-guide-done h3, .skr-guide-panels h3, [data-skr-slot="guide.about"] h3, [data-skr-slot="guide.review"] h3) {
   counter-increment: skr-guide-step;
   display: flex;
   align-items: center;
   gap: 14px;
 }
-[data-skr-layouts~="skriptorium.guide"] .skr-guide-main h3:not(.skr-guide-done h3)::before {
+[data-skr-layouts~="skriptorium.guide"] .skr-guide-main h3:not(.skr-guide-done h3, .skr-guide-panels h3, [data-skr-slot="guide.about"] h3, [data-skr-slot="guide.review"] h3)::before {
   content: counter(skr-guide-step);
   flex: none;
   width: 40px; height: 40px;
@@ -21,7 +22,7 @@
   font-size: 1.125rem; font-weight: 600;
 }
 @media (max-width: 768px) {
-  [data-skr-layouts~="skriptorium.guide"] .skr-guide-main h3:not(.skr-guide-done h3)::before { width: 32px; height: 32px; font-size: 1rem; }
+  [data-skr-layouts~="skriptorium.guide"] .skr-guide-main h3:not(.skr-guide-done h3, .skr-guide-panels h3, [data-skr-slot="guide.about"] h3, [data-skr-slot="guide.review"] h3)::before { width: 32px; height: 32px; font-size: 1rem; }
 }
 
 /* --- Definition of Done ----------------------------------------------------
@@ -38,6 +39,65 @@
 .skr-guide-done > h2 { margin-top: 0; }
 .skr-guide-done > h3 { margin-block: var(--skr-space-3) var(--skr-space-2); }
 .skr-guide-done > :last-child { margin-bottom: 0; }
+
+/* --- Anordnung der Panels und der Definition of Done -------------------------
+   Unter tabs, reveal oder fold (`arrangements.about`, Vorgabe fold) fasst der Bau die
+   Panels über die Anleitung (`guide.about`) und die Definition of Done vor dem Inhalt in
+   eine Hülle `skr-guide-panels` mit `data-skr-arrangement`; die Panels der Kontrolle
+   (`guide.review`) nach dem Inhalt ebenso nach `arrangements.review` (Vorgabe stack), die
+   Hülle zusätzlich mit `skr-guide-review`. Jedes Element ist ein `<details>` des passenden
+   Bausteins (`skr-tabs__panel`, `skr-reveal`, `skr-fold`). Verhalten und Grundform kommen
+   von den Bausteinen (components.css, client.js); hier nur, was die Hülle braucht. Unter
+   stack gibt es keine Hülle – die Panels stehen als Abschnitte im Fluss. */
+
+/* Der Rhythmus im Element: Der Inhalt eines `skr-fold` und einer `skr-reveal` ohne
+   Skript steht direkt im `<details>`, nicht in einem Fluss-Container (guide.css).
+   `:where` hält die Spezifität bei 0-1-0 – die eigenen Abstände der Bausteine (etwa
+   das Panel der Reiter, die Mitte des Overlays) gewinnen. */
+.skr-guide-panels :where(details, .skr-guide-done) > * + * {
+  margin-top: var(--skr-rhythm-block);
+}
+
+/* Die Definition of Done im Element: schlicht. Rahmen und Fläche gibt schon das
+   Element (Reiter, Overlay, Klappzeile); eine zweite Fläche darin wäre ein Kasten im
+   Kasten. Ihre Beschriftung steht im `summary`. */
+.skr-guide-panels .skr-guide-done {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+}
+
+/* reveal: Die Auslöser stehen in einer Zeile und brechen bei Bedarf um. Ohne Skript
+   klappt ein geöffnetes Element an Ort und Stelle auf (kein Overlay) – es nimmt dann
+   die ganze Zeile. */
+.skr-guide-panels[data-skr-arrangement="reveal"] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--skr-space-2) var(--skr-space-6);
+}
+.skr-guide-panels[data-skr-arrangement="reveal"] > .skr-reveal { margin: 0; }
+.skr-guide-panels[data-skr-arrangement="reveal"] > .skr-reveal[open]:not(:has(> .skr-reveal__body)) {
+  flex-basis: 100%;
+}
+
+/* fold: eine Linie je Element, wie das Akkordeon der Reiter ohne Skript – die
+   Klappzeilen stehen im Text und lesen sich als Liste von Abschnitten. */
+.skr-guide-panels[data-skr-arrangement="fold"] > .skr-fold {
+  border-top: 1px solid var(--skr-color-border);
+}
+.skr-guide-panels[data-skr-arrangement="fold"] > .skr-fold:last-child {
+  border-bottom: 1px solid var(--skr-color-border);
+}
+.skr-guide-panels[data-skr-arrangement="fold"] > .skr-fold > summary {
+  padding: var(--skr-space-3) 0;
+  font-weight: var(--skr-fw-bold, 600);
+}
+.skr-guide-panels[data-skr-arrangement="fold"] > .skr-fold[open] {
+  padding-bottom: var(--skr-space-4);
+}
 
 /* --- Karte „Fortschritt“ ----------------------------------------------------
    Form und Beschriftung wie die übrigen Karten der Seitenleiste; hier nur ihr Inhalt. */
