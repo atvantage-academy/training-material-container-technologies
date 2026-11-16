@@ -13,10 +13,17 @@
       Wischgesten; F schaltet Vollbild. Die Folie steht im Hash (#/3) – geschrieben
       von `skr.state` (client.js), bei dem sich die Präsentation als Layout anmeldet;
       dahinter darf der Zustand der Bausteine stehen (#/3?open=…).
+   4) CLIENT-API: count(), current(), goTo(n), next(), prev() an
+      `skr.presentation` (`skr.layouts.define`, skr.js); close() erbt sie von der
+      Bühne.
+
+   Die Fläche drumherum – Kopfleiste, Schließen, Vollbild, Steuerleiste,
+   Fortschrittsbalken – ist die der Bühne (stage.js, stage.css); dieses Skript
+   füllt Zähler und Balken und blendet die Steuerleiste ein.
 
    Ohne dieses Skript bleibt die Seite ein normales, scrollbares Dokument – die
-   CSS-Regeln für die Bühne hängen an `data-ready`, das erst hier gesetzt wird.
-   Bis dahin hält die Lademarke am <html> (Vorlage des Layouts) die Bühne leer;
+   CSS-Regeln für die Folien hängen an `data-ready`, das erst hier gesetzt wird.
+   Bis dahin hält die Lademarke am <html> (Vorlage des Layouts) die Fläche leer;
    `ready()` nimmt sie ab, sobald die erste Folie steht.
    ============================================================================= */
 (function () {
@@ -29,6 +36,36 @@
 
   var root = document.querySelector("[data-skr-present]");
   var deck = document.querySelector("[data-skr-deck]");
+
+  /* --- 4) Client-API ----------------------------------------------------------
+     ANGEMELDET VOR JEDEM FRÜHEN AUSSTIEG: Die Anmeldung gilt nur, solange das Skript lädt
+     (skr.js); ohne Folien zählt count() 0. Gezählt wird ab 1, wie in der Adresse. Jede
+     Steuerung nimmt den Weg der Oberfläche – Blättern über die Knöpfe, Springen über die
+     Folienadresse `#/n` –, durch die Schranke `client_api`. */
+  var slides = [];
+  function current() {
+    var m = /^#\/(\d+)(?:\?|$)/.exec(location.hash || "");
+    return m ? parseInt(m[1], 10) : 1;
+  }
+  function press(selector) {
+    var k = document.querySelector(selector);
+    if (k && !k.disabled) k.click();
+  }
+  var g = window.skr._guard;
+  window.skr.layouts.define("skriptorium.presentation", {
+    count: function () { return slides.length; },
+    current: current,
+    goTo: g("presentation.goTo", function (n) {
+      var number = Math.round(Number(n));
+      if (!isFinite(number)) throw new TypeError("skr.presentation.goTo: Foliennummer erwartet");
+      /* Der Zustand der Seite ab `?` bleibt stehen. */
+      var rest = (location.hash || "").replace(/^[^?]*/, "");
+      location.hash = "#/" + Math.max(1, Math.min(slides.length || 1, number)) + rest;
+    }),
+    next: g("presentation.next", function () { press("[data-skr-present-next]"); }),
+    prev: g("presentation.prev", function () { press("[data-skr-present-prev]"); })
+  });
+
   if (!root || !deck) { ready(); return; }
 
   /* --- 1) Folien aus dem Markdown bauen ------------------------------------ */
@@ -90,13 +127,13 @@
   deck.setAttribute("data-ready", "");
   root.setAttribute("data-ready", "");
 
-  var slides = Array.prototype.slice.call(track.children);
+  slides = Array.prototype.slice.call(track.children);
   if (!slides.length) { ready(); return; }
 
   /* --- 2) Zustand + Anzeige ------------------------------------------------- */
   var counter = document.querySelector("[data-skr-present-counter]");
-  var progress = document.querySelector("[data-skr-present-progress]");
-  var controls = document.querySelector("[data-skr-present-controls]");
+  var progress = document.querySelector("[data-skr-stage-progress]");
+  var controls = document.querySelector("[data-skr-stage-controls]");
   var prevBtn = document.querySelector("[data-skr-present-prev]");
   var nextBtn = document.querySelector("[data-skr-present-next]");
   var index = 0;
@@ -114,6 +151,7 @@
       if (i === index) { s.removeAttribute("aria-hidden"); s.removeAttribute("inert"); }
       else { s.setAttribute("aria-hidden", "true"); s.setAttribute("inert", ""); }
     });
+    reachable();
     if (counter) counter.textContent = index + 1 + " / " + slides.length;
     if (progress) progress.style.width = ((index + 1) / slides.length) * 100 + "%";
     if (prevBtn) prevBtn.disabled = index === 0;
@@ -129,14 +167,35 @@
     window.skr.state.update();
   }
 
+  /* EINE FOLIE, DIE ROLLT, BEKOMMT DEN FOKUS. Ist ihr Inhalt höher oder breiter
+     als die Fläche – auf einem schmalen Bildschirm oft –, rollt sie mit der
+     Tastatur nur, wenn sie den Fokus hat; ohne Link oder Knopf darin bekäme sie
+     ihn nie. Deshalb trägt die aktuelle Folie `tabindex="0"`, solange sie rollt –
+     neu bestimmt bei jedem Wechsel, beim Laden der Bilder und bei jeder
+     Größenänderung. ↑ und ↓ rollen dann, die Folientasten wechseln weiter. */
+  function reachable() {
+    slides.forEach(function (s, i) {
+      var scrolls = i === index && (s.scrollHeight > s.clientHeight || s.scrollWidth > s.clientWidth);
+      if (scrolls) s.setAttribute("tabindex", "0");
+      else s.removeAttribute("tabindex");
+    });
+  }
+  window.addEventListener("resize", reachable);
+  window.addEventListener("load", reachable);
+
   function go(to) {
     var next = Math.max(0, Math.min(slides.length - 1, to));
     // Auch wenn sich nichts ändert (erste/letzte Folie): rendern. Nach einer
     // Wischgeste steht die Schiene sonst verschoben stehen, statt zurückzurasten.
     if (next === index) { render(); return; }
+    // Hatte die alte Folie den Fokus, geht er auf die neue über, wenn sie rollt –
+    // sonst fiele er mit `inert` aufs Dokument, und ↑ ↓ rollten erst nach `Tab`.
+    // Ein Fokus außerhalb der Folien (etwa auf `›`) bleibt, wo er ist.
+    var had = document.activeElement === slides[index];
     index = next;
     slides[index].scrollTop = 0;
     render();
+    if (had && slides[index].hasAttribute("tabindex")) slides[index].focus({ preventScroll: true });
   }
 
   /* --- Gemeinsames Ziehen (Trackpad UND Touch) ------------------------------
@@ -185,17 +244,20 @@
   var printBtn = document.querySelector("[data-skr-present-print]");
   if (printBtn) printBtn.addEventListener("click", function () { window.print(); });
 
-  var fullBtn = document.querySelector("[data-skr-present-full]");
+  /* Vollbild: der Knopf der Bühne (stage.js); ohne ihn schaltet F selbst. */
   function toggleFullscreen() {
+    var full = document.querySelector("[data-skr-stage-full]");
+    if (full) { full.click(); return; }
     if (document.fullscreenElement) document.exitFullscreen();
     else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
   }
-  if (fullBtn) fullBtn.addEventListener("click", toggleFullscreen);
 
   document.addEventListener("keydown", function (e) {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     var t = e.target;
     if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+    // In der Suche (Feld, Treffer) gehören die Tasten ihr.
+    if (t && t.closest && t.closest(".skr-search")) return;
     // Ein offenes Panel (`skr-reveal`) liegt über der Folie: Die Tasten gehören
     // ihm, die Folie dahinter bleibt stehen.
     if (deck.querySelector("details.skr-reveal[open]")) return;
@@ -279,7 +341,7 @@
 
   // Nur ECHTE Scroll-Container zählen: `overflow-x: auto|scroll` UND noch Weg in
   // der Wischrichtung. Die Schiene ist ausdrücklich ausgenommen – sie ist n-mal
-  // so breit wie die Bühne (n Folien nebeneinander) und sähe sonst wie ein
+  // so breit wie die Fläche (n Folien nebeneinander) und sähe sonst wie ein
   // scrollbarer Inhalt aus, der jedes Vorwärtsblättern schluckt.
   function scrollsHorizontally(node, delta) {
     while (node && node !== document && node !== document.documentElement) {
@@ -297,10 +359,10 @@
     return false;
   }
 
-  // Zuständig ist das DOKUMENT, nicht die Bühne: `wheel`-Ereignisse gehen an das
+  // Zuständig ist das DOKUMENT, nicht die Fläche: `wheel`-Ereignisse gehen an das
   // Element unter dem Zeiger. Steht der über der Kopfleiste oder den fixierten
   // Blätter-Knöpfen – genau dort landet er nach einem Klick auf „weiter“ –, dann
-  // liegen sie AUSSERHALB der Bühne, und ein Wisch lief ins Leere, bis man den
+  // liegen sie AUSSERHALB der Fläche, und ein Wisch lief ins Leere, bis man den
   // Zeiger wieder über die Folie bewegte.
   document.addEventListener("wheel", function (e) {
     if (e.ctrlKey) return;                                   // Pinch-Zoom

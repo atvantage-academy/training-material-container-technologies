@@ -224,13 +224,10 @@
     }
     if (el.note) el.note.innerHTML = text || "";
 
-    // Kopfleiste, Fortschritt, Knöpfe
+    // Zähler in der Steuerleiste, Fortschritt, Knöpfe. Bei mehreren Szenarien zeigt der
+    // Reiter, in welchem man ist; der Zähler bleibt kurz wie die Foliennummer.
     if (el.counter) {
-      var counter = stepList.length ? T("simStepCounter", { current: index + 1, total: stepList.length }) : "";
-      // Bei mehreren Szenarien steht davor, in welchem man ist – ohne das wäre
-      // „Schritt 3 / 8“ auf einer Seite mit vier Abläufen mehrdeutig.
-      if (counter && several()) counter = scenario().title + " · " + counter;
-      el.counter.textContent = counter;
+      el.counter.textContent = stepList.length ? T("simStepCounter", { current: index + 1, total: stepList.length }) : "";
     }
     if (el.progress) el.progress.style.width = stepList.length ? ((index + 1) / stepList.length) * 100 + "%" : "0";
     if (el.prev) el.prev.disabled = index === 0;
@@ -798,6 +795,72 @@
     window.dispatchEvent(new CustomEvent("skr-urlchange"));
   }
 
+  /* --- Splitter der Erklärspalte ----------------------------------------------
+     Zieht die Erklärspalte breiter – mit Maus, Finger oder Pfeiltasten. Schmaler als die
+     Vorgabe des Layouts wird sie nicht (`max()` in simulation.css), breiter als drei Fünftel
+     der Fläche auch nicht. Die Breite gilt für ALLE Simulationen der Unterlage, nicht je Seite:
+     Wer sie einmal passend gezogen hat, will sie überall so. Ohne Local Storage (privates
+     Fenster, gesperrt) gilt sie nur bis zum Neuladen. */
+  var ASIDE_KEY = "skr-didaktikon-simulation-aside";
+  var ASIDE_STEP = 16;
+
+  function splitter() {
+    var bar = q("splitter");
+    var main = bar && bar.parentNode;
+    var aside = main && main.querySelector(".skr-didaktikon-simulation__aside");
+    if (!aside) return;
+    // Die Breite, die der Leser gewählt hat; angewandt wird höchstens, was das Fenster erlaubt.
+    var chosen = 0;
+    try { chosen = Number(window.localStorage.getItem(ASIDE_KEY)) || 0; } catch (e) { /* ohne Speicher */ }
+
+    function widest() { return Math.round(main.clientWidth * 0.6); }
+    function current() { return Math.round(aside.getBoundingClientRect().width); }
+    function apply(w) {
+      main.style.setProperty("--skr-didaktikon-simulation-aside", Math.max(0, Math.min(Math.round(w), widest())) + "px");
+      bar.setAttribute("aria-valuenow", String(current()));
+      bar.setAttribute("aria-valuemax", String(widest()));
+    }
+    // Gespeichert wird die Breite, die die Spalte hat – nie weniger als die Mindestbreite.
+    function choose(w) {
+      apply(w);
+      chosen = current();
+      try { window.localStorage.setItem(ASIDE_KEY, String(chosen)); } catch (e) { /* ohne Speicher */ }
+    }
+
+    bar.addEventListener("pointerdown", function (e) {
+      if (e.button !== 0) return;
+      e.preventDefault();
+      bar.setPointerCapture(e.pointerId);
+      bar.setAttribute("data-skr-didaktikon-simulation-dragging", "");
+    });
+    bar.addEventListener("pointermove", function (e) {
+      if (bar.hasPointerCapture(e.pointerId)) apply(e.clientX - aside.getBoundingClientRect().left);
+    });
+    function release(e) {
+      if (!bar.hasPointerCapture(e.pointerId)) return;
+      bar.releasePointerCapture(e.pointerId);
+      bar.removeAttribute("data-skr-didaktikon-simulation-dragging");
+      choose(current());
+    }
+    bar.addEventListener("pointerup", release);
+    bar.addEventListener("pointercancel", release);
+    // Die Pfeiltasten gehören hier dem Splitter, nicht dem Blättern der Simulation.
+    bar.addEventListener("keydown", function (e) {
+      var to = e.key === "ArrowRight" ? current() + ASIDE_STEP
+        : e.key === "ArrowLeft" ? current() - ASIDE_STEP
+        : e.key === "Home" ? 0
+        : e.key === "End" ? widest() : null;
+      if (to === null) return;
+      e.preventDefault();
+      e.stopPropagation();
+      choose(to);
+    });
+    // Ein schmaleres Fenster kürzt die Spalte, ohne die Wahl zu vergessen.
+    window.addEventListener("resize", function () { apply(chosen); });
+    apply(chosen);
+    bar.removeAttribute("hidden");
+  }
+
   /* --- Aufbau ----------------------------------------------------------------- */
   function start() {
     if (started) return;
@@ -823,7 +886,6 @@
       speed: q("speed-toggle"),
       tempoLabel: q("speed-label"),
       tempoMenu: q("speed-menu"),
-      full: q("full"),
       tabs: q("tabs"),
       intro: q("intro"),
       caption: q("caption"),
@@ -831,6 +893,7 @@
       captionText: q("caption-text"),
       captureHint: q("capture-hint")
     };
+    splitter();
 
     /* DIE STARTVORGABE STEHT IM FRONT MATTER (`simulation.speed`, `simulation.step.interval`)
        und kommt über `ctx.page.fields` – nicht aus dem Markup. Was die Seite dort nicht
@@ -860,7 +923,6 @@
     if (el.prev) el.prev.addEventListener("click", function () { pause(); prev(); });
     if (el.next) el.next.addEventListener("click", function () { pause(); next(); });
     if (el.play) el.play.addEventListener("click", toggle);
-    if (el.full) el.full.addEventListener("click", fullscreen);
     wireMenu();
 
     document.addEventListener("keydown", function (e) {
@@ -1030,6 +1092,14 @@
       var fn = function () { var r = API[k].apply(API, arguments); return r === API ? sim : r; };
       Object.defineProperty(sim, k, { value: STEUERUNG.indexOf(k) >= 0 ? ctx.guard("simulation." + k, fn) : fn, enumerable: true });
     });
+    /* AM OBJEKT DES LAYOUTS (Client-API der Bühne): `skr.layout.next()` steuert die Simulation,
+       `skr.layout.close()` erbt sie von `skriptorium.stage` – beides am selben Objekt. Anmelden
+       nur, solange das Skript lädt; nur Methoden, die Lesewerte bleiben an `sim`. */
+    var methods = {};
+    Object.keys(sim).forEach(function (k) {
+      if (typeof Object.getOwnPropertyDescriptor(sim, k).value === "function") methods[k] = sim[k];
+    });
+    window.skr.layouts.define("didaktikon.simulation", methods);
     return { simulation: Object.freeze(sim) };
   });
 

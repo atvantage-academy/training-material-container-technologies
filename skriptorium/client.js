@@ -100,6 +100,7 @@
     var owner = null;     /* das Layout, dem der Teil vor `?` gehört: {read, apply} */
     var ready = false;    /* erst nach dem ersten `apply()` wird geschrieben */
     var applying = false;
+    var early = 0;        /* Zahl der Bausteine, die bis `ready()` angemeldet waren */
     var registrations = 0;      /* Zahl der Anmeldungen (Bausteine, Schlüssel, Layout) */
     var lastRegistration = 0;   /* performance.now() der letzten Anmeldung */
 
@@ -366,8 +367,113 @@
         if (owner) { window.setTimeout(writeOwner, 0); }
       },
       /* Ab hier darf geschrieben werden (nach dem ersten Herstellen). */
-      ready: function () { ready = true; }
+      ready: function () { ready = true; early = disclosures.length; }
     };
+
+    /* --- Sprachwechsel: Kennungen in die andere Fassung übertragen ------------
+       DIE KENNUNGEN SIND ÜBERSETZT. Sie kommen aus Überschriften und
+       Beschriftungen (`zweites-panel` / `second-panel`); die andere Fassung kennt
+       die der aktuellen also meist nicht. Deshalb gestuft:
+
+       1. GLEICHE KENNUNG: Gibt es sie drüben, geht sie unverändert mit – das trifft
+          selbst gesetzte IDs (`{#netzplan}`) und Beschriftungen, die in jeder
+          Sprache gleich lauten (`windows`).
+       2. GLEICHE STELLE: Sonst zählt die Lage – das n-te Element unter den Bausteinen,
+          die auf- und zugehen, oder unter den Überschriften mit ID. Aber nur, wenn
+          der Aufbau drüben derselbe ist (die Signatur unten); eine Fassung mit einem
+          Reiter mehr hätte an derselben Stelle etwas anderes.
+       3. SONST ENTFÄLLT SIE – lieber der Ausgangszustand als ein falscher.
+
+       Gezählt werden nur die Bausteine, die bis `ready()` angemeldet sind: Was eine
+       Extension später anmeldet, steht beim Ankommen noch nicht fest und geht nur
+       über die gleiche Kennung mit. Übersetzt werden die Sprungmarke und die
+       Schlüssel, die Kennungen tragen (`ID_KEYS`); der Teil eines Layouts (`#/3`) gilt
+       in jeder Sprache und bleibt, wie er ist, ebenso die Werte anderer Schlüssel. */
+    var ID_KEYS = ["open", "paused"];
+
+    function counted() { return disclosures.slice(0, ready ? early : disclosures.length); }
+
+    function headings() {
+      return Array.prototype.slice.call(document.querySelectorAll("h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]"));
+    }
+
+    /* Der Aufbau der Seite: je Baustein, ob exklusiv (`x`) oder nicht (`o`), je
+       Überschrift ihre Ebene. Gleiche Signatur heißt: gleiche Stellen. */
+    function signature() {
+      return {
+        open: counted().map(function (o) { return o.exclusive ? "x" : "o"; }).join(""),
+        heads: headings().map(function (h) { return h.tagName.charAt(1); }).join("")
+      };
+    }
+
+    function place(id) {
+      var list = counted();
+      for (var i = 0; i < list.length; i += 1) { if (list[i].id === id) { return ["open", i]; } }
+      var h = headings().indexOf(document.getElementById(id));
+      return h === -1 ? null : ["head", h];
+    }
+
+    /* Was die Zielseite braucht, um die Kennungen der Adresse aufzulösen. */
+    function carry() {
+      var now = address();
+      var places = {};
+      var ids = now.anchor ? [now.anchor] : [];
+      ID_KEYS.forEach(function (k) { if (now.values[k]) { ids = ids.concat(now.values[k].split(",")); } });
+      ids.forEach(function (id) { var p = place(id); if (p) { places[id] = p; } });
+      return { hash: location.hash || "", layout: !!owner, signature: signature(), places: places };
+    }
+
+    /* Auf der Zielseite, vor dem ersten `restore()`: die Kennungen der Adresse in
+       die eigenen übersetzen. Stimmt die Adresse nicht mehr mit der überein, die
+       mitkam, ist der Leser anders hierher gekommen – dann bleibt alles, wie es ist. */
+    function arrive(handover) {
+      var raw = location.hash || "";
+      if (!handover || handover.hash !== raw || !raw) { return; }
+      var mine = signature();
+      var theirs = handover.signature || {};
+      var places = handover.places || {};
+      /* Die Kennung eines Bausteins ist die ID seines Elements; steht sie auf der
+         Seite, gilt sie – auch für einen, der sich erst später anmeldet. */
+      function translate(id) {
+        if (!id) { return ""; }
+        if (document.getElementById(id) || disclosures.some(function (o) { return o.id === id; })) { return id; }
+        var p = places[id];
+        var kind = p && (p[0] === "open" ? "open" : "heads");
+        if (!kind || mine[kind] !== theirs[kind]) { return ""; }
+        return ((kind === "open" ? counted() : headings())[p[1]] || {}).id || "";
+      }
+      var fresh;
+      var scrollTo = "";
+      if (raw.slice(0, 2) !== "#/") {
+        scrollTo = translate(decode(raw.slice(1)));
+        fresh = scrollTo ? "#" + encode(scrollTo) : "";
+      } else {
+        var rest = raw.slice(2);
+        var sep = rest.indexOf("?");
+        var head = sep === -1 ? rest : rest.slice(0, sep);
+        if (!handover.layout) { head = encode(translate(decode(head))); }
+        var pairs = sep === -1 ? [] : rest.slice(sep + 1).split("&").filter(function (pair) {
+          return !!pair;
+        }).map(function (pair) {
+          var i = pair.indexOf("=");
+          if (i === -1 || ID_KEYS.indexOf(decode(pair.slice(0, i))) === -1 || !pair.slice(i + 1)) { return pair; }
+          var ids = decode(pair.slice(i + 1)).split(",").map(function (id) { return translate(id); })
+            .filter(function (id) { return !!id; });
+          /* Ist keine Kennung übrig, entfällt der Schlüssel: `open=` hieße „alles zu“. */
+          return ids.length ? pair.slice(0, i) + "=" + encode(ids.join(",")) : "";
+        }).filter(function (pair) { return !!pair; });
+        fresh = !head && !pairs.length ? "" : "#/" + head + (pairs.length ? "?" + pairs.join("&") : "");
+      }
+      if (fresh === raw || !window.history || !window.history.replaceState) { return; }
+      window.history.replaceState(null, "", fresh || (location.pathname + location.search));
+      /* Eine gewöhnliche Sprungmarke hat der Browser schon gesucht – vergeblich. */
+      var target = scrollTo && document.getElementById(scrollTo);
+      if (target) { target.scrollIntoView(); }
+    }
+
+    /* INTERN, FÜR DEN SPRACHWECHSEL (`switchLanguage`, Umschalter) – nicht aufzählbar. */
+    Object.defineProperty(api, "_carry", { enumerable: false, value: carry });
+    Object.defineProperty(api, "_arrive", { enumerable: false, value: arrive });
 
     /* INTERN, FÜR DIE VERWEISPRÜFUNG (checks/link-states.mjs), NICHT TEIL DER CLIENT-API –
        darum nicht aufzählbar. Was die Seite bis jetzt angemeldet hat: Schlüssel, Kennungen
@@ -675,10 +781,14 @@
   var TEXTS = {
     de: { copy: "Kopieren", copied: "Kopiert!", close: "Schließen",
           step: "Arbeitsschritt",
-          moreTabs: "Weitere Reiter", cancel: "Abbrechen", zoom: "Vergrößern" },
+          moreTabs: "Weitere Reiter", cancel: "Abbrechen", zoom: "Vergrößern",
+          carousel: "Karussell", panel: "Folie", of: "von", previous: "Zurück", next: "Weiter",
+          autoplay: "Automatisch weiterschalten", show: "Zeige" },
     en: { copy: "Copy",     copied: "Copied!",  close: "Close",
           step: "Step",
-          moreTabs: "More tabs", cancel: "Cancel", zoom: "Enlarge" }
+          moreTabs: "More tabs", cancel: "Cancel", zoom: "Enlarge",
+          carousel: "Carousel", panel: "Slide", of: "of", previous: "Previous", next: "Next",
+          autoplay: "Advance automatically", show: "Show" }
   };
   var T = TEXTS[(document.documentElement.getAttribute("lang") || "de").split("-")[0].toLowerCase()] || TEXTS.de;
 
@@ -2818,6 +2928,328 @@
     });
   }
 
+  /* ==========================================================================
+     KARUSSELL – aus Ueberschriften werden Panels, die durchlaufen
+     --------------------------------------------------------------------------
+     DIE SEITE FUNKTIONIERT OHNE DIESE FUNKTION, wie beim Akkordeon: Der Autor
+     schreibt Ueberschriften mit Bild und Text darunter in einen Kasten; ohne
+     Skript steht da ein gewoehnliches Dokument. Die flachste Ueberschrift unter
+     den direkten Kindern beginnt je ein Panel, was davor steht, bleibt stehen.
+
+     GLEICH GROSS: Alle Panels liegen in DERSELBEN Zelle eines Gitters. Die Zelle
+     ist so hoch wie das hoechste, und das Karussell springt beim Wechsel nicht.
+     Die nicht gezeigten Panels sind unsichtbar (`visibility`), nicht entfernt -
+     sonst trugen sie nichts mehr zur Hoehe bei.
+
+     VON SELBST, ABER ANHALTBAR (WCAG 2.2.2): `data-skr-carousel-interval` in Sekunden,
+     Vorgabe 6; `data-skr-carousel-autoplay="off"` laesst es nur von Hand laufen. Der
+     Lauf ruht, solange Maus oder Fokus im Karussell stehen, solange es nicht zu sehen
+     ist (ausserhalb des Bildes, auf einer verdeckten Folie, im Hintergrund-Tab) und
+     solange `skr.freezeMotion()` die Bewegung anhaelt; er beginnt gar nicht erst, wenn
+     der Leser reduzierte Bewegung wuenscht. Der Knopf schaltet ihn ab und an.
+
+     AM ENDE WIEDER VON VORN - Vorgabe. `data-skr-carousel-loop="off"` haelt am Rand an:
+     Zurueck und Weiter sind dort als nicht verfuegbar markiert (`aria-disabled`, nicht
+     `disabled` - ein deaktivierter Knopf verloere den Fokus), der Lauf bleibt am letzten
+     Panel stehen, und wer dort abspielt, beginnt wieder beim ersten.
+
+     EIN ANKER zeigt sein Panel: `#«id der Ueberschrift»` oder ein Anker auf etwas im
+     Panel - wie beim Akkordeon. Die Client-API steuert es ueber `skr.carousels()`
+     (`Carousels` unten, eingehaengt in `initClientApi`).
+
+     IN DER ADRESSE STEHT NUR EINE WAHL VON HAND. Der automatische Lauf schreibt
+     nichts: Er legte sonst alle paar Sekunden einen neuen Zustand an, und der
+     QR-Code an der Wand wechselte mit. Ein von Hand angehaltener Lauf steht unter
+     `paused`, mit der ID der ersten Panel-Ueberschrift als Kennung des Karussells.
+     ========================================================================== */
+  var Carousels = [];   /* je Karussell der Seite seine Steuerung, fuer `skr.carousels()` */
+  var Paused = [];      /* je Karussell mit Lauf: sein Zustand für den Schlüssel `paused` */
+
+  function initCarousel() {
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var boxes = Array.prototype.slice.call(
+      document.querySelectorAll(".skr-carousel")
+    ).filter(function (box) { return !inPresentation(box); });
+
+    boxes.forEach(function (box, index) {
+      var children = Array.prototype.slice.call(box.children);
+      var level = 0;
+      children.forEach(function (el) {
+        var matches = /^H([1-6])$/.exec(el.tagName);
+        if (!matches) return;
+        var n = Number(matches[1]);
+        if (!level || n < level) { level = n; }
+      });
+      if (!level) return;
+      var mark = "H" + level;
+
+      var sections = [];
+      var current = null;
+      children.forEach(function (el) {
+        if (el.tagName === mark) {
+          current = [el];
+          sections.push(current);
+        } else if (current) {
+          current.push(el);
+        }
+      });
+      /* Ein einzelnes Panel hat nichts, wohin es laufen koennte. */
+      if (sections.length < 2) return;
+
+      var total = sections.length;
+      var track = document.createElement("div");
+      track.className = "skr-carousel__track";
+      track.setAttribute("aria-live", "polite");
+      /* Die Spur steht, wo die erste Ueberschrift stand - die Einleitung davor bleibt. */
+      box.insertBefore(track, sections[0][0]);
+
+      var panels = sections.map(function (parts, i) {
+        var head = parts[0];
+        /* Die ID der Ueberschrift ist der Anker des Panels - wie beim Akkordeon. */
+        assignId(head, head.textContent, "skr-carousel-" + index + "-", i);
+        var panel = document.createElement("div");
+        panel.className = "skr-carousel__panel";
+        panel.setAttribute("role", "group");
+        panel.setAttribute("aria-roledescription", T.panel);
+        panel.setAttribute("aria-label", (i + 1) + " " + T.of + " " + total);
+        parts.forEach(function (el) { panel.appendChild(el); });
+        track.appendChild(panel);
+        return panel;
+      });
+
+      var autoplay = box.getAttribute("data-skr-carousel-autoplay") !== "off";
+      var loop = box.getAttribute("data-skr-carousel-loop") !== "off";
+      var interval = Number(box.getAttribute("data-skr-carousel-interval"));
+      if (!(interval > 0)) { interval = 6; }
+
+      /* DIE STEUERUNG unter den Panels: zurueck, je Panel ein Punkt, weiter und -
+         nur wenn es von selbst laeuft - der Schalter dafuer. */
+      var controls = document.createElement("div");
+      controls.className = "skr-carousel__controls";
+      function control(cls, label) {
+        var button = document.createElement("button");
+        button.type = "button";
+        button.className = cls;
+        button.setAttribute("aria-label", label);
+        return button;
+      }
+      var prev = control("skr-carousel__prev", T.previous);
+      var next = control("skr-carousel__next", T.next);
+      var dots = document.createElement("div");
+      dots.className = "skr-carousel__dots";
+      var dotButtons = sections.map(function (parts, i) {
+        var dot = control("skr-carousel__dot", T.show + " " + (i + 1) + " " + T.of + " " + total + ": " + (parts[0].textContent || "").trim());
+        dot.setAttribute("aria-controls", parts[0].id);
+        dots.appendChild(dot);
+        return dot;
+      });
+      var play = autoplay ? control("skr-carousel__play", T.autoplay) : null;
+      controls.appendChild(prev);
+      controls.appendChild(dots);
+      controls.appendChild(next);
+      if (play) { controls.appendChild(play); }
+
+      track.insertAdjacentElement("afterend", controls);
+      box.setAttribute("role", "region");
+      box.setAttribute("aria-roledescription", T.carousel);
+      if (!box.hasAttribute("aria-label") && !box.hasAttribute("aria-labelledby")) {
+        box.setAttribute("aria-label", T.carousel);
+      }
+
+      var active = 0;
+      /* DER WECHSEL WISCHT in Richtung des Blaetterns: vorwaerts verlaesst das alte Panel
+         die Buehne nach links, das neue kommt von rechts; rueckwaerts umgekehrt. Die
+         Richtung folgt dem angeforderten Index (`active + 1` ist vorwaerts, auch wenn es
+         am Ende auf das erste springt), `dir` setzt sie ausdruecklich.
+
+         Das neue Panel muss VOR der Bewegung auf seiner Seite stehen. Wechselt die
+         Richtung, laege es noch auf der anderen und schoebe sich quer ueber die Buehne -
+         deshalb wird es ohne Uebergang hingesetzt (`is-placing`), dann laeuft es ein. */
+      function show(i, dir) {
+        var target = loop ? (i + total) % total : Math.max(0, Math.min(total - 1, i));
+        var old = active;
+        if (target !== old || !panels[target].classList.contains("is-active")) {
+          box.setAttribute("data-skr-carousel-dir", dir || (i < old ? "prev" : "next"));
+          panels.forEach(function (panel) { panel.classList.remove("is-leaving"); });
+          var incoming = panels[target];
+          incoming.classList.add("is-placing");
+          void incoming.offsetWidth;
+          incoming.classList.remove("is-placing");
+          if (target !== old) { panels[old].classList.add("is-leaving"); }
+        }
+        active = target;
+        if (!loop) {
+          prev.setAttribute("aria-disabled", active === 0 ? "true" : "false");
+          next.setAttribute("aria-disabled", active === total - 1 ? "true" : "false");
+        }
+        panels.forEach(function (panel, j) {
+          var on = j === active;
+          panel.classList.toggle("is-active", on);
+          if (on) { panel.removeAttribute("aria-hidden"); panel.removeAttribute("inert"); }
+          else { panel.setAttribute("aria-hidden", "true"); panel.setAttribute("inert", ""); }
+          dotButtons[j].setAttribute("aria-current", on ? "true" : "false");
+        });
+      }
+      show(0);
+
+      /* Eine Wahl von Hand: zeigen, in die Adresse schreiben, den Takt neu beginnen. */
+      function choose(i) {
+        show(i);
+        State.update();
+        restart();
+      }
+      prev.addEventListener("click", function () { choose(active - 1); });
+      next.addEventListener("click", function () { choose(active + 1); });
+      dotButtons.forEach(function (dot, i) {
+        dot.addEventListener("click", function () { choose(i); });
+      });
+
+      panels.forEach(function (panel, i) {
+        if (withoutState(box)) { return; }
+        State.openable({
+          id: sections[i][0].id,
+          exclusive: true,
+          isOpen: function () { return active === i; },
+          set: function (opened) { if (opened) { show(i); } }
+        });
+      });
+
+      /* PFEILTASTEN AUF DER STEUERUNG. Sie gehoeren dem Karussell: Auf einer Folie
+         blaetterte die Praesentation sonst mit - sie hoert am Dokument. Leertaste
+         und Eingabe loesen den Knopf aus und duerfen deshalb ebenfalls nicht
+         weiter nach oben. */
+      controls.addEventListener("keydown", function (event) {
+        var target = null;
+        if (event.key === "ArrowRight") { target = active + 1; }
+        else if (event.key === "ArrowLeft") { target = active - 1; }
+        else if (event.key === "Home") { target = 0; }
+        else if (event.key === "End") { target = total - 1; }
+        else if (event.key === " " || event.key === "Enter") { event.stopPropagation(); return; }
+        if (target === null) { return; }
+        event.preventDefault();
+        event.stopPropagation();
+        choose(target);
+      });
+
+      /* DER LAUF. `playing` ist die Wahl (Schalter, reduzierte Bewegung), `held` die
+         Gruende, gerade nicht zu laufen (Maus, Fokus, nicht zu sehen). */
+      var playing = autoplay && !reduce;
+      var hover = false, focus = false, visible = true;
+      var timer = null;
+      function held() {
+        return hover || focus || !visible || document.hidden ||
+          document.documentElement.hasAttribute("data-skr-motion-frozen") ||
+          !!(box.closest && box.closest("[aria-hidden='true']"));
+      }
+      function tick() {
+        if (held()) { return; }
+        show(active + 1);
+        /* Ohne Wiederbeginn endet der Lauf mit dem letzten Panel. */
+        if (!loop && active === total - 1) { playing = false; restart(); }
+      }
+      /* Abspielen am Ende eines Karussells ohne Wiederbeginn faengt vorn an. */
+      function start() {
+        if (!loop && active === total - 1) { show(0, "next"); }
+        playing = true;
+        restart();
+      }
+      function restart() {
+        if (timer) { window.clearInterval(timer); timer = null; }
+        if (playing) { timer = window.setInterval(tick, interval * 1000); }
+        track.setAttribute("aria-live", playing ? "off" : "polite");
+        if (play) { play.setAttribute("aria-pressed", playing ? "true" : "false"); }
+      }
+      /* ANGEHALTEN VON HAND steht in der Adresse (`paused`), nicht das Ende eines Laufs
+         ohne Wiederbeginn und nicht die reduzierte Bewegung: Beides kommt aus dem
+         Dokument bzw. vom Leser, nicht aus einer Bedienung. */
+      var stopped = false;
+      function pause() { stopped = true; playing = false; restart(); State.update(); }
+      function resume() { stopped = false; start(); State.update(); }
+      if (play) {
+        play.addEventListener("click", function () {
+          if (playing) { pause(); } else { resume(); }
+        });
+      }
+      /* Maus, Fokus und Sicht gelten immer - auch fuer einen Lauf, den erst die
+         Client-API anstoesst. */
+      box.addEventListener("mouseenter", function () { hover = true; });
+      box.addEventListener("mouseleave", function () { hover = false; });
+      box.addEventListener("focusin", function () { focus = true; });
+      box.addEventListener("focusout", function (event) {
+        if (!box.contains(event.relatedTarget)) { focus = false; }
+      });
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver(function (entries) {
+          visible = entries[entries.length - 1].isIntersecting;
+        }).observe(box);
+      }
+      restart();
+
+      /* TIEFE VERWEISE: ein Anker auf eine Ueberschrift oder auf etwas in einem Panel
+         zeigt dieses Panel - beim Laden und bei jedem spaeteren Wechsel. */
+      function fromHashValue() {
+        var id = State.anchor();
+        if (!id) { return; }
+        var target = document.getElementById(id);
+        if (!target) { return; }
+        var found = -1;
+        panels.forEach(function (panel, i) { if (panel.contains(target)) { found = i; } });
+        if (found === -1) { return; }
+        show(found);
+        restart();
+        box.scrollIntoView({ block: "nearest" });
+      }
+      window.addEventListener("hashchange", fromHashValue);
+      fromHashValue();
+
+      /* Die Steuerung fuer die Client-API - derselbe Weg wie die Knoepfe. Gezaehlt
+         wird ab 1, wie bei `skr.presentation`. */
+      Carousels.push({
+        count: function () { return total; },
+        current: function () { return active + 1; },
+        goTo: function (n) {
+          var number = Math.round(Number(n));
+          if (!isFinite(number)) { throw new TypeError("skr.carousels()[…].goTo: Nummer des Panels erwartet"); }
+          choose(Math.max(1, Math.min(total, number)) - 1);
+        },
+        next: function () { choose(active + 1); },
+        prev: function () { choose(active - 1); },
+        playing: function () { return playing; },
+        play: function () { resume(); },
+        pause: function () { pause(); }
+      });
+
+      /* Für den Schlüssel `paused`: das Karussell heißt dort wie sein erstes Panel. */
+      if (autoplay && !withoutState(box)) {
+        Paused.push({
+          id: sections[0][0].id,
+          stopped: function () { return stopped; },
+          set: function (on) {
+            if (on && !stopped) { stopped = true; playing = false; restart(); }
+            else if (!on && stopped) { stopped = false; start(); }
+          }
+        });
+      }
+
+      box.classList.add("skr-carousel--enhanced");
+    });
+
+    /* EIN SCHLÜSSEL FÜR ALLE KARUSSELLS der Seite: `paused=a,b` nennt die von Hand
+       angehaltenen. Was fehlt, läuft. */
+    if (Paused.length) {
+      State.register({
+        key: "paused",
+        read: function () {
+          return Paused.filter(function (c) { return c.stopped(); }).map(function (c) { return c.id; }).join(",");
+        },
+        apply: function (value) {
+          var wanted = value ? value.split(",") : [];
+          Paused.forEach(function (c) { c.set(wanted.indexOf(c.id) !== -1); });
+        }
+      });
+    }
+  }
+
   /* --- Waagerecht scrollende Bereiche (Tabellen, Code) -------------------- */
   /* ZWEI DINGE AUF EINMAL, weil es dieselbe Ursache hat: Eine breite Tabelle
      schiebt auf einem schmalen Gerät die GANZE SEITE nach rechts (WCAG 1.4.10:
@@ -3038,31 +3470,36 @@
     return true;
   }
 
-  /* Nur in einer Praesentation; sonst null. Gezaehlt wird ab 1, wie in der Adresse. */
-  function presentation() {
-    if (!document.querySelector("[data-skr-present]")) return null;
-    function slides() { return document.querySelectorAll(".skr-deck__track > .skr-slide").length; }
-    function current() {
-      var m = /^#\/(\d+)(?:\?|$)/.exec(location.hash || "");
-      return m ? parseInt(m[1], 10) : 1;
-    }
-    function button(name) {
-      var k = document.querySelector("[data-skr-present-" + name + "]");
-      if (k && !k.disabled) k.click();
-    }
-    return Object.freeze({
-      count: slides,
-      current: current,
-      goTo: function (n) {
-        var number = Math.round(Number(n));
-        if (!isFinite(number)) throw new TypeError("skr.presentation.goTo: Foliennummer erwartet");
-        /* Der Zustand der Seite ab `?` bleibt stehen. */
-        var rest = (location.hash || "").replace(/^[^?]*/, "");
-        location.hash = "#/" + Math.max(1, Math.min(slides() || 1, number)) + rest;
-      },
-      next: function () { button("next"); },
-      prev: function () { button("prev"); }
+  /* DIE LAYOUTS DER SEITE ALS OBJEKTE (experimentell): je Layout der Kette am <body>
+     (`data-skr-layouts`, das eigene zuerst) ein Objekt mit den Methoden, die sein Skript mit
+     `skr.layouts.define` angemeldet hat (skr.js); sein Prototyp ist das Objekt des Layouts, von
+     dem es erbt, das entfernteste erbt von Object.prototype. So steht close() der Bühne an der
+     Präsentation wie am Layout einer Extension, das von ihr erbt, und ein Erbe überschreibt eine
+     Methode, indem er sie selbst anmeldet. Das eigene Layout (`leaf`) trägt dazu seinen Namen,
+     die Kette und `is(name)`. Alle Objekte sind eingefroren; ein Layout ohne Anmeldung ist ein
+     leeres Glied der Kette. */
+  function layoutChain() {
+    var chain = (document.body.getAttribute("data-skr-layouts") || "").split(/\s+/).filter(Boolean);
+    var defs = window.skr._layouts(), objects = {}, proto = Object.prototype;
+    chain.slice().reverse().forEach(function (n) {
+      var o = Object.create(proto);
+      Object.keys(defs[n] || {}).forEach(function (k) { Object.defineProperty(o, k, { value: defs[n][k], enumerable: true }); });
+      objects[n] = proto = o;
     });
+    var leaf = chain.length ? objects[chain[0]] : null;
+    if (leaf) {
+      Object.defineProperties(leaf, {
+        name: { value: chain[0], enumerable: true },
+        chain: { value: Object.freeze(chain.slice()), enumerable: true },
+        is: { value: function (n) { return chain.indexOf(n) >= 0; } }
+      });
+    }
+    Object.keys(objects).forEach(function (n) { Object.freeze(objects[n]); });
+    return {
+      leaf: leaf,
+      has: function (n) { return chain.indexOf(n) >= 0; },
+      get: function (n) { return Object.prototype.hasOwnProperty.call(objects, n) ? objects[n] : null; }
+    };
   }
 
   /* RUHIGER ZUSTAND fuer Screenshots: keine Animationen und Uebergaenge
@@ -3181,13 +3618,76 @@
     });
   }
 
+  /* SPRACHWECHSEL MIT STELLE UND ZUSTAND. Der Umschalter ist ein Link auf die andere
+     Fassung, wie sie beim Bauen feststeht – ohne Fragment. Mit Skript nimmt der Wechsel
+     das Fragment mit (Folie, Sprungmarke, `open`), und damit die Zielseite die
+     übersetzten Kennungen auflösen kann, legt er ihr im `sessionStorage` bei, wo sie
+     hier stehen (`skr.state._carry`). Die Zielseite liest das einmal und löscht es: Der
+     Zustand gehört zur Bedienung, ein Verweis von woanders bringt keinen mit. */
+  var LANG_HANDOVER = "skr-lang-handover";
+
+  function switchTo(href) {
+    var url = new URL(href, location.href);
+    var handover = State._carry();
+    url.hash = "";
+    handover.to = url.pathname;
+    try { sessionStorage.setItem(LANG_HANDOVER, JSON.stringify(handover)); } catch (e) { /* dann nur gleiche Kennungen */ }
+    return go(url.href + handover.hash);
+  }
+
+  function initLangSwitch() {
+    document.querySelectorAll("[data-skr-lang-choice]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        /* Neuer Tab, neues Fenster: der Link, wie er ist. */
+        if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        e.preventDefault();
+        switchTo(a.getAttribute("href"));
+      });
+    });
+  }
+
+  /* DIE SEITE, DIE MAN VERLÄSST, für das Schließen der Bühne (stage.js):
+     ihre volle Adresse samt Fragment – `document.referrer` kennt keines –, ihre Sprache,
+     ihre Fassungen in den anderen Sprachen und, wo ihre Kennungen stehen (`_carry`).
+     So führt Schließen auch nach einem Sprachwechsel auf der Bühne an dieselbe Stelle der
+     passenden Fassung. */
+  var LAST_PAGE = "skr-last-page";
+
+  function initLastPage() {
+    window.addEventListener("pagehide", function () {
+      var alternates = {};
+      document.querySelectorAll('link[rel="alternate"][hreflang]').forEach(function (link) {
+        var lang = link.getAttribute("hreflang");
+        if (lang && lang !== "x-default") alternates[lang] = new URL(link.getAttribute("href"), location.href).href;
+      });
+      try {
+        sessionStorage.setItem(LAST_PAGE, JSON.stringify({
+          href: location.href, lang: document.documentElement.lang || "", alternates: alternates, carry: State._carry()
+        }));
+      } catch (e) { /* dann ohne Fragment und ohne Fassungen */ }
+    });
+  }
+
+  /* Auf der Zielseite, vor dem ersten Herstellen des Zustands. */
+  function takeLangHandover() {
+    var raw = null;
+    try {
+      raw = sessionStorage.getItem(LANG_HANDOVER);
+      sessionStorage.removeItem(LANG_HANDOVER);
+    } catch (e) { return; }
+    var handover = null;
+    try { handover = JSON.parse(raw); } catch (e) { return; }
+    if (handover && handover.to === location.pathname) State._arrive(handover);
+  }
+
   /* Dieselbe Seite in einer anderen Sprache – ueber die `hreflang`-Verweise im <head>,
-     dieselbe Quelle wie der Sprachumschalter. null heisst Standardsprache. */
+     dieselbe Quelle wie der Sprachumschalter, und wie er mit Stelle und Zustand.
+     null heisst Standardsprache. */
   function switchLanguage(language) {
     var target = language || pageBlock().defaultLanguage;
     var link = document.querySelector('link[rel="alternate"][hreflang="' + String(target).replace(/"/g, "") + '"]');
     if (!link) return false;
-    return go(link.getAttribute("href"));
+    return switchTo(link.getAttribute("href"));
   }
 
   /* SCHALTER `client_api` (skr.js): `off` – keine Bauauskunft, keine Steuerung;
@@ -3196,14 +3696,10 @@
     var skr = window.skr;
     if (!skr || !document.getElementById("skr-build-info") || skr._mode() === "off" || "buildInfo" in skr) return;
     var g = skr._guard;
-    var slides = presentation();
-    if (slides) {
-      slides = Object.freeze({
-        count: slides.count, current: slides.current,
-        goTo: g("presentation.goTo", slides.goTo), next: g("presentation.next", slides.next),
-        prev: g("presentation.prev", slides.prev)
-      });
-    }
+    /* Die Layouts: `skr.layout` ist das eigene, `skr.stage` und `skr.presentation` dasselbe
+       Objekt, wenn die Kette die Bühne bzw. die Folien enthält, sonst null. Die Methoden führen
+       ihre Layouts selbst durch die Schranke (stage.js, presentation.js). */
+    var layouts = layoutChain();
     var api = {
       buildInfo: buildInfo(),
       /* Lesen geht immer, Setzen nur bei `full`. */
@@ -3228,10 +3724,25 @@
       navItems: navigation,
       goToPage: g("goToPage", goTo),
       switchLanguage: g("switchLanguage", switchLanguage),
-      presentation: slides,
+      layout: layouts.leaf,
+      stage: layouts.has("skriptorium.stage") ? layouts.leaf : null,
+      presentation: layouts.has("skriptorium.presentation") ? layouts.leaf : null,
+      /* Je Karussell der Seite eine Steuerung; Lesen geht immer, Steuern nur bei `full`. */
+      carousels: function () {
+        return Carousels.map(function (c) {
+          return Object.freeze({
+            count: c.count, current: c.current, playing: c.playing,
+            goTo: g("carousels.goTo", c.goTo), next: g("carousels.next", c.next),
+            prev: g("carousels.prev", c.prev), play: g("carousels.play", c.play),
+            pause: g("carousels.pause", c.pause)
+          });
+        });
+      },
       freezeMotion: g("freezeMotion", freezeMotion)
     };
     Object.keys(api).forEach(function (k) { Object.defineProperty(skr, k, { value: api[k], enumerable: true }); });
+    Object.defineProperty(skr.layouts, "get", { value: layouts.get, enumerable: true });
+    Object.freeze(skr.layouts);
   }
 
   function init() {
@@ -3248,6 +3759,7 @@
     initPrintButtons();
     initTabs();
     initAccordion();
+    initCarousel();
     initPageQr();
     initAddressCopy();
     initTaskLists();
@@ -3261,6 +3773,9 @@
     initReveals();
     initFolds();
     initClientApi();
+    initLangSwitch();
+    initLastPage();
+    takeLangHandover();
 
     /* ZULETZT, und in dieser Reihenfolge: Erst wenn ALLE Bausteine angemeldet
        sind, steht der Ausgangszustand des Dokuments fest - und erst dann laesst

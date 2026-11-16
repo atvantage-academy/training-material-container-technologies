@@ -207,6 +207,22 @@
   .skr-accordion__toggle::before { content: none !important; }
   .skr-accordion--enhanced > :is(h2, h3, h4, h5, h6) { border-top: 0 !important; }
 
+  /* Karussell: Auf Papier laeuft nichts. Alle Panels stehen untereinander, die
+     Steuerung entfaellt. Auch hier `visibility` zurueck - unsichtbare Panels
+     druckten als leerer Platz. */
+  .skr-carousel__track { display: block !important; }
+  .skr-carousel__panel {
+    visibility: visible !important;
+    opacity: 1 !important;
+    translate: none !important;
+    /* Der verzoegerte Uebergang von `visibility` griffe auch beim Wechsel ins
+       Drucklayout - die Panels waeren beim Drucken noch unsichtbar. */
+    transition: none !important;
+    break-inside: avoid;
+    margin-bottom: 1rem;
+  }
+  .skr-carousel__controls { display: none !important; }
+
   /* Zeilenerklärung: Auf Papier gibt es nichts aufzuklappen. Der Marker entfällt,
      die Zeile bleibt eine Zeile, und Zeile und Erklärung gehören zusammen auf
      dieselbe Seite. */

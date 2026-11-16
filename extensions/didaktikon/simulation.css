@@ -15,85 +15,73 @@
   font-family: var(--skr-font-sans);
 }
 
-/* --- Kopfleiste (Zwilling der Präsentation) --------------------------------- */
-.skr-didaktikon-simulation__bar {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  gap: var(--skr-space-4);
-  padding: var(--skr-space-2) var(--skr-space-6);
-  background: var(--skr-topbar-bg);
-  border-bottom: 1px solid var(--skr-border-soft);
-  /* Über der Bühne: Der vergrößerte QR-Code ragt in sie hinein. */
-  position: relative;
-  z-index: 2;
-}
-/* DIE WORTMARKE kommt aus dem Vorlagen-Baustein `skr/logo`: Welche Fassung erscheint – das
-   Bild, die Fassung für das dunkle Schema oder die im Akzent gefärbte Maske –, entscheidet
-   und färbt der Kern. Das Layout setzt nur die Höhe, an beiden Elementen: aus
-   `--skr-didaktikon-simulation-logo-height`, Vorgabe 22 px wie die Kopfleiste der
-   Präsentation. Eine Wortmarke, die mehr Höhe braucht, setzt das Token (`:root`). Die
-   Breite folgt dem Seitenverhältnis. */
-.skr-didaktikon-simulation__logo,
-.skr-didaktikon-simulation__logo-mask { height: var(--skr-didaktikon-simulation-logo-height, 22px); flex: 0 0 auto; }
-.skr-didaktikon-simulation__title {
-  font-size: var(--skr-fs-sm);
-  font-weight: var(--skr-fw-medium);
-  color: var(--skr-color-ink-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.skr-didaktikon-simulation__counter {
-  margin-left: auto;
-  font-size: var(--skr-fs-sm);
-  font-variant-numeric: tabular-nums;
-  color: var(--skr-color-ink-muted);
-  white-space: nowrap;
-}
-/* Werkzeuggruppe aus `skr/tools`: Wie die Knöpfe darin AUSSEHEN, bestimmt das Skriptorium
-   (`.skr-tool`, `.skr-qr`). Ihre GRÖSSE setzt das Layout über die setzbaren Stellschrauben
-   `--skr-tool-size` und `--skr-tool-glyph` – hier die schmale Leiste der Simulation; der
-   QR-Knopf folgt `--skr-tool-size`. Farben bleiben beim Skriptorium. */
-.skr-didaktikon-simulation__tools {
-  display: flex; align-items: center; gap: var(--skr-space-2);
-  --skr-tool-size: 2rem;
-  --skr-tool-glyph: 1rem;
-}
-/* Pfeil und Text in EINER Zeile: Das Pfeil-SVG ist ein Block (Grundstil des Kerns) und
-   stünde sonst über dem Text – `white-space: nowrap` allein hält das nicht auf. Als
-   Flex-Element der Werkzeuggruppe schrumpft der Knopf nicht. */
-.skr-didaktikon-simulation__back {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3em;
-  flex: 0 0 auto;
-  border: 0;
-  padding: 0;
-  background: none;
-  font: inherit;
-  font-size: var(--skr-fs-sm);
-  color: var(--skr-color-ink-muted);
-  white-space: nowrap;
-  cursor: pointer;
-}
-.skr-didaktikon-simulation__back[hidden] { display: none; }
-.skr-didaktikon-simulation__back:hover { color: var(--skr-color-accent-text); }
+/* --- Kopfleiste ------------------------------------------------------------
+   Kommt mit der Bühne (`skr/stage-bar`, stage.css); ihre Klassen sind intern und
+   bleiben hier unberührt. */
+/* Die Steuerung aus dem Einschub stage.controls steht in der Hülle des Erweiterungspunkts
+   (`skr-didaktikon-stage-controls`); sie reiht sich in die Steuerleiste ein. */
+div.skr-didaktikon-stage-controls { display: contents; }
 
-/* --- Bühne + Erklärspalte ---------------------------------------------------
-   Die Erklärspalte ist bewusst SCHMAL und fest: Sie trägt einen Gedanken, nicht
-   einen Absatz. Wächst sie mit dem Fenster, wandert der Blick vom Geschehen weg. */
+/* --- Erklärspalte + Splitter + Bühne ---------------------------------------
+   Die Erklärspalte steht LINKS: Erst liest man, dann schaut man – und das ✕ der
+   Bühne oben rechts liegt über dem Bühnenbild statt über dem Text. Sie ist
+   bewusst SCHMAL: Sie trägt einen Gedanken, nicht einen Absatz. Wer mehr Platz
+   braucht, zieht sie am Splitter breiter; schmaler als die Vorgabe wird sie nicht.
+   Die gezogene Breite setzt simulation.js als `--skr-didaktikon-simulation-aside`. */
 .skr-didaktikon-simulation__main {
   flex: 1 1 auto;
   min-height: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(17rem, 24vw, 24rem);
+  grid-template-areas: "aside split stage";
+  grid-template-columns: max(clamp(17rem, 24vw, 24rem), var(--skr-didaktikon-simulation-aside, 0px)) auto minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
 }
-.skr-didaktikon-simulation__main--wide { grid-template-columns: minmax(0, 1fr); }
+/* Ohne Erklärspalte (`aside: false`, Übersicht, Capture-Modus) gehört die Fläche der Bühne. */
+.skr-didaktikon-simulation__main--wide,
+.skr-didaktikon-simulation[data-skr-didaktikon-simulation-overview] .skr-didaktikon-simulation__main,
+.skr-didaktikon-simulation[data-skr-didaktikon-simulation-capture] .skr-didaktikon-simulation__main {
+  grid-template-areas: "stage";
+  grid-template-columns: minmax(0, 1fr);
+}
 /* Bühne und Übersicht liegen übereinander in derselben Zelle; sichtbar ist per
    `hidden` immer nur eine. So springt beim Wechsel nichts. */
 .skr-didaktikon-simulation__stage,
-.skr-didaktikon-simulation__intro { grid-column: 1; grid-row: 1; }
+.skr-didaktikon-simulation__intro { grid-area: stage; }
+.skr-didaktikon-simulation__aside { grid-area: aside; }
+/* Mit Reitern trägt die Erklärspalte oben die Linie der Lasche weiter – auch, wenn sie
+   breiter gezogen ist als die Lasche. Ohne Reiter genügt die Linie der Kopfleiste. */
+.skr-didaktikon-simulation:has(.skr-didaktikon-simulation__tabs:not([hidden])) .skr-didaktikon-simulation__aside {
+  border-top: 1px solid var(--skr-border-soft);
+}
+
+/* Der Splitter: eine schmale Griffleiste mit der Trennlinie in der Mitte; Maus, Finger und
+   Pfeiltasten verschieben ihn (simulation.js). Ohne Skript bleibt er versteckt. */
+.skr-didaktikon-simulation__splitter {
+  grid-area: split;
+  position: relative;
+  width: 0.5rem;
+  margin: 0 -0.25rem;
+  z-index: 3;
+  cursor: col-resize;
+  touch-action: none;
+}
+.skr-didaktikon-simulation__splitter[hidden] { display: none; }
+.skr-didaktikon-simulation__splitter::after {
+  content: "";
+  position: absolute;
+  inset: 0 calc(50% - 0.5px);
+  background: var(--skr-border-soft);
+  transition: background var(--skr-transition), inset var(--skr-transition);
+}
+.skr-didaktikon-simulation__splitter:hover::after,
+.skr-didaktikon-simulation__splitter:focus-visible::after,
+.skr-didaktikon-simulation__splitter[data-skr-didaktikon-simulation-dragging]::after {
+  inset: 0 calc(50% - 2px);
+  background: var(--skr-color-accent);
+}
+.skr-didaktikon-simulation__splitter:focus-visible { outline: none; }
+.skr-didaktikon-simulation[data-skr-didaktikon-simulation-overview] .skr-didaktikon-simulation__splitter,
+.skr-didaktikon-simulation[data-skr-didaktikon-simulation-capture] .skr-didaktikon-simulation__splitter { display: none; }
 .skr-didaktikon-simulation__stage[hidden] { display: none; }
 
 /* Ein verstecktes Bühnenbild muss WEG sein – auch wenn die Seite ihm ein eigenes
@@ -119,7 +107,6 @@
   min-width: 0;
   overflow: auto;
   padding: clamp(1rem, 0.6rem + 1.2vw, 2rem);
-  border-left: 1px solid var(--skr-border-soft);
   background: var(--skr-color-bg-subtle);
   font-size: clamp(0.95rem, 0.88rem + 0.25vw, 1.1rem);
   line-height: var(--skr-lh-body);
@@ -128,7 +115,8 @@
   font-size: var(--skr-fs-md);
   line-height: var(--skr-lh-heading);
   color: var(--skr-color-headline);
-  margin: 0 0 var(--skr-space-3) 0;
+  /* Abstand zum Text, damit die Überschrift sich abhebt. */
+  margin: 0 0 var(--skr-space-6) 0;
   padding-bottom: var(--skr-space-2);
   border-bottom: 2px solid var(--skr-color-accent);
 }
@@ -153,11 +141,17 @@
 /* Schmale Fenster: Erklärspalte unter die Bühne. Eine Simulation ist für einen
    großen Querformat-Screen gedacht; nebeneinander bliebe hier von beidem nichts. */
 @media (max-width: 900px) {
-  .skr-didaktikon-simulation__main { grid-template-columns: minmax(0, 1fr); grid-template-rows: 1fr auto; }
+  .skr-didaktikon-simulation__main {
+    grid-template-areas: "stage" "aside";
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+  .skr-didaktikon-simulation__splitter { display: none; }
   .skr-didaktikon-simulation__aside {
-    border-left: 0;
     border-top: 1px solid var(--skr-border-soft);
     max-height: 40vh;
+    /* Die Erklärspalte steht jetzt unten – unter der schwebenden Steuerung. */
+    padding-bottom: calc(2.75rem + 3 * var(--skr-space-6));
   }
 }
 
@@ -167,20 +161,65 @@
    Erscheinen nur, wenn eine Seite mehr als EIN Szenario anmeldet. simulation.js
    baut beide; hier steht nur, wie sie aussehen.
    ============================================================================= */
-.skr-didaktikon-simulation__tabs {
+/* UNTER DER KOPFLEISTE: links die Lasche mit den Reitern, rechts daneben das ✕ der Bühne,
+   das die Bühne selbst setzt (stage.css). Rechts hält die Zeile ihm Platz frei, damit keine
+   Lasche darunter läuft. Ohne Reiter hat die Zeile keine Höhe: Das ✕ steht oben rechts auf
+   der Bühne, ein leerer Balken entfällt. */
+.skr-didaktikon-simulation__head {
+  --skr-didaktikon-simulation-head-h: 3.25rem;
   flex: 0 0 auto;
+  position: relative;
+  z-index: 4;
+  display: flex;
+  align-items: stretch;
+  gap: var(--skr-space-4);
+  height: var(--skr-didaktikon-simulation-head-h);
+  padding-right: calc(2.75rem + var(--skr-space-6) + var(--skr-space-4));
+  /* Die Zeile liegt über der Kopfleiste und damit über dem ✕ – Klicks gehen durch sie
+     hindurch; nur die Lasche nimmt sie an. Ihre Unterkante teilt sie mit der
+     Oberkante der Erklärspalte (eine Linie, nicht zwei). */
+  pointer-events: none;
+  margin-bottom: -1px;
+}
+.skr-didaktikon-simulation__head > * { pointer-events: auto; }
+.skr-didaktikon-simulation__head:has(.skr-didaktikon-simulation__tabs[hidden]) { height: 0; margin-bottom: 0; }
+/* DIE LASCHE: so breit wie die Reiter, im Grund der Kopfleiste. Ihre Unterkante läuft am
+   Ende im 45°-Winkel schräg nach oben in die Linie der Kopfleiste – das Dreieck daneben
+   (::after) ist so hoch wie breit. */
+.skr-didaktikon-simulation__tray {
+  position: relative;
+  flex: 0 1 auto;
+  min-width: 0;
+  /* Platz für die Schräge. */
+  margin-right: var(--skr-didaktikon-simulation-head-h);
+  background: var(--skr-topbar-bg);
+  border-bottom: 1px solid var(--skr-border-soft);
+}
+.skr-didaktikon-simulation__tray::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: -1px;
+  left: 100%;
+  aspect-ratio: 1;
+  background: linear-gradient(to bottom right,
+    var(--skr-topbar-bg) calc(50% - 0.75px),
+    var(--skr-border-soft) calc(50% - 0.75px), var(--skr-border-soft) calc(50% + 0.75px),
+    transparent calc(50% + 0.75px));
+}
+.skr-didaktikon-simulation__tray:has(.skr-didaktikon-simulation__tabs[hidden]) { display: none; }
+.skr-didaktikon-simulation__tabs {
   display: flex;
   gap: var(--skr-space-1);
   align-items: stretch;
-  padding: 0 var(--skr-space-6);
-  background: var(--skr-topbar-bg);
-  border-bottom: 1px solid var(--skr-border-soft);
+  height: 100%;
+  padding: 0 var(--skr-space-2) 0 var(--skr-space-6);
+  box-sizing: border-box;
   overflow-x: auto;
-  /* Auf schmalen Bühnen scrollt die LEISTE, nicht die Seite. */
+  /* Auf schmalen Bühnen scrollt die LASCHE, nicht die Seite. */
   scrollbar-width: thin;
 }
 .skr-didaktikon-simulation__tabs[hidden] { display: none; }
-
 .skr-didaktikon-simulation__tab {
   display: flex;
   align-items: center;
@@ -230,7 +269,6 @@
 .skr-didaktikon-simulation__intro[hidden] { display: none; }
 /* Auf der Übersicht gibt es keinen Schritt – die Erklärspalte hätte nichts zu
    sagen und stünde als leerer Streifen mit Trennlinie daneben. */
-.skr-didaktikon-simulation[data-skr-didaktikon-simulation-overview] .skr-didaktikon-simulation__main { grid-template-columns: minmax(0, 1fr); }
 .skr-didaktikon-simulation[data-skr-didaktikon-simulation-overview] .skr-didaktikon-simulation__aside { display: none; }
 .skr-didaktikon-simulation__intro-head { max-width: 46rem; margin-bottom: var(--skr-space-8); }
 .skr-didaktikon-simulation__intro-title {
@@ -322,9 +360,10 @@
 }
 
 /* --- Fortschritt + Steuerleiste --------------------------------------------- */
+/* Der Fortschritt am unteren Rand der Fläche, unter der Steuerung – wie bei den Folien. */
 .skr-didaktikon-simulation__progress {
   flex: 0 0 auto;
-  height: 3px;
+  height: 4px;
   background: var(--skr-border-soft);
 }
 .skr-didaktikon-simulation__progress-fill {
@@ -337,16 +376,51 @@
   .skr-didaktikon-simulation__progress-fill { transition: none; }
 }
 
+/* DIE STEUERUNG SCHWEBT wie die der Folien unten rechts über der Bühne, knapp über dem
+   Fortschritt – keine eigene Leiste, die der Bühne Höhe nimmt. Eine Pille: links das
+   Blättern mit dem Zähler dazwischen, ganz rechts Abspielen. Ein eigener, durchscheinender
+   Grund in den Farben des Themes hält sie auch über einem Bild lesbar. Sobald die Bühne
+   das als Baustein anbietet, kommt sie von dort (skriptorium#446). */
 .skr-didaktikon-simulation__controls {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--skr-space-2);
-  padding: var(--skr-space-3) var(--skr-space-6);
-  background: var(--skr-topbar-bg);
-  border-top: 1px solid var(--skr-border-soft);
+  position: fixed;
+  right: var(--skr-space-6);
+  bottom: calc(var(--skr-space-6) + 4px);
+  z-index: 5;
+  max-width: calc(100% - 2 * var(--skr-space-6));
 }
+/* Platz unter dem Bühnenbild, damit die schwebende Steuerung sein Ende nicht verdeckt. */
+.skr-didaktikon-simulation__stage { padding-bottom: calc(2.75rem + 3 * var(--skr-space-6)); }
+/* Schmale Fenster: Unter der Steuerung liegt dann die Erklärspalte, nicht die Bühne. */
+@media (max-width: 900px) {
+  .skr-didaktikon-simulation__stage { padding-bottom: clamp(1rem, 0.6rem + 1.6vw, 2.5rem); }
+}
+.skr-didaktikon-simulation__buttons {
+  display: flex;
+  min-width: 0;
+  max-width: 100%;
+  align-items: center;
+  gap: var(--skr-space-2);
+  padding: var(--skr-space-1);
+  border-radius: 999px;
+  background-color: color-mix(in srgb, var(--skr-topbar-bg) 82%, transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--skr-color-accent) 35%, var(--skr-border-soft)), var(--skr-shadow-1);
+}
+/* Der Zähler zwischen Zurück und Weiter, wie die Foliennummer. */
+.skr-didaktikon-simulation__counter {
+  min-width: 3.5rem;
+  padding: 0 var(--skr-space-1);
+  text-align: center;
+  font-size: var(--skr-fs-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--skr-color-ink-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.skr-didaktikon-simulation__counter:empty { display: none; }
+.skr-didaktikon-simulation__play-group { margin-left: var(--skr-space-2); }
 .skr-didaktikon-simulation__btn {
   display: inline-flex;
   align-items: center;
@@ -505,7 +579,6 @@
 @media (max-width: 600px) {
   .skr-didaktikon-simulation__btn-text { display: none; }
   .skr-didaktikon-simulation__btn--play { padding: 0 var(--skr-space-1) 0 var(--skr-space-4); }
-  .skr-didaktikon-simulation__title { display: none; }
   /* Der Beisatz („langsam“, „im Zeitraffer“) ist Komfort, die Zahl ist die
      Information – auf schmalen Geräten bleibt nur sie. */
   .skr-didaktikon-simulation__speed-menu { min-width: 7rem; }
@@ -776,12 +849,11 @@
    ihn an den unteren Rand zurück, ohne der Bühne Platz wegzunehmen.
    ============================================================================= */
 .skr-didaktikon-simulation[data-skr-didaktikon-simulation-capture] { cursor: none; }
-.skr-didaktikon-simulation[data-skr-didaktikon-simulation-capture] .skr-didaktikon-simulation__bar,
-.skr-didaktikon-simulation[data-skr-didaktikon-simulation-capture] .skr-didaktikon-simulation__tabs,
+.skr-didaktikon-simulation[data-skr-didaktikon-simulation-capture] > header,
+.skr-didaktikon-simulation[data-skr-didaktikon-simulation-capture] .skr-didaktikon-simulation__head,
 .skr-didaktikon-simulation[data-skr-didaktikon-simulation-capture] .skr-didaktikon-simulation__aside,
 .skr-didaktikon-simulation[data-skr-didaktikon-simulation-capture] .skr-didaktikon-simulation__progress,
 .skr-didaktikon-simulation[data-skr-didaktikon-simulation-capture] .skr-didaktikon-simulation__controls { display: none; }
-.skr-didaktikon-simulation[data-skr-didaktikon-simulation-capture] .skr-didaktikon-simulation__main { grid-template-columns: minmax(0, 1fr); }
 .skr-didaktikon-simulation[data-skr-didaktikon-simulation-capture] .skr-didaktikon-simulation__stage {
   padding: clamp(1.5rem, 1rem + 2.5vw, 3.5rem);
 }
@@ -868,10 +940,7 @@
   .skr-didaktikon-simulation__stage,
   .skr-didaktikon-simulation__aside { overflow: visible; max-height: none; }
   .skr-didaktikon-simulation__aside { border: 0; border-top: 1px solid #cfd4d6; background: none; }
-  .skr-didaktikon-simulation__bar { border-bottom: 1px solid #cfd4d6; padding: 0 0 0.4rem 0; }
   .skr-didaktikon-simulation__counter { display: none !important; }
-  .skr-didaktikon-simulation__tools { margin-left: auto; }
-  .skr-didaktikon-simulation__back,
   .skr-tool,
   .skr-didaktikon-simulation__progress,
   .skr-didaktikon-simulation__controls,

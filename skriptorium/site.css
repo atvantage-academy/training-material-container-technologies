@@ -22,7 +22,7 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
   color: var(--skr-color-ink-muted);
   font-size: 0.9rem;
 }
-.skr-present__bar .skr-untranslated { margin: 0; padding: 0 var(--skr-space-2); border: 0; background: none; }
+.skr-stage__bar .skr-untranslated { margin: 0; padding: 0 var(--skr-space-2); border: 0; background: none; }
 
 .skr-toc { display: flex; flex-direction: column; gap: 10px; }
 .skr-toc a { color: var(--skr-color-ink); text-decoration: none; font-size: 1rem; }

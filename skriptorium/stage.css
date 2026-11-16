@@ -1,0 +1,176 @@
+/* Skriptorium: in der Schicht skr.components – skriptorium/stage.css. */
+@layer skr.tokens, skr.base, skr.components, skr.theme, skr.extensions;
+@layer skr.components {
+.skr-stage {
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--skr-color-bg);
+  color: var(--skr-color-ink);
+  font-family: var(--skr-font-sans);
+}
+/* Der Inhalt einer Bühne ohne eigene Fläche: lesbare Breite, scrollt mit der Seite. */
+.skr-stage__main {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0 auto;
+  padding: var(--skr-space-8) var(--skr-space-6);
+  max-width: var(--skr-page-width);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* --- Kopfleiste ------------------------------------------------------------- */
+.skr-stage__bar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--skr-space-4);
+  padding: var(--skr-space-2) var(--skr-space-6);
+  background: var(--skr-topbar-bg);
+  border-bottom: 1px solid var(--skr-border-soft);
+  /* Über dem Inhalt: Der vergrößerte QR-Code in den Werkzeugen ragt in die Fläche
+     hinein. Ohne z-index läge er darunter – der Inhalt steht später im Baum. */
+  position: relative;
+  z-index: 1;
+}
+.skr-stage__logo { height: var(--skr-stage-logo-height); width: auto; flex: 0 0 auto; }
+/* DIE WORTMARKE TRÄGT DIE SCHULUNGSFARBE – dieselbe Konstruktion wie im Kopfbereich
+   (`components.css`, `__logo-mask`). Ohne sie stünde hier die Dateifarbe des SVG. Der
+   span ist DEFAULT unsichtbar und das <img> sichtbar; kann die Engine Masken, kehrt sich
+   das um. */
+.skr-stage__logo-mask { display: none; }
+@supports (mask: url("#x") no-repeat) {
+  .skr-stage__logo-mask ~ .skr-stage__logo,
+  .skr-stage__logo:has(~ .skr-stage__logo-mask) { display: none; }
+  .skr-stage__logo-mask {
+    display: block;
+    height: var(--skr-stage-logo-height);
+    flex: 0 0 auto;
+    aspect-ratio: var(--skr-logo-ratio);
+    background-color: var(--skr-color-accent);
+    mask-repeat: no-repeat;
+    mask-position: left center;
+    mask-size: contain;
+  }
+}
+.skr-stage__title {
+  font-size: var(--skr-fs-sm);
+  font-weight: var(--skr-fw-medium);
+  color: var(--skr-color-ink-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Werkzeuggruppe: positioniert nur – wie die Knöpfe darin AUSSEHEN, steht in
+   components.css (`.skr-tool`). Die drei Variablen ziehen sie von der
+   Doku-Seiten-Vorgabe (34 px, Überschriftenfarbe) auf das Maß dieser schmalen
+   Kopfleiste. Der QR-Code daneben ist genauso groß. Die Werkzeuge stehen rechts. */
+.skr-stage__tools {
+  display: flex; align-items: center; gap: var(--skr-space-2);
+  margin-left: auto;
+  --skr-tool-size: 2rem;
+  --skr-tool-glyph: 1rem;
+  --skr-tool-ink: var(--skr-color-ink-muted);
+  --skr-tool-ink-hover: var(--skr-color-accent);
+}
+.skr-stage__tools .skr-qr { --skr-qr-size: 2rem; }
+
+/* --- Steuerleiste ------------------------------------------------------------ */
+.skr-stage__controls {
+  position: fixed;
+  right: var(--skr-space-6);
+  bottom: var(--skr-space-6);
+  display: flex;
+  align-items: center;
+  gap: var(--skr-space-2);
+  z-index: 5;
+  /* EIN EIGENER GRUND, damit die Steuerung auch über einem Bild lesbar bleibt – in den
+     Farben des Themes wie die durchscheinende Kopfzeile (site.css): ihre Fläche,
+     darunter verschwommen der Inhalt, die Kante im Akzent. */
+  padding: var(--skr-space-1);
+  border-radius: 999px;
+  background-color: color-mix(in srgb, var(--skr-topbar-bg) 82%, transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--skr-color-accent) 35%, var(--skr-border-soft)), var(--skr-shadow-1);
+}
+/* Ohne Skript gibt es nichts zu steuern: `hidden` gilt auch gegen `display: flex`; das
+   Skript des Layouts nimmt es ab. */
+.skr-stage__controls[hidden] { display: none; }
+/* Der Inhalt des Einschubs stage.controls steht in einer Hülle; er reiht sich ein. */
+.skr-stage__controls > [data-skr-slot] { display: contents; }
+
+/* Ein runder Knopf der Bühne – Blättern, Schließen; Knöpfe eines Erben dürfen die Klasse
+   tragen. */
+.skr-stage__nav {
+  width: 2.75rem; height: 2.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--skr-color-border);
+  background: var(--skr-color-bg);
+  color: var(--skr-color-ink);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: var(--skr-shadow-1);
+  transition: background var(--skr-transition), color var(--skr-transition);
+}
+.skr-stage__nav:hover:not(:disabled) {
+  background: var(--skr-color-accent);
+  border-color: var(--skr-color-accent);
+  color: var(--skr-color-accent-contrast);
+}
+.skr-stage__nav:disabled { opacity: 0.35; cursor: default; }
+
+/* --- Schließen ---------------------------------------------------------------
+   Im Stil der Steuerung, rechts unter der Kopfleiste – an ihr verankert. Ohne
+   Kopfleiste steht der Knopf für sich fest oben rechts. */
+.skr-stage__close {
+  position: absolute;
+  top: calc(100% + var(--skr-space-4));
+  right: var(--skr-space-6);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+body > .skr-stage__close {
+  position: fixed;
+  top: var(--skr-space-4);
+  z-index: 5;
+}
+.skr-stage__close[hidden] { display: none; }
+
+/* --- Fortschritt ------------------------------------------------------------- */
+.skr-stage__progress {
+  flex: 0 0 auto;
+  height: 3px;
+  background: var(--skr-border-soft);
+}
+.skr-stage__progress-fill {
+  height: 100%;
+  width: 0;
+  background: var(--skr-color-accent);
+  transition: width 420ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- Drucklayout ------------------------------------------------------------
+   Die Bedienelemente entfallen. Die Kopfleiste bleibt als Briefkopf auf der ersten
+   Seite – mit dem QR-Code, der vom Blatt zurück zur Online-Fassung führt. */
+@media print {
+  .skr-stage { display: block; height: auto; overflow: visible; }
+  .skr-stage__bar { border-bottom: 1px solid #cfd4d6; padding: 0 0 0.4rem 0; }
+  .skr-stage__controls,
+  .skr-stage__close,
+  .skr-stage__progress { display: none !important; }
+  /* Die Werkzeugleiste bleibt als TRÄGER des QR-Codes stehen; die Knöpfe darin
+     (Farbschema, Drucken, Vollbild) entfallen einzeln. */
+  .skr-stage .skr-tool { display: none !important; }
+  /* Kleiner als auf Doku-Seiten (25 mm): Die Kopfleiste ist schmal, und 20 mm
+     bleiben bei rund 33 Modulen zuverlässig scannbar. */
+  .skr-stage__tools .skr-qr { --skr-qr-print: 20mm; }
+  .skr-stage__main { padding: 1.2rem 0 0 0; max-width: none; }
+}
+}

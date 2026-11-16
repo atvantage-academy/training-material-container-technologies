@@ -9,6 +9,8 @@
      skr.buildInfo, skr.colorScheme() …   Client-API: Bauauskunft und Steuerung (client.js)
      skr.ext.«name»                       die Teile einer Extension
      skr.ext.register(name, function (ctx) { return { … }; })
+     skr.layouts.define(name, { … })      Methoden eines Layouts; skr.layout, skr.stage,
+                                          skr.presentation, skr.layouts.get(name) (client.js)
      skr.componentData(element)          die Daten eines Bausteins in YAML (`forms` am Baustein)
                                           oder seine Teile (`inserts` am Baustein)
 
@@ -333,8 +335,39 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
   else setTimeout(start, 0);
 
+  /* LAYOUTS (experimentell): Das Skript eines Layouts meldet seine Methoden an, während es lädt –
+     skr.layouts.define("«paket».«layout»", { close: function () { … } }). Daraus baut der Kern
+     beim `DOMContentLoaded` je Layout der Kette am <body> (`data-skr-layouts`, das eigene zuerst)
+     ein Objekt, dessen Prototyp das des Layouts ist, von dem es erbt (client.js, `layoutChain`):
+     So hat ein Erbe von skriptorium.stage deren close(), ohne es nachzubauen, und darf eine
+     Methode des Vorfahren überschreiben. Die Skripte laden mit `defer` vor dem Ereignis – darum
+     steht `define` hier, im ersten Skript, und der Kern versiegelt die Anmeldungen, sobald er
+     die Objekte baut (`_layouts`): Wer später anmeldet, käme in keinem Objekt mehr an und
+     bekommt einen Fehler statt einer Methode, die nie erscheint. Je Layout darf ein Name nur
+     einmal vorkommen; `name`, `chain` und `is` trägt der Kern selbst. Ohne Client-API
+     (`client_api: off`) baut der Kern nichts, `define` bleibt aber – die Skripte brechen
+     nicht. */
+  var layoutDefs = {}, layoutsSealed = false, RESERVED = ["name", "chain", "is"];
+  var layouts = {};
+  Object.defineProperty(layouts, "define", {
+    enumerable: true,
+    value: function (name, methods) {
+      if (typeof name !== "string" || !/^[a-z][a-z0-9]*(-[a-z0-9]+)*\.[a-z][a-z0-9]*(-[a-z0-9]+)*$/.test(name)) {
+        throw new TypeError("skr.layouts.define: long name «package».«layout» expected, such as \"probe.simulation\"");
+      }
+      if (!methods || typeof methods !== "object") throw new TypeError("skr.layouts.define(name, { … }) expected");
+      if (layoutsSealed) throw new Error('skr.layouts.define("' + name + '"): too late – define while the script loads, not in skr.ready');
+      var target = layoutDefs[name] || (layoutDefs[name] = {});
+      Object.keys(methods).forEach(function (k) {
+        if (RESERVED.indexOf(k) >= 0 || Object.prototype.hasOwnProperty.call(target, k)) throw new Error("skr.layouts.define: " + name + "." + k + " is reserved or defined already");
+        target[k] = methods[k];
+      });
+    }
+  });
+
   var skr = {};
   Object.defineProperty(skr, "ext", { value: ext, enumerable: true });
+  Object.defineProperty(skr, "layouts", { value: layouts, enumerable: true });
   Object.defineProperty(skr, "ready", { value: function (fn) { ready(fn, false); }, enumerable: true });
   Object.defineProperty(skr, "componentData", { value: componentData, enumerable: true });
   /* Für den Kern: Einstellung, Schranke und Wurzel der Site – nicht Teil der öffentlichen API. */
@@ -343,6 +376,8 @@
   Object.defineProperty(skr, "_root", { value: root });
   Object.defineProperty(skr, "_deprecated", { value: deprecatedNames });
   Object.defineProperty(skr, "_ready", { value: function (fn) { ready(fn, true); } });
+  /* Die angemeldeten Methoden je Layout – und ab jetzt keine weiteren (client.js). */
+  Object.defineProperty(skr, "_layouts", { value: function () { layoutsSealed = true; return layoutDefs; } });
 
   window.skriptorium = window.skr = skr;
 })();

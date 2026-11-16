@@ -144,9 +144,11 @@
   /* --- Layout (aus dem Kern) --------------------------------------------- */
   --skr-page-width:   1180px;
   /* Höhe der Wortmarke; die Breite folgt ihrem Seitenverhältnis. Die Kopfleiste
-     der Präsentation ist knapper und hat eine eigene Stellschraube. */
+     der Bühne ist knapper und hat eine eigene Stellschraube, die Präsentation auf
+     ihr noch eine – ohne Angabe folgt sie der Bühne. */
   --skr-logo-height:         22px;
-  --skr-present-logo-height: var(--skr-logo-height);
+  --skr-stage-logo-height:   var(--skr-logo-height);
+  --skr-present-logo-height: var(--skr-stage-logo-height);
 
 
   /* --- Vordergrundfassungen: dieselbe Farbe, aber als SCHRIFT ------------
