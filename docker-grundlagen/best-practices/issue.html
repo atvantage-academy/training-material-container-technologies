@@ -40,7 +40,7 @@
 <script src="../../skriptorium/client.js?v=756a5d69" defer></script>
 <script src="../../skriptorium/site.js?v=6472c794" defer></script>
 <script src="../../skriptorium/search-trail.js?v=31279378" data-skr-search-trail
-        data-base="../../" data-index="../../skriptorium/search/de.json?v=a7ec3898" defer></script>
+        data-base="../../" data-index="../../skriptorium/search/de.json?v=e44c1215" defer></script>
 <link rel="stylesheet" href="../../skriptorium/highlight.css?v=f8a3fc05">
 <script type="module" src="../../skriptorium/highlight.js?v=0b2d40aa" data-skr-highlight="[&#34;bash&#34;,&#34;dockerfile&#34;,&#34;python&#34;,&#34;sql&#34;,&#34;yaml&#34;]"></script>
 <link rel="apple-touch-icon" sizes="180x180" href="../../themes/atvantage/assets/icon-180.png">
@@ -78,7 +78,7 @@
   <div class="skr-header__tools">
 <div class="skr-search" data-skr-search hidden
      data-mode="expand" data-shortcut="double_shift"
-     data-index="../../skriptorium/search/de.json?v=a7ec3898"
+     data-index="../../skriptorium/search/de.json?v=e44c1215"
      data-base="../../">
   <button type="button" class="skr-tool skr-tool--search" data-skr-search-toggle
           aria-expanded="false" aria-controls="skr-search-dialog"
@@ -201,7 +201,7 @@ wird gebaut, in der letzten liegt nur noch das Ergebnis.</p>
 <p>Hier wird die Anwendung in der ersten Stufe zu <strong>einem ausführbaren Programm</strong>
 gebündelt und in der letzten in ein nacktes Linux gelegt. Leg dafür
 <code>Dockerfile.multistage</code> an:</p>
-<pre><code class="language-dockerfile">FROM python:3.12-slim-bookworm AS bau
+<pre><code class="language-dockerfile">FROM python:3-slim-bookworm AS bau
 WORKDIR /bau
 RUN apt-get update \
  &amp;&amp; apt-get install -y --no-install-recommends binutils \
@@ -232,7 +232,7 @@ letzten Stufe nie entstanden ist, muss auch nicht gelöscht werden.</p>
 </blockquote>
 <div class="skr-callout skr-callout--warning">
 <p><strong>Beide Stufen müssen auf derselben Debian-Fassung aufsetzen</strong> – hier <code>bookworm</code>.
-Nimmst Du oben <code>python:3.12-slim</code> (das zeigt inzwischen auf eine neuere Fassung)
+Nimmst Du oben <code>python:3-slim</code> (das zeigt inzwischen auf eine neuere Fassung)
 und unten <code>debian:12-slim</code>, baut das Image zwar, aber der Start scheitert:</p>
 <pre><code class="language-text">Failed to load Python shared library: /lib/.../libm.so.6: version `GLIBC_2.38' not found
 </code></pre>
@@ -361,7 +361,7 @@ gebündelt und in der letzten in ein nacktes Linux gelegt. Leg dafür
 `Dockerfile.multistage` an:
 
 ```dockerfile
-FROM python:3.12-slim-bookworm AS bau
+FROM python:3-slim-bookworm AS bau
 WORKDIR /bau
 RUN apt-get update \
  &amp;&amp; apt-get install -y --no-install-recommends binutils \
@@ -399,7 +399,7 @@ wie bisher – und prüfe, dass es dieselbe Antwort liefert.
 &lt;div class=&#34;skr-callout skr-callout--warning&#34; markdown=&#34;1&#34;&gt;
 
 **Beide Stufen müssen auf derselben Debian-Fassung aufsetzen** – hier `bookworm`.
-Nimmst Du oben `python:3.12-slim` (das zeigt inzwischen auf eine neuere Fassung)
+Nimmst Du oben `python:3-slim` (das zeigt inzwischen auf eine neuere Fassung)
 und unten `debian:12-slim`, baut das Image zwar, aber der Start scheitert:
 
 ```text

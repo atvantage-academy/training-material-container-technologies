@@ -359,7 +359,7 @@
       Array.prototype.forEach.call(ctrTafel.querySelectorAll(".lz-ctr"), function (zelle) {
         var pfeil = zelle.querySelector(".lz-ctr__pfeil");
         var c = (s.container.concat(zeigeWeg)).filter(function (x) {
-          return x.id === zelle.getAttribute("data-sim-key");
+          return x.id === zelle.getAttribute("data-skr-didaktikon-simulation-key");
         })[0];
         if (!pfeil || !c) return;
         var karte = null;
@@ -443,14 +443,15 @@
      NUR BEIM SCHRITT VORWAERTS. Beim Zurueckgehen, beim Springen und beim
      ersten Zeichnen steht das Bild sofort vollstaendig – dort waere die
      Choreografie eine Verzoegerung ohne Aussage. */
-  /* NUR DIE GEMEINTEN ZELLEN. `sim.list` haengt die Kennung als `data-sim-key`
-     an jede Zelle – darueber laesst sich genau die eine treffen, um die es geht.
+  /* NUR DIE GEMEINTEN ZELLEN. `sim.list` haengt die Kennung als
+     `data-skr-didaktikon-simulation-key` an jede Zelle – darueber laesst sich
+     genau die eine treffen, um die es geht.
      Vorher liefen `querySelectorAll(".lz-ctr")` ueber ALLE, und beim Starten des
      zweiten Containers pulste der erste mit. */
   function zellenFuer(knoten, ids) {
     if (!knoten || !ids || !ids.length) return [];
     return ids.map(function (id) {
-      return knoten.querySelector('[data-sim-key="' + id + '"]');
+      return knoten.querySelector('[data-skr-didaktikon-simulation-key="' + id + '"]');
     }).filter(Boolean);
   }
 
