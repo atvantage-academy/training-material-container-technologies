@@ -40,7 +40,7 @@
 <script src="../../skriptorium/client.js?v=756a5d69" defer></script>
 <script src="../../skriptorium/site.js?v=6472c794" defer></script>
 <script src="../../skriptorium/search-trail.js?v=31279378" data-skr-search-trail
-        data-base="../../" data-index="../../skriptorium/search/de.json?v=005dc747" defer></script>
+        data-base="../../" data-index="../../skriptorium/search/de.json?v=a7ec3898" defer></script>
 <link rel="stylesheet" href="../../skriptorium/highlight.css?v=f8a3fc05">
 <script type="module" src="../../skriptorium/highlight.js?v=0b2d40aa" data-skr-highlight="[&#34;bash&#34;,&#34;dockerfile&#34;,&#34;python&#34;,&#34;sql&#34;,&#34;yaml&#34;]"></script>
 <link rel="apple-touch-icon" sizes="180x180" href="../../themes/atvantage/assets/icon-180.png">
@@ -78,7 +78,7 @@
   <div class="skr-header__tools">
 <div class="skr-search" data-skr-search hidden
      data-mode="expand" data-shortcut="double_shift"
-     data-index="../../skriptorium/search/de.json?v=005dc747"
+     data-index="../../skriptorium/search/de.json?v=a7ec3898"
      data-base="../../">
   <button type="button" class="skr-tool skr-tool--search" data-skr-search-toggle
           aria-expanded="false" aria-controls="skr-search-dialog"
@@ -152,9 +152,9 @@
 <summary>Definition of Done</summary>
 <div class="skr-guide-done">
 <ul class="task-list">
-<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Ein Container mit nginx läuft und ist von außen erreichbar." disabled="disabled"> Ein Container mit <code>nginx</code> läuft und ist von außen erreichbar.</li>
-<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Ein zweiter Container liefert Deine eigene Seite aus." disabled="disabled"> Ein zweiter Container liefert <strong>Deine eigene Seite</strong> aus.</li>
-<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Ein dritter Container liefert eine Seite aus, die auf Deinem Rechner liegt." disabled="disabled"> Ein dritter Container liefert eine Seite aus, die <strong>auf Deinem Rechner</strong> liegt.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="curl http://localhost:8080 liefert die Startseite von NGINX." disabled="disabled"> <code>curl http://localhost:8080</code> liefert die Startseite von NGINX.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="curl http://localhost:8081 liefert Deine eigene Seite." disabled="disabled"> <code>curl http://localhost:8081</code> liefert <strong>Deine eigene Seite</strong>.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="curl http://localhost:8082 liefert ebenfalls Deine eigene Seite – die aber auf Deinem Rechner liegt. Änderst Du sie und sendest den Befehl erneut, liefert er sofort die Änderung." disabled="disabled"> <code>curl http://localhost:8082</code> liefert ebenfalls Deine eigene Seite – die aber <strong>auf Deinem Rechner</strong> liegt. Änderst Du sie und sendest den Befehl erneut, liefert er <strong>sofort die Änderung</strong>.</li>
 <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Du hast die Kontrollfragen beantwortet" disabled="disabled"> Du hast die Kontrollfragen beantwortet</li>
 </ul>
 </div>
@@ -214,29 +214,32 @@ weg damit und neu:</p>
 </code></pre>
 <blockquote>
 <p><strong>Hinweis:</strong> Arbeitest Du lokal, geht auch der Browser unter
-<code>http://localhost:8080</code>. In der bereitgestellten Umgebung läuft der Container
-nicht auf dem Rechner Deines Browsers – nimm dort <code>curl</code> aus derselben Shell.</p>
-<p><code>-p 8080:80</code> liest sich von außen nach innen: <strong>außen 8080, innen 80.</strong></p>
+<code>http://localhost:8080</code>.</p>
 </blockquote>
 <h3 id="einen-zweiten-container--mit-einer-eigenen-seite-darin">Einen zweiten Container – mit einer eigenen Seite darin</h3>
 <p>Stell einen zweiten Container daneben, <strong>ohne</strong> den ersten zu stoppen. Beide
 sollen gleichzeitig laufen und von außen erreichbar sein.</p>
-<p>Leg in <strong>diesem zweiten</strong> Container eine zusätzliche Seite an. Einen Befehl
-kannst Du auch <strong>innerhalb</strong> eines laufenden Containers ausführen lassen:</p>
-<pre><code class="language-bash">docker container exec zweiter-webserver bash -c &quot;echo 'Hallo Welt' &gt; /usr/share/nginx/html/hallo.html&quot;
+<p>Er soll nicht die Startseite von NGINX ausliefern, sondern <strong>Deine eigene
+Seite</strong>. Leg dazu auf Deinem Rechner ein Verzeichnis <code>website</code> an und darin eine
+Datei <code>index.html</code> mit diesem Inhalt
+(womit, steht unter <a href="../../shared/schulungsumgebung/#befehle">Schulungsumgebung</a>):</p>
+<pre><code class="language-html">&lt;h1&gt;Meine eigene Seite&lt;/h1&gt;
 </code></pre>
-<p>Teste, ob die neue Seite per HTTP erreichbar ist. Überprüfe, dass sie beim
-<strong>ersten</strong> Container nicht verfügbar ist.</p>
-<p>Stopp den zweiten Container und starte ihn wieder. Überprüfe, ob die Seite immer
-noch erreichbar ist.</p>
+<p>Kopier die Datei in <strong>diesen zweiten</strong> Container – dorthin, wo NGINX seine Seiten
+sucht:</p>
+<pre><code class="language-bash">docker container cp website/index.html zweiter-webserver:/usr/share/nginx/html/index.html
+</code></pre>
+<p>Teste per HTTP, dass der zweite Container jetzt Deine Seite ausliefert. Überprüfe,
+dass der <strong>erste</strong> weiterhin die Startseite von NGINX liefert.</p>
+<p>Stopp den zweiten Container und starte ihn wieder. Überprüfe, ob er Deine Seite
+immer noch ausliefert.</p>
 <h3 id="ein-dritter-container--die-seite-liegt-auf-deinem-rechner">Ein dritter Container – die Seite liegt auf Deinem Rechner</h3>
 <p>Bisher ist alles, was Du angelegt hast, <strong>im</strong> Container entstanden. Jetzt
 andersherum: Die Seite liegt bei Dir, der Container reicht sie nur durch.</p>
-<p>Leg auf Deinem Rechner ein Verzeichnis <code>website</code> an und darin eine Datei
-<code>index.html</code> mit etwas Inhalt.</p>
 <p>Erstelle einen dritten Container, diesmal mit einem zusätzlichen Parameter: Er
-hängt Dein Verzeichnis dorthin, wo NGINX seine Seiten sucht.</p>
-<pre><code class="language-bash">-v &quot;$(pwd)/website&quot;:/usr/share/nginx/html
+hängt Dein Verzeichnis <code>website</code> dorthin, wo NGINX seine Seiten sucht – statt
+die Datei hineinzukopieren.</p>
+<pre><code class="language-bash">docker container create ... -v &quot;$(pwd)/website&quot;:/usr/share/nginx/html ...
 </code></pre>
 <div class="skr-callout skr-callout--warning">
 <p><strong>Git Bash unter Windows:</strong> Sie baut den Pfad im Container zu einem Windows-Pfad
@@ -245,14 +248,17 @@ Fall <code>MSYS_NO_PATHCONV=1</code> voran:</p>
 <pre><code class="language-bash">MSYS_NO_PATHCONV=1 docker container create ...
 </code></pre>
 </div>
-<p>Starte ihn und ruf die Seite auf. Ändere dann die Datei <strong>auf Deinem Rechner</strong>
-und ruf die Seite erneut auf – ohne den Container anzufassen.</p>
+<p>Starte ihn und ruf die Seite auf. Ändere dann <code>website/index.html</code> <strong>auf Deinem
+Rechner</strong> und ruf die Seite erneut auf – ohne den Container anzufassen.</p>
 <blockquote>
 <p><strong>Hinweis:</strong> Das Verzeichnis einzuhängen heißt <strong>Bind Mount</strong>: Der Container
 sieht einen Ordner Deines Rechners an einer Stelle seines eigenen
 Dateisystems. Häng das <strong>Verzeichnis</strong> ein, nicht die einzelne Datei – viele
 Editoren legen beim Speichern eine neue Datei an, und die findet der Container
 dann nicht mehr.</p>
+<p><code>$(pwd)</code> setzt das Verzeichnis ein, in dem Du gerade stehst – <code>pwd</code> gibt es
+aus. Docker braucht hier einen <strong>absoluten</strong> Pfad; so wird aus <code>website</code> zum
+Beispiel <code>/home/&lt;dein-konto&gt;/website</code>.</p>
 </blockquote>
 <div class="skr-callout skr-callout--info">
 <p><strong>Zum Schluss aufräumen</strong> – erst, wenn Du alle drei nebeneinander gesehen hast:</p>
@@ -266,7 +272,7 @@ dann nicht mehr.</p>
 <div class="skr-didaktikon-reflective-questions" data-skr-field="didaktikon.reflective_questions">
 <ul>
 <li>Der erste Container lief, war aber nicht erreichbar. <strong>Woran lag das?</strong></li>
-<li>Der zweite Container liefert <code>hallo.html</code> aus, der erste nicht – obwohl beide aus <strong>demselben Image</strong> stammen. Wie erklärst Du das? Was ist beim Stoppen und Neustarten mit der Datei passiert, und was <strong>würde</strong> passieren, wenn Du den Container löschst und neu erzeugst?</li>
+<li>Der zweite Container liefert Deine Seite aus, der erste die Startseite von NGINX – obwohl beide aus <strong>demselben Image</strong> stammen. Wie erklärst Du das? Was ist beim Stoppen und Neustarten mit der Datei passiert, und was <strong>würde</strong> passieren, wenn Du den Container löschst und neu erzeugst?</li>
 <li><strong>Für welche Anwendungsfälle sind Bind Mounts sinnvoll?</strong></li>
 <li>Was macht der folgende Befehl, und wozu wäre er nützlich? <code>docker container run --rm -it nginx:1.27.5 /bin/sh</code></li>
 <li><strong>Welche Bedeutung hat das <code>latest</code>-Tag?</strong></li>
@@ -307,9 +313,9 @@ dann nicht mehr.</p>
 
 &lt;div class=&#34;skr-guide-done&#34; markdown=&#34;1&#34;&gt;
 
-- [ ] Ein Container mit `nginx` läuft und ist von außen erreichbar.
-- [ ] Ein zweiter Container liefert **Deine eigene Seite** aus.
-- [ ] Ein dritter Container liefert eine Seite aus, die **auf Deinem Rechner** liegt.
+- [ ] `curl http://localhost:8080` liefert die Startseite von NGINX.
+- [ ] `curl http://localhost:8081` liefert **Deine eigene Seite**.
+- [ ] `curl http://localhost:8082` liefert ebenfalls Deine eigene Seite – die aber **auf Deinem Rechner** liegt. Änderst Du sie und sendest den Befehl erneut, liefert er **sofort die Änderung**.
 - [ ] Du hast die Kontrollfragen beantwortet
 
 &lt;/div&gt;
@@ -411,42 +417,46 @@ curl http://localhost:8080
 ```
 
 &gt; **Hinweis:** Arbeitest Du lokal, geht auch der Browser unter
-&gt; `http://localhost:8080`. In der bereitgestellten Umgebung läuft der Container
-&gt; nicht auf dem Rechner Deines Browsers – nimm dort `curl` aus derselben Shell.
-&gt;
-&gt; `-p 8080:80` liest sich von außen nach innen: **außen 8080, innen 80.**
+&gt; `http://localhost:8080`.
 
 ### Einen zweiten Container – mit einer eigenen Seite darin
 
 Stell einen zweiten Container daneben, **ohne** den ersten zu stoppen. Beide
 sollen gleichzeitig laufen und von außen erreichbar sein.
 
-Leg in **diesem zweiten** Container eine zusätzliche Seite an. Einen Befehl
-kannst Du auch **innerhalb** eines laufenden Containers ausführen lassen:
+Er soll nicht die Startseite von NGINX ausliefern, sondern **Deine eigene
+Seite**. Leg dazu auf Deinem Rechner ein Verzeichnis `website` an und darin eine
+Datei `index.html` mit diesem Inhalt
+(womit, steht unter [Schulungsumgebung](page:schulungsumgebung#befehle)):
 
-```bash
-docker container exec zweiter-webserver bash -c &#34;echo &#39;Hallo Welt&#39; &gt; /usr/share/nginx/html/hallo.html&#34;
+```html
+&lt;h1&gt;Meine eigene Seite&lt;/h1&gt;
 ```
 
-Teste, ob die neue Seite per HTTP erreichbar ist. Überprüfe, dass sie beim
-**ersten** Container nicht verfügbar ist.
+Kopier die Datei in **diesen zweiten** Container – dorthin, wo NGINX seine Seiten
+sucht:
 
-Stopp den zweiten Container und starte ihn wieder. Überprüfe, ob die Seite immer
-noch erreichbar ist.
+```bash
+docker container cp website/index.html zweiter-webserver:/usr/share/nginx/html/index.html
+```
+
+Teste per HTTP, dass der zweite Container jetzt Deine Seite ausliefert. Überprüfe,
+dass der **erste** weiterhin die Startseite von NGINX liefert.
+
+Stopp den zweiten Container und starte ihn wieder. Überprüfe, ob er Deine Seite
+immer noch ausliefert.
 
 ### Ein dritter Container – die Seite liegt auf Deinem Rechner
 
 Bisher ist alles, was Du angelegt hast, **im** Container entstanden. Jetzt
 andersherum: Die Seite liegt bei Dir, der Container reicht sie nur durch.
 
-Leg auf Deinem Rechner ein Verzeichnis `website` an und darin eine Datei
-`index.html` mit etwas Inhalt.
-
 Erstelle einen dritten Container, diesmal mit einem zusätzlichen Parameter: Er
-hängt Dein Verzeichnis dorthin, wo NGINX seine Seiten sucht.
+hängt Dein Verzeichnis `website` dorthin, wo NGINX seine Seiten sucht – statt
+die Datei hineinzukopieren.
 
 ```bash
--v &#34;$(pwd)/website&#34;:/usr/share/nginx/html
+docker container create ... -v &#34;$(pwd)/website&#34;:/usr/share/nginx/html ...
 ```
 
 &lt;div class=&#34;skr-callout skr-callout--warning&#34; markdown=&#34;1&#34;&gt;
@@ -461,14 +471,18 @@ MSYS_NO_PATHCONV=1 docker container create ...
 
 &lt;/div&gt;
 
-Starte ihn und ruf die Seite auf. Ändere dann die Datei **auf Deinem Rechner**
-und ruf die Seite erneut auf – ohne den Container anzufassen.
+Starte ihn und ruf die Seite auf. Ändere dann `website/index.html` **auf Deinem
+Rechner** und ruf die Seite erneut auf – ohne den Container anzufassen.
 
 &gt; **Hinweis:** Das Verzeichnis einzuhängen heißt **Bind Mount**: Der Container
 &gt; sieht einen Ordner Deines Rechners an einer Stelle seines eigenen
 &gt; Dateisystems. Häng das **Verzeichnis** ein, nicht die einzelne Datei – viele
 &gt; Editoren legen beim Speichern eine neue Datei an, und die findet der Container
 &gt; dann nicht mehr.
+&gt;
+&gt; `$(pwd)` setzt das Verzeichnis ein, in dem Du gerade stehst – `pwd` gibt es
+&gt; aus. Docker braucht hier einen **absoluten** Pfad; so wird aus `website` zum
+&gt; Beispiel `/home/&lt;dein-konto&gt;/website`.
 
 &lt;div class=&#34;skr-callout skr-callout--info&#34; markdown=&#34;1&#34;&gt;
 
@@ -492,7 +506,7 @@ docker container rm mein-webserver zweiter-webserver dritter-webserver
 &lt;div class=&#34;skr-didaktikon-reflective-questions&#34; data-skr-field=&#34;didaktikon.reflective_questions&#34; markdown=&#34;1&#34;&gt;
 
 - Der erste Container lief, war aber nicht erreichbar. **Woran lag das?**
-- Der zweite Container liefert `hallo.html` aus, der erste nicht – obwohl beide aus **demselben Image** stammen. Wie erklärst Du das? Was ist beim Stoppen und Neustarten mit der Datei passiert, und was **würde** passieren, wenn Du den Container löschst und neu erzeugst?
+- Der zweite Container liefert Deine Seite aus, der erste die Startseite von NGINX – obwohl beide aus **demselben Image** stammen. Wie erklärst Du das? Was ist beim Stoppen und Neustarten mit der Datei passiert, und was **würde** passieren, wenn Du den Container löschst und neu erzeugst?
 - **Für welche Anwendungsfälle sind Bind Mounts sinnvoll?**
 - Was macht der folgende Befehl, und wozu wäre er nützlich? `docker container run --rm -it nginx:1.27.5 /bin/sh`
 - **Welche Bedeutung hat das `latest`-Tag?**
