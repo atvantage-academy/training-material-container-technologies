@@ -40,7 +40,7 @@
 <script src="../../skriptorium/client.js?v=756a5d69" defer></script>
 <script src="../../skriptorium/site.js?v=6472c794" defer></script>
 <script src="../../skriptorium/search-trail.js?v=31279378" data-skr-search-trail
-        data-base="../../" data-index="../../skriptorium/search/de.json?v=c7b53204" defer></script>
+        data-base="../../" data-index="../../skriptorium/search/de.json?v=13742bfd" defer></script>
 <link rel="stylesheet" href="../../skriptorium/highlight.css?v=f8a3fc05">
 <script type="module" src="../../skriptorium/highlight.js?v=0b2d40aa" data-skr-highlight="[&#34;bash&#34;,&#34;dockerfile&#34;,&#34;python&#34;,&#34;sql&#34;,&#34;yaml&#34;]"></script>
 <link rel="apple-touch-icon" sizes="180x180" href="../../themes/atvantage/assets/icon-180.png">
@@ -78,7 +78,7 @@
   <div class="skr-header__tools">
 <div class="skr-search" data-skr-search hidden
      data-mode="expand" data-shortcut="double_shift"
-     data-index="../../skriptorium/search/de.json?v=c7b53204"
+     data-index="../../skriptorium/search/de.json?v=13742bfd"
      data-base="../../">
   <button type="button" class="skr-tool skr-tool--search" data-skr-search-toggle
           aria-expanded="false" aria-controls="skr-search-dialog"
@@ -287,6 +287,14 @@ er ab, wie beim ersten Versuch.</p>
 </blockquote>
 <p>Auf einer Betriebsplattform legt genau diese Datei nicht der Mensch an, sondern
 die Plattform – aus ihrer eigenen Verwaltung für Geheimnisse.</p>
+<h3 id="optional-in-das-volume-hineinsehen">Optional: In das Volume hineinsehen</h3>
+<p>Das Volume <code>kurs-daten</code> hat keinen Pfad, den Du auf Deinem Rechner einfach
+öffnen könntest. <strong>Wie kannst Du die Dateien und Ordner im Volume <code>kurs-daten</code>
+ansehen – oder gar verändern?</strong></p>
+<blockquote>
+<p><strong>Hinweis:</strong> Ein Volume lässt sich in <strong>jeden</strong> Container einhängen, nicht nur
+in den, für den Du es angelegt hast.</p>
+</blockquote>
 <div class="skr-didaktikon-guide-review" data-skr-slot="guide.review">
 <h2 id="reflexionsfragen">Reflexionsfragen</h2>
 <div class="skr-didaktikon-reflective-questions" data-skr-field="didaktikon.reflective_questions">
@@ -521,6 +529,17 @@ Erzeuge die Datenbank noch einmal neu – mit diesen beiden Angaben **statt**
 Auf einer Betriebsplattform legt genau diese Datei nicht der Mensch an, sondern
 die Plattform – aus ihrer eigenen Verwaltung für Geheimnisse.
 
+### Optional: In das Volume hineinsehen
+
+Das Volume `kurs-daten` hat keinen Pfad, den Du auf Deinem Rechner einfach
+öffnen könntest. **Wie kannst Du die Dateien und Ordner im Volume `kurs-daten`
+ansehen – oder gar verändern?**
+
+&gt; **Hinweis:** Ein Volume lässt sich in **jeden** Container einhängen, nicht nur
+&gt; in den, für den Du es angelegt hast.
+
+
+
 
 &lt;div class=&#34;skr-didaktikon-guide-review&#34; data-skr-slot=&#34;guide.review&#34; markdown=&#34;1&#34;&gt;
 
@@ -546,7 +565,7 @@ die Plattform – aus ihrer eigenen Verwaltung für Geheimnisse.
   <details class="skr-guide-side skr-guide-side--toc skr-fold" data-skr-toc-box
            data-skr-toc-limit="12" open>
     <summary class="skr-guide-side__label">Auf dieser Seite</summary>
-    <nav class="skr-toc skr-fold__body" data-skr-toc aria-label="Inhaltsverzeichnis"><a href="#arbeitsschritte">Arbeitsschritte</a><a href="#einen-container-ohne-konfiguration-starten" class="skr-toc--h3">Einen Container ohne Konfiguration starten</a><a href="#umgebungsvariablen-setzen" class="skr-toc--h3">Umgebungsvariablen setzen</a><a href="#ein-schema-mit-tabellen-anlegen" class="skr-toc--h3">Ein Schema mit Tabellen anlegen</a><a href="#nachsehen-ob-die-datenbank-auch-von-außen-erreichbar-ist" class="skr-toc--h3">Nachsehen, ob die Datenbank auch von außen erreichbar ist</a><a href="#die-daten-der-datenbank-außerhalb-des-containers-speichern" class="skr-toc--h3">Die Daten der Datenbank außerhalb des Containers speichern</a><a href="#optional-das-passwort-aus-einer-datei-lesen" class="skr-toc--h3">Optional: Das Passwort aus einer Datei lesen</a><a href="#reflexionsfragen">Reflexionsfragen</a></nav>
+    <nav class="skr-toc skr-fold__body" data-skr-toc aria-label="Inhaltsverzeichnis"><a href="#arbeitsschritte">Arbeitsschritte</a><a href="#einen-container-ohne-konfiguration-starten" class="skr-toc--h3">Einen Container ohne Konfiguration starten</a><a href="#umgebungsvariablen-setzen" class="skr-toc--h3">Umgebungsvariablen setzen</a><a href="#ein-schema-mit-tabellen-anlegen" class="skr-toc--h3">Ein Schema mit Tabellen anlegen</a><a href="#nachsehen-ob-die-datenbank-auch-von-außen-erreichbar-ist" class="skr-toc--h3">Nachsehen, ob die Datenbank auch von außen erreichbar ist</a><a href="#die-daten-der-datenbank-außerhalb-des-containers-speichern" class="skr-toc--h3">Die Daten der Datenbank außerhalb des Containers speichern</a><a href="#optional-das-passwort-aus-einer-datei-lesen" class="skr-toc--h3">Optional: Das Passwort aus einer Datei lesen</a><a href="#optional-in-das-volume-hineinsehen" class="skr-toc--h3">Optional: In das Volume hineinsehen</a><a href="#reflexionsfragen">Reflexionsfragen</a></nav>
   </details>
   <section class="skr-guide-side skr-guide-side--bordered skr-guide-progress" data-skr-card="skriptorium.progress"
            aria-labelledby="skr-card-skriptorium-progress" data-skr-progress-text="{done} / {total} erledigt">
