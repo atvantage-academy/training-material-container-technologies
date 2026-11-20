@@ -217,9 +217,13 @@ braucht die Liste nur noch zum Nachschlagen.</p>
   <p class="bp__badge">größter Hebel</p>
   <p>Compiler, Paketmanager und Testwerkzeuge gehören nicht in das, was läuft. Gebaut wird in der einen Stufe, kopiert wird in die andere.</p>
   <pre class="bp__code">FROM golang:1.22 AS bau
-RUN go build -o app
+WORKDIR /src
+COPY . .
+ENV CGO_ENABLED=0
+RUN go build -o /app
 <p>FROM alpine:3.19
-COPY &ndash;from=bau /app /app</pre></p>
+COPY &ndash;from=bau /app /app
+CMD [&quot;/app&quot;]</pre></p>
 </section>
 <section class="bp__detail" id="bp-schlankes-basis-image" role="dialog" aria-modal="true" aria-labelledby="bp-schlankes-basis-image-title" tabindex="-1" hidden>
   <h3 id="bp-schlankes-basis-image-title">Schlankes Basis-Image</h3>
@@ -297,7 +301,7 @@ COPY . .</pre>
 <section class="bp__detail" id="bp-ein-bauplan-viele-umgebungen" role="dialog" aria-modal="true" aria-labelledby="bp-ein-bauplan-viele-umgebungen-title" tabindex="-1" hidden>
   <h3 id="bp-ein-bauplan-viele-umgebungen-title">Ein Bauplan, viele Umgebungen</h3>
   <p>Dasselbe Image läuft in Entwicklung, Test und Produktion. Was sich unterscheidet, kommt beim Start dazu – sonst ist das Artefakt in Produktion nicht das getestete.</p>
-  <pre class="bp__code">ENV APP_PORT=8080</pre>
+  <pre class="bp__code">ENV DB_PORT=5432</pre>
 </section>
 <section class="bp__detail" id="bp-betrieb" role="dialog" aria-modal="true" aria-labelledby="bp-betrieb-title" tabindex="-1" hidden>
   <h2 id="bp-betrieb-title">Betrieb</h2>
