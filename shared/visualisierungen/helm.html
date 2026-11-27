@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="skr-root" content="../../">
+<script src="../../skriptorium/skr.js?v=c06299bd"></script>
+<title>Helm Charts · Containertechnologien (Academy)</title>
+<meta name="description" content="Helm als Paketmanager für Kubernetes: welches Problem es löst, was Chart, Release, Values und Repository sind, klassisches Repository oder OCI-Registry – und die ersten Schritte auf der Kommandozeile.">
+
+<meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta property="og:title" content="Helm Charts">
+<meta property="og:description" content="Helm als Paketmanager für Kubernetes: welches Problem es löst, was Chart, Release, Values und Repository sind, klassisches Repository oder OCI-Registry – und die ersten Schritte auf der Kommandozeile.">
+<meta property="og:type" content="website">
+<link rel="preload" href="../../themes/atvantage/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../themes/default/theme.css?v=b795c99c" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/fonts.css?v=0f189d71" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/colors.css?v=8ed47a94" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/typography.css?v=6445d4d3" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/spacing.css?v=58e35278" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/components.css?v=3fcd65a3" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/base.css?v=b47b1e2d" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/theme.css?v=e7026433" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/didaktikon/theme.css?v=4a593b58" data-skr-source="theme">
+<link rel="stylesheet" href="../../skriptorium/tokens.css?v=28abf864">
+<link rel="stylesheet" href="../../extensions/didaktikon/tokens.css?v=5966d76a">
+<link rel="stylesheet" href="../../skriptorium/base.css?v=86e37c43">
+<link rel="stylesheet" href="../../skriptorium/components.css?v=3a968127">
+<link rel="stylesheet" href="../../skriptorium/doclinks.css?v=2ef23515">
+<link rel="stylesheet" href="../../skriptorium/linkmarks.css?v=1643f80a">
+<link rel="stylesheet" href="../../skriptorium/site.css?v=2a7f5baf">
+<link rel="stylesheet" href="../../skriptorium/logo.css?v=43a7fbaf">
+<link rel="stylesheet" media="print" href="../../skriptorium/print.css?v=6c7ec44c">
+<meta name="generator" content="Skriptorium 2.0.0-rc.15">
+<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"2.0.0-rc.11"}],"internal":false,"languages":["de"],"skriptorium":"2.0.0-rc.15","theme":"didaktikon","themeOptions":["didaktikon"],"themes":[{"name":"didaktikon","version":"2.0.0-rc.11"},{"name":"atvantage","version":"2.2.0"},{"name":"default","version":"2.0.0-rc.15"}]}</script>
+<script type="application/json" id="skr-page-info">{"clientApi":"full","defaultLanguage":"de","description":"Helm als Paketmanager für Kubernetes: welches Problem es löst, was Chart, Release, Values und Repository sind, klassisches Repository oder OCI-Registry – und die ersten Schritte auf der Kommandozeile.","duration":null,"fields":null,"language":"de","languages":["de"],"layout":"didaktikon.visualization","pageId":"k8s-helm","runtimeFragments":null,"siteIndex":"/skriptorium/site.json","title":"Helm Charts","topics":null,"untranslated":null,"url":"/shared/visualisierungen/helm.html"}</script>
+<script type="application/json" id="skr-texts">{"didaktikon.capture":"Capture-Modus","didaktikon.captureExit":"beenden","didaktikon.captureText":"Text einblenden","didaktikon.crosswordAcross":"Waagerecht","didaktikon.crosswordCellAcross":"{number} waagerecht, Buchstabe {position}","didaktikon.crosswordCellDown":"{number} senkrecht, Buchstabe {position}","didaktikon.crosswordDown":"Senkrecht","didaktikon.crosswordHintLetter":"Tipp: Buchstabe","didaktikon.crosswordHintWord":"Tipp: Wort","didaktikon.crosswordRestart":"Neu beginnen","didaktikon.crosswordRestartText":"Deine Eingaben in diesem Rätsel werden gelöscht.","didaktikon.crosswordRestartTitle":"Kreuzworträtsel neu beginnen?","didaktikon.crosswordReveal":"Auflösen","didaktikon.crosswordRevealText":"Alle Felder werden ausgefüllt.","didaktikon.crosswordRevealTitle":"Kreuzworträtsel auflösen?","didaktikon.crosswordSolution":"Lösungswort","didaktikon.crosswordSolutionCell":"Lösungswort, Buchstabe {position}","didaktikon.crosswordSolved":"Gelöst – alle Begriffe stimmen.","didaktikon.doclinkCrossword":"Kreuzworträtsel","didaktikon.doclinkExercise":"Übung","didaktikon.doclinkQuiz":"Wissens-Check","didaktikon.doclinkSimulation":"Simulation","didaktikon.doclinkVisualization":"Visualisierung","didaktikon.exerciseObjectives":"Lernziele","didaktikon.exerciseQuestionsDone":"Du hast die Kontrollfragen beantwortet","didaktikon.exerciseReflectiveQuestions":"Reflexionsfragen","didaktikon.exerciseUserStory":"User Story","didaktikon.moduleBlock":"Grobthema: {block}","didaktikon.moduleDuration":"{minutes} Minuten","didaktikon.moduleMaterial":"Material","didaktikon.moduleMaterialOver":"Das Material dauert zusammen {material}′ – länger als das Modul mit {module}′.","didaktikon.quizAgain":"Noch einmal","didaktikon.quizCorrect":"Richtig.","didaktikon.quizCorrectCount":"{count} richtig","didaktikon.quizCorrectWouldBe":"Richtig wäre gewesen:","didaktikon.quizDone":"Fertig","didaktikon.quizEvaluate":"Auswertung","didaktikon.quizJump":"Zu Frage springen","didaktikon.quizNext":"Weiter","didaktikon.quizOverview":"Alle Fragen","didaktikon.quizOverviewClose":"Zurück zum Check","didaktikon.quizOverviewCorrect":"(richtig)","didaktikon.quizOverviewGoTo":"Zu dieser Frage","didaktikon.quizProgress":"Fortschritt","didaktikon.quizQuestionOf":"Frage {current} von {total}","didaktikon.quizRestart":"Neu beginnen","didaktikon.quizRestartText":"Deine Antworten in diesem Wissens-Check werden gelöscht.","didaktikon.quizRestartTitle":"Wissens-Check neu beginnen?","didaktikon.quizResult":"{correct} von {total} richtig","didaktikon.quizResultLong":"{correct} von {total} Fragen richtig","didaktikon.quizTrainerOnly":"Nur für Trainer:innen","didaktikon.quizWrong":"Nicht ganz.","didaktikon.scenarios":"Szenarien","didaktikon.simAllScenarios":"Alle Szenarien (Taste 0)","didaktikon.simControls":"Simulation steuern","didaktikon.simNext":"Schritt vor (→)","didaktikon.simNextAria":"Schritt vor","didaktikon.simOverview":"Übersicht","didaktikon.simPause":"Pause (Leertaste)","didaktikon.simPauseAria":"Pause","didaktikon.simPlay":"Abspielen (Leertaste)","didaktikon.simPlayAria":"Abspielen","didaktikon.simPrev":"Schritt zurück (←)","didaktikon.simPrevAria":"Schritt zurück","didaktikon.simPrintHint":"Diese Simulation lebt von der Bewegung. Auf Papier steht nur der gerade sichtbare Schritt – der QR-Code oben führt zurück zur laufenden Fassung.","didaktikon.simReset":"Zurück auf Anfang (Taste R)","didaktikon.simResetAria":"Zurück auf Anfang","didaktikon.simResize":"Breite der Erklärspalte (Pfeiltasten)","didaktikon.simScenarioCount":"{count} Szenarien","didaktikon.simScenarioKey":"{title} (Taste {number})","didaktikon.simScenarioTitle":"Szenario {number}","didaktikon.simSpeed":"Tempo wählen (Taste T)","didaktikon.simSpeedAria":"Tempo wählen","didaktikon.simSpeedMenu":"Tempo","didaktikon.simStepCount":"{count} Schritte","didaktikon.simStepCountOne":"{count} Schritt","didaktikon.simStepCounter":"Schritt {current} / {total}","didaktikon.speedFast":"zügig","didaktikon.speedNormal":"normal","didaktikon.speedSlow":"langsam","didaktikon.speedTurbo":"im Zeitraffer","didaktikon.speedValue":"{speed}×","didaktikon.stepNote":"Erklärung zum aktuellen Schritt","didaktikon.trainerNoteClose":"Schließen","didaktikon.trainerNoteOpen":"Hinweis für Trainer:innen anzeigen","didaktikon.trainerNoteTitle":"Hinweis für Trainer:innen","didaktikon.trainingCatalogEmpty":"Hier gibt es noch keine Schulung.","didaktikon.trainingCatalogTrainings":"Schulungen","didaktikon.trainingDays":"{days} Tage","didaktikon.trainingDaysOne":"{days} Tag","didaktikon.trainingHomeInfo":"Kursbeschreibung","didaktikon.trainingHomeManifest":"Didaktisches Manifest","didaktikon.trainingHomeSales":"Sales-Asset","didaktikon.trainingInfoAudience":"Zielgruppe","didaktikon.trainingInfoObjectives":"Lernziele","didaktikon.trainingInfoObjectivesLead":"Die Lernenden …","didaktikon.trainingInfoOverview":"Überblick","didaktikon.trainingInfoPrerequisites":"Voraussetzungen","didaktikon.trainingMaterials":"Kursmaterial","didaktikon.trainingMaterialsExercises":"Übungen","didaktikon.trainingMaterialsLead":"Links stehen die **Übungen**, an denen Du selbst arbeitest, rechts das **Material zum Nachschlagen**.","didaktikon.trainingMaterialsMore":"Weitere Themen","didaktikon.trainingMaterialsOther":"Sonstige Unterlagen","didaktikon.trainingMaterialsReference":"Zum Nachschlagen","didaktikon.trainingModules":"Module","didaktikon.trainingModulesBlock":"Grobthema","didaktikon.trainingModulesDuration":"Dauer","didaktikon.trainingModulesMaterial":"Material","didaktikon.trainingModulesModule":"Modul","didaktikon.trainingModulesOver":"länger als das Modul","didaktikon.trainingSalesBuyers":"Käufer","didaktikon.trainingSalesPitch":"Pitch","didaktikon.trainingSalesPricing":"Preisrahmen","didaktikon.trainingSalesUsp":"Unterscheidungsmerkmale","didaktikon.trainingSalesValueProposition":"Nutzenversprechen"}</script>
+
+<script src="../../skriptorium/client.js?v=756a5d69" defer></script>
+<script src="../../skriptorium/site.js?v=6472c794" defer></script>
+<script src="../../skriptorium/search-trail.js?v=31279378" data-skr-search-trail
+        data-base="../../" data-index="../../skriptorium/search/de.json?v=c2fa893e" defer></script>
+<link rel="stylesheet" href="../../skriptorium/highlight.css?v=f8a3fc05">
+<script type="module" src="../../skriptorium/highlight.js?v=0b2d40aa" data-skr-highlight="[&#34;bash&#34;,&#34;dockerfile&#34;,&#34;python&#34;,&#34;sql&#34;,&#34;yaml&#34;]"></script>
+<link rel="apple-touch-icon" sizes="180x180" href="../../themes/atvantage/assets/icon-180.png">
+<link rel="icon" sizes="32x32" href="../../themes/atvantage/assets/icon-32.png">
+<link rel="icon" sizes="16x16" href="../../themes/atvantage/assets/icon-16.png">
+
+<link rel="stylesheet" href="../../skriptorium/stage.css?v=c76b28bc">
+<script src="../../skriptorium/stage.js?v=a8ce5bf6" defer></script>
+
+
+</head>
+<body class="skr-stage" data-skr-layout="didaktikon.visualization" data-skr-layouts="didaktikon.visualization skriptorium.stage" data-skr-lang="de" data-skr-stage-home="../../" data-skr-audience="learner">
+  <a class="skr-skip-link" href="#skr-stage-main">Zum Inhalt springen</a>
+  
+<header class="skr-stage__bar">
+  <img class="skr-stage__logo" src="../../themes/didaktikon/assets/logo-schulung.svg" alt="ATVANTAGE Academy"><span class="skr-stage__logo-mask" role="img" aria-label="ATVANTAGE Academy" data-skr-logo-mask></span><span class="skr-stage__title">Helm Charts</span>
+  <div class="skr-stage__tools">
+<div class="skr-search" data-skr-search hidden
+     data-mode="expand" data-shortcut="double_shift"
+     data-index="../../skriptorium/search/de.json?v=c2fa893e"
+     data-base="../../">
+  <button type="button" class="skr-tool skr-tool--search" data-skr-search-toggle
+          aria-expanded="false" aria-controls="skr-search-dialog"
+          title="Suchen (zweimal Umschalt)" aria-label="Suchen"><svg viewBox="0 0 24 24" width="1em" height="1em"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"
+          ><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button>
+  <dialog class="skr-search__dialog" id="skr-search-dialog" aria-label="Suchen">
+    <div class="skr-search__bar" role="search"><label class="skr-search__field skr-search__field--scope" hidden>
+        <span class="skr-search__label">Bereich</span>
+        <select class="skr-search__scope">
+          <option value="">Alle</option>
+        </select>
+      </label>
+      <label class="skr-search__field skr-search__field--query">
+        <span class="skr-search__label">Suchbegriff</span>
+        <input type="search" class="skr-search__input"
+               placeholder="Diese Site durchsuchen" autocomplete="off" spellcheck="false"
+               aria-describedby="skr-search-status">
+      </label>
+      <button type="button" class="skr-tool skr-search__close" data-skr-search-close
+              title="Suche schließen" aria-label="Suche schließen"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <p class="skr-search__status" id="skr-search-status" data-skr-search-status role="status"></p>
+    <ul class="skr-search__results" data-skr-search-results aria-label="Suchergebnisse"></ul>
+  </dialog>
+</div>
+<script src="../../skriptorium/search.js?v=2be133a6" defer></script>
+<button type="button" class="skr-qr" data-skr-qr hidden
+        title="Diese Seite auf Deinem Smartphone öffnen"
+        aria-label="Diese Seite auf Deinem Smartphone öffnen"></button>
+<button type="button" class="skr-tool skr-tool--scheme" data-skr-scheme-toggle
+        title="Farbschema umschalten (hell/dunkel)"
+        aria-label="Dunkles Farbschema"><svg viewBox="0 0 24 24" width="1em" height="1em"
+        fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"
+        ><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+<button type="button" class="skr-tool skr-tool--print"
+        data-skr-print=""
+        title="Diese Seite drucken" aria-label="Diese Seite drucken"></button>
+<button type="button" class="skr-tool skr-tool--full"
+        data-skr-stage-full=""
+        title="Vollbild (Taste F)" aria-label="Vollbild"><svg viewBox="0 0 24 24" width="1em" height="1em"
+        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"
+        ><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg></button>
+</div>
+  <button type="button" class="skr-stage__nav skr-stage__close" data-skr-stage-close hidden
+        title="Schließen" aria-label="Schließen"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+
+</header>
+  
+  <main class="skr-stage__main" id="skr-stage-main">
+    <h1 id="helm-charts">Helm Charts</h1>
+<p>Helm ist der <strong>Paketmanager für Kubernetes</strong>. So wie <code>apt</code> für Debian oder <code>npm</code> für
+Node.js bündelt Helm Kubernetes-Ressourcen zu wiederverwendbaren Paketen – den
+<strong>Charts</strong>.</p>
+<h2 id="warum">Warum Helm?</h2>
+<p>Wer eine Anwendung auf Kubernetes deployt, schreibt mehrere YAML-Manifeste: Deployment,
+Service, ConfigMap, Secret, Route oder Ingress, PersistentVolumeClaim. Schnell kommen
+diese Fragen:</p>
+<div class="skr-grid">
+<div class="skr-card">
+<h4 id="redundanz">Redundanz</h4>
+<p>Dieselbe Anwendung läuft in Dev, Staging und Prod – mit leicht anderer Konfiguration.
+Man pflegt drei Sätze fast gleicher YAML-Dateien.</p>
+</div>
+<div class="skr-card">
+<h4 id="versionierung">Versionierung</h4>
+<p>Welche Fassung der Manifeste läuft gerade in Produktion? Für ein Rollback müssen erst die
+richtigen YAML-Dateien wiedergefunden werden.</p>
+</div>
+<div class="skr-card">
+<h4 id="abhngigkeiten">Abhängigkeiten</h4>
+<p>Die Anwendung braucht eine Datenbank. Beide müssen zusammen deployt werden – in der
+richtigen Reihenfolge, mit abgestimmter Konfiguration.</p>
+</div>
+<div class="skr-card">
+<h4 id="weitergabe">Weitergabe</h4>
+<p>Ein Team will seine Anwendung anderen bereitstellen – und müsste dafür lose YAML-Dateien
+plus Installationsanleitung verschicken.</p>
+</div>
+</div>
+<h3 id="loesung">Was Helm daran ändert</h3>
+<table>
+	<thead>
+			<tr>
+					<th>Ohne Helm</th>
+					<th>Mit Helm</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Viele lose YAML-Dateien</td>
+					<td>Ein Chart = ein Paket</td>
+			</tr>
+			<tr>
+					<td>Werte sind fest eingetragen</td>
+					<td>Parametrisiert über <code>values.yaml</code></td>
+			</tr>
+			<tr>
+					<td>Kein Überblick über Installationen</td>
+					<td><code>helm list</code> zeigt die installierten Releases</td>
+			</tr>
+			<tr>
+					<td>Rollback = YAML von Hand tauschen</td>
+					<td><code>helm rollback</code> auf eine frühere Revision</td>
+			</tr>
+			<tr>
+					<td>Kein Paketformat</td>
+					<td>Charts sind teilbar, versioniert, signierbar</td>
+			</tr>
+			<tr>
+					<td>Abhängigkeiten von Hand</td>
+					<td><code>Chart.yaml</code> deklariert Dependencies</td>
+			</tr>
+	</tbody>
+</table>
+<h2 id="begriffe">Die Kernbegriffe</h2>
+<div class="skr-tabs">
+<details class="skr-tabs__panel" name="begriffe" open>
+<summary>Chart</summary>
+<p>Ein Chart ist ein <strong>Paket aus Templates und Standardwerten</strong>, das eine Anwendung
+beschreibt. Es ist ein Verzeichnis mit fester Struktur:</p>
+<pre><code class="language-text">my-app/
+├── Chart.yaml            # Metadaten und Abhängigkeiten (erforderlich)
+├── Chart.lock            # Exakte Versionen der aufgelösten Dependencies
+├── values.yaml           # Standardwerte (beim Installieren überschreibbar)
+├── values.schema.json    # JSON Schema zur Prüfung der Values
+├── .helmignore           # Dateien, die beim Verpacken ignoriert werden
+├── LICENSE               # Lizenz des Charts
+├── README.md             # Dokumentation des Charts
+├── templates/            # Kubernetes-Manifeste als Go-Templates
+│   ├── deployment.yaml
+│   ├── service.yaml
+│   ├── _helpers.tpl      # Wiederverwendbare Template-Bausteine
+│   ├── NOTES.txt         # Hinweistext nach Install/Upgrade
+│   └── tests/            # Helm-Tests
+├── charts/               # Subcharts (Dependencies)
+└── crds/                 # Custom Resource Definitions
+</code></pre>
+<p>Jede Datei im Einzelnen: <a class="skr-doclink skr-doclink--visualization" href="../../shared/visualisierungen/helm-chart-aufbau.html">Aufbau eines Helm Charts</a>.</p>
+</details>
+<details class="skr-tabs__panel" name="begriffe">
+<summary>Release</summary>
+<p>Ein <strong>Release</strong> ist eine konkrete Installation eines Charts in einem Cluster. Dasselbe
+Chart lässt sich mehrfach installieren – etwa als <code>my-app-dev</code> und <code>my-app-prod</code>. Jedes
+Release hat seine eigene <strong>Revisionshistorie</strong> für Upgrades und Rollbacks.</p>
+</details>
+<details class="skr-tabs__panel" name="begriffe">
+<summary>Values</summary>
+<p><strong>Values</strong> parametrisieren ein Chart. Sie stehen in <code>values.yaml</code> und lassen sich beim
+Installieren überschreiben.</p>
+<pre><code class="language-yaml"># values.yaml
+image:
+  repository: ralfueberfuhr/recipes-backend
+  tag: latest-dev
+replicas: 1
+</code></pre>
+<pre><code class="language-yaml"># templates/deployment.yaml (Auszug)
+spec:
+  replicas: {{ .Values.replicas }}
+  template:
+    spec:
+      containers:
+        - name: backend
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+</code></pre>
+<pre><code class="language-bash"># Einen Wert beim Installieren überschreiben
+helm install my-release ./my-app --set replicas=3
+</code></pre>
+<pre><code class="language-bash"># Oder eine ganze Datei mit Werten mitgeben
+helm install my-release ./my-app -f prod-values.yaml
+</code></pre>
+</details>
+<details class="skr-tabs__panel" name="begriffe">
+<summary>Repository</summary>
+<p>Charts werden auf <strong>zwei Wegen</strong> verteilt: über ein klassisches Chart-Repository oder
+über eine OCI-Registry. Den Vergleich zeigt der nächste Abschnitt.</p>
+</details>
+</div>
+<h2 id="repository">Repository: klassisch oder OCI</h2>
+<div class="skr-grid">
+<div class="skr-card">
+<h4 id="klassisches-chart-repository-legacy">Klassisches Chart-Repository (Legacy)</h4>
+<p>Ein HTTP-Server, der eine <code>index.yaml</code> mit den verfügbaren Charts bereitstellt. Dafür
+braucht es einen eigenen Server (ChartMuseum, GitHub Pages, Nexus o. Ä.).</p>
+<pre><code class="language-text">Chart Repository
+├── index.yaml
+├── my-app-1.0.0.tgz
+├── my-app-1.1.0.tgz
+└── postgresql-15.2.0.tgz
+</code></pre>
+<p>Viele bestehende Charts werden noch so verteilt.</p>
+</div>
+<div class="skr-card">
+<h4 id="oci-registry-ab-helm-38--empfohlen">OCI-Registry (ab Helm 3.8 – empfohlen)</h4>
+<p>Charts liegen <strong>direkt in einer Container-Registry</strong> – derselben, die auch die Images
+hält (Docker Hub, GitHub Container Registry, Quay.io, Harbor, ACR, ECR …). Das ist der
+empfohlene Weg für neue Setups und löst das klassische Modell langfristig ab.</p>
+</div>
+</div>
+<details class="skr-reveal">
+<summary>Was heißt „OCI“ in diesem Zusammenhang?</summary>
+<p><strong>OCI</strong> steht für <strong>Open Container Initiative</strong> – eine Organisation, die offene
+Standards für Container-Formate und Registries festlegt. Dazu gehört die <strong>OCI
+Distribution Specification</strong>: ein Protokoll, über das Registries beliebige Artefakte
+speichern und verteilen, nicht nur Container-Images.</p>
+<p>Helm nutzt genau dieses Protokoll: <strong>Charts werden als OCI-Artefakte</strong> in jeder
+OCI-kompatiblen Registry gespeichert.</p>
+<ul>
+<li><strong>OCI als Organisation</strong> legt Standards fest (Image-Format, Runtime, Distribution).</li>
+<li>Die <strong>OCI Distribution Spec</strong> ist das Protokoll, das Helm nutzt.</li>
+<li>Ein Chart ist <strong>kein Container-Image</strong>, wird aber über dasselbe Protokoll und in
+derselben Registry gespeichert.</li>
+<li>Es braucht <strong>keine eigene Infrastruktur</strong> für Charts – die vorhandene Registry reicht.</li>
+</ul>
+</details>
+<table>
+	<thead>
+			<tr>
+					<th></th>
+					<th>Klassisches Repository</th>
+					<th>OCI-Registry</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>Protokoll</strong></td>
+					<td>Eigenes Helm-Protokoll (HTTP + <code>index.yaml</code>)</td>
+					<td>OCI Distribution Spec</td>
+			</tr>
+			<tr>
+					<td><strong>Infrastruktur</strong></td>
+					<td>Eigener Chart-Server nötig</td>
+					<td>Vorhandene Container-Registry</td>
+			</tr>
+			<tr>
+					<td><strong>Suche</strong></td>
+					<td><code>helm search repo</code></td>
+					<td>Oberfläche der Registry oder Artifact Hub</td>
+			</tr>
+			<tr>
+					<td><strong>Helm-Version</strong></td>
+					<td>Alle</td>
+					<td>Ab 3.8 (stabil)</td>
+			</tr>
+			<tr>
+					<td><strong>Status</strong></td>
+					<td>Legacy – funktioniert, aber nicht mehr empfohlen</td>
+					<td><strong>Empfohlen für neue Setups</strong></td>
+			</tr>
+	</tbody>
+</table>
+<link rel="stylesheet" href="../../skriptorium/diagrams.css?v=62eb1368">
+<figure class="skr-diagram">
+<img class="skr-diagram__light" src="../../skriptorium/diagrams/1eb8dd8437e8c342.svg?v=62dbdcb3" alt="Charts verteilen – klassisch und über OCI – Entwickler:innen legen Charts mit helm push oder über einen eigenen Upload entweder in ein klassisches Chart-Repository mit index.yaml oder in eine OCI-Registry, wo das Chart neben den Container-Images liegt. Von dort installiert helm install es in den Kubernetes-Cluster." width="713" height="341" loading="lazy">
+<img class="skr-diagram__dark" src="../../skriptorium/diagrams/1eb8dd8437e8c342-dark.svg?v=616ab90c" alt="Charts verteilen – klassisch und über OCI – Entwickler:innen legen Charts mit helm push oder über einen eigenen Upload entweder in ein klassisches Chart-Repository mit index.yaml oder in eine OCI-Registry, wo das Chart neben den Container-Images liegt. Von dort installiert helm install es in den Kubernetes-Cluster." width="713" height="341" loading="lazy">
+</figure>
+
+<h2 id="openshift">Helm und OpenShift</h2>
+<p>OpenShift unterstützt Helm vollständig:</p>
+<ul>
+<li>Die <strong>Helm-CLI</strong> funktioniert genauso wie mit jedem anderen Kubernetes
+(<code>helm install</code>, <code>helm upgrade</code> …).</li>
+<li>Die <strong>Web Console</strong> zeigt installierte Helm-Releases an, und ihr Katalog listet Charts
+aus eingerichteten Repositories. Im Kurs arbeitest Du trotzdem nur mit der
+Kommandozeile.</li>
+<li>Die <strong>integrierte Registry</strong> unterstützt OCI-Artefakte und damit Helm Charts.</li>
+</ul>
+<p>Helm-Templates dürfen OpenShift-eigene Ressourcen wie <strong>Routes</strong> enthalten – es sind
+gewöhnliche Kubernetes-YAML-Templates.</p>
+<h2 id="bewertung">Stärken und Herausforderungen</h2>
+<div class="skr-grid">
+<div class="skr-card">
+<h4 id="strken">Stärken</h4>
+<ul>
+<li><strong>Wiederverwendbarkeit:</strong> Ein Chart, viele Umgebungen – Unterschiede nur in den Values.</li>
+<li><strong>Versionierung und Rollback:</strong> Jedes Release hat eine Revisionshistorie; zurück geht
+es mit einem Befehl.</li>
+<li><strong>Abhängigkeiten:</strong> Charts deklarieren andere Charts als Dependency (etwa ein
+Backend-Chart, das ein PostgreSQL-Chart braucht).</li>
+<li><strong>Ökosystem:</strong> Tausende öffentlicher Charts (etwa auf Artifact Hub) für
+Standardsoftware – PostgreSQL, Redis, NGINX, Prometheus.</li>
+<li><strong>Standardisierung:</strong> Ein einheitliches Format, das Teams und Cluster-Admins verstehen.</li>
+</ul>
+</div>
+<div class="skr-card">
+<h4 id="herausforderungen">Herausforderungen</h4>
+<ul>
+<li><strong>Lernkurve:</strong> Go-Templating (<code>{{ if }}</code>, <code>{{ range }}</code>, <code>{{ include }}</code>) ist mächtig,
+die Syntax aber gewöhnungsbedürftig – besonders bei Verschachtelung und Leerraum.</li>
+<li><strong>Fehlersuche:</strong> Fehler in Templates erzeugen oft kryptische Meldungen. <code>helm template</code>
+und <code>helm lint</code> helfen, aber es bleibt aufwendiger als bei reinem YAML.</li>
+<li><strong>Große Charts:</strong> Umbrella-Charts mit vielen Subcharts werden schnell unübersichtlich;
+Values über mehrere Ebenen sind fehleranfällig.</li>
+<li><strong>Kein GitOps von Haus aus:</strong> Helm arbeitet imperativ (<code>helm install</code>,
+<code>helm upgrade</code>). Für GitOps braucht es Werkzeuge wie Argo CD oder Flux.</li>
+<li><strong>Drift:</strong> Ändert jemand nach <code>helm install</code> Ressourcen von Hand (<code>kubectl edit</code>,
+<code>oc edit</code>), weicht der Cluster vom Chart ab. Helm merkt das erst beim nächsten
+<code>helm upgrade</code>.</li>
+</ul>
+</div>
+</div>
+<h2 id="erste-schritte">Erste Schritte</h2>
+<h3 id="kubeconfig">Voraussetzung: Zugang zum Cluster (kubeconfig)</h3>
+<p>Helm bringt <strong>keinen eigenen Cluster-Zugang</strong> mit. Es nutzt die <strong>kubeconfig</strong> – dieselbe
+Datei, die <code>kubectl</code> liest und die alle Kubernetes-Werkzeuge übernommen haben (<code>oc</code>,
+<code>helm</code>, Lens, k9s …).</p>
+<p><strong>In der Praxis heißt das:</strong> Wer mit <code>kubectl</code> arbeiten kann oder sich mit <code>oc login</code>
+angemeldet hat, kann Helm sofort nutzen. <code>oc login</code> schreibt die Zugangsdaten nach
+<code>~/.kube/config</code>, und Helm liest sie von dort.</p>
+<pre><code class="language-bash"># Nach dem Login am Cluster …
+oc login https://api.cluster.example.com:6443
+</code></pre>
+<pre><code class="language-bash"># … funktioniert Helm sofort
+helm list
+</code></pre>
+<div class="skr-accordion">
+<h4 id="die-umgebungsvariable-kubeconfig">Die Umgebungsvariable KUBECONFIG</h4>
+<p><code>KUBECONFIG</code> ist eine Konvention von <code>kubectl</code>, die Helm übernommen hat. Du brauchst sie
+nur, wenn die kubeconfig <strong>nicht</strong> unter <code>~/.kube/config</code> liegt:</p>
+<pre><code class="language-bash"># Nur nötig, wenn die kubeconfig woanders liegt
+export KUBECONFIG=/pfad/zu/meiner/kubeconfig.yaml
+</code></pre>
+<p><strong>Mehrere Cluster?</strong> Eine kubeconfig kann mehrere Kontexte enthalten; gewechselt wird mit
+<code>kubectl config use-context &lt;name&gt;</code>. Alternativ führt
+<code>KUBECONFIG=/pfad/a:/pfad/b</code> (mit Doppelpunkt getrennt) mehrere Dateien zusammen.</p>
+<h4 id="aufbau-der-kubeconfig">Aufbau der kubeconfig</h4>
+<p>Die Datei hat drei Bereiche – Cluster, Benutzer und die Kontexte, die beides verbinden:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Config
+current-context: my-cluster            # Aktiver Kontext
+
+clusters:                              # Verbindungen zu Clustern
+  - name: my-cluster
+    cluster:
+      server: https://api.cluster.example.com:6443
+      certificate-authority-data: LS0t...   # CA-Zertifikat (Base64)
+
+users:                                 # Zugangsdaten
+  - name: developer
+    user:
+      token: sha256~abc123...          # Bearer Token (etwa von oc login)
+
+contexts:                              # Cluster + Benutzer + Namespace
+  - name: my-cluster
+    context:
+      cluster: my-cluster
+      user: developer
+      namespace: my-project
+</code></pre>
+<ul>
+<li><strong>clusters</strong> – Adressen und Zertifikate der Kubernetes- bzw. OpenShift-Cluster</li>
+<li><strong>users</strong> – Anmeldung (Token, Client-Zertifikat oder OIDC)</li>
+<li><strong>contexts</strong> – verbinden Cluster, Benutzer und optional einen Standard-Namespace</li>
+</ul>
+</div>
+<h3 id="installieren">1. Helm installieren</h3>
+<p>In der bereitgestellten Schulungsumgebung ist Helm schon da. Auf dem eigenen Rechner:</p>
+<div class="skr-tabs">
+<details class="skr-tabs__panel" name="installieren" open>
+<summary>macOS</summary>
+<pre><code class="language-bash">brew install helm
+</code></pre>
+</details>
+<details class="skr-tabs__panel" name="installieren">
+<summary>Windows (Git Bash)</summary>
+<pre><code class="language-bash">winget install Helm.Helm
+</code></pre>
+</details>
+<details class="skr-tabs__panel" name="installieren">
+<summary>Linux</summary>
+<pre><code class="language-bash">sudo snap install helm --classic
+</code></pre>
+<p>Alternativ das Programm von den <a href="https://github.com/helm/helm/releases">Helm-Releases</a>
+herunterladen.</p>
+</details>
+</div>
+<h3 id="anlegen">2. Ein Chart anlegen</h3>
+<pre><code class="language-bash">helm create my-app
+</code></pre>
+<p>Das erzeugt ein vollständiges Chart mit Beispiel-Templates. Für den Einstieg ersetzt Du
+die Templates durch Deine eigenen YAML-Manifeste und parametrisierst sie Schritt für
+Schritt.</p>
+<h3 id="pruefen">3. Das Chart prüfen, ohne es zu installieren</h3>
+<pre><code class="language-bash"># Templates rendern und ansehen
+helm template my-release ./my-app
+</code></pre>
+<pre><code class="language-bash"># Mit eigenen Values rendern
+helm template my-release ./my-app -f prod-values.yaml
+</code></pre>
+<pre><code class="language-bash"># Das Chart auf Fehler prüfen
+helm lint ./my-app
+</code></pre>
+<h3 id="installation">4. Das Chart installieren</h3>
+<pre><code class="language-bash">helm install my-release ./my-app
+</code></pre>
+<h3 id="verwalten">5. Das Release verwalten</h3>
+<pre><code class="language-bash"># Installierte Releases auflisten
+helm list
+</code></pre>
+<pre><code class="language-bash"># Werte ändern und upgraden
+helm upgrade my-release ./my-app --set replicas=3
+</code></pre>
+<pre><code class="language-bash"># Auf Revision 1 zurückrollen
+helm rollback my-release 1
+</code></pre>
+<pre><code class="language-bash"># Das Release entfernen
+helm uninstall my-release
+</code></pre>
+<p>Alle Befehle auf einen Blick: <a class="skr-doclink skr-doclink--visualization" href="../../shared/visualisierungen/helm-spickzettel.html">Spickzettel: Helm</a>.</p>
+<h2 id="weiterlesen">Weiterlesen</h2>
+<ul>
+<li><a href="https://helm.sh/docs/">Helm-Dokumentation</a></li>
+<li><a href="https://artifacthub.io/">Artifact Hub – öffentliche Charts</a></li>
+<li><a href="https://helm.sh/docs/chart_best_practices/">Helm Best Practices</a></li>
+<li><a href="https://helm.sh/docs/chart_template_guide/">Chart Template Guide</a></li>
+</ul>
+
+  </main>
+  <div class="skr-print-contact" aria-hidden="true">
+  <span>Kontakt: https://www.atvantage.com</span>
+  <span>academy@atvantage.com</span>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="skr-root" content="../../">
+<script src="../../skriptorium/skr.js?v=c06299bd"></script>
+<title>Was ist Kubernetes? · Containertechnologien (Academy)</title>
+<meta name="description" content="Kubernetes auf einer Seite: Control Plane und Worker Nodes mit ihren Komponenten zum Aufklappen, die Kommandozeile und der Vergleich mit Docker – wofür was.">
+
+<meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta property="og:title" content="Was ist Kubernetes?">
+<meta property="og:description" content="Kubernetes auf einer Seite: Control Plane und Worker Nodes mit ihren Komponenten zum Aufklappen, die Kommandozeile und der Vergleich mit Docker – wofür was.">
+<meta property="og:type" content="website">
+<link rel="preload" href="../../themes/atvantage/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../themes/default/theme.css?v=b795c99c" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/fonts.css?v=0f189d71" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/colors.css?v=8ed47a94" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/typography.css?v=6445d4d3" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/spacing.css?v=58e35278" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/components.css?v=3fcd65a3" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/base.css?v=b47b1e2d" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/theme.css?v=e7026433" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/didaktikon/theme.css?v=4a593b58" data-skr-source="theme">
+<link rel="stylesheet" href="../../skriptorium/tokens.css?v=28abf864">
+<link rel="stylesheet" href="../../extensions/didaktikon/tokens.css?v=5966d76a">
+<link rel="stylesheet" href="../../skriptorium/base.css?v=86e37c43">
+<link rel="stylesheet" href="../../skriptorium/components.css?v=3a968127">
+<link rel="stylesheet" href="../../skriptorium/doclinks.css?v=2ef23515">
+<link rel="stylesheet" href="../../skriptorium/linkmarks.css?v=1643f80a">
+<link rel="stylesheet" href="../../skriptorium/site.css?v=2a7f5baf">
+<link rel="stylesheet" href="../../skriptorium/logo.css?v=43a7fbaf">
+<link rel="stylesheet" media="print" href="../../skriptorium/print.css?v=6c7ec44c">
+<meta name="generator" content="Skriptorium 2.0.0-rc.15">
+<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"2.0.0-rc.11"}],"internal":false,"languages":["de"],"skriptorium":"2.0.0-rc.15","theme":"didaktikon","themeOptions":["didaktikon"],"themes":[{"name":"didaktikon","version":"2.0.0-rc.11"},{"name":"atvantage","version":"2.2.0"},{"name":"default","version":"2.0.0-rc.15"}]}</script>
+<script type="application/json" id="skr-page-info">{"clientApi":"full","defaultLanguage":"de","description":"Kubernetes auf einer Seite: Control Plane und Worker Nodes mit ihren Komponenten zum Aufklappen, die Kommandozeile und der Vergleich mit Docker – wofür was.","duration":null,"fields":null,"language":"de","languages":["de"],"layout":"didaktikon.visualization","pageId":"k8s-was-ist-kubernetes","runtimeFragments":null,"siteIndex":"/skriptorium/site.json","title":"Was ist Kubernetes?","topics":null,"untranslated":null,"url":"/shared/visualisierungen/was-ist-kubernetes.html"}</script>
+<script type="application/json" id="skr-texts">{"didaktikon.capture":"Capture-Modus","didaktikon.captureExit":"beenden","didaktikon.captureText":"Text einblenden","didaktikon.crosswordAcross":"Waagerecht","didaktikon.crosswordCellAcross":"{number} waagerecht, Buchstabe {position}","didaktikon.crosswordCellDown":"{number} senkrecht, Buchstabe {position}","didaktikon.crosswordDown":"Senkrecht","didaktikon.crosswordHintLetter":"Tipp: Buchstabe","didaktikon.crosswordHintWord":"Tipp: Wort","didaktikon.crosswordRestart":"Neu beginnen","didaktikon.crosswordRestartText":"Deine Eingaben in diesem Rätsel werden gelöscht.","didaktikon.crosswordRestartTitle":"Kreuzworträtsel neu beginnen?","didaktikon.crosswordReveal":"Auflösen","didaktikon.crosswordRevealText":"Alle Felder werden ausgefüllt.","didaktikon.crosswordRevealTitle":"Kreuzworträtsel auflösen?","didaktikon.crosswordSolution":"Lösungswort","didaktikon.crosswordSolutionCell":"Lösungswort, Buchstabe {position}","didaktikon.crosswordSolved":"Gelöst – alle Begriffe stimmen.","didaktikon.doclinkCrossword":"Kreuzworträtsel","didaktikon.doclinkExercise":"Übung","didaktikon.doclinkQuiz":"Wissens-Check","didaktikon.doclinkSimulation":"Simulation","didaktikon.doclinkVisualization":"Visualisierung","didaktikon.exerciseObjectives":"Lernziele","didaktikon.exerciseQuestionsDone":"Du hast die Kontrollfragen beantwortet","didaktikon.exerciseReflectiveQuestions":"Reflexionsfragen","didaktikon.exerciseUserStory":"User Story","didaktikon.moduleBlock":"Grobthema: {block}","didaktikon.moduleDuration":"{minutes} Minuten","didaktikon.moduleMaterial":"Material","didaktikon.moduleMaterialOver":"Das Material dauert zusammen {material}′ – länger als das Modul mit {module}′.","didaktikon.quizAgain":"Noch einmal","didaktikon.quizCorrect":"Richtig.","didaktikon.quizCorrectCount":"{count} richtig","didaktikon.quizCorrectWouldBe":"Richtig wäre gewesen:","didaktikon.quizDone":"Fertig","didaktikon.quizEvaluate":"Auswertung","didaktikon.quizJump":"Zu Frage springen","didaktikon.quizNext":"Weiter","didaktikon.quizOverview":"Alle Fragen","didaktikon.quizOverviewClose":"Zurück zum Check","didaktikon.quizOverviewCorrect":"(richtig)","didaktikon.quizOverviewGoTo":"Zu dieser Frage","didaktikon.quizProgress":"Fortschritt","didaktikon.quizQuestionOf":"Frage {current} von {total}","didaktikon.quizRestart":"Neu beginnen","didaktikon.quizRestartText":"Deine Antworten in diesem Wissens-Check werden gelöscht.","didaktikon.quizRestartTitle":"Wissens-Check neu beginnen?","didaktikon.quizResult":"{correct} von {total} richtig","didaktikon.quizResultLong":"{correct} von {total} Fragen richtig","didaktikon.quizTrainerOnly":"Nur für Trainer:innen","didaktikon.quizWrong":"Nicht ganz.","didaktikon.scenarios":"Szenarien","didaktikon.simAllScenarios":"Alle Szenarien (Taste 0)","didaktikon.simControls":"Simulation steuern","didaktikon.simNext":"Schritt vor (→)","didaktikon.simNextAria":"Schritt vor","didaktikon.simOverview":"Übersicht","didaktikon.simPause":"Pause (Leertaste)","didaktikon.simPauseAria":"Pause","didaktikon.simPlay":"Abspielen (Leertaste)","didaktikon.simPlayAria":"Abspielen","didaktikon.simPrev":"Schritt zurück (←)","didaktikon.simPrevAria":"Schritt zurück","didaktikon.simPrintHint":"Diese Simulation lebt von der Bewegung. Auf Papier steht nur der gerade sichtbare Schritt – der QR-Code oben führt zurück zur laufenden Fassung.","didaktikon.simReset":"Zurück auf Anfang (Taste R)","didaktikon.simResetAria":"Zurück auf Anfang","didaktikon.simResize":"Breite der Erklärspalte (Pfeiltasten)","didaktikon.simScenarioCount":"{count} Szenarien","didaktikon.simScenarioKey":"{title} (Taste {number})","didaktikon.simScenarioTitle":"Szenario {number}","didaktikon.simSpeed":"Tempo wählen (Taste T)","didaktikon.simSpeedAria":"Tempo wählen","didaktikon.simSpeedMenu":"Tempo","didaktikon.simStepCount":"{count} Schritte","didaktikon.simStepCountOne":"{count} Schritt","didaktikon.simStepCounter":"Schritt {current} / {total}","didaktikon.speedFast":"zügig","didaktikon.speedNormal":"normal","didaktikon.speedSlow":"langsam","didaktikon.speedTurbo":"im Zeitraffer","didaktikon.speedValue":"{speed}×","didaktikon.stepNote":"Erklärung zum aktuellen Schritt","didaktikon.trainerNoteClose":"Schließen","didaktikon.trainerNoteOpen":"Hinweis für Trainer:innen anzeigen","didaktikon.trainerNoteTitle":"Hinweis für Trainer:innen","didaktikon.trainingCatalogEmpty":"Hier gibt es noch keine Schulung.","didaktikon.trainingCatalogTrainings":"Schulungen","didaktikon.trainingDays":"{days} Tage","didaktikon.trainingDaysOne":"{days} Tag","didaktikon.trainingHomeInfo":"Kursbeschreibung","didaktikon.trainingHomeManifest":"Didaktisches Manifest","didaktikon.trainingHomeSales":"Sales-Asset","didaktikon.trainingInfoAudience":"Zielgruppe","didaktikon.trainingInfoObjectives":"Lernziele","didaktikon.trainingInfoObjectivesLead":"Die Lernenden …","didaktikon.trainingInfoOverview":"Überblick","didaktikon.trainingInfoPrerequisites":"Voraussetzungen","didaktikon.trainingMaterials":"Kursmaterial","didaktikon.trainingMaterialsExercises":"Übungen","didaktikon.trainingMaterialsLead":"Links stehen die **Übungen**, an denen Du selbst arbeitest, rechts das **Material zum Nachschlagen**.","didaktikon.trainingMaterialsMore":"Weitere Themen","didaktikon.trainingMaterialsOther":"Sonstige Unterlagen","didaktikon.trainingMaterialsReference":"Zum Nachschlagen","didaktikon.trainingModules":"Module","didaktikon.trainingModulesBlock":"Grobthema","didaktikon.trainingModulesDuration":"Dauer","didaktikon.trainingModulesMaterial":"Material","didaktikon.trainingModulesModule":"Modul","didaktikon.trainingModulesOver":"länger als das Modul","didaktikon.trainingSalesBuyers":"Käufer","didaktikon.trainingSalesPitch":"Pitch","didaktikon.trainingSalesPricing":"Preisrahmen","didaktikon.trainingSalesUsp":"Unterscheidungsmerkmale","didaktikon.trainingSalesValueProposition":"Nutzenversprechen"}</script>
+
+<script src="../../skriptorium/client.js?v=756a5d69" defer></script>
+<script src="../../skriptorium/site.js?v=6472c794" defer></script>
+<script src="../../skriptorium/search-trail.js?v=31279378" data-skr-search-trail
+        data-base="../../" data-index="../../skriptorium/search/de.json?v=c2fa893e" defer></script>
+<link rel="stylesheet" href="../../skriptorium/highlight.css?v=f8a3fc05">
+<script type="module" src="../../skriptorium/highlight.js?v=0b2d40aa" data-skr-highlight="[&#34;bash&#34;,&#34;dockerfile&#34;,&#34;python&#34;,&#34;sql&#34;,&#34;yaml&#34;]"></script>
+<link rel="apple-touch-icon" sizes="180x180" href="../../themes/atvantage/assets/icon-180.png">
+<link rel="icon" sizes="32x32" href="../../themes/atvantage/assets/icon-32.png">
+<link rel="icon" sizes="16x16" href="../../themes/atvantage/assets/icon-16.png">
+
+<link rel="stylesheet" href="../../skriptorium/stage.css?v=c76b28bc">
+<script src="../../skriptorium/stage.js?v=a8ce5bf6" defer></script>
+
+
+</head>
+<body class="skr-stage" data-skr-layout="didaktikon.visualization" data-skr-layouts="didaktikon.visualization skriptorium.stage" data-skr-lang="de" data-skr-stage-home="../../" data-skr-audience="learner">
+  <a class="skr-skip-link" href="#skr-stage-main">Zum Inhalt springen</a>
+  
+<header class="skr-stage__bar">
+  <img class="skr-stage__logo" src="../../themes/didaktikon/assets/logo-schulung.svg" alt="ATVANTAGE Academy"><span class="skr-stage__logo-mask" role="img" aria-label="ATVANTAGE Academy" data-skr-logo-mask></span><span class="skr-stage__title">Was ist Kubernetes?</span>
+  <div class="skr-stage__tools">
+<div class="skr-search" data-skr-search hidden
+     data-mode="expand" data-shortcut="double_shift"
+     data-index="../../skriptorium/search/de.json?v=c2fa893e"
+     data-base="../../">
+  <button type="button" class="skr-tool skr-tool--search" data-skr-search-toggle
+          aria-expanded="false" aria-controls="skr-search-dialog"
+          title="Suchen (zweimal Umschalt)" aria-label="Suchen"><svg viewBox="0 0 24 24" width="1em" height="1em"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"
+          ><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button>
+  <dialog class="skr-search__dialog" id="skr-search-dialog" aria-label="Suchen">
+    <div class="skr-search__bar" role="search"><label class="skr-search__field skr-search__field--scope" hidden>
+        <span class="skr-search__label">Bereich</span>
+        <select class="skr-search__scope">
+          <option value="">Alle</option>
+        </select>
+      </label>
+      <label class="skr-search__field skr-search__field--query">
+        <span class="skr-search__label">Suchbegriff</span>
+        <input type="search" class="skr-search__input"
+               placeholder="Diese Site durchsuchen" autocomplete="off" spellcheck="false"
+               aria-describedby="skr-search-status">
+      </label>
+      <button type="button" class="skr-tool skr-search__close" data-skr-search-close
+              title="Suche schließen" aria-label="Suche schließen"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <p class="skr-search__status" id="skr-search-status" data-skr-search-status role="status"></p>
+    <ul class="skr-search__results" data-skr-search-results aria-label="Suchergebnisse"></ul>
+  </dialog>
+</div>
+<script src="../../skriptorium/search.js?v=2be133a6" defer></script>
+<button type="button" class="skr-qr" data-skr-qr hidden
+        title="Diese Seite auf Deinem Smartphone öffnen"
+        aria-label="Diese Seite auf Deinem Smartphone öffnen"></button>
+<button type="button" class="skr-tool skr-tool--scheme" data-skr-scheme-toggle
+        title="Farbschema umschalten (hell/dunkel)"
+        aria-label="Dunkles Farbschema"><svg viewBox="0 0 24 24" width="1em" height="1em"
+        fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"
+        ><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+<button type="button" class="skr-tool skr-tool--print"
+        data-skr-print=""
+        title="Diese Seite drucken" aria-label="Diese Seite drucken"></button>
+<button type="button" class="skr-tool skr-tool--full"
+        data-skr-stage-full=""
+        title="Vollbild (Taste F)" aria-label="Vollbild"><svg viewBox="0 0 24 24" width="1em" height="1em"
+        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"
+        ><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg></button>
+</div>
+  <button type="button" class="skr-stage__nav skr-stage__close" data-skr-stage-close hidden
+        title="Schließen" aria-label="Schließen"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+
+</header>
+  
+  <main class="skr-stage__main" id="skr-stage-main">
+    <h1 id="was-ist-kubernetes">Was ist Kubernetes?</h1>
+<p>Kubernetes (oft als <strong>K8s</strong> abgekürzt) ist eine Open-Source-Plattform zur
+<strong>Container-Orchestrierung</strong>. Ursprünglich bei Google entwickelt und 2014 als
+Open-Source-Projekt veröffentlicht, wird es heute von der
+<a href="https://www.cncf.io/">Cloud Native Computing Foundation (CNCF)</a> verwaltet.</p>
+<p>Kubernetes <strong>automatisiert die Bereitstellung, Skalierung und Verwaltung</strong> von
+containerisierten Anwendungen über einen Verbund von Maschinen hinweg – den <strong>Cluster</strong>.</p>
+<h2 id="cluster">Der Cluster im Überblick</h2>
+<p>Ein Kubernetes-Cluster besteht aus zwei Arten von Maschinen:</p>
+<div class="skr-grid">
+<div class="skr-card">
+<h4 id="control-plane">Control Plane</h4>
+<p>Verwaltet den Cluster, plant Workloads und überwacht den Zustand. Früher auch
+„Master“ genannt.</p>
+</div>
+<div class="skr-card">
+<h4 id="worker-nodes">Worker Nodes</h4>
+<p>Führen die eigentlichen Container aus – verpackt in Pods.</p>
+</div>
+</div>
+<link rel="stylesheet" href="../../skriptorium/diagrams.css?v=62eb1368">
+<figure class="skr-diagram">
+<img class="skr-diagram__light" src="../../skriptorium/diagrams/056f460fdbb27fbd.svg?v=1cbc2720" alt="Aufbau eines Kubernetes-Clusters – Die Control Plane mit API Server, etcd, Scheduler und Controller Manager steuert drei Worker Nodes. Auf jedem Worker Node laufen kubelet, kube-proxy und eine Container-Runtime sowie die Pods." width="1504" height="638" loading="lazy">
+<img class="skr-diagram__dark" src="../../skriptorium/diagrams/056f460fdbb27fbd-dark.svg?v=855bb426" alt="Aufbau eines Kubernetes-Clusters – Die Control Plane mit API Server, etcd, Scheduler und Controller Manager steuert drei Worker Nodes. Auf jedem Worker Node laufen kubelet, kube-proxy und eine Container-Runtime sowie die Pods." width="1504" height="638" loading="lazy">
+</figure>
+
+<p>Klapp die Bausteine auf – erst die der Control Plane, dann die der Worker Nodes.</p>
+<h3 id="control-plane">Control Plane</h3>
+<div class="skr-tabs">
+<details class="skr-tabs__panel" name="control-plane" open>
+<summary>API Server</summary>
+<p>Die <strong>zentrale Schnittstelle</strong> des Clusters. Jede Interaktion – ob über <code>kubectl</code>,
+<code>oc</code>, die Web Console oder andere Komponenten – läuft über den API Server. Er
+validiert und verarbeitet Anfragen und schreibt den gewünschten Zustand in etcd.</p>
+</details>
+<details class="skr-tabs__panel" name="control-plane">
+<summary>etcd</summary>
+<p>Von <code>/etc</code> + <em>distributed</em> – ein „verteiltes Konfigurationsverzeichnis“. Ein verteilter
+<strong>Key-Value-Store</strong>, der den <strong>gesamten Cluster-Zustand</strong> persistent speichert:
+Deployments, Pods, ConfigMaps, Secrets und so weiter.</p>
+<p>Nur der API Server greift direkt auf etcd zu. Fällt etcd aus, ist der Cluster
+effektiv blind.</p>
+</details>
+<details class="skr-tabs__panel" name="control-plane">
+<summary>Scheduler</summary>
+<p>Beobachtet neu erstellte Pods, die noch keinem Knoten zugewiesen sind, und entscheidet
+anhand von Ressourcen, Constraints und Affinitätsregeln, <strong>auf welchem Worker Node</strong> ein
+Pod platziert wird.</p>
+</details>
+<details class="skr-tabs__panel" name="control-plane">
+<summary>Controller Manager</summary>
+<p>Führt eine Sammlung von Controllern aus, die kontinuierlich den <strong>Ist-Zustand</strong> des
+Clusters mit dem <strong>Soll-Zustand</strong> abgleichen. Beispiele: Der ReplicaSet-Controller
+stellt sicher, dass die gewünschte Anzahl Pods läuft; der Node-Controller erkennt
+ausgefallene Knoten.</p>
+</details>
+</div>
+<h3 id="worker-nodes">Worker Nodes</h3>
+<div class="skr-tabs">
+<details class="skr-tabs__panel" name="worker-node" open>
+<summary>kubelet</summary>
+<p>Der <strong>Node-Agent</strong> – der Prozess, über den sich ein Knoten steuern lässt. Der kubelet
+läuft auf jedem Worker Node und startet die vom Scheduler zugewiesenen Pods, überwacht
+sie und startet sie bei Bedarf neu. Er spricht mit dem API Server, meldet den Zustand
+des Knotens und seiner Pods und steuert die Container-Runtime.</p>
+</details>
+<details class="skr-tabs__panel" name="worker-node">
+<summary>kube-proxy</summary>
+<p>Der <strong>Netzwerk-Proxy</strong> auf jedem Knoten. Er setzt die Service-Abstraktion von
+Kubernetes um, indem er Netzwerkregeln (iptables/IPVS) verwaltet, die eingehenden
+Traffic an die richtigen Pods weiterleiten – auch über Knotengrenzen hinweg.</p>
+</details>
+<details class="skr-tabs__panel" name="worker-node">
+<summary>Container-Runtime</summary>
+<p>Die Software, die Container tatsächlich startet und ausführt. Kubernetes unterstützt
+jede Runtime, die das <strong>Container Runtime Interface (CRI)</strong> implementiert, zum Beispiel
+<strong>containerd</strong> oder <strong>CRI-O</strong> (von OpenShift verwendet).</p>
+</details>
+<details class="skr-tabs__panel" name="worker-node">
+<summary>Pod</summary>
+<p>Die <strong>kleinste bereitstellbare Einheit</strong>. Ein Pod enthält einen oder mehrere Container,
+die sich einen Netzwerk-Namespace teilen und über <code>localhost</code> miteinander sprechen
+können. Pods legt man in der Regel nicht direkt an, sondern lässt sie von einem
+Deployment verwalten – mehr dazu unter
+<a class="skr-doclink skr-doclink--visualization" href="../../shared/visualisierungen/kubernetes-ressourcen/">Kubernetes-Ressourcen</a>.</p>
+</details>
+</div>
+<h2 id="kubectl">Die Kommandozeile: kubectl</h2>
+<p>Mit einem Kubernetes-Cluster sprichst Du über das Kommandozeilenwerkzeug <strong>kubectl</strong>.
+Damit erstellst, siehst, änderst und löschst Du Ressourcen. Alle Befehle gehen über den
+API Server.</p>
+<pre><code class="language-bash"># Pods im eingestellten Namespace anzeigen
+kubectl get pods
+
+# Ressourcen aus einer YAML-Datei anlegen oder aktualisieren
+kubectl apply -f deployment.yaml
+
+# Logs eines Pods anzeigen
+kubectl logs &lt;pod-name&gt;
+</code></pre>
+<p>Eine Übersicht der wichtigsten Befehle – für <code>kubectl</code> und <code>oc</code> nebeneinander – steht
+im <a class="skr-doclink skr-doclink--visualization" href="../../shared/visualisierungen/cli-spickzettel.html">Spickzettel: kubectl und oc</a>. Kubernetes verwaltet Anwendungen
+über <strong>deklarative Ressourcen</strong> wie Pods, Deployments, Services und ConfigMaps; sie
+erklärt die Seite <a class="skr-doclink skr-doclink--visualization" href="../../shared/visualisierungen/kubernetes-ressourcen/">Kubernetes-Ressourcen</a>.</p>
+<h2 id="docker-vs-kubernetes">Docker und Kubernetes – wofür was?</h2>
+<p>Docker und Kubernetes lösen <strong>unterschiedliche Probleme</strong> und ergänzen sich.</p>
+<table>
+	<thead>
+			<tr>
+					<th></th>
+					<th>Docker (inkl. Compose)</th>
+					<th>Kubernetes</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>Zweck</strong></td>
+					<td>Container bauen und lokal ausführen</td>
+					<td>Container über mehrere Maschinen hinweg orchestrieren</td>
+			</tr>
+			<tr>
+					<td><strong>Skalierung</strong></td>
+					<td>Manuell (zum Beispiel <code>replicas</code> in Compose)</td>
+					<td>Automatisch (Horizontal Pod Autoscaler, ReplicaSets)</td>
+			</tr>
+			<tr>
+					<td><strong>Hochverfügbarkeit</strong></td>
+					<td>Nicht vorgesehen – fällt der Host aus, ist alles weg</td>
+					<td>Pods werden automatisch auf gesunde Knoten verschoben</td>
+			</tr>
+			<tr>
+					<td><strong>Rollouts</strong></td>
+					<td>Manuell, mit Downtime</td>
+					<td>Rolling Updates, Blue-Green-Deployments, Canary Releases</td>
+			</tr>
+			<tr>
+					<td><strong>Netzwerk</strong></td>
+					<td>Einfaches Bridge-Netzwerk</td>
+					<td>Cluster-weites Netzwerk mit Service Discovery und DNS</td>
+			</tr>
+			<tr>
+					<td><strong>Konfiguration</strong></td>
+					<td><code>.env</code>-Dateien, <code>docker-compose.yml</code></td>
+					<td>ConfigMaps, Secrets, deklarative YAML-Manifeste</td>
+			</tr>
+			<tr>
+					<td><strong>Health Checks</strong></td>
+					<td><code>HEALTHCHECK</code> im Dockerfile (begrenzt)</td>
+					<td>Startup-, Liveness- und Readiness-Probes mit automatischem Neustart</td>
+			</tr>
+			<tr>
+					<td><strong>Speicher</strong></td>
+					<td>Bind Mounts, Volumes</td>
+					<td>Persistent Volumes mit StorageClasses und dynamischer Provisionierung</td>
+			</tr>
+			<tr>
+					<td><strong>Geeignet für</strong></td>
+					<td>Entwicklung, einfache Deployments</td>
+					<td>Produktion, Microservices, hohe Verfügbarkeit</td>
+			</tr>
+	</tbody>
+</table>
+<div class="skr-grid">
+<div class="skr-card">
+<h4 id="wann-docker-compose">Wann Docker (Compose)?</h4>
+<ul>
+<li><strong>Lokale Entwicklung</strong> – schnell einen Stack aus mehreren Services starten</li>
+<li><strong>Einfache Deployments</strong> – ein einzelner Host, keine Hochverfügbarkeit nötig</li>
+</ul>
+</div>
+<div class="skr-card">
+<h4 id="wann-kubernetes">Wann Kubernetes?</h4>
+<ul>
+<li><strong>Produktion</strong> – wenn Hochverfügbarkeit, automatische Skalierung und Selbstheilung gebraucht werden</li>
+<li><strong>Microservices</strong> – viele Services, die unabhängig deployt und skaliert werden</li>
+<li><strong>Mehrere Teams</strong> – Namespaces, RBAC und Resource Quotas für organisatorische Trennung</li>
+<li><strong>Hybrid und Multi-Cloud</strong> – eine einheitliche Plattform über verschiedene Infrastrukturen hinweg</li>
+</ul>
+</div>
+</div>
+<h3 id="zusammenspiel">Zusammenspiel</h3>
+<p>Docker und Kubernetes sind <strong>keine Konkurrenten</strong>:</p>
+<link rel="stylesheet" href="../../skriptorium/diagrams.css?v=62eb1368">
+<figure class="skr-diagram">
+<img class="skr-diagram__light" src="../../skriptorium/diagrams/2b59cc2027043df0.svg?v=33c1496f" alt="Vom Dockerfile in den Cluster – Docker baut aus dem Dockerfile ein Image, das Image wird in eine Registry gepusht, Kubernetes zieht es von dort und führt es im Cluster aus." width="1253" height="98" loading="lazy">
+<img class="skr-diagram__dark" src="../../skriptorium/diagrams/2b59cc2027043df0-dark.svg?v=d1acdb08" alt="Vom Dockerfile in den Cluster – Docker baut aus dem Dockerfile ein Image, das Image wird in eine Registry gepusht, Kubernetes zieht es von dort und führt es im Cluster aus." width="1253" height="98" loading="lazy">
+</figure>
+
+<ol>
+<li><strong>Docker</strong> baut die Container-Images (Dockerfile → <code>docker image build</code>).</li>
+<li>Die Images werden in eine <strong>Registry</strong> gepusht (Docker Hub, ghcr.io und andere).</li>
+<li><strong>Kubernetes</strong> zieht die Images und orchestriert ihre Ausführung im Cluster.</li>
+</ol>
+<div class="skr-callout skr-callout--info">
+<p><strong>Kubernetes braucht die Docker-Engine nicht.</strong> Seit Version 1.24 setzt Kubernetes auf
+<strong>containerd</strong> oder <strong>CRI-O</strong> als Runtime. Docker-Images laufen trotzdem weiter, denn sie
+entsprechen dem <strong>OCI-Standard</strong>.</p>
+</div>
+<h2 id="lokal">Kubernetes lokal ausprobieren</h2>
+<p>Mit <a href="https://minikube.sigs.k8s.io/">Minikube</a> startest Du einen lokalen
+Kubernetes-Cluster auf Deinem Rechner – ideal zum Lernen und Experimentieren. Minikube
+läuft unter Linux, macOS und Windows und unterstützt verschiedene
+Virtualisierungs-Backends (Docker, VirtualBox, Hyper-V und andere). Wie Du es für die
+Schulung einrichtest, steht unter
+<a class="skr-doclink skr-doclink--exercise" href="../../shared/schulungsumgebung/minikube.html">Minikube für die Schulung einrichten</a>.</p>
+<pre><code class="language-bash"># Lokalen Cluster starten
+minikube start
+</code></pre>
+<pre><code class="language-bash"># Die Knoten des Clusters anzeigen
+kubectl get nodes
+</code></pre>
+<h2 id="weiterlesen">Weiterlesen</h2>
+<ul>
+<li><a href="https://kubernetes.io/docs/home/">Offizielle Kubernetes-Dokumentation</a></li>
+<li><a href="https://kubernetes.io/docs/concepts/">Kubernetes Concepts</a></li>
+<li><a href="https://kubernetes.io/docs/tutorials/">Interaktive Tutorials</a></li>
+<li><a href="https://minikube.sigs.k8s.io/docs/start/">Minikube – lokaler Kubernetes-Cluster</a></li>
+</ul>
+
+  </main>
+  <div class="skr-print-contact" aria-hidden="true">
+  <span>Kontakt: https://www.atvantage.com</span>
+  <span>academy@atvantage.com</span>
+</div>
+
+</body>
+</html>

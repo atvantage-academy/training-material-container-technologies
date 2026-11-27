@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="skr-root" content="../../">
+<script src="../../skriptorium/skr.js?v=c06299bd"></script>
+<title>Spickzettel: kubectl und oc · Containertechnologien (Academy)</title>
+<meta name="description" content="Die wichtigsten Befehle für Kubernetes und OpenShift nebeneinander – Anmelden, Namespaces, Ressourcen anzeigen, anlegen, debuggen, skalieren, konfigurieren und von außen erreichbar machen.">
+
+<meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta property="og:title" content="Spickzettel: kubectl und oc">
+<meta property="og:description" content="Die wichtigsten Befehle für Kubernetes und OpenShift nebeneinander – Anmelden, Namespaces, Ressourcen anzeigen, anlegen, debuggen, skalieren, konfigurieren und von außen erreichbar machen.">
+<meta property="og:type" content="website">
+<link rel="preload" href="../../themes/atvantage/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../themes/default/theme.css?v=b795c99c" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/fonts.css?v=0f189d71" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/colors.css?v=8ed47a94" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/typography.css?v=6445d4d3" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/spacing.css?v=58e35278" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/components.css?v=3fcd65a3" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/base.css?v=b47b1e2d" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/theme.css?v=e7026433" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/didaktikon/theme.css?v=4a593b58" data-skr-source="theme">
+<link rel="stylesheet" href="../../skriptorium/tokens.css?v=28abf864">
+<link rel="stylesheet" href="../../extensions/didaktikon/tokens.css?v=5966d76a">
+<link rel="stylesheet" href="../../skriptorium/base.css?v=86e37c43">
+<link rel="stylesheet" href="../../skriptorium/components.css?v=3a968127">
+<link rel="stylesheet" href="../../skriptorium/doclinks.css?v=2ef23515">
+<link rel="stylesheet" href="../../skriptorium/linkmarks.css?v=1643f80a">
+<link rel="stylesheet" href="../../skriptorium/site.css?v=2a7f5baf">
+<link rel="stylesheet" href="../../skriptorium/logo.css?v=43a7fbaf">
+<link rel="stylesheet" media="print" href="../../skriptorium/print.css?v=6c7ec44c">
+<meta name="generator" content="Skriptorium 2.0.0-rc.15">
+<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"2.0.0-rc.11"}],"internal":false,"languages":["de"],"skriptorium":"2.0.0-rc.15","theme":"didaktikon","themeOptions":["didaktikon"],"themes":[{"name":"didaktikon","version":"2.0.0-rc.11"},{"name":"atvantage","version":"2.2.0"},{"name":"default","version":"2.0.0-rc.15"}]}</script>
+<script type="application/json" id="skr-page-info">{"clientApi":"full","defaultLanguage":"de","description":"Die wichtigsten Befehle für Kubernetes und OpenShift nebeneinander – Anmelden, Namespaces, Ressourcen anzeigen, anlegen, debuggen, skalieren, konfigurieren und von außen erreichbar machen.","duration":null,"fields":null,"language":"de","languages":["de"],"layout":"didaktikon.visualization","pageId":"k8s-cli-spickzettel","runtimeFragments":null,"siteIndex":"/skriptorium/site.json","title":"Spickzettel: kubectl und oc","topics":null,"untranslated":null,"url":"/shared/visualisierungen/cli-spickzettel.html"}</script>
+<script type="application/json" id="skr-texts">{"didaktikon.capture":"Capture-Modus","didaktikon.captureExit":"beenden","didaktikon.captureText":"Text einblenden","didaktikon.crosswordAcross":"Waagerecht","didaktikon.crosswordCellAcross":"{number} waagerecht, Buchstabe {position}","didaktikon.crosswordCellDown":"{number} senkrecht, Buchstabe {position}","didaktikon.crosswordDown":"Senkrecht","didaktikon.crosswordHintLetter":"Tipp: Buchstabe","didaktikon.crosswordHintWord":"Tipp: Wort","didaktikon.crosswordRestart":"Neu beginnen","didaktikon.crosswordRestartText":"Deine Eingaben in diesem Rätsel werden gelöscht.","didaktikon.crosswordRestartTitle":"Kreuzworträtsel neu beginnen?","didaktikon.crosswordReveal":"Auflösen","didaktikon.crosswordRevealText":"Alle Felder werden ausgefüllt.","didaktikon.crosswordRevealTitle":"Kreuzworträtsel auflösen?","didaktikon.crosswordSolution":"Lösungswort","didaktikon.crosswordSolutionCell":"Lösungswort, Buchstabe {position}","didaktikon.crosswordSolved":"Gelöst – alle Begriffe stimmen.","didaktikon.doclinkCrossword":"Kreuzworträtsel","didaktikon.doclinkExercise":"Übung","didaktikon.doclinkQuiz":"Wissens-Check","didaktikon.doclinkSimulation":"Simulation","didaktikon.doclinkVisualization":"Visualisierung","didaktikon.exerciseObjectives":"Lernziele","didaktikon.exerciseQuestionsDone":"Du hast die Kontrollfragen beantwortet","didaktikon.exerciseReflectiveQuestions":"Reflexionsfragen","didaktikon.exerciseUserStory":"User Story","didaktikon.moduleBlock":"Grobthema: {block}","didaktikon.moduleDuration":"{minutes} Minuten","didaktikon.moduleMaterial":"Material","didaktikon.moduleMaterialOver":"Das Material dauert zusammen {material}′ – länger als das Modul mit {module}′.","didaktikon.quizAgain":"Noch einmal","didaktikon.quizCorrect":"Richtig.","didaktikon.quizCorrectCount":"{count} richtig","didaktikon.quizCorrectWouldBe":"Richtig wäre gewesen:","didaktikon.quizDone":"Fertig","didaktikon.quizEvaluate":"Auswertung","didaktikon.quizJump":"Zu Frage springen","didaktikon.quizNext":"Weiter","didaktikon.quizOverview":"Alle Fragen","didaktikon.quizOverviewClose":"Zurück zum Check","didaktikon.quizOverviewCorrect":"(richtig)","didaktikon.quizOverviewGoTo":"Zu dieser Frage","didaktikon.quizProgress":"Fortschritt","didaktikon.quizQuestionOf":"Frage {current} von {total}","didaktikon.quizRestart":"Neu beginnen","didaktikon.quizRestartText":"Deine Antworten in diesem Wissens-Check werden gelöscht.","didaktikon.quizRestartTitle":"Wissens-Check neu beginnen?","didaktikon.quizResult":"{correct} von {total} richtig","didaktikon.quizResultLong":"{correct} von {total} Fragen richtig","didaktikon.quizTrainerOnly":"Nur für Trainer:innen","didaktikon.quizWrong":"Nicht ganz.","didaktikon.scenarios":"Szenarien","didaktikon.simAllScenarios":"Alle Szenarien (Taste 0)","didaktikon.simControls":"Simulation steuern","didaktikon.simNext":"Schritt vor (→)","didaktikon.simNextAria":"Schritt vor","didaktikon.simOverview":"Übersicht","didaktikon.simPause":"Pause (Leertaste)","didaktikon.simPauseAria":"Pause","didaktikon.simPlay":"Abspielen (Leertaste)","didaktikon.simPlayAria":"Abspielen","didaktikon.simPrev":"Schritt zurück (←)","didaktikon.simPrevAria":"Schritt zurück","didaktikon.simPrintHint":"Diese Simulation lebt von der Bewegung. Auf Papier steht nur der gerade sichtbare Schritt – der QR-Code oben führt zurück zur laufenden Fassung.","didaktikon.simReset":"Zurück auf Anfang (Taste R)","didaktikon.simResetAria":"Zurück auf Anfang","didaktikon.simResize":"Breite der Erklärspalte (Pfeiltasten)","didaktikon.simScenarioCount":"{count} Szenarien","didaktikon.simScenarioKey":"{title} (Taste {number})","didaktikon.simScenarioTitle":"Szenario {number}","didaktikon.simSpeed":"Tempo wählen (Taste T)","didaktikon.simSpeedAria":"Tempo wählen","didaktikon.simSpeedMenu":"Tempo","didaktikon.simStepCount":"{count} Schritte","didaktikon.simStepCountOne":"{count} Schritt","didaktikon.simStepCounter":"Schritt {current} / {total}","didaktikon.speedFast":"zügig","didaktikon.speedNormal":"normal","didaktikon.speedSlow":"langsam","didaktikon.speedTurbo":"im Zeitraffer","didaktikon.speedValue":"{speed}×","didaktikon.stepNote":"Erklärung zum aktuellen Schritt","didaktikon.trainerNoteClose":"Schließen","didaktikon.trainerNoteOpen":"Hinweis für Trainer:innen anzeigen","didaktikon.trainerNoteTitle":"Hinweis für Trainer:innen","didaktikon.trainingCatalogEmpty":"Hier gibt es noch keine Schulung.","didaktikon.trainingCatalogTrainings":"Schulungen","didaktikon.trainingDays":"{days} Tage","didaktikon.trainingDaysOne":"{days} Tag","didaktikon.trainingHomeInfo":"Kursbeschreibung","didaktikon.trainingHomeManifest":"Didaktisches Manifest","didaktikon.trainingHomeSales":"Sales-Asset","didaktikon.trainingInfoAudience":"Zielgruppe","didaktikon.trainingInfoObjectives":"Lernziele","didaktikon.trainingInfoObjectivesLead":"Die Lernenden …","didaktikon.trainingInfoOverview":"Überblick","didaktikon.trainingInfoPrerequisites":"Voraussetzungen","didaktikon.trainingMaterials":"Kursmaterial","didaktikon.trainingMaterialsExercises":"Übungen","didaktikon.trainingMaterialsLead":"Links stehen die **Übungen**, an denen Du selbst arbeitest, rechts das **Material zum Nachschlagen**.","didaktikon.trainingMaterialsMore":"Weitere Themen","didaktikon.trainingMaterialsOther":"Sonstige Unterlagen","didaktikon.trainingMaterialsReference":"Zum Nachschlagen","didaktikon.trainingModules":"Module","didaktikon.trainingModulesBlock":"Grobthema","didaktikon.trainingModulesDuration":"Dauer","didaktikon.trainingModulesMaterial":"Material","didaktikon.trainingModulesModule":"Modul","didaktikon.trainingModulesOver":"länger als das Modul","didaktikon.trainingSalesBuyers":"Käufer","didaktikon.trainingSalesPitch":"Pitch","didaktikon.trainingSalesPricing":"Preisrahmen","didaktikon.trainingSalesUsp":"Unterscheidungsmerkmale","didaktikon.trainingSalesValueProposition":"Nutzenversprechen"}</script>
+
+<script src="../../skriptorium/client.js?v=756a5d69" defer></script>
+<script src="../../skriptorium/site.js?v=6472c794" defer></script>
+<script src="../../skriptorium/search-trail.js?v=31279378" data-skr-search-trail
+        data-base="../../" data-index="../../skriptorium/search/de.json?v=c2fa893e" defer></script>
+<link rel="stylesheet" href="../../skriptorium/highlight.css?v=f8a3fc05">
+<script type="module" src="../../skriptorium/highlight.js?v=0b2d40aa" data-skr-highlight="[&#34;bash&#34;,&#34;dockerfile&#34;,&#34;python&#34;,&#34;sql&#34;,&#34;yaml&#34;]"></script>
+<link rel="apple-touch-icon" sizes="180x180" href="../../themes/atvantage/assets/icon-180.png">
+<link rel="icon" sizes="32x32" href="../../themes/atvantage/assets/icon-32.png">
+<link rel="icon" sizes="16x16" href="../../themes/atvantage/assets/icon-16.png">
+
+<link rel="stylesheet" href="../../skriptorium/stage.css?v=c76b28bc">
+<script src="../../skriptorium/stage.js?v=a8ce5bf6" defer></script>
+
+
+</head>
+<body class="skr-stage" data-skr-layout="didaktikon.visualization" data-skr-layouts="didaktikon.visualization skriptorium.stage" data-skr-lang="de" data-skr-stage-home="../../" data-skr-audience="learner">
+  <a class="skr-skip-link" href="#skr-stage-main">Zum Inhalt springen</a>
+  
+<header class="skr-stage__bar">
+  <img class="skr-stage__logo" src="../../themes/didaktikon/assets/logo-schulung.svg" alt="ATVANTAGE Academy"><span class="skr-stage__logo-mask" role="img" aria-label="ATVANTAGE Academy" data-skr-logo-mask></span><span class="skr-stage__title">Spickzettel: kubectl und oc</span>
+  <div class="skr-stage__tools">
+<div class="skr-search" data-skr-search hidden
+     data-mode="expand" data-shortcut="double_shift"
+     data-index="../../skriptorium/search/de.json?v=c2fa893e"
+     data-base="../../">
+  <button type="button" class="skr-tool skr-tool--search" data-skr-search-toggle
+          aria-expanded="false" aria-controls="skr-search-dialog"
+          title="Suchen (zweimal Umschalt)" aria-label="Suchen"><svg viewBox="0 0 24 24" width="1em" height="1em"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"
+          ><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button>
+  <dialog class="skr-search__dialog" id="skr-search-dialog" aria-label="Suchen">
+    <div class="skr-search__bar" role="search"><label class="skr-search__field skr-search__field--scope" hidden>
+        <span class="skr-search__label">Bereich</span>
+        <select class="skr-search__scope">
+          <option value="">Alle</option>
+        </select>
+      </label>
+      <label class="skr-search__field skr-search__field--query">
+        <span class="skr-search__label">Suchbegriff</span>
+        <input type="search" class="skr-search__input"
+               placeholder="Diese Site durchsuchen" autocomplete="off" spellcheck="false"
+               aria-describedby="skr-search-status">
+      </label>
+      <button type="button" class="skr-tool skr-search__close" data-skr-search-close
+              title="Suche schließen" aria-label="Suche schließen"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <p class="skr-search__status" id="skr-search-status" data-skr-search-status role="status"></p>
+    <ul class="skr-search__results" data-skr-search-results aria-label="Suchergebnisse"></ul>
+  </dialog>
+</div>
+<script src="../../skriptorium/search.js?v=2be133a6" defer></script>
+<button type="button" class="skr-qr" data-skr-qr hidden
+        title="Diese Seite auf Deinem Smartphone öffnen"
+        aria-label="Diese Seite auf Deinem Smartphone öffnen"></button>
+<button type="button" class="skr-tool skr-tool--scheme" data-skr-scheme-toggle
+        title="Farbschema umschalten (hell/dunkel)"
+        aria-label="Dunkles Farbschema"><svg viewBox="0 0 24 24" width="1em" height="1em"
+        fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"
+        ><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+<button type="button" class="skr-tool skr-tool--print"
+        data-skr-print=""
+        title="Diese Seite drucken" aria-label="Diese Seite drucken"></button>
+<button type="button" class="skr-tool skr-tool--full"
+        data-skr-stage-full=""
+        title="Vollbild (Taste F)" aria-label="Vollbild"><svg viewBox="0 0 24 24" width="1em" height="1em"
+        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"
+        ><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg></button>
+</div>
+  <button type="button" class="skr-stage__nav skr-stage__close" data-skr-stage-close hidden
+        title="Schließen" aria-label="Schließen"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+
+</header>
+  
+  <main class="skr-stage__main" id="skr-stage-main">
+    <h1 id="spickzettel-kubectl-und-oc">Spickzettel: kubectl und oc</h1>
+<p><strong>kubectl</strong> ist das offizielle Kommandozeilenwerkzeug für Kubernetes. <strong>oc</strong> ist das
+Werkzeug für OpenShift und <strong>vollständig kompatibel</strong> mit kubectl: Jeder
+<code>kubectl</code>-Befehl funktioniert auch mit <code>oc</code>. Dazu kommen OpenShift-eigene Befehle wie
+<code>oc login</code>, <code>oc new-project</code> und <code>oc expose service</code>.</p>
+<div class="skr-callout skr-callout--info">
+<p><strong>So liest Du die Tabellen:</strong> links <code>kubectl</code>, rechts <code>oc</code>. Wo beide gleich lauten,
+steht der Befehl trotzdem zweimal da – Du sollst nicht umdenken müssen. Wo es kein
+Gegenstück gibt, steht ein „–“. Platzhalter stehen in spitzen Klammern: <code>&lt;pod-name&gt;</code>.</p>
+</div>
+<div class="skr-grid skr-grid--tiles">
+<div class="skr-card">
+<h4 id="verbindung"><a href="#verbindung">Verbindung</a></h4>
+<p>Anmelden, Kontext, Benutzer</p>
+</div>
+<div class="skr-card">
+<h4 id="namespaces"><a href="#namespaces">Namespaces</a></h4>
+<p>Projects und Namespaces</p>
+</div>
+<div class="skr-card">
+<h4 id="anzeigen"><a href="#anzeigen">Anzeigen</a></h4>
+<p><code>get</code>, <code>-o yaml</code>, <code>-A</code></p>
+</div>
+<div class="skr-card">
+<h4 id="anlegen-und-ndern"><a href="#anlegen">Anlegen und ändern</a></h4>
+<p><code>apply</code>, <code>create</code>, <code>edit</code>, <code>delete</code></p>
+</div>
+<div class="skr-card">
+<h4 id="debugging"><a href="#debugging">Debugging</a></h4>
+<p><code>describe</code>, <code>logs</code>, <code>exec</code></p>
+</div>
+<div class="skr-card">
+<h4 id="deployments"><a href="#deployments">Deployments</a></h4>
+<p><code>scale</code>, <code>rollout</code></p>
+</div>
+<div class="skr-card">
+<h4 id="konfiguration"><a href="#konfiguration">Konfiguration</a></h4>
+<p>ConfigMaps und Secrets</p>
+</div>
+<div class="skr-card">
+<h4 id="netzwerk"><a href="#netzwerk">Netzwerk</a></h4>
+<p>Service, Ingress, Route</p>
+</div>
+</div>
+<h2 id="verbindung">Verbindung und Kontext</h2>
+<table>
+	<thead>
+			<tr>
+					<th>Was</th>
+					<th>kubectl</th>
+					<th>oc</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Am Cluster anmelden</td>
+					<td>– (die Zugangsdaten stehen in der kubeconfig, <code>~/.kube/config</code>)</td>
+					<td><code>oc login https://api.&lt;cluster&gt;:6443</code></td>
+			</tr>
+			<tr>
+					<td>Aktuellen Kontext anzeigen</td>
+					<td><code>kubectl config current-context</code></td>
+					<td><code>oc config current-context</code></td>
+			</tr>
+			<tr>
+					<td>Verfügbare Kontexte anzeigen</td>
+					<td><code>kubectl config get-contexts</code></td>
+					<td><code>oc config get-contexts</code></td>
+			</tr>
+			<tr>
+					<td>Kontext wechseln</td>
+					<td><code>kubectl config use-context &lt;context-name&gt;</code></td>
+					<td><code>oc config use-context &lt;context-name&gt;</code></td>
+			</tr>
+			<tr>
+					<td>Aktuellen Benutzer anzeigen</td>
+					<td><code>kubectl auth whoami</code></td>
+					<td><code>oc whoami</code></td>
+			</tr>
+	</tbody>
+</table>
+<blockquote>
+<p><strong>Hinweis:</strong> <code>oc login</code> schreibt die Zugangsdaten in dieselbe kubeconfig, die
+<code>kubectl</code> und <code>helm</code> lesen. Nach dem Login funktionieren alle drei Werkzeuge.</p>
+</blockquote>
+<h2 id="namespaces">Projects und Namespaces</h2>
+<table>
+	<thead>
+			<tr>
+					<th>Was</th>
+					<th>kubectl</th>
+					<th>oc</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Anlegen</td>
+					<td><code>kubectl create namespace mein-projekt</code></td>
+					<td><code>oc new-project mein-projekt --display-name=&quot;Mein Projekt&quot;</code></td>
+			</tr>
+			<tr>
+					<td>Als Standard setzen</td>
+					<td><code>kubectl config set-context --current --namespace=mein-projekt</code></td>
+					<td><code>oc project mein-projekt</code></td>
+			</tr>
+			<tr>
+					<td>Aktuellen anzeigen</td>
+					<td><code>kubectl config view --minify -o jsonpath='{..namespace}'</code></td>
+					<td><code>oc project</code></td>
+			</tr>
+			<tr>
+					<td>Alle anzeigen</td>
+					<td><code>kubectl get namespaces</code></td>
+					<td><code>oc get projects</code></td>
+			</tr>
+			<tr>
+					<td>Einen Befehl in einem anderen ausführen</td>
+					<td><code>kubectl get pods -n &lt;namespace&gt;</code></td>
+					<td><code>oc get pods -n &lt;namespace&gt;</code></td>
+			</tr>
+	</tbody>
+</table>
+<h2 id="anzeigen">Ressourcen anzeigen</h2>
+<table>
+	<thead>
+			<tr>
+					<th>Was</th>
+					<th>kubectl</th>
+					<th>oc</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Pods anzeigen</td>
+					<td><code>kubectl get pods</code></td>
+					<td><code>oc get pods</code></td>
+			</tr>
+			<tr>
+					<td>… mit Knoten und IP</td>
+					<td><code>kubectl get pods -o wide</code></td>
+					<td><code>oc get pods -o wide</code></td>
+			</tr>
+			<tr>
+					<td>… live verfolgen</td>
+					<td><code>kubectl get pods -w</code></td>
+					<td><code>oc get pods -w</code></td>
+			</tr>
+			<tr>
+					<td>Die gängigen Ressourcen auf einmal</td>
+					<td><code>kubectl get all</code></td>
+					<td><code>oc get all</code></td>
+			</tr>
+			<tr>
+					<td>Deployments, Services, ConfigMaps, Secrets</td>
+					<td><code>kubectl get deployments,services,configmaps,secrets</code></td>
+					<td><code>oc get deployments,services,configmaps,secrets</code></td>
+			</tr>
+			<tr>
+					<td>Zugang von außen</td>
+					<td><code>kubectl get ingress</code></td>
+					<td><code>oc get routes</code></td>
+			</tr>
+			<tr>
+					<td>Pods in allen Namespaces</td>
+					<td><code>kubectl get pods -A</code></td>
+					<td><code>oc get pods -A</code></td>
+			</tr>
+			<tr>
+					<td>Eine Ressource als YAML</td>
+					<td><code>kubectl get deployment &lt;name&gt; -o yaml</code></td>
+					<td><code>oc get deployment &lt;name&gt; -o yaml</code></td>
+			</tr>
+			<tr>
+					<td>Alle Ressourcentypen des Clusters</td>
+					<td><code>kubectl api-resources</code></td>
+					<td><code>oc api-resources</code></td>
+			</tr>
+			<tr>
+					<td>Felder einer Ressource erklären</td>
+					<td><code>kubectl explain deployment.spec</code></td>
+					<td><code>oc explain deployment.spec</code></td>
+			</tr>
+	</tbody>
+</table>
+<blockquote>
+<p><strong>Hinweis:</strong> <code>-A</code> ist die Kurzform von <code>--all-namespaces</code>. In einem Schulungscluster
+darfst Du womöglich nicht in alle Namespaces schauen – dann meldet der Befehl
+<code>Forbidden</code>. Das ist eine Frage der Rechte, kein Fehler im Befehl.</p>
+</blockquote>
+<h2 id="anlegen">Ressourcen anlegen, ändern und löschen</h2>
+<table>
+	<thead>
+			<tr>
+					<th>Was</th>
+					<th>kubectl</th>
+					<th>oc</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Aus einer YAML-Datei anlegen oder aktualisieren</td>
+					<td><code>kubectl apply -f deployment.yaml</code></td>
+					<td><code>oc apply -f deployment.yaml</code></td>
+			</tr>
+			<tr>
+					<td>Alle YAML-Dateien eines Ordners anwenden</td>
+					<td><code>kubectl apply -f ./manifeste/</code></td>
+					<td><code>oc apply -f ./manifeste/</code></td>
+			</tr>
+			<tr>
+					<td>Ein Deployment direkt anlegen</td>
+					<td><code>kubectl create deployment mein-app --image=&lt;image&gt;:&lt;tag&gt;</code></td>
+					<td><code>oc create deployment mein-app --image=&lt;image&gt;:&lt;tag&gt;</code></td>
+			</tr>
+			<tr>
+					<td>Im Editor bearbeiten</td>
+					<td><code>kubectl edit deployment &lt;name&gt;</code></td>
+					<td><code>oc edit deployment &lt;name&gt;</code></td>
+			</tr>
+			<tr>
+					<td>Einen Pod löschen</td>
+					<td><code>kubectl delete pod &lt;pod-name&gt;</code></td>
+					<td><code>oc delete pod &lt;pod-name&gt;</code></td>
+			</tr>
+			<tr>
+					<td>Alles aus einer Datei löschen</td>
+					<td><code>kubectl delete -f deployment.yaml</code></td>
+					<td><code>oc delete -f deployment.yaml</code></td>
+			</tr>
+			<tr>
+					<td>Alle Pods im Namespace löschen</td>
+					<td><code>kubectl delete pods --all</code></td>
+					<td><code>oc delete pods --all</code></td>
+			</tr>
+	</tbody>
+</table>
+<h3 id="yaml-erzeugen">YAML erzeugen lassen statt von Hand schreiben</h3>
+<p><code>--dry-run=client -o yaml</code> legt nichts an, sondern gibt das YAML aus, das angelegt
+würde. Mit <code>&gt;</code> landet es in einer Datei, die Du anpassen und dann mit <code>apply</code> anwenden
+kannst.</p>
+<table>
+	<thead>
+			<tr>
+					<th>Was</th>
+					<th>kubectl</th>
+					<th>oc</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Deployment-YAML erzeugen</td>
+					<td><code>kubectl create deployment mein-app --image=&lt;image&gt;:&lt;tag&gt; --dry-run=client -o yaml &gt; deployment.yaml</code></td>
+					<td><code>oc create deployment mein-app --image=&lt;image&gt;:&lt;tag&gt; --dry-run=client -o yaml &gt; deployment.yaml</code></td>
+			</tr>
+			<tr>
+					<td>Service-YAML erzeugen</td>
+					<td><code>kubectl expose deployment mein-app --port=8080 --dry-run=client -o yaml &gt; service.yaml</code></td>
+					<td><code>oc expose deployment mein-app --port=8080 --dry-run=client -o yaml &gt; service.yaml</code></td>
+			</tr>
+	</tbody>
+</table>
+<h2 id="debugging">Details und Debugging</h2>
+<table>
+	<thead>
+			<tr>
+					<th>Was</th>
+					<th>kubectl</th>
+					<th>oc</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Details mit Events und Conditions</td>
+					<td><code>kubectl describe pod &lt;pod-name&gt;</code></td>
+					<td><code>oc describe pod &lt;pod-name&gt;</code></td>
+			</tr>
+			<tr>
+					<td>… eines Deployments</td>
+					<td><code>kubectl describe deployment &lt;name&gt;</code></td>
+					<td><code>oc describe deployment &lt;name&gt;</code></td>
+			</tr>
+			<tr>
+					<td>Ereignisse im Namespace, zeitlich sortiert</td>
+					<td><code>kubectl get events --sort-by=.lastTimestamp</code></td>
+					<td><code>oc get events --sort-by=.lastTimestamp</code></td>
+			</tr>
+			<tr>
+					<td>Logs eines Pods</td>
+					<td><code>kubectl logs &lt;pod-name&gt;</code></td>
+					<td><code>oc logs &lt;pod-name&gt;</code></td>
+			</tr>
+			<tr>
+					<td>… live verfolgen</td>
+					<td><code>kubectl logs &lt;pod-name&gt; -f</code></td>
+					<td><code>oc logs &lt;pod-name&gt; -f</code></td>
+			</tr>
+			<tr>
+					<td>… eines bestimmten Containers im Pod</td>
+					<td><code>kubectl logs &lt;pod-name&gt; -c &lt;container&gt;</code></td>
+					<td><code>oc logs &lt;pod-name&gt; -c &lt;container&gt;</code></td>
+			</tr>
+			<tr>
+					<td>… des vorigen Containers (nach einem Neustart)</td>
+					<td><code>kubectl logs &lt;pod-name&gt; --previous</code></td>
+					<td><code>oc logs &lt;pod-name&gt; --previous</code></td>
+			</tr>
+			<tr>
+					<td>Shell in einem laufenden Pod öffnen</td>
+					<td><code>kubectl exec -it &lt;pod-name&gt; -- /bin/sh</code></td>
+					<td><code>oc exec -it &lt;pod-name&gt; -- /bin/sh</code></td>
+			</tr>
+			<tr>
+					<td>Einen Befehl im Pod ausführen (etwa die Umgebungsvariablen)</td>
+					<td><code>kubectl exec &lt;pod-name&gt; -- env</code></td>
+					<td><code>oc exec &lt;pod-name&gt; -- env</code></td>
+			</tr>
+			<tr>
+					<td>Port-Weiterleitung auf den eigenen Rechner</td>
+					<td><code>kubectl port-forward &lt;pod-name&gt; 8080:8080</code></td>
+					<td><code>oc port-forward &lt;pod-name&gt; 8080:8080</code></td>
+			</tr>
+			<tr>
+					<td>Debug-Shell in einem Pod, der nicht startet</td>
+					<td>–</td>
+					<td><code>oc debug &lt;pod-name&gt;</code></td>
+			</tr>
+	</tbody>
+</table>
+<h2 id="deployments">Deployments verwalten</h2>
+<table>
+	<thead>
+			<tr>
+					<th>Was</th>
+					<th>kubectl</th>
+					<th>oc</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Skalieren</td>
+					<td><code>kubectl scale deployment &lt;name&gt; --replicas=3</code></td>
+					<td><code>oc scale deployment &lt;name&gt; --replicas=3</code></td>
+			</tr>
+			<tr>
+					<td>Alle Pods neu starten (Rolling Restart)</td>
+					<td><code>kubectl rollout restart deployment &lt;name&gt;</code></td>
+					<td><code>oc rollout restart deployment &lt;name&gt;</code></td>
+			</tr>
+			<tr>
+					<td>Rollout verfolgen</td>
+					<td><code>kubectl rollout status deployment &lt;name&gt;</code></td>
+					<td><code>oc rollout status deployment &lt;name&gt;</code></td>
+			</tr>
+			<tr>
+					<td>Rollout-Historie anzeigen</td>
+					<td><code>kubectl rollout history deployment &lt;name&gt;</code></td>
+					<td><code>oc rollout history deployment &lt;name&gt;</code></td>
+			</tr>
+			<tr>
+					<td>Zur vorigen Version zurück</td>
+					<td><code>kubectl rollout undo deployment &lt;name&gt;</code></td>
+					<td><code>oc rollout undo deployment &lt;name&gt;</code></td>
+			</tr>
+			<tr>
+					<td>Image eines Containers tauschen</td>
+					<td><code>kubectl set image deployment/&lt;name&gt; &lt;container&gt;=&lt;image&gt;:&lt;tag&gt;</code></td>
+					<td><code>oc set image deployment/&lt;name&gt; &lt;container&gt;=&lt;image&gt;:&lt;tag&gt;</code></td>
+			</tr>
+	</tbody>
+</table>
+<h2 id="konfiguration">ConfigMaps und Secrets</h2>
+<table>
+	<thead>
+			<tr>
+					<th>Was</th>
+					<th>kubectl</th>
+					<th>oc</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>ConfigMap aus Werten</td>
+					<td><code>kubectl create configmap meine-config --from-literal=KEY=value</code></td>
+					<td><code>oc create configmap meine-config --from-literal=KEY=value</code></td>
+			</tr>
+			<tr>
+					<td>ConfigMap aus einer Datei</td>
+					<td><code>kubectl create configmap meine-config --from-file=config.properties</code></td>
+					<td><code>oc create configmap meine-config --from-file=config.properties</code></td>
+			</tr>
+			<tr>
+					<td>Secret aus Werten</td>
+					<td><code>kubectl create secret generic mein-secret --from-literal=PASSWORD=geheim</code></td>
+					<td><code>oc create secret generic mein-secret --from-literal=PASSWORD=geheim</code></td>
+			</tr>
+			<tr>
+					<td>Pull Secret für eine Registry</td>
+					<td><code>kubectl create secret docker-registry mein-pull-secret --docker-server=docker.io --docker-username=&lt;user&gt; --docker-password=&lt;token&gt;</code></td>
+					<td><code>oc create secret docker-registry mein-pull-secret --docker-server=docker.io --docker-username=&lt;user&gt; --docker-password=&lt;token&gt;</code></td>
+			</tr>
+			<tr>
+					<td>Einen Wert eines Secrets lesen</td>
+					<td><code>kubectl get secret mein-secret -o jsonpath='{.data.PASSWORD}' | base64 -d</code></td>
+					<td><code>oc extract secret/mein-secret --keys=PASSWORD --to=-</code></td>
+			</tr>
+			<tr>
+					<td>Alle Variablen eines Deployments anzeigen</td>
+					<td><code>kubectl set env deployment/&lt;name&gt; --list</code></td>
+					<td><code>oc set env deployment/&lt;name&gt; --list</code></td>
+			</tr>
+	</tbody>
+</table>
+<blockquote>
+<p><strong>Hinweis:</strong> Base64 ist keine Verschlüsselung. Wer ein Secret lesen darf, kennt den
+Wert. Warum das so ist und was dagegen hilft: <a class="skr-doclink skr-doclink--visualization" href="../../shared/visualisierungen/secrets-sicherheit.html">Sind Secrets sicher?</a></p>
+</blockquote>
+<h2 id="netzwerk">Netzwerk: Service, Ingress, Route</h2>
+<table>
+	<thead>
+			<tr>
+					<th>Was</th>
+					<th>kubectl</th>
+					<th>oc</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Service für ein Deployment anlegen</td>
+					<td><code>kubectl expose deployment &lt;name&gt; --port=8080</code></td>
+					<td><code>oc expose deployment &lt;name&gt; --port=8080</code></td>
+			</tr>
+			<tr>
+					<td>Von außen erreichbar machen</td>
+					<td><code>kubectl create ingress &lt;name&gt; --rule=&quot;&lt;host&gt;/*=&lt;service&gt;:8080&quot;</code></td>
+					<td><code>oc expose service &lt;service&gt;</code></td>
+			</tr>
+			<tr>
+					<td>… mit TLS (HTTPS)</td>
+					<td>Ingress mit <code>tls</code>-Abschnitt und Zertifikat</td>
+					<td><code>oc create route edge &lt;name&gt; --service=&lt;service&gt;</code></td>
+			</tr>
+			<tr>
+					<td>Adressen anzeigen</td>
+					<td><code>kubectl get ingress</code></td>
+					<td><code>oc get routes</code></td>
+			</tr>
+			<tr>
+					<td>Endpunkte eines Services (die Pods dahinter)</td>
+					<td><code>kubectl get endpoints &lt;service&gt;</code></td>
+					<td><code>oc get endpoints &lt;service&gt;</code></td>
+			</tr>
+	</tbody>
+</table>
+<h2 id="optionen">Nützliche Optionen</h2>
+<table>
+	<thead>
+			<tr>
+					<th>Option</th>
+					<th>Wirkung</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><code>-n &lt;namespace&gt;</code></td>
+					<td>Namespace bzw. Project angeben</td>
+			</tr>
+			<tr>
+					<td><code>-o yaml</code> / <code>-o json</code></td>
+					<td>Ausgabe als YAML bzw. JSON</td>
+			</tr>
+			<tr>
+					<td><code>-o wide</code></td>
+					<td>Erweiterte Ausgabe (etwa Knoten, IP)</td>
+			</tr>
+			<tr>
+					<td><code>-o jsonpath='{...}'</code></td>
+					<td>Bestimmte Felder herausziehen</td>
+			</tr>
+			<tr>
+					<td><code>-w</code> / <code>--watch</code></td>
+					<td>Live aktualisieren</td>
+			</tr>
+			<tr>
+					<td><code>-l app=mein-app</code></td>
+					<td>Nach Label filtern</td>
+			</tr>
+			<tr>
+					<td><code>--dry-run=client -o yaml</code></td>
+					<td>YAML erzeugen, ohne es anzuwenden</td>
+			</tr>
+	</tbody>
+</table>
+<h2 id="weiterlesen">Weiterlesen</h2>
+<ul>
+<li><a href="https://kubernetes.io/docs/reference/kubectl/">kubectl-Referenz</a></li>
+<li><a href="https://kubernetes.io/docs/reference/kubectl/quick-reference/">kubectl Quick Reference (kubernetes.io)</a></li>
+<li><a href="https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/cli_tools/openshift-cli-oc">oc – OpenShift CLI (Red Hat)</a></li>
+</ul>
+
+  </main>
+  <div class="skr-print-contact" aria-hidden="true">
+  <span>Kontakt: https://www.atvantage.com</span>
+  <span>academy@atvantage.com</span>
+</div>
+
+</body>
+</html>

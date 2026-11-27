@@ -1,0 +1,22 @@
+/* Die Zeichnung des Pods hat schwarze Linien auf transparentem Grund. Im dunklen
+   Farbschema bekommt sie deshalb einen hellen Grund – sonst wäre sie unsichtbar.
+   Sonst nichts: Layout und Farben der Seite kommen aus dem Theme. */
+
+.k8s-res__bild img {
+  display: block;
+  max-width: min(100%, 32rem);
+  margin-inline: auto;
+  border-radius: var(--skr-radius-lg);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-skr-scheme="light"]) .k8s-res__bild img {
+    background: #fff;
+    padding: var(--skr-space-3);
+  }
+}
+
+:root[data-skr-scheme="dark"] .k8s-res__bild img {
+  background: #fff;
+  padding: var(--skr-space-3);
+}

@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="de" data-skr-effects="page-transitions translucent-header reading-progress">
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="skr-root" content="../../">
+<script src="../../skriptorium/skr.js?v=c06299bd"></script>
+<title>Die Datenbank als Helm Chart · Containertechnologien (Academy)</title>
+<meta name="description" content="Die Datenbank als erstes Helm Chart paketieren, Werte auslagern, je Umgebung rendern und mit Helm installieren.">
+
+<meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta property="og:title" content="Die Datenbank als Helm Chart">
+<meta property="og:description" content="Die Datenbank als erstes Helm Chart paketieren, Werte auslagern, je Umgebung rendern und mit Helm installieren.">
+<meta property="og:type" content="article">
+<link rel="preload" href="../../themes/atvantage/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../themes/default/theme.css?v=b795c99c" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/fonts.css?v=0f189d71" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/colors.css?v=8ed47a94" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/typography.css?v=6445d4d3" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/spacing.css?v=58e35278" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/components.css?v=3fcd65a3" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/tokens/base.css?v=b47b1e2d" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/atvantage/theme.css?v=e7026433" data-skr-source="theme">
+<link rel="stylesheet" href="../../themes/didaktikon/theme.css?v=4a593b58" data-skr-source="theme">
+<link rel="stylesheet" href="../../skriptorium/tokens.css?v=28abf864">
+<link rel="stylesheet" href="../../extensions/didaktikon/tokens.css?v=5966d76a">
+<link rel="stylesheet" href="../../skriptorium/base.css?v=86e37c43">
+<link rel="stylesheet" href="../../skriptorium/components.css?v=3a968127">
+<link rel="stylesheet" href="../../skriptorium/doclinks.css?v=2ef23515">
+<link rel="stylesheet" href="../../skriptorium/linkmarks.css?v=1643f80a">
+<link rel="stylesheet" href="../../skriptorium/site.css?v=2a7f5baf">
+<link rel="stylesheet" href="../../skriptorium/logo.css?v=43a7fbaf">
+<link rel="stylesheet" href="../../skriptorium/guide.css?v=1237e482">
+<link rel="stylesheet" media="print" href="../../skriptorium/print.css?v=6c7ec44c">
+<meta name="generator" content="Skriptorium 2.0.0-rc.15">
+<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"2.0.0-rc.11"}],"internal":false,"languages":["de"],"skriptorium":"2.0.0-rc.15","theme":"didaktikon","themeOptions":["didaktikon"],"themes":[{"name":"didaktikon","version":"2.0.0-rc.11"},{"name":"atvantage","version":"2.2.0"},{"name":"default","version":"2.0.0-rc.15"}]}</script>
+<script type="application/json" id="skr-page-info">{"clientApi":"full","defaultLanguage":"de","description":"Die Datenbank als erstes Helm Chart paketieren, Werte auslagern, je Umgebung rendern und mit Helm installieren.","duration":35,"fields":null,"language":"de","languages":["de"],"layout":"didaktikon.exercise","pageId":"kubernetes-grundlagen-helm-issue","runtimeFragments":null,"siteIndex":"/skriptorium/site.json","title":"Die Datenbank als Helm Chart","topics":["Helm","Charts","Konfiguration"],"untranslated":null,"url":"/kubernetes-grundlagen/helm/issue.html"}</script>
+<script type="application/json" id="skr-texts">{"didaktikon.capture":"Capture-Modus","didaktikon.captureExit":"beenden","didaktikon.captureText":"Text einblenden","didaktikon.crosswordAcross":"Waagerecht","didaktikon.crosswordCellAcross":"{number} waagerecht, Buchstabe {position}","didaktikon.crosswordCellDown":"{number} senkrecht, Buchstabe {position}","didaktikon.crosswordDown":"Senkrecht","didaktikon.crosswordHintLetter":"Tipp: Buchstabe","didaktikon.crosswordHintWord":"Tipp: Wort","didaktikon.crosswordRestart":"Neu beginnen","didaktikon.crosswordRestartText":"Deine Eingaben in diesem Rätsel werden gelöscht.","didaktikon.crosswordRestartTitle":"Kreuzworträtsel neu beginnen?","didaktikon.crosswordReveal":"Auflösen","didaktikon.crosswordRevealText":"Alle Felder werden ausgefüllt.","didaktikon.crosswordRevealTitle":"Kreuzworträtsel auflösen?","didaktikon.crosswordSolution":"Lösungswort","didaktikon.crosswordSolutionCell":"Lösungswort, Buchstabe {position}","didaktikon.crosswordSolved":"Gelöst – alle Begriffe stimmen.","didaktikon.doclinkCrossword":"Kreuzworträtsel","didaktikon.doclinkExercise":"Übung","didaktikon.doclinkQuiz":"Wissens-Check","didaktikon.doclinkSimulation":"Simulation","didaktikon.doclinkVisualization":"Visualisierung","didaktikon.exerciseObjectives":"Lernziele","didaktikon.exerciseQuestionsDone":"Du hast die Kontrollfragen beantwortet","didaktikon.exerciseReflectiveQuestions":"Reflexionsfragen","didaktikon.exerciseUserStory":"User Story","didaktikon.moduleBlock":"Grobthema: {block}","didaktikon.moduleDuration":"{minutes} Minuten","didaktikon.moduleMaterial":"Material","didaktikon.moduleMaterialOver":"Das Material dauert zusammen {material}′ – länger als das Modul mit {module}′.","didaktikon.quizAgain":"Noch einmal","didaktikon.quizCorrect":"Richtig.","didaktikon.quizCorrectCount":"{count} richtig","didaktikon.quizCorrectWouldBe":"Richtig wäre gewesen:","didaktikon.quizDone":"Fertig","didaktikon.quizEvaluate":"Auswertung","didaktikon.quizJump":"Zu Frage springen","didaktikon.quizNext":"Weiter","didaktikon.quizOverview":"Alle Fragen","didaktikon.quizOverviewClose":"Zurück zum Check","didaktikon.quizOverviewCorrect":"(richtig)","didaktikon.quizOverviewGoTo":"Zu dieser Frage","didaktikon.quizProgress":"Fortschritt","didaktikon.quizQuestionOf":"Frage {current} von {total}","didaktikon.quizRestart":"Neu beginnen","didaktikon.quizRestartText":"Deine Antworten in diesem Wissens-Check werden gelöscht.","didaktikon.quizRestartTitle":"Wissens-Check neu beginnen?","didaktikon.quizResult":"{correct} von {total} richtig","didaktikon.quizResultLong":"{correct} von {total} Fragen richtig","didaktikon.quizTrainerOnly":"Nur für Trainer:innen","didaktikon.quizWrong":"Nicht ganz.","didaktikon.scenarios":"Szenarien","didaktikon.simAllScenarios":"Alle Szenarien (Taste 0)","didaktikon.simControls":"Simulation steuern","didaktikon.simNext":"Schritt vor (→)","didaktikon.simNextAria":"Schritt vor","didaktikon.simOverview":"Übersicht","didaktikon.simPause":"Pause (Leertaste)","didaktikon.simPauseAria":"Pause","didaktikon.simPlay":"Abspielen (Leertaste)","didaktikon.simPlayAria":"Abspielen","didaktikon.simPrev":"Schritt zurück (←)","didaktikon.simPrevAria":"Schritt zurück","didaktikon.simPrintHint":"Diese Simulation lebt von der Bewegung. Auf Papier steht nur der gerade sichtbare Schritt – der QR-Code oben führt zurück zur laufenden Fassung.","didaktikon.simReset":"Zurück auf Anfang (Taste R)","didaktikon.simResetAria":"Zurück auf Anfang","didaktikon.simResize":"Breite der Erklärspalte (Pfeiltasten)","didaktikon.simScenarioCount":"{count} Szenarien","didaktikon.simScenarioKey":"{title} (Taste {number})","didaktikon.simScenarioTitle":"Szenario {number}","didaktikon.simSpeed":"Tempo wählen (Taste T)","didaktikon.simSpeedAria":"Tempo wählen","didaktikon.simSpeedMenu":"Tempo","didaktikon.simStepCount":"{count} Schritte","didaktikon.simStepCountOne":"{count} Schritt","didaktikon.simStepCounter":"Schritt {current} / {total}","didaktikon.speedFast":"zügig","didaktikon.speedNormal":"normal","didaktikon.speedSlow":"langsam","didaktikon.speedTurbo":"im Zeitraffer","didaktikon.speedValue":"{speed}×","didaktikon.stepNote":"Erklärung zum aktuellen Schritt","didaktikon.trainerNoteClose":"Schließen","didaktikon.trainerNoteOpen":"Hinweis für Trainer:innen anzeigen","didaktikon.trainerNoteTitle":"Hinweis für Trainer:innen","didaktikon.trainingCatalogEmpty":"Hier gibt es noch keine Schulung.","didaktikon.trainingCatalogTrainings":"Schulungen","didaktikon.trainingDays":"{days} Tage","didaktikon.trainingDaysOne":"{days} Tag","didaktikon.trainingHomeInfo":"Kursbeschreibung","didaktikon.trainingHomeManifest":"Didaktisches Manifest","didaktikon.trainingHomeSales":"Sales-Asset","didaktikon.trainingInfoAudience":"Zielgruppe","didaktikon.trainingInfoObjectives":"Lernziele","didaktikon.trainingInfoObjectivesLead":"Die Lernenden …","didaktikon.trainingInfoOverview":"Überblick","didaktikon.trainingInfoPrerequisites":"Voraussetzungen","didaktikon.trainingMaterials":"Kursmaterial","didaktikon.trainingMaterialsExercises":"Übungen","didaktikon.trainingMaterialsLead":"Links stehen die **Übungen**, an denen Du selbst arbeitest, rechts das **Material zum Nachschlagen**.","didaktikon.trainingMaterialsMore":"Weitere Themen","didaktikon.trainingMaterialsOther":"Sonstige Unterlagen","didaktikon.trainingMaterialsReference":"Zum Nachschlagen","didaktikon.trainingModules":"Module","didaktikon.trainingModulesBlock":"Grobthema","didaktikon.trainingModulesDuration":"Dauer","didaktikon.trainingModulesMaterial":"Material","didaktikon.trainingModulesModule":"Modul","didaktikon.trainingModulesOver":"länger als das Modul","didaktikon.trainingSalesBuyers":"Käufer","didaktikon.trainingSalesPitch":"Pitch","didaktikon.trainingSalesPricing":"Preisrahmen","didaktikon.trainingSalesUsp":"Unterscheidungsmerkmale","didaktikon.trainingSalesValueProposition":"Nutzenversprechen"}</script>
+
+<script src="../../skriptorium/client.js?v=756a5d69" defer></script>
+<script src="../../skriptorium/site.js?v=6472c794" defer></script>
+<script src="../../skriptorium/search-trail.js?v=31279378" data-skr-search-trail
+        data-base="../../" data-index="../../skriptorium/search/de.json?v=c2fa893e" defer></script>
+<link rel="stylesheet" href="../../skriptorium/highlight.css?v=f8a3fc05">
+<script type="module" src="../../skriptorium/highlight.js?v=0b2d40aa" data-skr-highlight="[&#34;bash&#34;,&#34;dockerfile&#34;,&#34;python&#34;,&#34;sql&#34;,&#34;yaml&#34;]"></script>
+<link rel="apple-touch-icon" sizes="180x180" href="../../themes/atvantage/assets/icon-180.png">
+<link rel="icon" sizes="32x32" href="../../themes/atvantage/assets/icon-32.png">
+<link rel="icon" sizes="16x16" href="../../themes/atvantage/assets/icon-16.png">
+
+  <style>@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }</style>
+  <link rel="stylesheet" href="../../skriptorium/page-transitions.css?v=716872f0">
+<link rel="stylesheet" href="../../skriptorium/guide-layout.css?v=cc0ce1dd">
+<link rel="stylesheet" href="../../extensions/didaktikon/exercise.css?v=485b7c1d">
+<script src="../../skriptorium/guide-layout.js?v=00fd0360" defer></script>
+
+
+</head><body class="skr-guide" data-skr-layout="didaktikon.exercise" data-skr-layouts="didaktikon.exercise skriptorium.guide skriptorium.page" data-skr-lang="de" data-skr-audience="learner">
+<div class="skr-reading-progress" aria-hidden="true"></div>
+  <a class="skr-skip-link" href="#skr-content">Zum Inhalt springen</a>
+  <div class="skr-metanav"><span>ATVANTAGE Academy</span></div>
+  <header class="skr-header" data-skr-header>
+  <a class="skr-header__brand" href="../../" aria-label="Startseite"><img class="skr-header__logo" src="../../themes/didaktikon/assets/logo-schulung.svg" alt="ATVANTAGE Academy"><span class="skr-header__logo-mask" role="img" aria-label="ATVANTAGE Academy" data-skr-logo-mask></span>
+    <img class="skr-header__mark" src="../../themes/atvantage/assets/icon-180.png" alt="">
+  </a>
+  <button class="skr-tool skr-header__burger" data-skr-nav-toggle="#skr-main-nav"
+          aria-label="Navigation umschalten" aria-expanded="false"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  <nav class="skr-header__nav" id="skr-main-nav">
+      <a href="../../">Start</a>
+      <div class="skr-header__group" data-skr-menu>
+        <button type="button" class="skr-header__grouptoggle"
+                aria-expanded="false" aria-haspopup="true">Schulungsumgebung<span class="skr-header__caret" aria-hidden="true"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path fill="currentColor" stroke="none" d="M5 8h14l-7 9z"/></svg></span></button>
+        <div class="skr-header__submenu" role="menu">
+          <a role="menuitem" href="../../shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a>
+          <a role="menuitem" href="../../shared/schulungsumgebung/minikube.html">Minikube einrichten</a>
+        </div>
+      </div>
+      <a href="../../docker-grundlagen/">Docker-Grundlagen</a>
+      <a href="../../kubernetes-grundlagen/">Kubernetes-Grundlagen</a>
+      <a href="../../openshift-grundlagen/">OpenShift-Grundlagen</a>
+  </nav>
+  <div class="skr-header__tools">
+<div class="skr-search" data-skr-search hidden
+     data-mode="expand" data-shortcut="double_shift"
+     data-index="../../skriptorium/search/de.json?v=c2fa893e"
+     data-base="../../">
+  <button type="button" class="skr-tool skr-tool--search" data-skr-search-toggle
+          aria-expanded="false" aria-controls="skr-search-dialog"
+          title="Suchen (zweimal Umschalt)" aria-label="Suchen"><svg viewBox="0 0 24 24" width="1em" height="1em"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"
+          ><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button>
+  <dialog class="skr-search__dialog" id="skr-search-dialog" aria-label="Suchen">
+    <div class="skr-search__bar" role="search"><label class="skr-search__field skr-search__field--scope" hidden>
+        <span class="skr-search__label">Bereich</span>
+        <select class="skr-search__scope">
+          <option value="">Alle</option>
+        </select>
+      </label>
+      <label class="skr-search__field skr-search__field--query">
+        <span class="skr-search__label">Suchbegriff</span>
+        <input type="search" class="skr-search__input"
+               placeholder="Diese Site durchsuchen" autocomplete="off" spellcheck="false"
+               aria-describedby="skr-search-status">
+      </label>
+      <button type="button" class="skr-tool skr-search__close" data-skr-search-close
+              title="Suche schließen" aria-label="Suche schließen"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <p class="skr-search__status" id="skr-search-status" data-skr-search-status role="status"></p>
+    <ul class="skr-search__results" data-skr-search-results aria-label="Suchergebnisse"></ul>
+  </dialog>
+</div>
+<script src="../../skriptorium/search.js?v=2be133a6" defer></script>
+<button type="button" class="skr-qr" data-skr-qr hidden
+        title="Diese Seite auf Deinem Smartphone öffnen"
+        aria-label="Diese Seite auf Deinem Smartphone öffnen"></button>
+<button type="button" class="skr-tool skr-tool--scheme" data-skr-scheme-toggle
+        title="Farbschema umschalten (hell/dunkel)"
+        aria-label="Dunkles Farbschema"><svg viewBox="0 0 24 24" width="1em" height="1em"
+        fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"
+        ><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+</div>
+</header>
+<section class="skr-guide-hero"
+         aria-labelledby="skr-page-title"><nav class="skr-guide-hero__crumbs" aria-label="Brotkrumen"><a href="../../kubernetes-grundlagen/">Kubernetes – Grundlagen für Entwickler</a><span>/</span><span aria-current="page">Die Datenbank als Helm Chart</span></nav>
+  <div class="skr-guide-hero__meta">
+    <div class="skr-guide-hero__tags"><span class="skr-tag skr-tag--time">ca. 35 Minuten</span><span class="skr-tag">Helm</span><span class="skr-tag">Charts</span><span class="skr-tag">Konfiguration</span>
+    </div>
+    <div class="skr-guide-hero__actions">
+      <button type="button" class="skr-btn skr-btn--ghost skr-copy-md"
+              data-skr-copy-md="#skr-md-source"
+              title="Markdown kopieren" aria-label="Markdown kopieren"></button>
+    </div>
+  </div><h1 id="skr-page-title">Die Datenbank als Helm Chart</h1>
+</section>
+
+  <div class="skr-guide-layout">
+    <main class="skr-guide-main" id="skr-content"><div class="skr-guide-panels" data-skr-arrangement="fold">
+<details class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
+<summary>User Story</summary>
+<div class="skr-didaktikon-user-story" data-skr-field="didaktikon.user_story">
+<p><strong>Als</strong> Entwickler:in <strong>möchte ich</strong> die Datenbank als Helm Chart paketieren und dabei die Kommandozeile von Helm kennenlernen, <strong>damit</strong> ich ein erstes Deployment über Helm durchführen kann.</p>
+</div>
+</details>
+<details class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
+<summary>Lernziele</summary>
+<div class="skr-didaktikon-objectives" data-skr-field="didaktikon.objectives">
+<ul>
+<li>Du beschreibst die Grundstruktur eines Helm Charts.</li>
+<li>Du überführst bestehende Kubernetes-Manifeste in Templates eines Charts.</li>
+<li>Du lagerst Werte in eine <code>values.yaml</code> aus und verweist in Templates darauf.</li>
+<li>Du prüfst ein Chart mit <code>helm lint</code> und <code>helm template</code> und installierst es mit <code>helm install</code>.</li>
+</ul>
+</div>
+</details>
+<details class="skr-fold">
+<summary>Definition of Done</summary>
+<div class="skr-guide-done">
+<ul class="task-list">
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="kubectl get all zeigt keine der von Hand angelegten Ressourcen mehr." disabled="disabled"> <code>kubectl get all</code> zeigt keine der von Hand angelegten Ressourcen mehr.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Ein Chart recipes-db enthält die Ressourcen der Datenbank als Templates." disabled="disabled"> Ein Chart <code>recipes-db</code> enthält die Ressourcen der Datenbank als Templates.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Image-Tag, Replicas und die Angaben zur Datenbank stehen in der values.yaml." disabled="disabled"> Image-Tag, Replicas und die Angaben zur Datenbank stehen in der <code>values.yaml</code>.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="helm template mit -f values-prod.yaml erzeugt ein anderes Image-Tag, mehr Replicas und einen anderen Datenbanknamen als ohne." disabled="disabled"> <code>helm template</code> mit <code>-f values-prod.yaml</code> erzeugt ein anderes Image-Tag, mehr Replicas und einen anderen Datenbanknamen als ohne.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="helm list zeigt das Release recipes-db, und der Pod der Datenbank läuft." disabled="disabled"> <code>helm list</code> zeigt das Release <code>recipes-db</code>, und der Pod der Datenbank läuft.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Du hast die Kontrollfragen beantwortet" disabled="disabled"> Du hast die Kontrollfragen beantwortet</li>
+</ul>
+</div>
+</details>
+</div>
+<h2 id="arbeitsschritte">Arbeitsschritte</h2>
+<h3 id="die-bisherigen-ressourcen-aufräumen">Die bisherigen Ressourcen aufräumen</h3>
+<p>Ab jetzt übernimmt <strong>Helm</strong> das Deployment. Damit es keine Konflikte mit den von Hand
+angelegten Ressourcen gibt, räumst Du auf.</p>
+<pre><code class="language-bash">kubectl delete deployment recipes-backend recipes-frontend postgres
+</code></pre>
+<pre><code class="language-bash">kubectl delete service recipes-backend recipes-frontend postgres
+</code></pre>
+<pre><code class="language-bash">kubectl delete ingress recipes-backend recipes-frontend
+</code></pre>
+<pre><code class="language-bash">kubectl delete configmap frontend-config postgres-config postgres-init-sql
+</code></pre>
+<pre><code class="language-bash">kubectl delete secret postgres-secret
+</code></pre>
+<pre><code class="language-bash"># Nur, wenn Du persistenten Speicher eingerichtet hast
+kubectl delete persistentvolumeclaim postgres-data
+</code></pre>
+<pre><code class="language-bash"># Ist alles weg?
+kubectl get all
+</code></pre>
+<blockquote>
+<p><strong>Hinweis:</strong> Meldungen zu Ressourcen, die es nicht mehr gibt, kannst Du ignorieren.
+Hast Du ein Pull Secret für Docker Hub angelegt, lass es stehen.</p>
+</blockquote>
+<h3 id="das-erste-chart-erzeugen">Das erste Chart erzeugen</h3>
+<p>Leg einen gemeinsamen Ordner für Deine Charts an und wechsle hinein:</p>
+<pre><code class="language-bash">mkdir helm-charts
+</code></pre>
+<pre><code class="language-bash">cd helm-charts
+</code></pre>
+<pre><code class="language-bash">helm create recipes-db
+</code></pre>
+<p><code>helm create</code> erzeugt ein vollständiges Beispiel-Chart. <strong>Sieh Dir die erzeugten Dateien
+an</strong> – <code>Chart.yaml</code>, <code>values.yaml</code> und den Ordner <code>templates/</code>. Das ist der beste
+Einstieg in den Aufbau eines Charts.</p>
+<h3 id="die-chartyaml-anpassen">Die Chart.yaml anpassen</h3>
+<p>Passe <code>recipes-db/Chart.yaml</code> an:</p>
+<pre><code class="language-yaml">apiVersion: v2
+name: recipes-db
+description: PostgreSQL-Datenbank für die Rezeptverwaltung
+version: 0.1.0
+appVersion: &quot;17&quot;
+type: application
+</code></pre>
+<h3 id="die-manifeste-der-datenbank-als-templates-übernehmen">Die Manifeste der Datenbank als Templates übernehmen</h3>
+<p>Lösch die Beispiel-Templates im Ordner <code>recipes-db/templates/</code> – alle, auch den Unterordner
+<code>tests/</code>. Leg stattdessen Deine Manifeste der Datenbank dort ab: Secret, ConfigMap für den
+Datenbanknamen, ConfigMap für das Init-SQL, Deployment und Service. Die erzeugte
+<code>values.yaml</code> leerst Du zunächst.</p>
+<h3 id="das-chart-prüfen">Das Chart prüfen</h3>
+<p>Prüf das Chart auf Fehler und sieh Dir die gerenderten Manifeste an, <strong>ohne</strong> etwas zu
+installieren:</p>
+<pre><code class="language-bash">helm lint ./recipes-db
+</code></pre>
+<pre><code class="language-bash">helm template test-release ./recipes-db
+</code></pre>
+<h3 id="werte-in-die-valuesyaml-auslagern">Werte in die values.yaml auslagern</h3>
+<p>Jetzt kommt der eigentliche Mehrwert: Ersetze fest eingetragene Werte in den Templates
+durch Verweise auf die <code>values.yaml</code>. Fang mit wenigen wichtigen Werten an – nicht alles
+auf einmal.</p>
+<p><code>recipes-db/values.yaml</code>:</p>
+<pre><code class="language-yaml">image:
+  repository: postgres
+  tag: &quot;17-alpine&quot;
+replicas: 1
+database:
+  name: recipes
+  user: recipes
+  password: recipes-secret-pw
+</code></pre>
+<p>In <code>recipes-db/templates/deployment.yaml</code> ersetzt Du dann zum Beispiel:</p>
+<pre><code class="language-yaml"># vorher
+image: postgres:17-alpine
+
+# nachher
+image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+</code></pre>
+<p>Und im Secret – Klartext über <code>stringData</code>:</p>
+<pre><code class="language-yaml">stringData:
+  POSTGRES_USER: {{ .Values.database.user }}
+  POSTGRES_PASSWORD: {{ .Values.database.password }}
+</code></pre>
+<p>Verfahre ebenso mit <code>replicas</code> im Deployment und <code>database.name</code> in der ConfigMap. Prüf
+nach jeder Änderung erneut mit <code>helm lint</code> und <code>helm template</code>.</p>
+<h3 id="eine-zweite-umgebung-rendern">Eine zweite Umgebung rendern</h3>
+<p>Der Nutzen der Auslagerung zeigt sich, wenn <strong>dieselben Templates</strong> mit <strong>anderen Werten</strong>
+gerendert werden. Leg eine zweite Werte-Datei an – hier für die Produktion. Sie enthält
+nur die <strong>Abweichungen</strong> von der <code>values.yaml</code>:</p>
+<p><code>recipes-db/values-prod.yaml</code>:</p>
+<pre><code class="language-yaml">image:
+  tag: &quot;17&quot;
+replicas: 3
+database:
+  name: recipes_prod
+</code></pre>
+<p>Rendere das Chart einmal mit den Standardwerten und einmal mit der Datei für die
+Produktion und <strong>vergleiche die Ausgabe</strong>:</p>
+<pre><code class="language-bash">helm template test-release ./recipes-db
+</code></pre>
+<pre><code class="language-bash">helm template test-release ./recipes-db -f ./recipes-db/values-prod.yaml
+</code></pre>
+<p>Die mit <code>-f</code> übergebene Datei <strong>überschreibt</strong> nur die dort gesetzten Werte; alles andere
+kommt weiter aus der <code>values.yaml</code>. So erzeugt <strong>ein</strong> Chart je Umgebung andere Manifeste.</p>
+<blockquote>
+<p><strong>Hinweis:</strong> Beim Installieren funktioniert das genauso:
+<code>helm install recipes-db ./recipes-db -f ./recipes-db/values-prod.yaml</code>. Installiert
+wird hier aber mit den Standardwerten.</p>
+</blockquote>
+<h3 id="die-datenbank-mit-helm-installieren">Die Datenbank mit Helm installieren</h3>
+<pre><code class="language-bash">helm install recipes-db ./recipes-db
+</code></pre>
+<p>Beobachte den Fortschritt (Ende mit Strg+C):</p>
+<pre><code class="language-bash">kubectl get pods -w
+</code></pre>
+<pre><code class="language-bash">helm list
+</code></pre>
+<pre><code class="language-bash">helm status recipes-db
+</code></pre>
+<p>Prüf die Logs – das Init-SQL sollte ausgeführt worden sein:</p>
+<pre><code class="language-bash">kubectl logs deployment/postgres
+</code></pre>
+<div class="skr-didaktikon-guide-review" data-skr-slot="guide.review">
+<h2 id="reflexionsfragen">Reflexionsfragen</h2>
+<div class="skr-didaktikon-reflective-questions" data-skr-field="didaktikon.reflective_questions">
+<ul>
+<li>Welche Werte lohnt es sich in die <code>values.yaml</code> auszulagern, und welche dürfen fest im Template bleiben?</li>
+<li>Was gewinnst Du mit einem Helm Chart gegenüber den einzelnen YAML-Dateien?</li>
+<li>Warum musstest Du die bisherigen Ressourcen löschen, bevor Du mit Helm installiert hast?</li>
+<li>Wofür ist <code>helm template</code> nützlich, bevor Du <code>helm install</code> ausführst?</li>
+<li>Wie hilft eine zweite Werte-Datei wie <code>values-prod.yaml</code> dabei, dieselbe Anwendung in mehreren Umgebungen zu betreiben?</li>
+</ul>
+</div>
+</div>
+<textarea id="skr-md-source" hidden aria-hidden="true"># Die Datenbank als Helm Chart
+&lt;div class=&#34;skr-guide-panels&#34; data-skr-arrangement=&#34;fold&#34; markdown=&#34;1&#34;&gt;
+
+&lt;details class=&#34;skr-fold skr-didaktikon-guide-about&#34; data-skr-slot=&#34;guide.about&#34; markdown=&#34;1&#34;&gt;
+&lt;summary markdown=&#34;span&#34;&gt;User Story&lt;/summary&gt;
+
+&lt;div class=&#34;skr-didaktikon-user-story&#34; data-skr-field=&#34;didaktikon.user_story&#34; markdown=&#34;1&#34;&gt;
+
+**Als** Entwickler:in **möchte ich** die Datenbank als Helm Chart paketieren und dabei die Kommandozeile von Helm kennenlernen, **damit** ich ein erstes Deployment über Helm durchführen kann.
+
+&lt;/div&gt;
+
+&lt;/details&gt;
+
+&lt;details class=&#34;skr-fold skr-didaktikon-guide-about&#34; data-skr-slot=&#34;guide.about&#34; markdown=&#34;1&#34;&gt;
+&lt;summary markdown=&#34;span&#34;&gt;Lernziele&lt;/summary&gt;
+
+&lt;div class=&#34;skr-didaktikon-objectives&#34; data-skr-field=&#34;didaktikon.objectives&#34; markdown=&#34;1&#34;&gt;
+
+- Du beschreibst die Grundstruktur eines Helm Charts.
+- Du überführst bestehende Kubernetes-Manifeste in Templates eines Charts.
+- Du lagerst Werte in eine `values.yaml` aus und verweist in Templates darauf.
+- Du prüfst ein Chart mit `helm lint` und `helm template` und installierst es mit `helm install`.
+
+&lt;/div&gt;
+
+&lt;/details&gt;
+
+&lt;details class=&#34;skr-fold&#34; markdown=&#34;1&#34;&gt;
+&lt;summary markdown=&#34;span&#34;&gt;Definition of Done&lt;/summary&gt;
+
+&lt;div class=&#34;skr-guide-done&#34; markdown=&#34;1&#34;&gt;
+
+- [ ] `kubectl get all` zeigt keine der von Hand angelegten Ressourcen mehr.
+- [ ] Ein Chart `recipes-db` enthält die Ressourcen der Datenbank als Templates.
+- [ ] Image-Tag, Replicas und die Angaben zur Datenbank stehen in der `values.yaml`.
+- [ ] `helm template` mit `-f values-prod.yaml` erzeugt ein anderes Image-Tag, mehr Replicas und einen anderen Datenbanknamen als ohne.
+- [ ] `helm list` zeigt das Release `recipes-db`, und der Pod der Datenbank läuft.
+- [ ] Du hast die Kontrollfragen beantwortet
+
+&lt;/div&gt;
+
+&lt;/details&gt;
+
+&lt;/div&gt;
+
+
+
+
+
+
+## Arbeitsschritte
+
+### Die bisherigen Ressourcen aufräumen
+
+Ab jetzt übernimmt **Helm** das Deployment. Damit es keine Konflikte mit den von Hand
+angelegten Ressourcen gibt, räumst Du auf.
+
+```bash
+kubectl delete deployment recipes-backend recipes-frontend postgres
+```
+
+```bash
+kubectl delete service recipes-backend recipes-frontend postgres
+```
+
+```bash
+kubectl delete ingress recipes-backend recipes-frontend
+```
+
+```bash
+kubectl delete configmap frontend-config postgres-config postgres-init-sql
+```
+
+```bash
+kubectl delete secret postgres-secret
+```
+
+```bash
+# Nur, wenn Du persistenten Speicher eingerichtet hast
+kubectl delete persistentvolumeclaim postgres-data
+```
+
+```bash
+# Ist alles weg?
+kubectl get all
+```
+
+&gt; **Hinweis:** Meldungen zu Ressourcen, die es nicht mehr gibt, kannst Du ignorieren.
+&gt; Hast Du ein Pull Secret für Docker Hub angelegt, lass es stehen.
+
+### Das erste Chart erzeugen
+
+Leg einen gemeinsamen Ordner für Deine Charts an und wechsle hinein:
+
+```bash
+mkdir helm-charts
+```
+
+```bash
+cd helm-charts
+```
+
+```bash
+helm create recipes-db
+```
+
+`helm create` erzeugt ein vollständiges Beispiel-Chart. **Sieh Dir die erzeugten Dateien
+an** – `Chart.yaml`, `values.yaml` und den Ordner `templates/`. Das ist der beste
+Einstieg in den Aufbau eines Charts.
+
+### Die Chart.yaml anpassen
+
+Passe `recipes-db/Chart.yaml` an:
+
+```yaml
+apiVersion: v2
+name: recipes-db
+description: PostgreSQL-Datenbank für die Rezeptverwaltung
+version: 0.1.0
+appVersion: &#34;17&#34;
+type: application
+```
+
+### Die Manifeste der Datenbank als Templates übernehmen
+
+Lösch die Beispiel-Templates im Ordner `recipes-db/templates/` – alle, auch den Unterordner
+`tests/`. Leg stattdessen Deine Manifeste der Datenbank dort ab: Secret, ConfigMap für den
+Datenbanknamen, ConfigMap für das Init-SQL, Deployment und Service. Die erzeugte
+`values.yaml` leerst Du zunächst.
+
+### Das Chart prüfen
+
+Prüf das Chart auf Fehler und sieh Dir die gerenderten Manifeste an, **ohne** etwas zu
+installieren:
+
+```bash
+helm lint ./recipes-db
+```
+
+```bash
+helm template test-release ./recipes-db
+```
+
+### Werte in die values.yaml auslagern
+
+Jetzt kommt der eigentliche Mehrwert: Ersetze fest eingetragene Werte in den Templates
+durch Verweise auf die `values.yaml`. Fang mit wenigen wichtigen Werten an – nicht alles
+auf einmal.
+
+`recipes-db/values.yaml`:
+
+```yaml
+image:
+  repository: postgres
+  tag: &#34;17-alpine&#34;
+replicas: 1
+database:
+  name: recipes
+  user: recipes
+  password: recipes-secret-pw
+```
+
+In `recipes-db/templates/deployment.yaml` ersetzt Du dann zum Beispiel:
+
+```yaml
+# vorher
+image: postgres:17-alpine
+
+# nachher
+image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+```
+
+Und im Secret – Klartext über `stringData`:
+
+```yaml
+stringData:
+  POSTGRES_USER: {{ .Values.database.user }}
+  POSTGRES_PASSWORD: {{ .Values.database.password }}
+```
+
+Verfahre ebenso mit `replicas` im Deployment und `database.name` in der ConfigMap. Prüf
+nach jeder Änderung erneut mit `helm lint` und `helm template`.
+
+### Eine zweite Umgebung rendern
+
+Der Nutzen der Auslagerung zeigt sich, wenn **dieselben Templates** mit **anderen Werten**
+gerendert werden. Leg eine zweite Werte-Datei an – hier für die Produktion. Sie enthält
+nur die **Abweichungen** von der `values.yaml`:
+
+`recipes-db/values-prod.yaml`:
+
+```yaml
+image:
+  tag: &#34;17&#34;
+replicas: 3
+database:
+  name: recipes_prod
+```
+
+Rendere das Chart einmal mit den Standardwerten und einmal mit der Datei für die
+Produktion und **vergleiche die Ausgabe**:
+
+```bash
+helm template test-release ./recipes-db
+```
+
+```bash
+helm template test-release ./recipes-db -f ./recipes-db/values-prod.yaml
+```
+
+Die mit `-f` übergebene Datei **überschreibt** nur die dort gesetzten Werte; alles andere
+kommt weiter aus der `values.yaml`. So erzeugt **ein** Chart je Umgebung andere Manifeste.
+
+&gt; **Hinweis:** Beim Installieren funktioniert das genauso:
+&gt; `helm install recipes-db ./recipes-db -f ./recipes-db/values-prod.yaml`. Installiert
+&gt; wird hier aber mit den Standardwerten.
+
+### Die Datenbank mit Helm installieren
+
+```bash
+helm install recipes-db ./recipes-db
+```
+
+Beobachte den Fortschritt (Ende mit Strg&#43;C):
+
+```bash
+kubectl get pods -w
+```
+
+```bash
+helm list
+```
+
+```bash
+helm status recipes-db
+```
+
+Prüf die Logs – das Init-SQL sollte ausgeführt worden sein:
+
+```bash
+kubectl logs deployment/postgres
+```
+
+
+&lt;div class=&#34;skr-didaktikon-guide-review&#34; data-skr-slot=&#34;guide.review&#34; markdown=&#34;1&#34;&gt;
+
+## Reflexionsfragen
+
+&lt;div class=&#34;skr-didaktikon-reflective-questions&#34; data-skr-field=&#34;didaktikon.reflective_questions&#34; markdown=&#34;1&#34;&gt;
+
+- Welche Werte lohnt es sich in die `values.yaml` auszulagern, und welche dürfen fest im Template bleiben?
+- Was gewinnst Du mit einem Helm Chart gegenüber den einzelnen YAML-Dateien?
+- Warum musstest Du die bisherigen Ressourcen löschen, bevor Du mit Helm installiert hast?
+- Wofür ist `helm template` nützlich, bevor Du `helm install` ausführst?
+- Wie hilft eine zweite Werte-Datei wie `values-prod.yaml` dabei, dieselbe Anwendung in mehreren Umgebungen zu betreiben?
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+## Weiterführende Informationen
+- [Helm Charts](/shared/visualisierungen/helm.html)
+- [Aufbau eines Helm Charts](/shared/visualisierungen/helm-chart-aufbau.html)
+- [Spickzettel: Helm](/shared/visualisierungen/helm-spickzettel.html)
+- [Helm: Chart Template Guide](https://helm.sh/docs/chart_template_guide/)
+- [Helm: Charts](https://helm.sh/docs/topics/charts/)
+</textarea>
+    </main><aside class="skr-guide-sidebar">
+  <details class="skr-guide-side skr-guide-side--toc skr-fold" data-skr-toc-box
+           data-skr-toc-limit="12" open>
+    <summary class="skr-guide-side__label">Auf dieser Seite</summary>
+    <nav class="skr-toc skr-fold__body" data-skr-toc aria-label="Inhaltsverzeichnis"><a href="#arbeitsschritte">Arbeitsschritte</a><a href="#die-bisherigen-ressourcen-aufräumen" class="skr-toc--h3">Die bisherigen Ressourcen aufräumen</a><a href="#das-erste-chart-erzeugen" class="skr-toc--h3">Das erste Chart erzeugen</a><a href="#die-chartyaml-anpassen" class="skr-toc--h3">Die Chart.yaml anpassen</a><a href="#die-manifeste-der-datenbank-als-templates-übernehmen" class="skr-toc--h3">Die Manifeste der Datenbank als Templates übernehmen</a><a href="#das-chart-prüfen" class="skr-toc--h3">Das Chart prüfen</a><a href="#werte-in-die-valuesyaml-auslagern" class="skr-toc--h3">Werte in die values.yaml auslagern</a><a href="#eine-zweite-umgebung-rendern" class="skr-toc--h3">Eine zweite Umgebung rendern</a><a href="#die-datenbank-mit-helm-installieren" class="skr-toc--h3">Die Datenbank mit Helm installieren</a><a href="#reflexionsfragen">Reflexionsfragen</a></nav>
+  </details>
+  <section class="skr-guide-side skr-guide-side--bordered skr-guide-progress" data-skr-card="skriptorium.progress"
+           aria-labelledby="skr-card-skriptorium-progress" data-skr-progress-text="{done} / {total} erledigt">
+    <div class="skr-guide-side__label" id="skr-card-skriptorium-progress">Fortschritt</div>
+    <div class="skr-guide-side__body">
+      <div class="skr-guide-progress__bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-labelledby="skr-card-skriptorium-progress"><div class="skr-guide-progress__fill"></div></div>
+      <div class="skr-guide-progress__text" aria-live="polite">0 / 6 erledigt</div>
+    </div>
+  </section>
+  <template data-skr-sidebar-cards></template>
+  <div class="skr-guide-side skr-guide-side--bordered">
+    <div class="skr-guide-side__label">Weiterführende Informationen</div>
+    <div class="skr-guide-side__links">
+      <a href="../../shared/visualisierungen/helm.html"><span>Helm Charts</span></a>
+      <a href="../../shared/visualisierungen/helm-chart-aufbau.html"><span>Aufbau eines Helm Charts</span></a>
+      <a href="../../shared/visualisierungen/helm-spickzettel.html"><span>Spickzettel: Helm</span></a>
+      <a href="https://helm.sh/docs/chart_template_guide/" target="_blank" rel="noopener"><span>Helm: Chart Template Guide</span></a>
+      <a href="https://helm.sh/docs/topics/charts/" target="_blank" rel="noopener"><span>Helm: Charts</span></a>
+    </div>
+  </div>
+</aside>
+
+  </div>
+  <div class="skr-print-contact" aria-hidden="true">
+  <span>Kontakt: https://www.atvantage.com</span>
+  <span>academy@atvantage.com</span>
+</div>
+
+<footer class="skr-footer">
+  <div class="skr-footer__grid">
+    <div><strong>Containertechnologien (Academy)</strong>
+      <p>Schulungsunterlagen der ATVANTAGE Academy.</p>
+    </div><div>
+      <strong>Kontakt</strong>
+      <p><a href="https://www.atvantage.com" target="_blank" rel="noopener">Website</a><br><a href="mailto:academy@atvantage.com">academy@atvantage.com</a><br>
+      </p>
+    </div>
+  </div>
+  <div class="skr-footer__legal">
+    © <span data-skr-year>2026</span> ATVANTAGE
+  </div>
+</footer>
+
+</body>
+</html>

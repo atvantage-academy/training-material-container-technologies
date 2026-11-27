@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="de" data-skr-effects="page-transitions translucent-header reading-progress">
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="skr-root" content="../">
+<script src="../skriptorium/skr.js?v=c06299bd"></script>
+<title>Wissens-Check: Tag 1 · Containertechnologien (Academy)</title>
+<meta name="description" content="Sechzehn Fragen als Rückblick auf den ersten Tag – Architektur, oc apply, Ressourcen und Fehlersuche.">
+
+<meta property="og:site_name" content="Containertechnologien (Academy)">
+<meta property="og:title" content="Wissens-Check: Tag 1">
+<meta property="og:description" content="Sechzehn Fragen als Rückblick auf den ersten Tag – Architektur, oc apply, Ressourcen und Fehlersuche.">
+<meta property="og:type" content="website">
+<link rel="preload" href="../themes/atvantage/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../themes/default/theme.css?v=b795c99c" data-skr-source="theme">
+<link rel="stylesheet" href="../themes/atvantage/fonts.css?v=0f189d71" data-skr-source="theme">
+<link rel="stylesheet" href="../themes/atvantage/tokens/colors.css?v=8ed47a94" data-skr-source="theme">
+<link rel="stylesheet" href="../themes/atvantage/tokens/typography.css?v=6445d4d3" data-skr-source="theme">
+<link rel="stylesheet" href="../themes/atvantage/tokens/spacing.css?v=58e35278" data-skr-source="theme">
+<link rel="stylesheet" href="../themes/atvantage/tokens/components.css?v=3fcd65a3" data-skr-source="theme">
+<link rel="stylesheet" href="../themes/atvantage/tokens/base.css?v=b47b1e2d" data-skr-source="theme">
+<link rel="stylesheet" href="../themes/atvantage/theme.css?v=e7026433" data-skr-source="theme">
+<link rel="stylesheet" href="../themes/didaktikon/theme.css?v=4a593b58" data-skr-source="theme">
+<link rel="stylesheet" href="../skriptorium/tokens.css?v=28abf864">
+<link rel="stylesheet" href="../extensions/didaktikon/tokens.css?v=5966d76a">
+<link rel="stylesheet" href="../skriptorium/base.css?v=86e37c43">
+<link rel="stylesheet" href="../skriptorium/components.css?v=3a968127">
+<link rel="stylesheet" href="../skriptorium/doclinks.css?v=2ef23515">
+<link rel="stylesheet" href="../skriptorium/linkmarks.css?v=1643f80a">
+<link rel="stylesheet" href="../skriptorium/site.css?v=2a7f5baf">
+<link rel="stylesheet" href="../skriptorium/logo.css?v=43a7fbaf">
+<link rel="stylesheet" href="../skriptorium/guide.css?v=1237e482">
+<link rel="stylesheet" media="print" href="../skriptorium/print.css?v=6c7ec44c">
+<meta name="generator" content="Skriptorium 2.0.0-rc.15">
+<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"2.0.0-rc.11"}],"internal":false,"languages":["de"],"skriptorium":"2.0.0-rc.15","theme":"didaktikon","themeOptions":["didaktikon"],"themes":[{"name":"didaktikon","version":"2.0.0-rc.11"},{"name":"atvantage","version":"2.2.0"},{"name":"default","version":"2.0.0-rc.15"}]}</script>
+<script type="application/json" id="skr-page-info">{"clientApi":"full","defaultLanguage":"de","description":"Sechzehn Fragen als Rückblick auf den ersten Tag – Architektur, oc apply, Ressourcen und Fehlersuche.","duration":null,"fields":null,"language":"de","languages":["de"],"layout":"skriptorium.page","pageId":"openshift-grundlagen-wissens-check-tag-1","runtimeFragments":null,"siteIndex":"/skriptorium/site.json","title":"Wissens-Check: Tag 1","topics":null,"untranslated":null,"url":"/openshift-grundlagen/wissens-check-tag-1.html"}</script>
+<script type="application/json" id="skr-texts">{"didaktikon.capture":"Capture-Modus","didaktikon.captureExit":"beenden","didaktikon.captureText":"Text einblenden","didaktikon.crosswordAcross":"Waagerecht","didaktikon.crosswordCellAcross":"{number} waagerecht, Buchstabe {position}","didaktikon.crosswordCellDown":"{number} senkrecht, Buchstabe {position}","didaktikon.crosswordDown":"Senkrecht","didaktikon.crosswordHintLetter":"Tipp: Buchstabe","didaktikon.crosswordHintWord":"Tipp: Wort","didaktikon.crosswordRestart":"Neu beginnen","didaktikon.crosswordRestartText":"Deine Eingaben in diesem Rätsel werden gelöscht.","didaktikon.crosswordRestartTitle":"Kreuzworträtsel neu beginnen?","didaktikon.crosswordReveal":"Auflösen","didaktikon.crosswordRevealText":"Alle Felder werden ausgefüllt.","didaktikon.crosswordRevealTitle":"Kreuzworträtsel auflösen?","didaktikon.crosswordSolution":"Lösungswort","didaktikon.crosswordSolutionCell":"Lösungswort, Buchstabe {position}","didaktikon.crosswordSolved":"Gelöst – alle Begriffe stimmen.","didaktikon.doclinkCrossword":"Kreuzworträtsel","didaktikon.doclinkExercise":"Übung","didaktikon.doclinkQuiz":"Wissens-Check","didaktikon.doclinkSimulation":"Simulation","didaktikon.doclinkVisualization":"Visualisierung","didaktikon.exerciseObjectives":"Lernziele","didaktikon.exerciseQuestionsDone":"Du hast die Kontrollfragen beantwortet","didaktikon.exerciseReflectiveQuestions":"Reflexionsfragen","didaktikon.exerciseUserStory":"User Story","didaktikon.moduleBlock":"Grobthema: {block}","didaktikon.moduleDuration":"{minutes} Minuten","didaktikon.moduleMaterial":"Material","didaktikon.moduleMaterialOver":"Das Material dauert zusammen {material}′ – länger als das Modul mit {module}′.","didaktikon.quizAgain":"Noch einmal","didaktikon.quizCorrect":"Richtig.","didaktikon.quizCorrectCount":"{count} richtig","didaktikon.quizCorrectWouldBe":"Richtig wäre gewesen:","didaktikon.quizDone":"Fertig","didaktikon.quizEvaluate":"Auswertung","didaktikon.quizJump":"Zu Frage springen","didaktikon.quizNext":"Weiter","didaktikon.quizOverview":"Alle Fragen","didaktikon.quizOverviewClose":"Zurück zum Check","didaktikon.quizOverviewCorrect":"(richtig)","didaktikon.quizOverviewGoTo":"Zu dieser Frage","didaktikon.quizProgress":"Fortschritt","didaktikon.quizQuestionOf":"Frage {current} von {total}","didaktikon.quizRestart":"Neu beginnen","didaktikon.quizRestartText":"Deine Antworten in diesem Wissens-Check werden gelöscht.","didaktikon.quizRestartTitle":"Wissens-Check neu beginnen?","didaktikon.quizResult":"{correct} von {total} richtig","didaktikon.quizResultLong":"{correct} von {total} Fragen richtig","didaktikon.quizTrainerOnly":"Nur für Trainer:innen","didaktikon.quizWrong":"Nicht ganz.","didaktikon.scenarios":"Szenarien","didaktikon.simAllScenarios":"Alle Szenarien (Taste 0)","didaktikon.simControls":"Simulation steuern","didaktikon.simNext":"Schritt vor (→)","didaktikon.simNextAria":"Schritt vor","didaktikon.simOverview":"Übersicht","didaktikon.simPause":"Pause (Leertaste)","didaktikon.simPauseAria":"Pause","didaktikon.simPlay":"Abspielen (Leertaste)","didaktikon.simPlayAria":"Abspielen","didaktikon.simPrev":"Schritt zurück (←)","didaktikon.simPrevAria":"Schritt zurück","didaktikon.simPrintHint":"Diese Simulation lebt von der Bewegung. Auf Papier steht nur der gerade sichtbare Schritt – der QR-Code oben führt zurück zur laufenden Fassung.","didaktikon.simReset":"Zurück auf Anfang (Taste R)","didaktikon.simResetAria":"Zurück auf Anfang","didaktikon.simResize":"Breite der Erklärspalte (Pfeiltasten)","didaktikon.simScenarioCount":"{count} Szenarien","didaktikon.simScenarioKey":"{title} (Taste {number})","didaktikon.simScenarioTitle":"Szenario {number}","didaktikon.simSpeed":"Tempo wählen (Taste T)","didaktikon.simSpeedAria":"Tempo wählen","didaktikon.simSpeedMenu":"Tempo","didaktikon.simStepCount":"{count} Schritte","didaktikon.simStepCountOne":"{count} Schritt","didaktikon.simStepCounter":"Schritt {current} / {total}","didaktikon.speedFast":"zügig","didaktikon.speedNormal":"normal","didaktikon.speedSlow":"langsam","didaktikon.speedTurbo":"im Zeitraffer","didaktikon.speedValue":"{speed}×","didaktikon.stepNote":"Erklärung zum aktuellen Schritt","didaktikon.trainerNoteClose":"Schließen","didaktikon.trainerNoteOpen":"Hinweis für Trainer:innen anzeigen","didaktikon.trainerNoteTitle":"Hinweis für Trainer:innen","didaktikon.trainingCatalogEmpty":"Hier gibt es noch keine Schulung.","didaktikon.trainingCatalogTrainings":"Schulungen","didaktikon.trainingDays":"{days} Tage","didaktikon.trainingDaysOne":"{days} Tag","didaktikon.trainingHomeInfo":"Kursbeschreibung","didaktikon.trainingHomeManifest":"Didaktisches Manifest","didaktikon.trainingHomeSales":"Sales-Asset","didaktikon.trainingInfoAudience":"Zielgruppe","didaktikon.trainingInfoObjectives":"Lernziele","didaktikon.trainingInfoObjectivesLead":"Die Lernenden …","didaktikon.trainingInfoOverview":"Überblick","didaktikon.trainingInfoPrerequisites":"Voraussetzungen","didaktikon.trainingMaterials":"Kursmaterial","didaktikon.trainingMaterialsExercises":"Übungen","didaktikon.trainingMaterialsLead":"Links stehen die **Übungen**, an denen Du selbst arbeitest, rechts das **Material zum Nachschlagen**.","didaktikon.trainingMaterialsMore":"Weitere Themen","didaktikon.trainingMaterialsOther":"Sonstige Unterlagen","didaktikon.trainingMaterialsReference":"Zum Nachschlagen","didaktikon.trainingModules":"Module","didaktikon.trainingModulesBlock":"Grobthema","didaktikon.trainingModulesDuration":"Dauer","didaktikon.trainingModulesMaterial":"Material","didaktikon.trainingModulesModule":"Modul","didaktikon.trainingModulesOver":"länger als das Modul","didaktikon.trainingSalesBuyers":"Käufer","didaktikon.trainingSalesPitch":"Pitch","didaktikon.trainingSalesPricing":"Preisrahmen","didaktikon.trainingSalesUsp":"Unterscheidungsmerkmale","didaktikon.trainingSalesValueProposition":"Nutzenversprechen"}</script>
+
+<script src="../skriptorium/client.js?v=756a5d69" defer></script>
+<script src="../skriptorium/site.js?v=6472c794" defer></script>
+<script src="../skriptorium/search-trail.js?v=31279378" data-skr-search-trail
+        data-base="../" data-index="../skriptorium/search/de.json?v=c2fa893e" defer></script>
+<link rel="stylesheet" href="../skriptorium/highlight.css?v=f8a3fc05">
+<script type="module" src="../skriptorium/highlight.js?v=0b2d40aa" data-skr-highlight="[&#34;bash&#34;,&#34;dockerfile&#34;,&#34;python&#34;,&#34;sql&#34;,&#34;yaml&#34;]"></script>
+<link rel="apple-touch-icon" sizes="180x180" href="../themes/atvantage/assets/icon-180.png">
+<link rel="icon" sizes="32x32" href="../themes/atvantage/assets/icon-32.png">
+<link rel="icon" sizes="16x16" href="../themes/atvantage/assets/icon-16.png">
+
+  <style>@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }</style>
+  <link rel="stylesheet" href="../skriptorium/page-transitions.css?v=716872f0">
+
+<link rel="stylesheet" href="../extensions/didaktikon/quiz.css?v=ec838202">
+<link rel="stylesheet" href="../extensions/didaktikon/trainer-note.css?v=3f4a7588">
+<script src="../extensions/didaktikon/payload.js?v=6869c6fd" defer></script>
+<script src="../extensions/didaktikon/quiz.js?v=eaf86e18" defer></script>
+
+
+</head><body class="skr-guide skr-guide--sidebar-empty" data-skr-layout="skriptorium.page" data-skr-layouts="skriptorium.page" data-skr-lang="de" data-skr-audience="learner">
+<div class="skr-reading-progress" aria-hidden="true"></div>
+  <a class="skr-skip-link" href="#skr-content">Zum Inhalt springen</a>
+  <div class="skr-metanav"><span>ATVANTAGE Academy</span></div>
+  <header class="skr-header" data-skr-header>
+  <a class="skr-header__brand" href="../" aria-label="Startseite"><img class="skr-header__logo" src="../themes/didaktikon/assets/logo-schulung.svg" alt="ATVANTAGE Academy"><span class="skr-header__logo-mask" role="img" aria-label="ATVANTAGE Academy" data-skr-logo-mask></span>
+    <img class="skr-header__mark" src="../themes/atvantage/assets/icon-180.png" alt="">
+  </a>
+  <button class="skr-tool skr-header__burger" data-skr-nav-toggle="#skr-main-nav"
+          aria-label="Navigation umschalten" aria-expanded="false"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  <nav class="skr-header__nav" id="skr-main-nav">
+      <a href="../">Start</a>
+      <div class="skr-header__group" data-skr-menu>
+        <button type="button" class="skr-header__grouptoggle"
+                aria-expanded="false" aria-haspopup="true">Schulungsumgebung<span class="skr-header__caret" aria-hidden="true"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path fill="currentColor" stroke="none" d="M5 8h14l-7 9z"/></svg></span></button>
+        <div class="skr-header__submenu" role="menu">
+          <a role="menuitem" href="../shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a>
+          <a role="menuitem" href="../shared/schulungsumgebung/minikube.html">Minikube einrichten</a>
+        </div>
+      </div>
+      <a href="../docker-grundlagen/">Docker-Grundlagen</a>
+      <a href="../kubernetes-grundlagen/">Kubernetes-Grundlagen</a>
+      <a href="../openshift-grundlagen/">OpenShift-Grundlagen</a>
+  </nav>
+  <div class="skr-header__tools">
+<div class="skr-search" data-skr-search hidden
+     data-mode="expand" data-shortcut="double_shift"
+     data-index="../skriptorium/search/de.json?v=c2fa893e"
+     data-base="../">
+  <button type="button" class="skr-tool skr-tool--search" data-skr-search-toggle
+          aria-expanded="false" aria-controls="skr-search-dialog"
+          title="Suchen (zweimal Umschalt)" aria-label="Suchen"><svg viewBox="0 0 24 24" width="1em" height="1em"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"
+          ><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button>
+  <dialog class="skr-search__dialog" id="skr-search-dialog" aria-label="Suchen">
+    <div class="skr-search__bar" role="search"><label class="skr-search__field skr-search__field--scope" hidden>
+        <span class="skr-search__label">Bereich</span>
+        <select class="skr-search__scope">
+          <option value="">Alle</option>
+        </select>
+      </label>
+      <label class="skr-search__field skr-search__field--query">
+        <span class="skr-search__label">Suchbegriff</span>
+        <input type="search" class="skr-search__input"
+               placeholder="Diese Site durchsuchen" autocomplete="off" spellcheck="false"
+               aria-describedby="skr-search-status">
+      </label>
+      <button type="button" class="skr-tool skr-search__close" data-skr-search-close
+              title="Suche schließen" aria-label="Suche schließen"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <p class="skr-search__status" id="skr-search-status" data-skr-search-status role="status"></p>
+    <ul class="skr-search__results" data-skr-search-results aria-label="Suchergebnisse"></ul>
+  </dialog>
+</div>
+<script src="../skriptorium/search.js?v=2be133a6" defer></script>
+<button type="button" class="skr-qr" data-skr-qr hidden
+        title="Diese Seite auf Deinem Smartphone öffnen"
+        aria-label="Diese Seite auf Deinem Smartphone öffnen"></button>
+<button type="button" class="skr-tool skr-tool--scheme" data-skr-scheme-toggle
+        title="Farbschema umschalten (hell/dunkel)"
+        aria-label="Dunkles Farbschema"><svg viewBox="0 0 24 24" width="1em" height="1em"
+        fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"
+        ><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+</div>
+</header>
+<section class="skr-guide-hero"
+         aria-labelledby="skr-page-title"><nav class="skr-guide-hero__crumbs" aria-label="Brotkrumen"><a href="../openshift-grundlagen/">OpenShift – Grundlagen für Entwickler</a><span>/</span><span aria-current="page">Wissens-Check: Tag 1</span></nav>
+  <div class="skr-guide-hero__meta">
+    <div class="skr-guide-hero__tags">
+    </div>
+    <div class="skr-guide-hero__actions">
+    </div>
+  </div><h1 id="skr-page-title">Wissens-Check: Tag 1</h1>
+</section>
+
+  <div class="skr-guide-layout">
+    <main class="skr-guide-main" id="skr-content">
+<p>Sechzehn Fragen als Rückblick auf den ersten Tag: warum es Kubernetes gibt, wie OpenShift
+dazu steht, was <code>oc apply</code> tut und wie Du Fehler findest. Es gibt keine Note und keine
+Auswertung im Kurs; die Antworten siehst nur Du.</p>
+<p>Lies bei jeder Antwort auch die Begründung, wenn Du danebengegriffen hast. Sie ist der
+eigentliche Inhalt dieser Seite.</p>
+<div class="skr-didaktikon-quiz" id="wissens-check">
+<script type="text/plain" data-skr-didaktikon-payload>eyJxdWVzdGlvbnMiOlt7InF1ZXN0aW9uIjoiPHA+T3BlblNoaWZ0IHdpcmQgb2Z0IOKAnkVudGVycHJpc2UgS3ViZXJuZXRlc+KAnCBnZW5hbm50LjwvcD5cbjxwPldpZSBzdGVoZW4gT3BlblNoaWZ0IHVuZCBLdWJlcm5ldGVzIHp1ZWluYW5kZXI/PC9wPiIsImFuc3dlcnMiOlt7InRleHQiOiI8cD5PcGVuU2hpZnQgaXN0IGVpbmUgS3ViZXJuZXRlcy1EaXN0cmlidXRpb24gbWl0IFp1c8OkdHplbiB3aWUgUm91dGVzIHVuZCBTQ0NzLjwvcD4iLCJjb3JyZWN0Ijp0cnVlLCJyZWFzb24iOiI8cD5SaWNodGlnLiBPcGVuU2hpZnQgYmF1dCBhdWYgS3ViZXJuZXRlcyBhdWYgdW5kIGVyd2VpdGVydCBlcy4gV2FzIGluIEt1YmVybmV0ZXNcbmZ1bmt0aW9uaWVydCwgZnVua3Rpb25pZXJ0IGF1Y2ggaW4gT3BlblNoaWZ0LjwvcD4ifSx7InRleHQiOiI8cD5PcGVuU2hpZnQgaXN0IGVpbmUgZWlnZW5zdMOkbmRpZ2UgUGxhdHRmb3JtLCBkaWUgS3ViZXJuZXRlcyBnYXIgbmljaHQgdmVyd2VuZGV0LjwvcD4iLCJyZWFzb24iOiI8cD5PcGVuU2hpZnQgZW50aMOkbHQgS3ViZXJuZXRlcyB2b2xsc3TDpG5kaWcg4oCTIDxjb2RlPm9jPC9jb2RlPiB2ZXJzdGVodCBqZWRlbiA8Y29kZT5rdWJlY3RsPC9jb2RlPi1CZWZlaGwuPC9wPiIsImNvcnJlY3QiOmZhbHNlfSx7InRleHQiOiI8cD5LdWJlcm5ldGVzIGlzdCBlaW5lIGFiZ2VzcGVja3RlIEVyd2VpdGVydW5nLCBkaWUgYXVmIE9wZW5TaGlmdCBhdWZzZXR6dC48L3A+IiwicmVhc29uIjoiPHA+QW5kZXJzaGVydW06IE9wZW5TaGlmdCBlcndlaXRlcnQgS3ViZXJuZXRlcywgbmljaHQgdW1nZWtlaHJ0LjwvcD4iLCJjb3JyZWN0IjpmYWxzZX0seyJ0ZXh0IjoiPHA+QmVpZGVzIHNpbmQgbnVyIHp3ZWkgTWFya2VubmFtZW4gZsO8ciBnZW5hdSBkYXNzZWxiZSBQcm9kdWt0IGFtIE1hcmt0LjwvcD4iLCJyZWFzb24iOiI8cD5PcGVuU2hpZnQgZW50aMOkbHQgS3ViZXJuZXRlcywgYnJpbmd0IGFiZXIgZWlnZW5lIFJlc3NvdXJjZW4sIGVpbmUgV2ViIENvbnNvbGUgdW5kXG5zdHJlbmdlcmUgU2ljaGVyaGVpdHN2b3JnYWJlbiBtaXQuPC9wPiIsImNvcnJlY3QiOmZhbHNlfV19LHsicXVlc3Rpb24iOiI8cD5JbSBDbHVzdGVyIGdpYnQgZXMgbWVocmVyZSBXZWdlLCBlaW5lIFJlc3NvdXJjZSBhbnp1bGVnZW4uPC9wPlxuPHA+V2VsY2hlIEF1c3NhZ2UgdHJpZmZ0IHp1PzwvcD4iLCJhbnN3ZXJzIjpbeyJ0ZXh0IjoiPHA+RXMgZ2VodCDDvGJlciBkaWUgV2ViIENvbnNvbGUsIG1pdCA8Y29kZT5vYyBjcmVhdGU8L2NvZGU+IG9kZXIgbWl0IDxjb2RlPm9jIGFwcGx5IC1mPC9jb2RlPi48L3A+IiwiY29ycmVjdCI6dHJ1ZSwicmVhc29uIjoiPHA+UmljaHRpZy4gQWxsZSBkcmVpIGbDvGhyZW4genVtIFppZWw7IGltIEt1cnMgYXJiZWl0ZXN0IER1IG1pdCBkZXIgS29tbWFuZG96ZWlsZSxcbm1laXN0IG1pdCA8Y29kZT5vYyBhcHBseSAtZjwvY29kZT4uPC9wPiJ9LHsidGV4dCI6IjxwPkVzIGdlaHQgbnVyIMO8YmVyIGRpZSBXZWIgQ29uc29sZSwgd2VpbCBkZXIgQ2x1c3RlciBncmFmaXNjaCBiZWRpZW50IHdpcmQuPC9wPiIsInJlYXNvbiI6IjxwPkRpZSBXZWIgQ29uc29sZSBpc3QgZWluIFdlZyB2b24gbWVocmVyZW4uIEltIEFsbHRhZyDigJMgdW5kIGluIGplZGVyIEF1dG9tYXRpc2llcnVuZ1xu4oCTIGFyYmVpdGV0IG1hbiBtaXQgZGVyIEtvbW1hbmRvemVpbGUuPC9wPiIsImNvcnJlY3QiOmZhbHNlfSx7InRleHQiOiI8cD5FcyBnZWh0IG51ciBtaXQgWUFNTC1EYXRlaWVuLCBkaWUgbWFuIHBlciA8Y29kZT5vYyBnZXQ8L2NvZGU+IGFuIGRlbiBDbHVzdGVyIHNjaGlja3QuPC9wPiIsInJlYXNvbiI6IjxwPjxjb2RlPm9jIGdldDwvY29kZT4gbGllc3QgbnVyLiBFaW5lIFlBTUwtRGF0ZWkgw7xiZXJnaWJzdCBEdSBtaXQgPGNvZGU+b2MgYXBwbHkgLWY8L2NvZGU+LjwvcD4iLCJjb3JyZWN0IjpmYWxzZX0seyJ0ZXh0IjoiPHA+RXMgZ2VodCBudXIgbWl0IDxjb2RlPm9jIGNyZWF0ZTwvY29kZT4sIGRlbm4gPGNvZGU+b2MgYXBwbHk8L2NvZGU+IGxpZXN0IGRpZSBSZXNzb3VyY2VuIG51ciBhdXMuPC9wPiIsInJlYXNvbiI6IjxwPjxjb2RlPm9jIGFwcGx5PC9jb2RlPiBsZWd0IFJlc3NvdXJjZW4gYW4gPHN0cm9uZz51bmQ8L3N0cm9uZz4gw6RuZGVydCBzaWUg4oCTIGVzIGlzdCBkZXIgw7xibGljaGUgV2VnLjwvcD4iLCJjb3JyZWN0IjpmYWxzZX1dfSx7InF1ZXN0aW9uIjoiPHA+RHUgaGFzdCBlaW4gRGVwbG95bWVudCBtaXQgPGNvZGU+b2MgYXBwbHkgLWYgZGVwbG95bWVudC55YW1sPC9jb2RlPiBhbmdlbGVndC4gSmV0enQgw6RuZGVyc3QgRHUgaW5cbmRlciBEYXRlaSBkYXMgSW1hZ2UtVGFnIHVuZCB3ZW5kZXN0IHNpZSBlcm5ldXQgYW4uPC9wPlxuPHA+V2FzIHBhc3NpZXJ0PzwvcD4iLCJhbnN3ZXJzIjpbeyJ0ZXh0IjoiPHA+RGVyIENsdXN0ZXIgZXJrZW5udCBkaWUgw4RuZGVydW5nIHVuZCBha3R1YWxpc2llcnQgZGFzIGJlc3RlaGVuZGUgRGVwbG95bWVudC48L3A+IiwiY29ycmVjdCI6dHJ1ZSwicmVhc29uIjoiPHA+UmljaHRpZy4gPGNvZGU+b2MgYXBwbHk8L2NvZGU+IHZlcmdsZWljaHQgZ2V3w7xuc2NodGVuIHVuZCB0YXRzw6RjaGxpY2hlbiBadXN0YW5kIHVuZCB3ZW5kZXQgbnVyIGRpZVxuVW50ZXJzY2hpZWRlIGFuLjwvcD4ifSx7InRleHQiOiI8cD5FcyBnaWJ0IGVpbmVuIEZlaGxlciwgd2VpbCBlaW4gRGVwbG95bWVudCBkaWVzZXMgTmFtZW5zIGJlcmVpdHMgZXhpc3RpZXJ0LjwvcD4iLCJyZWFzb24iOiI8cD5EYXMgd8OkcmUgYmVpIDxjb2RlPm9jIGNyZWF0ZTwvY29kZT4gc28sIG5pY2h0IGJlaSA8Y29kZT5vYyBhcHBseTwvY29kZT4uPC9wPiIsImNvcnJlY3QiOmZhbHNlfSx7InRleHQiOiI8cD5FcyBlbnRzdGVodCBlaW4gendlaXRlcyBEZXBsb3ltZW50IG1pdCBnbGVpY2hlbSBOYW1lbiBuZWJlbiBkZW0gZXJzdGVuLjwvcD4iLCJyZWFzb24iOiI8cD5ad2VpIFJlc3NvdXJjZW4gZ2xlaWNoZW4gVHlwcyB1bmQgTmFtZW5zIGltIHNlbGJlbiBQcm9qZWt0IGdpYnQgZXMgbmljaHQuPC9wPiIsImNvcnJlY3QiOmZhbHNlfSx7InRleHQiOiI8cD5EYXMgYmVzdGVoZW5kZSBEZXBsb3ltZW50IHdpcmQgZXJzdCBnZWzDtnNjaHQgdW5kIGRhbm4ga29tcGxldHQgbmV1IGFuZ2VsZWd0LjwvcD4iLCJyZWFzb24iOiI8cD48Y29kZT5vYyBhcHBseTwvY29kZT4gw6RuZGVydCBkaWUgYmVzdGVoZW5kZSBSZXNzb3VyY2U7IGVzIGzDtnNjaHQgdW5kIGVyemV1Z3Qgc2llIG5pY2h0IG5ldS48L3A+IiwiY29ycmVjdCI6ZmFsc2V9XX0seyJxdWVzdGlvbiI6IjxwPkR1IGhhc3QgZ2VyYWRlIDxjb2RlPm9jIGFwcGx5IC1mIGRlcGxveW1lbnQueWFtbDwvY29kZT4gYXVzZ2Vmw7xocnQgdW5kIGbDvGhyc3QgZGVuc2VsYmVuIEJlZmVobFxub2huZSDDhG5kZXJ1bmcgYW4gZGVyIERhdGVpIG5vY2ggZWlubWFsIGF1cy48L3A+XG48cD5XYXMgcGFzc2llcnQ/PC9wPiIsImFuc3dlcnMiOlt7InRleHQiOiI8cD5OaWNodHMg4oCTIGRlciBnZXfDvG5zY2h0ZSBadXN0YW5kIGlzdCBpbSBDbHVzdGVyIGJlcmVpdHMgaGVyZ2VzdGVsbHQuPC9wPiIsImNvcnJlY3QiOnRydWUsInJlYXNvbiI6IjxwPkdlbmF1LiA8Y29kZT5vYyBhcHBseTwvY29kZT4gaXN0IGlkZW1wb3RlbnQ6IE9obmUgw4RuZGVydW5nIGltIFlBTUwgw6RuZGVydCBzaWNoIG5pY2h0cyBpbVxuQ2x1c3Rlci48L3A+In0seyJ0ZXh0IjoiPHA+QWxsZSBQb2RzIGRlcyBEZXBsb3ltZW50cyB3ZXJkZW4gbmFjaGVpbmFuZGVyIGVpbm1hbCBuZXUgZ2VzdGFydGV0LjwvcD4iLCJyZWFzb24iOiI8cD5FaW4gZXJuZXV0ZXMgPGNvZGU+YXBwbHk8L2NvZGU+IG9obmUgw4RuZGVydW5nIGzDtnN0IGtlaW5lbiBSb2xsb3V0IGF1cy48L3A+IiwiY29ycmVjdCI6ZmFsc2V9LHsidGV4dCI6IjxwPkVzIGdpYnQgZWluZSBGZWhsZXJtZWxkdW5nLCB3ZWlsIGRpZSBSZXNzb3VyY2Ugc2Nob24gZXhpc3RpZXJ0LjwvcD4iLCJyZWFzb24iOiI8cD5EYXMgd8OkcmUgYmVpIDxjb2RlPm9jIGNyZWF0ZTwvY29kZT4gc28uIDxjb2RlPm9jIGFwcGx5PC9jb2RlPiBpc3QgZGFmw7xyIGdlbWFjaHQsIHdpZWRlcmhvbHQgenUgbGF1ZmVuLjwvcD4iLCJjb3JyZWN0IjpmYWxzZX0seyJ0ZXh0IjoiPHA+RGVyIENsdXN0ZXIgbGVndCBlaW5lIFNpY2hlcnVuZyBkZXMgdm9yaGVyaWdlbiBadXN0YW5kcyBhbi48L3A+IiwicmVhc29uIjoiPHA+RWluIDxjb2RlPmFwcGx5PC9jb2RlPiBlcnpldWd0IGtlaW5lIFNpY2hlcnVuZ2VuLjwvcD4iLCJjb3JyZWN0IjpmYWxzZX1dfSx7InF1ZXN0aW9uIjoiPHA+RHUgaGFzdCBkYXMgRGVwbG95bWVudCA8Y29kZT5yZWNpcGVzLWJhY2tlbmQ8L2NvZGU+IG1pdCA8Y29kZT5vYyBhcHBseSAtZiBkZXBsb3ltZW50LnlhbWw8L2NvZGU+IGFuZ2VsZWd0LlxuSmV0enQgw6RuZGVyc3QgRHUgaW4gZGVyIERhdGVpIGRlbiBOYW1lbjo8L3A+XG48cHJlPjxjb2RlIGNsYXNzPVwibGFuZ3VhZ2UteWFtbFwiPiMgdm9yaGVyXG5tZXRhZGF0YTpcbiAgbmFtZTogcmVjaXBlcy1iYWNrZW5kXG5cbiMgbmFjaGhlclxubWV0YWRhdGE6XG4gIG5hbWU6IHJlY2lwZXMtYXBpXG48L2NvZGU+PC9wcmU+XG48cD5XYXMgcGFzc2llcnQgYmVpbSBlcm5ldXRlbiA8Y29kZT5vYyBhcHBseSAtZiBkZXBsb3ltZW50LnlhbWw8L2NvZGU+PzwvcD4iLCJhbnN3ZXJzIjpbeyJ0ZXh0IjoiPHA+RWluIHp3ZWl0ZXMgRGVwbG95bWVudCA8Y29kZT5yZWNpcGVzLWFwaTwvY29kZT4gZW50c3RlaHQsIGRhcyBhbHRlIGJsZWlidCBiZXN0ZWhlbi48L3A+IiwiY29ycmVjdCI6dHJ1ZSwicmVhc29uIjoiPHA+UmljaHRpZy4gRGVyIE5hbWUgaXN0IGRpZSBJZGVudGl0w6R0IGRlciBSZXNzb3VyY2UuIDxjb2RlPnJlY2lwZXMtYXBpPC9jb2RlPiBpc3QgZsO8ciBkZW5cbkNsdXN0ZXIgbmV1OyA8Y29kZT5yZWNpcGVzLWJhY2tlbmQ8L2NvZGU+IGJsZWlidCB1bmFuZ2V0YXN0ZXQgdW5kIGzDpHVmdCB3ZWl0ZXIuPC9wPiJ9LHsidGV4dCI6IjxwPkRhcyBiZXN0ZWhlbmRlIERlcGxveW1lbnQgd2lyZCB2b24gPGNvZGU+cmVjaXBlcy1iYWNrZW5kPC9jb2RlPiBpbiA8Y29kZT5yZWNpcGVzLWFwaTwvY29kZT4gdW1iZW5hbm50LjwvcD4iLCJyZWFzb24iOiI8cD5SZXNzb3VyY2VuIGxhc3NlbiBzaWNoIG5pY2h0IHVtYmVuZW5uZW4g4oCTIGRlciBOYW1lIGlzdCBpaHIgdW52ZXLDpG5kZXJsaWNoZXJcblNjaGzDvHNzZWwuPC9wPiIsImNvcnJlY3QiOmZhbHNlfSx7InRleHQiOiI8cD5FcyBnaWJ0IGVpbmVuIEZlaGxlciwgd2VpbCBzaWNoIGRlciBOYW1lIGVpbmVyIFJlc3NvdXJjZSBuaWNodCDDpG5kZXJuIGRhcmYuPC9wPiIsInJlYXNvbiI6IjxwPktlaW4gRmVobGVyOiBEZXIgQ2x1c3RlciBzaWVodCBlaW5mYWNoIGVpbiBuZXVlcyBEZXBsb3ltZW50IG1pdCBuZXVlbSBOYW1lbi48L3A+IiwiY29ycmVjdCI6ZmFsc2V9LHsidGV4dCI6IjxwPkRhcyBhbHRlIERlcGxveW1lbnQgd2lyZCBnZWzDtnNjaHQgdW5kIGR1cmNoIDxjb2RlPnJlY2lwZXMtYXBpPC9jb2RlPiBlcnNldHp0LjwvcD4iLCJyZWFzb24iOiI8cD5EZXIgQ2x1c3RlciB2ZXJnbGVpY2h0IMO8YmVyIGRlbiBOYW1lbi4gRXIgd2Vpw58gbmljaHQsIGRhc3MgPGNvZGU+cmVjaXBlcy1hcGk8L2NvZGU+IGRhcyBhbHRlXG5lcnNldHplbiBzb2xsLjwvcD4iLCJjb3JyZWN0IjpmYWxzZX1dfSx7InF1ZXN0aW9uIjoiPHA+RHUgd2lsbHN0IGVpbiBEZXBsb3ltZW50IGFubGVnZW4sIGRhcyBlcyBub2NoIG5pY2h0IGdpYnQuPC9wPlxuPHA+V2FzIHVudGVyc2NoZWlkZXQgPGNvZGU+b2MgY3JlYXRlPC9jb2RlPiB2b24gPGNvZGU+b2MgYXBwbHk8L2NvZGU+PzwvcD4iLCJhbnN3ZXJzIjpbeyJ0ZXh0IjoiPHA+PGNvZGU+Y3JlYXRlPC9jb2RlPiBsZWd0IG51ciBuZXUgYW4sIDxjb2RlPmFwcGx5PC9jb2RlPiBsZWd0IGFuIG9kZXIgw6RuZGVydCwgd2FzIHNjaG9uIGRhIGlzdC48L3A+IiwiY29ycmVjdCI6dHJ1ZSwicmVhc29uIjoiPHA+UmljaHRpZy4gPGNvZGU+b2MgY3JlYXRlPC9jb2RlPiBzY2hlaXRlcnQsIHdlbm4gZGllIFJlc3NvdXJjZSBleGlzdGllcnQ7IDxjb2RlPm9jIGFwcGx5PC9jb2RlPiBlcnN0ZWxsdFxuYmVpIEJlZGFyZiB1bmQgw6RuZGVydCBzb25zdC48L3A+In0seyJ0ZXh0IjoiPHA+PGNvZGU+Y3JlYXRlPC9jb2RlPiBpc3QgZsO8ciBEZXBsb3ltZW50cyBnZWRhY2h0LCA8Y29kZT5hcHBseTwvY29kZT4gZGFnZWdlbiBmw7xyIFNlcnZpY2VzLjwvcD4iLCJyZWFzb24iOiI8cD5CZWlkZSBCZWZlaGxlIGZ1bmt0aW9uaWVyZW4gbWl0IGFsbGVuIFJlc3NvdXJjZW50eXBlbi48L3A+IiwiY29ycmVjdCI6ZmFsc2V9LHsidGV4dCI6IjxwPkVzIGdpYnQga2VpbmVuIFVudGVyc2NoaWVkLCBkaWUgYmVpZGVuIEJlZmVobGUgc2luZCBudXIgQWxpYXNlIGbDvHJlaW5hbmRlci48L3A+IiwicmVhc29uIjoiPHA+U2llIHZlcmhhbHRlbiBzaWNoIGJlaSBiZXJlaXRzIHZvcmhhbmRlbmVuIFJlc3NvdXJjZW4gdW50ZXJzY2hpZWRsaWNoLjwvcD4iLCJjb3JyZWN0IjpmYWxzZX0seyJ0ZXh0IjoiPHA+PGNvZGU+YXBwbHk8L2NvZGU+IGlzdCB2ZXJhbHRldCB1bmQgd2lyZCB2b24gPGNvZGU+Y3JlYXRlPC9jb2RlPiB2b2xsc3TDpG5kaWcgYWJnZWzDtnN0LjwvcD4iLCJyZWFzb24iOiI8cD5JbSBHZWdlbnRlaWw6IDxjb2RlPm9jIGFwcGx5IC1mPC9jb2RlPiBpc3QgZGVyIGVtcGZvaGxlbmUgV2VnIGbDvHIgZGVrbGFyYXRpdmVzIEFyYmVpdGVuLjwvcD4iLCJjb3JyZWN0IjpmYWxzZX1dfSx7InF1ZXN0aW9uIjoiPHA+S3ViZXJuZXRlcyB3aXJkIG9mdCBhbHMg4oCeZGVrbGFyYXRpduKAnCBiZXNjaHJpZWJlbi48L3A+XG48cD5XYXMgYmVkZXV0ZXQgZGFzPzwvcD4iLCJhbnN3ZXJzIjpbeyJ0ZXh0IjoiPHA+RHUgYmVzY2hyZWlic3QgZGVuIFppZWx6dXN0YW5kLCBkZXIgQ2x1c3RlciBzdGVsbHQgaWhuIGhlciB1bmQgaMOkbHQgaWhuLjwvcD4iLCJjb3JyZWN0Ijp0cnVlLCJyZWFzb24iOiI8cD5HZW5hdS4gRHUgc2Fnc3QsIDxzdHJvbmc+d2FzPC9zdHJvbmc+IER1IHdpbGxzdCAo4oCeZHJlaSBSZXBsaWNhc+KAnCksIG5pY2h0IDxzdHJvbmc+d2llPC9zdHJvbmc+LiBVbSBkaWVcblNjaHJpdHRlIGvDvG1tZXJ0IHNpY2ggZGVyIENsdXN0ZXIuPC9wPiJ9LHsidGV4dCI6IjxwPkR1IGdpYnN0IFNjaHJpdHQgZsO8ciBTY2hyaXR0IHZvciwgd2VsY2hlciBDb250YWluZXIgd2FubiBzdGFydGV0LjwvcD4iLCJyZWFzb24iOiI8cD5EYXMgd8OkcmUgaW1wZXJhdGl2LiBEZWtsYXJhdGl2IGJlc2NocmVpYnN0IER1IGRhcyBaaWVsLCBuaWNodCBkZW4gV2VnLjwvcD4iLCJjb3JyZWN0IjpmYWxzZX0seyJ0ZXh0IjoiPHA+RGVyIENsdXN0ZXIgZnJhZ3Qgdm9yIGplZGVtIGVpbnplbG5lbiBTY2hyaXR0IG5hY2gsIG9iIGVyIHdlaXRlcm1hY2hlbiBzb2xsLjwvcD4iLCJyZWFzb24iOiI8cD5EZXIgQ2x1c3RlciBhcmJlaXRldCBzZWxic3RzdMOkbmRpZyBhdWYgR3J1bmRsYWdlIERlaW5lciBCZXNjaHJlaWJ1bmcuPC9wPiIsImNvcnJlY3QiOmZhbHNlfSx7InRleHQiOiI8cD5KZWRlciBCZWZlaGwgYW4gZGVuIENsdXN0ZXIgd2lyZCBhdXRvbWF0aXNjaCBtaXRwcm90b2tvbGxpZXJ0LjwvcD4iLCJyZWFzb24iOiI8cD7igJ5EZWtsYXJhdGl24oCcIGJlc2NocmVpYnQgZGllIEFydCwgZGVuIFp1c3RhbmQgYW56dWdlYmVuIOKAkyBuaWNodCBEb2t1bWVudGF0aW9uLjwvcD4iLCJjb3JyZWN0IjpmYWxzZX1dfSx7InF1ZXN0aW9uIjoiPHA+RWluIFVudGVybmVobWVuIMO8YmVybGVndCwgc2VpbmUgQW53ZW5kdW5nZW4gYXVmIEt1YmVybmV0ZXMgenUgYmV0cmVpYmVuLjwvcD5cbjxwPldhcyBzcHJpY2h0IHZvciBhbGxlbSBkYWbDvHI/PC9wPiIsImFuc3dlcnMiOlt7InRleHQiOiI8cD5WZXJ0ZWlsdW5nIGF1ZiBtZWhyZXJlIE1hc2NoaW5lbiB1bmQgQXVzZmFsbHNpY2hlcmhlaXQgZHVyY2ggU2VsYnN0aGVpbHVuZy48L3A+IiwiY29ycmVjdCI6dHJ1ZSwicmVhc29uIjoiPHA+UmljaHRpZy4gS3ViZXJuZXRlcyB2ZXJ0ZWlsdCBXb3JrbG9hZHMgYXVmIE5vZGVzIHVuZCBzdGFydGV0IGJlaSBBdXNmw6RsbGVuIG5ldWVcblBvZHMg4oCTIGRpZSBBbnR3b3J0IGF1ZiBQcm9ibGVtIDEgZGVyIMOcYmVybGVpdHVuZy48L3A+In0seyJ0ZXh0IjoiPHA+U2NobmVsbGVyZSBQcm9ncmFtbWllcnNwcmFjaGVuIHVuZCBsZWlzdHVuZ3Nmw6RoaWdlcmUgRGF0ZW5iYW5rZW4gaW0gZWlnZW5lbiBDb2RlLjwvcD4iLCJyZWFzb24iOiI8cD5LdWJlcm5ldGVzIGhhdCBrZWluZW4gRWluZmx1c3MgYXVmIFByb2dyYW1taWVyc3ByYWNoZSBvZGVyIERhdGVuYmFuay48L3A+IiwiY29ycmVjdCI6ZmFsc2V9LHsidGV4dCI6IjxwPkF1dG9tYXRpc2NoZSBDb2RlLVJldmlld3MgdW5kIEZyZWlnYWJlbiBqZWRlcyBEZXBsb3ltZW50cyBkdXJjaCBkYXMgVGVhbS48L3A+IiwicmVhc29uIjoiPHA+RGFzIHNpbmQgQXVmZ2FiZW4gdm9uIENvZGUtVmVyd2FsdHVuZyB1bmQgUGlwZWxpbmVzLCBuaWNodCB2b24gS3ViZXJuZXRlcy48L3A+IiwiY29ycmVjdCI6ZmFsc2V9LHsidGV4dCI6IjxwPkdhcmFudGllcnQgbmllZHJpZ2VyZSBLb3N0ZW4gaW4gZGVyIENsb3VkIHVuZCBlaW5lIHNjaG5lbGxlcmUgQW5iaW5kdW5nLjwvcD4iLCJyZWFzb24iOiI8cD5LdWJlcm5ldGVzIGthbm4gUmVzc291cmNlbiBiZXNzZXIgYXVzbnV0emVuLCBnYXJhbnRpZXJ0IGFiZXIga2VpbmUgRWluc3BhcnVuZy48L3A+IiwiY29ycmVjdCI6ZmFsc2V9XX0seyJxdWVzdGlvbiI6IjxwPkR1IGhhc3QgZHJlaSBZQU1MLURhdGVpZW46IDxjb2RlPnNlcnZpY2UueWFtbDwvY29kZT4sIDxjb2RlPnJvdXRlLnlhbWw8L2NvZGU+IHVuZCA8Y29kZT5kZXBsb3ltZW50LnlhbWw8L2NvZGU+LjwvcD5cbjxwPlNwaWVsdCBlcyBlaW5lIFJvbGxlLCBpbiB3ZWxjaGVyIFJlaWhlbmZvbGdlIER1IHNpZSBtaXQgPGNvZGU+b2MgYXBwbHkgLWY8L2NvZGU+IGFubGVnc3Q/PC9wPiIsImFuc3dlcnMiOlt7InRleHQiOiI8cD5OZWluIOKAkyBkZXIgQ2x1c3RlciBuw6RoZXJ0IHNpY2ggZGVtIFppZWx6dXN0YW5kIGluIGplZGVyIFJlaWhlbmZvbGdlIGFuLjwvcD4iLCJjb3JyZWN0Ijp0cnVlLCJyZWFzb24iOiI8cD5SaWNodGlnLiBFaW4gU2VydmljZSBkYXJmIGF1ZiBQb2RzIHZlcndlaXNlbiwgZGllIGVzIG5vY2ggbmljaHQgZ2lidDsgc29iYWxkIGRhc1xuRGVwbG95bWVudCBkYSBpc3QsIGdyZWlmdCBkZXIgU2VsZWt0b3IuPC9wPiJ9LHsidGV4dCI6IjxwPkphIOKAkyBkYXMgRGVwbG95bWVudCBtdXNzIHp1ZXJzdCBhbmdlbGVndCBzZWluLCBzb25zdCBnaWJ0IGVzIGVpbmVuIEZlaGxlci48L3A+IiwicmVhc29uIjoiPHA+RWluIFNlcnZpY2UgbWl0IFNlbGVrdG9yIGZ1bmt0aW9uaWVydCBhdWNoIG9obmUgcGFzc2VuZGUgUG9kcyDigJMgZXIgZmluZGV0IGRhbm5cbmVpbmZhY2ggbm9jaCBrZWluZS48L3A+IiwiY29ycmVjdCI6ZmFsc2V9LHsidGV4dCI6IjxwPkphIOKAkyBkaWUgUm91dGUgbXVzcyB6dWVyc3QgZXhpc3RpZXJlbiwgZGFtaXQgZGVyIFNlcnZpY2Ugc2llIGZpbmRlbiBrYW5uLjwvcD4iLCJyZWFzb24iOiI8cD5EaWUgUm91dGUgdmVyd2Vpc3QgYXVmIGRlbiBTZXJ2aWNlLCBuaWNodCB1bWdla2VocnQuIFVuZCBzZWxic3Qgc2llIGRhcmYgdm9yIGRlbVxuU2VydmljZSBhbmdlbGVndCB3ZXJkZW4uPC9wPiIsImNvcnJlY3QiOmZhbHNlfSx7InRleHQiOiI8cD5KYSDigJMgZGllIERhdGVpZW4gbcO8c3NlbiBhbHBoYWJldGlzY2ggc29ydGllcnQgYW5nZXdlbmRldCB3ZXJkZW4sIGFsc28gc28uPC9wPiIsInJlYXNvbiI6IjxwPkVpbmUgYWxwaGFiZXRpc2NoZSBSZWloZW5mb2xnZSBrZW5udCBkZXIgQ2x1c3RlciBuaWNodC48L3A+IiwiY29ycmVjdCI6ZmFsc2V9XX0seyJxdWVzdGlvbiI6IjxwPkVpbiBQb2Qgc3RhcnRldCBuaWNodCB1bmQgYmxlaWJ0IGltIFN0YXR1cyA8Y29kZT5DcmFzaExvb3BCYWNrT2ZmPC9jb2RlPi48L3A+XG48cD5Xb21pdCBmaW5kZXN0IER1IGRpZSBVcnNhY2hlPzwvcD4iLCJhbnN3ZXJzIjpbeyJ0ZXh0IjoiPHA+PGNvZGU+b2MgZGVzY3JpYmUgcG9kPC9jb2RlPiBmw7xyIGRpZSBFdmVudHMsIDxjb2RlPm9jIGxvZ3M8L2NvZGU+IGbDvHIgZGllIEF1c2dhYmUgZGVyIEFud2VuZHVuZy48L3A+IiwiY29ycmVjdCI6dHJ1ZSwicmVhc29uIjoiPHA+UmljaHRpZy4gPGNvZGU+ZGVzY3JpYmU8L2NvZGU+IHplaWd0IEV2ZW50cyB1bmQgS29uZmlndXJhdGlvbiwgPGNvZGU+bG9nczwvY29kZT4g4oCTIGF1Y2ggbWl0XG48Y29kZT4tLXByZXZpb3VzPC9jb2RlPiDigJMgd2FzIGRpZSBBbndlbmR1bmcgc2VsYnN0IGdlbWVsZGV0IGhhdC48L3A+In0seyJ0ZXh0IjoiPHA+TWl0IDxjb2RlPm9jIGRlbGV0ZSBwb2Q8L2NvZGU+IGRlbiBQb2QgbMO2c2NoZW4gdW5kIGRhbm4gZWluZmFjaCBub2NoIGVpbm1hbCB2ZXJzdWNoZW4uPC9wPiIsInJlYXNvbiI6IjxwPkRhcyBiZWhlYnQgZGllIFVyc2FjaGUgbmljaHQuIERhcyBEZXBsb3ltZW50IGxlZ3Qgc29mb3J0IGVpbmVuIG5ldWVuIFBvZCBtaXRcbmRlbXNlbGJlbiBGZWhsZXIgYW4uPC9wPiIsImNvcnJlY3QiOmZhbHNlfSx7InRleHQiOiI8cD5NaXQgPGNvZGU+b2MgcmVzdGFydCBjbHVzdGVyPC9jb2RlPiBkZW4gZ2FuemVuIENsdXN0ZXIgbmV1IHN0YXJ0ZW4gdW5kIGRhbm4gYWJ3YXJ0ZW4uPC9wPiIsInJlYXNvbiI6IjxwPkRpZXNlbiBCZWZlaGwgZ2lidCBlcyBuaWNodCwgdW5kIGVpbiBOZXVzdGFydCBkZXMgQ2x1c3RlcnMgaXN0IGtlaW5lIEZlaGxlcnN1Y2hlLjwvcD4iLCJjb3JyZWN0IjpmYWxzZX0seyJ0ZXh0IjoiPHA+R2FyIG5pY2h0IOKAkyBGZWhsZXIgaW0gQ2x1c3RlciBsYXNzZW4gc2ljaCBudXIgZHVyY2ggQXVzcHJvYmllcmVuIGVpbmdyZW56ZW4uPC9wPiIsInJlYXNvbiI6IjxwPkVzIGdpYnQgdW1mYW5ncmVpY2hlIFdlcmt6ZXVnZTogPGNvZGU+ZGVzY3JpYmU8L2NvZGU+LCA8Y29kZT5sb2dzPC9jb2RlPiwgPGNvZGU+Z2V0IGV2ZW50czwvY29kZT4gdW5kIG1laHIuPC9wPiIsImNvcnJlY3QiOmZhbHNlfV19LHsicXVlc3Rpb24iOiI8cD5EdSBsZWdzdCBlaW4gRGVwbG95bWVudCBhbiwgZGFzIGF1ZiBlaW4gSW1hZ2UgaW4gZWluZXIgUmVnaXN0cnkgdmVyd2Vpc3QuPC9wPlxuPHA+V2FubiB3aXJkIGRhcyBJbWFnZSBoZXJ1bnRlcmdlbGFkZW4/PC9wPiIsImFuc3dlcnMiOlt7InRleHQiOiI8cD5XZW5uIGVpbiBQb2QgYXVmIGVpbmVuIE5vZGUga29tbXQsIGF1ZiBkZW0gZGFzIEltYWdlIG5vY2ggZmVobHQuPC9wPiIsImNvcnJlY3QiOnRydWUsInJlYXNvbiI6IjxwPlJpY2h0aWcuIERhcyBrdWJlbGV0IGF1ZiBkZW0gTm9kZSBob2x0IGRhcyBJbWFnZSBiZWkgQmVkYXJmOyBkaWVcbjxjb2RlPmltYWdlUHVsbFBvbGljeTwvY29kZT4gc3RldWVydCwgb2IgamVkZXMgTWFsIG5ldSBnZWxhZGVuIHdpcmQuPC9wPiJ9LHsidGV4dCI6IjxwPlNvZm9ydCBiZWkgPGNvZGU+b2MgYXBwbHkgLWY8L2NvZGU+LCBub2NoIGJldm9yIMO8YmVyaGF1cHQgZWluIFBvZCBlbnRzdGVodC48L3A+IiwicmVhc29uIjoiPHA+PGNvZGU+b2MgYXBwbHk8L2NvZGU+IMO8YmVyZ2lidCBudXIgZGllIEJlc2NocmVpYnVuZy4gR2VsYWRlbiB3aXJkIGVyc3QsIHdlbm4gZWluIFBvZFxudGF0c8OkY2hsaWNoIGF1ZiBlaW5lbSBOb2RlIHN0YXJ0ZW4gc29sbC48L3A+IiwiY29ycmVjdCI6ZmFsc2V9LHsidGV4dCI6IjxwPkdhciBuaWNodCDigJMgZGFzIEltYWdlIG11c3Mgdm9yaGVyIHZvbiBIYW5kIGF1ZiBqZWRlbiBOb2RlIGtvcGllcnQgd2VyZGVuLjwvcD4iLCJyZWFzb24iOiI8cD5EYXJ1bSBrw7xtbWVybiBzaWNoIGt1YmVsZXQgdW5kIENvbnRhaW5lciBSdW50aW1lIHNlbGJzdC48L3A+IiwiY29ycmVjdCI6ZmFsc2V9LHsidGV4dCI6IjxwPkVpbm1hbCBiZWltIEVpbnJpY2h0ZW4gZGVzIENsdXN0ZXJzIHVuZCBkYW5hY2ggbmllIHdpZWRlci48L3A+IiwicmVhc29uIjoiPHA+SW1hZ2VzIHdlcmRlbiBqZSBOb2RlIGJlaSBCZWRhcmYgZ2VsYWRlbiwgbmljaHQgYmVpbSBFaW5yaWNodGVuIGRlcyBDbHVzdGVycy48L3A+IiwiY29ycmVjdCI6ZmFsc2V9XX0seyJxdWVzdGlvbiI6IjxwPkR1IGFrdHVhbGlzaWVyc3QgZWluIERlcGxveW1lbnQsIGV0d2EgbWl0IGVpbmVtIG5ldWVuIEltYWdlLVRhZy48L3A+XG48cD5XYXMgYmVzY2hyZWlidCBkaWUgU3RyYXRlZ2llIDxjb2RlPlJvbGxpbmdVcGRhdGU8L2NvZGU+PzwvcD4iLCJhbnN3ZXJzIjpbeyJ0ZXh0IjoiPHA+QWx0ZSBQb2RzIHdlcmRlbiBzY2hyaXR0d2Vpc2UgZHVyY2ggbmV1ZSBlcnNldHp0LCBvaG5lIEF1c2ZhbGwuPC9wPiIsImNvcnJlY3QiOnRydWUsInJlYXNvbiI6IjxwPlJpY2h0aWcuIDxjb2RlPlJvbGxpbmdVcGRhdGU8L2NvZGU+IGlzdCBkaWUgVm9yZ2FiZTogTmV1ZSBQb2RzIHN0YXJ0ZW4sIGFsdGUgd2VyZGVuIG5hY2ggdW5kXG5uYWNoIGJlZW5kZXQuPC9wPiJ9LHsidGV4dCI6IjxwPkFsbGUgYWx0ZW4gUG9kcyB3ZXJkZW4gc29mb3J0IGJlZW5kZXQsIGRhbmFjaCBzdGFydGVuIGRpZSBuZXVlbi48L3A+IiwicmVhc29uIjoiPHA+RGFzIGlzdCBkaWUgU3RyYXRlZ2llIDxjb2RlPlJlY3JlYXRlPC9jb2RlPi4gQmVpIDxjb2RlPlJvbGxpbmdVcGRhdGU8L2NvZGU+IGzDpHVmdCBpbW1lciBtaW5kZXN0ZW5zIGVpblxuUG9kLjwvcD4iLCJjb3JyZWN0IjpmYWxzZX0seyJ0ZXh0IjoiPHA+RGFzIFVwZGF0ZSBsw6R1ZnQgcsO8Y2t3w6RydHMsIGFsc28gdm9tIGxldHp0ZW4gUG9kIGJpcyB6dW0gZXJzdGVuLjwvcD4iLCJyZWFzb24iOiI8cD7igJ5Sb2xsaW5n4oCcIG1laW50IGRlbiBzY2hyaXR0d2Vpc2VuIEF1c3RhdXNjaCwga2VpbmUgUmVpaGVuZm9sZ2UuPC9wPiIsImNvcnJlY3QiOmZhbHNlfSx7InRleHQiOiI8cD5EYXMgVXBkYXRlIHdpcmQgZ2VzYW1tZWx0IHVuZCBlcnN0IHp1IGVpbmVyIGZlc3RlbiBVaHJ6ZWl0IGF1c2dlZsO8aHJ0LjwvcD4iLCJyZWFzb24iOiI8cD5FaW4gUm9sbG91dCBiZWdpbm50IHNvZm9ydDsgZWluZW4gWmVpdHBsYW4ga2VubnQgZGFzIERlcGxveW1lbnQgbmljaHQuPC9wPiIsImNvcnJlY3QiOmZhbHNlfV19LHsicXVlc3Rpb24iOiI8cD5EZWluIERlcGxveW1lbnQgaGF0IDxjb2RlPnJlcGxpY2FzOiAzPC9jb2RlPi4gRWluIFdvcmtlciBOb2RlLCBhdWYgZGVtIGVpbmVyIGRlciBQb2RzIGxpZWYsXG5mw6RsbHQgYXVzLjwvcD5cbjxwPldhcyBwYXNzaWVydD88L3A+IiwiYW5zd2VycyI6W3sidGV4dCI6IjxwPkRlciBDbHVzdGVyIHN0YXJ0ZXQgdm9uIHNlbGJzdCBlaW5lbiBuZXVlbiBQb2QgYXVmIGVpbmVtIGFuZGVyZW4gTm9kZS48L3A+IiwiY29ycmVjdCI6dHJ1ZSwicmVhc29uIjoiPHA+UmljaHRpZy4gRGVyIENvbnRyb2xsZXIgdmVyZ2xlaWNodCBsYXVmZW5kIFNvbGwtIHVuZCBJc3QtWnVzdGFuZCB1bmQgc3RlbGx0IGRpZVxuZ2V3w7xuc2NodGUgQW56YWhsIHdpZWRlciBoZXIuPC9wPiJ9LHsidGV4dCI6IjxwPk5pY2h0cyDigJMgZGllIEFud2VuZHVuZyBsw6R1ZnQgbWl0IHp3ZWkgUG9kcyB3ZWl0ZXIsIGJpcyBqZW1hbmQgZWluZ3JlaWZ0LjwvcD4iLCJyZWFzb24iOiI8cD5EZXIgQ2x1c3RlciBoZWlsdCBzaWNoIHNlbGJzdCB1bmQgc3RlbGx0IGRlbiBnZXfDvG5zY2h0ZW4gWnVzdGFuZCB3aWVkZXIgaGVyLjwvcD4iLCJjb3JyZWN0IjpmYWxzZX0seyJ0ZXh0IjoiPHA+RGVyIGdhbnplIENsdXN0ZXIgZsOkaHJ0IGhlcnVudGVyLCB3ZWlsIGVpbiBOb2RlIG5pY2h0IG1laHIgZXJyZWljaGJhciBpc3QuPC9wPiIsInJlYXNvbiI6IjxwPkRlciBBdXNmYWxsIGVpbmVzIE5vZGVzIGJldHJpZmZ0IG51ciBkaWUgUG9kcyBkYXJhdWYsIG5pY2h0IGRlbiBDbHVzdGVyLjwvcD4iLCJjb3JyZWN0IjpmYWxzZX0seyJ0ZXh0IjoiPHA+RGllIEFud2VuZHVuZyBpc3Qga29tcGxldHQgb2ZmbGluZSwgYmlzIGRlciBOb2RlIHdpZWRlciByZXBhcmllcnQgaXN0LjwvcD4iLCJyZWFzb24iOiI8cD5EaWUgYmVpZGVuIFBvZHMgYXVmIGdlc3VuZGVuIE5vZGVzIGxhdWZlbiB3ZWl0ZXIgdW5kIGJlYW50d29ydGVuIEFuZnJhZ2VuLjwvcD4iLCJjb3JyZWN0IjpmYWxzZX1dfSx7InF1ZXN0aW9uIjoiPHA+SW0gQ2x1c3RlciBhcmJlaXRlbiB2ZXJzY2hpZWRlbmUgUmVzc291cmNlbnR5cGVuIHp1c2FtbWVuLjwvcD5cbjxwPldhcyBpc3QgZGllIEF1ZmdhYmUgZWluZXMgU2VydmljZT88L3A+IiwiYW5zd2VycyI6W3sidGV4dCI6IjxwPkVyIGlzdCBlaW5lIHN0YWJpbGUgQWRyZXNzZSB2b3Igd2VjaHNlbG5kZW4gUG9kcyB1bmQgdmVydGVpbHQgQW5mcmFnZW4uPC9wPiIsImNvcnJlY3QiOnRydWUsInJlYXNvbiI6IjxwPlJpY2h0aWcuIEVpbiBTZXJ2aWNlIGhhdCBlaW5lbiBmZXN0ZW4gRE5TLU5hbWVuLCBmaW5kZXQgUG9kcyDDvGJlciBpaHJlIExhYmVscyB1bmRcbnZlcnRlaWx0IGRpZSBBbmZyYWdlbi48L3A+In0seyJ0ZXh0IjoiPHA+RXIgc3RhcnRldCB1bmQgc3RvcHB0IGRpZSBDb250YWluZXIgZWluZXMgRGVwbG95bWVudHMgbmFjaCBCZWRhcmYuPC9wPiIsInJlYXNvbiI6IjxwPkRhcyBpc3QgQXVmZ2FiZSB2b24gRGVwbG95bWVudCwgUmVwbGljYVNldCB1bmQga3ViZWxldC48L3A+IiwiY29ycmVjdCI6ZmFsc2V9LHsidGV4dCI6IjxwPkVyIHNwZWljaGVydCBLb25maWd1cmF0aW9uc3dlcnRlIHdpZSBkaWUgQWRyZXNzZSBlaW5lciBEYXRlbmJhbmsuPC9wPiIsInJlYXNvbiI6IjxwPkRhcyBpc3QgQXVmZ2FiZSBlaW5lciBDb25maWdNYXAuPC9wPiIsImNvcnJlY3QiOmZhbHNlfSx7InRleHQiOiI8cD5FciBtYWNodCBkaWUgQW53ZW5kdW5nIGbDvHIgQnJvd3NlciBhdcOfZXJoYWxiIGRlcyBDbHVzdGVycyBkaXJla3QgZXJyZWljaGJhci48L3A+IiwicmVhc29uIjoiPHA+RGFzIGlzdCBBdWZnYWJlIGVpbmVyIFJvdXRlIChiZWkgS3ViZXJuZXRlczogSW5ncmVzcykuIERlciBTZXJ2aWNlIHdpcmt0IGltXG5DbHVzdGVyLjwvcD4iLCJjb3JyZWN0IjpmYWxzZX1dfSx7InF1ZXN0aW9uIjoiPHA+RGVpbmUgQW53ZW5kdW5nIHNvbGwgYXVzIGRlbSBJbnRlcm5ldCBlcnJlaWNoYmFyIHNlaW4uPC9wPlxuPHA+V2VsY2hlIE9wZW5TaGlmdC1SZXNzb3VyY2UgYnJhdWNoc3QgRHUgZGFmw7xyPzwvcD4iLCJhbnN3ZXJzIjpbeyJ0ZXh0IjoiPHA+RWluZSBSb3V0ZSwgZGllIGF1ZiBkZW4gU2VydmljZSBkZXIgQW53ZW5kdW5nIHZlcndlaXN0LjwvcD4iLCJjb3JyZWN0Ijp0cnVlLCJyZWFzb24iOiI8cD5SaWNodGlnLiBEaWUgUm91dGUgaXN0IGRhcyBPcGVuU2hpZnQtR2VnZW5zdMO8Y2sgenVtIEluZ3Jlc3MgaW4gS3ViZXJuZXRlczogU2llXG52ZXJiaW5kZXQgZWluZW4gSG9zdG5hbWVuIHZvbiBhdcOfZW4gbWl0IGVpbmVtIFNlcnZpY2UuPC9wPiJ9LHsidGV4dCI6IjxwPkVpbiB6d2VpdGVzIERlcGxveW1lbnQgbWl0IGRlbSBMYWJlbCA8Y29kZT5leHRlcm5hbDogdHJ1ZTwvY29kZT4uPC9wPiIsInJlYXNvbiI6IjxwPkRlcGxveW1lbnRzIHN0ZXVlcm4ga2VpbmUgRXJyZWljaGJhcmtlaXQgaW0gTmV0ejsgTGFiZWxzIGFsbGVpbiBiZXdpcmtlbiBuaWNodHMuPC9wPiIsImNvcnJlY3QiOmZhbHNlfSx7InRleHQiOiI8cD5FaW5lbiBQb2QsIGRlc3NlbiBDb250YWluZXIgYXVmIGRlbSBQb3J0IDQ0MyBsYXVzY2h0LjwvcD4iLCJyZWFzb24iOiI8cD5FaW4gUG9kIGFsbGVpbiBpc3Qgdm9uIGF1w59lbiBuaWNodCBlcnJlaWNoYmFyIOKAkyBkYWbDvHIgYnJhdWNodCBlcyBTZXJ2aWNlIHVuZFxuUm91dGUuPC9wPiIsImNvcnJlY3QiOmZhbHNlfSx7InRleHQiOiI8cD5FaW5lIENvbmZpZ01hcCwgaW4gZGVyIGRpZSBleHRlcm5lIEFkcmVzc2UgZWluZ2V0cmFnZW4gaXN0LjwvcD4iLCJyZWFzb24iOiI8cD5FaW5lIENvbmZpZ01hcCBzcGVpY2hlcnQgS29uZmlndXJhdGlvbiwgc2llIGxlaXRldCBrZWluZW4gVmVya2VociB3ZWl0ZXIuPC9wPiIsImNvcnJlY3QiOmZhbHNlfV19LHsicXVlc3Rpb24iOiI8cD5CZWltIEFubGVnZW4gZWluZXMgUG9kcyBzaWVoc3QgRHUgZGVuIFN0YXR1cyA8Y29kZT5JbWFnZVB1bGxCYWNrT2ZmPC9jb2RlPi48L3A+XG48cD5XYXMgYmVkZXV0ZXQgZGFzPzwvcD4iLCJhbnN3ZXJzIjpbeyJ0ZXh0IjoiPHA+RGFzIEltYWdlIGxpZcOfIHNpY2ggbmljaHQgbGFkZW4g4oCTIGV0d2Egd2VnZW4gZWluZXMgZmFsc2NoZW4gTmFtZW5zIG9kZXIgVGFncy48L3A+IiwiY29ycmVjdCI6dHJ1ZSwicmVhc29uIjoiPHA+UmljaHRpZy4gRGVyIFB1bGwgaXN0IHdpZWRlcmhvbHQgZ2VzY2hlaXRlcnQ7IGRpZSBnZW5hdWUgVXJzYWNoZSBzdGVodCBpbiBkZW5cbkV2ZW50cyB2b24gPGNvZGU+b2MgZGVzY3JpYmUgcG9kPC9jb2RlPi48L3A+In0seyJ0ZXh0IjoiPHA+RGVyIENvbnRhaW5lciBsw6R1ZnQgYmVyZWl0cywgYW50d29ydGV0IGFiZXIgc3DDvHJiYXIgbGFuZ3NhbWVyIGFscyBzb25zdCDDvGJsaWNoLjwvcD4iLCJyZWFzb24iOiI8cD5CZWkgPGNvZGU+SW1hZ2VQdWxsQmFja09mZjwvY29kZT4gaXN0IGRlciBDb250YWluZXIgbm9jaCBnYXIgbmljaHQgZ2VzdGFydGV0LjwvcD4iLCJjb3JyZWN0IjpmYWxzZX0seyJ0ZXh0IjoiPHA+RGFzIEltYWdlIGlzdCB6dSBncm/DnyBmw7xyIGRlbiBTcGVpY2hlciwgZGVuIGRlciBDbHVzdGVyIGRhZsO8ciBiZXJlaXRzdGVsbHQuPC9wPiIsInJlYXNvbiI6IjxwPkVzIGdpYnQga2VpbiBhbGxnZW1laW5lcyBHcsO2w59lbmxpbWl0OyBkZXIgRmVobGVyIGxpZWd0IGJlaW0gWnVncmlmZiBhdWYgZGllXG5SZWdpc3RyeS48L3A+IiwiY29ycmVjdCI6ZmFsc2V9LHsidGV4dCI6IjxwPkVpbiBhbmRlcmVyIFBvZCB2ZXJ3ZW5kZXQgZGFzc2VsYmUgSW1hZ2UgZ2VyYWRlIHVuZCBzcGVycnQgZXMgZsO8ciBhbGxlLjwvcD4iLCJyZWFzb24iOiI8cD5CZWxpZWJpZyB2aWVsZSBQb2RzIGvDtm5uZW4gZGFzc2VsYmUgSW1hZ2UgZ2xlaWNoemVpdGlnIG51dHplbi48L3A+IiwiY29ycmVjdCI6ZmFsc2V9XX1dfQ==</script>
+<ol>
+<li>
+<p>OpenShift wird oft „Enterprise Kubernetes“ genannt.</p>
+<p>Wie stehen OpenShift und Kubernetes zueinander?</p>
+<ul>
+<li><p>OpenShift ist eine Kubernetes-Distribution mit Zusätzen wie Routes und SCCs.</p></li>
+<li><p>OpenShift ist eine eigenständige Plattform, die Kubernetes gar nicht verwendet.</p></li>
+<li><p>Kubernetes ist eine abgespeckte Erweiterung, die auf OpenShift aufsetzt.</p></li>
+<li><p>Beides sind nur zwei Markennamen für genau dasselbe Produkt am Markt.</p></li>
+</ul>
+</li>
+<li>
+<p>Im Cluster gibt es mehrere Wege, eine Ressource anzulegen.</p>
+<p>Welche Aussage trifft zu?</p>
+<ul>
+<li><p>Es geht über die Web Console, mit <code>oc create</code> oder mit <code>oc apply -f</code>.</p></li>
+<li><p>Es geht nur über die Web Console, weil der Cluster grafisch bedient wird.</p></li>
+<li><p>Es geht nur mit YAML-Dateien, die man per <code>oc get</code> an den Cluster schickt.</p></li>
+<li><p>Es geht nur mit <code>oc create</code>, denn <code>oc apply</code> liest die Ressourcen nur aus.</p></li>
+</ul>
+</li>
+<li>
+<p>Du hast ein Deployment mit <code>oc apply -f deployment.yaml</code> angelegt. Jetzt änderst Du in
+der Datei das Image-Tag und wendest sie erneut an.</p>
+<p>Was passiert?</p>
+<ul>
+<li><p>Der Cluster erkennt die Änderung und aktualisiert das bestehende Deployment.</p></li>
+<li><p>Es gibt einen Fehler, weil ein Deployment dieses Namens bereits existiert.</p></li>
+<li><p>Es entsteht ein zweites Deployment mit gleichem Namen neben dem ersten.</p></li>
+<li><p>Das bestehende Deployment wird erst gelöscht und dann komplett neu angelegt.</p></li>
+</ul>
+</li>
+<li>
+<p>Du hast gerade <code>oc apply -f deployment.yaml</code> ausgeführt und führst denselben Befehl
+ohne Änderung an der Datei noch einmal aus.</p>
+<p>Was passiert?</p>
+<ul>
+<li><p>Nichts – der gewünschte Zustand ist im Cluster bereits hergestellt.</p></li>
+<li><p>Alle Pods des Deployments werden nacheinander einmal neu gestartet.</p></li>
+<li><p>Es gibt eine Fehlermeldung, weil die Ressource schon existiert.</p></li>
+<li><p>Der Cluster legt eine Sicherung des vorherigen Zustands an.</p></li>
+</ul>
+</li>
+<li>
+<p>Du hast das Deployment <code>recipes-backend</code> mit <code>oc apply -f deployment.yaml</code> angelegt.
+Jetzt änderst Du in der Datei den Namen:</p>
+<pre><code class="language-yaml"># vorher
+metadata:
+  name: recipes-backend
+
+# nachher
+metadata:
+  name: recipes-api
+</code></pre>
+<p>Was passiert beim erneuten <code>oc apply -f deployment.yaml</code>?</p>
+<ul>
+<li><p>Ein zweites Deployment <code>recipes-api</code> entsteht, das alte bleibt bestehen.</p></li>
+<li><p>Das bestehende Deployment wird von <code>recipes-backend</code> in <code>recipes-api</code> umbenannt.</p></li>
+<li><p>Es gibt einen Fehler, weil sich der Name einer Ressource nicht ändern darf.</p></li>
+<li><p>Das alte Deployment wird gelöscht und durch <code>recipes-api</code> ersetzt.</p></li>
+</ul>
+</li>
+<li>
+<p>Du willst ein Deployment anlegen, das es noch nicht gibt.</p>
+<p>Was unterscheidet <code>oc create</code> von <code>oc apply</code>?</p>
+<ul>
+<li><p><code>create</code> legt nur neu an, <code>apply</code> legt an oder ändert, was schon da ist.</p></li>
+<li><p><code>create</code> ist für Deployments gedacht, <code>apply</code> dagegen für Services.</p></li>
+<li><p>Es gibt keinen Unterschied, die beiden Befehle sind nur Aliase füreinander.</p></li>
+<li><p><code>apply</code> ist veraltet und wird von <code>create</code> vollständig abgelöst.</p></li>
+</ul>
+</li>
+<li>
+<p>Kubernetes wird oft als „deklarativ“ beschrieben.</p>
+<p>Was bedeutet das?</p>
+<ul>
+<li><p>Du beschreibst den Zielzustand, der Cluster stellt ihn her und hält ihn.</p></li>
+<li><p>Du gibst Schritt für Schritt vor, welcher Container wann startet.</p></li>
+<li><p>Der Cluster fragt vor jedem einzelnen Schritt nach, ob er weitermachen soll.</p></li>
+<li><p>Jeder Befehl an den Cluster wird automatisch mitprotokolliert.</p></li>
+</ul>
+</li>
+<li>
+<p>Ein Unternehmen überlegt, seine Anwendungen auf Kubernetes zu betreiben.</p>
+<p>Was spricht vor allem dafür?</p>
+<ul>
+<li><p>Verteilung auf mehrere Maschinen und Ausfallsicherheit durch Selbstheilung.</p></li>
+<li><p>Schnellere Programmiersprachen und leistungsfähigere Datenbanken im eigenen Code.</p></li>
+<li><p>Automatische Code-Reviews und Freigaben jedes Deployments durch das Team.</p></li>
+<li><p>Garantiert niedrigere Kosten in der Cloud und eine schnellere Anbindung.</p></li>
+</ul>
+</li>
+<li>
+<p>Du hast drei YAML-Dateien: <code>service.yaml</code>, <code>route.yaml</code> und <code>deployment.yaml</code>.</p>
+<p>Spielt es eine Rolle, in welcher Reihenfolge Du sie mit <code>oc apply -f</code> anlegst?</p>
+<ul>
+<li><p>Nein – der Cluster nähert sich dem Zielzustand in jeder Reihenfolge an.</p></li>
+<li><p>Ja – das Deployment muss zuerst angelegt sein, sonst gibt es einen Fehler.</p></li>
+<li><p>Ja – die Route muss zuerst existieren, damit der Service sie finden kann.</p></li>
+<li><p>Ja – die Dateien müssen alphabetisch sortiert angewendet werden, also so.</p></li>
+</ul>
+</li>
+<li>
+<p>Ein Pod startet nicht und bleibt im Status <code>CrashLoopBackOff</code>.</p>
+<p>Womit findest Du die Ursache?</p>
+<ul>
+<li><p><code>oc describe pod</code> für die Events, <code>oc logs</code> für die Ausgabe der Anwendung.</p></li>
+<li><p>Mit <code>oc delete pod</code> den Pod löschen und dann einfach noch einmal versuchen.</p></li>
+<li><p>Mit <code>oc restart cluster</code> den ganzen Cluster neu starten und dann abwarten.</p></li>
+<li><p>Gar nicht – Fehler im Cluster lassen sich nur durch Ausprobieren eingrenzen.</p></li>
+</ul>
+</li>
+<li>
+<p>Du legst ein Deployment an, das auf ein Image in einer Registry verweist.</p>
+<p>Wann wird das Image heruntergeladen?</p>
+<ul>
+<li><p>Wenn ein Pod auf einen Node kommt, auf dem das Image noch fehlt.</p></li>
+<li><p>Sofort bei <code>oc apply -f</code>, noch bevor überhaupt ein Pod entsteht.</p></li>
+<li><p>Gar nicht – das Image muss vorher von Hand auf jeden Node kopiert werden.</p></li>
+<li><p>Einmal beim Einrichten des Clusters und danach nie wieder.</p></li>
+</ul>
+</li>
+<li>
+<p>Du aktualisierst ein Deployment, etwa mit einem neuen Image-Tag.</p>
+<p>Was beschreibt die Strategie <code>RollingUpdate</code>?</p>
+<ul>
+<li><p>Alte Pods werden schrittweise durch neue ersetzt, ohne Ausfall.</p></li>
+<li><p>Alle alten Pods werden sofort beendet, danach starten die neuen.</p></li>
+<li><p>Das Update läuft rückwärts, also vom letzten Pod bis zum ersten.</p></li>
+<li><p>Das Update wird gesammelt und erst zu einer festen Uhrzeit ausgeführt.</p></li>
+</ul>
+</li>
+<li>
+<p>Dein Deployment hat <code>replicas: 3</code>. Ein Worker Node, auf dem einer der Pods lief,
+fällt aus.</p>
+<p>Was passiert?</p>
+<ul>
+<li><p>Der Cluster startet von selbst einen neuen Pod auf einem anderen Node.</p></li>
+<li><p>Nichts – die Anwendung läuft mit zwei Pods weiter, bis jemand eingreift.</p></li>
+<li><p>Der ganze Cluster fährt herunter, weil ein Node nicht mehr erreichbar ist.</p></li>
+<li><p>Die Anwendung ist komplett offline, bis der Node wieder repariert ist.</p></li>
+</ul>
+</li>
+<li>
+<p>Im Cluster arbeiten verschiedene Ressourcentypen zusammen.</p>
+<p>Was ist die Aufgabe eines Service?</p>
+<ul>
+<li><p>Er ist eine stabile Adresse vor wechselnden Pods und verteilt Anfragen.</p></li>
+<li><p>Er startet und stoppt die Container eines Deployments nach Bedarf.</p></li>
+<li><p>Er speichert Konfigurationswerte wie die Adresse einer Datenbank.</p></li>
+<li><p>Er macht die Anwendung für Browser außerhalb des Clusters direkt erreichbar.</p></li>
+</ul>
+</li>
+<li>
+<p>Deine Anwendung soll aus dem Internet erreichbar sein.</p>
+<p>Welche OpenShift-Ressource brauchst Du dafür?</p>
+<ul>
+<li><p>Eine Route, die auf den Service der Anwendung verweist.</p></li>
+<li><p>Ein zweites Deployment mit dem Label <code>external: true</code>.</p></li>
+<li><p>Einen Pod, dessen Container auf dem Port 443 lauscht.</p></li>
+<li><p>Eine ConfigMap, in der die externe Adresse eingetragen ist.</p></li>
+</ul>
+</li>
+<li>
+<p>Beim Anlegen eines Pods siehst Du den Status <code>ImagePullBackOff</code>.</p>
+<p>Was bedeutet das?</p>
+<ul>
+<li><p>Das Image ließ sich nicht laden – etwa wegen eines falschen Namens oder Tags.</p></li>
+<li><p>Der Container läuft bereits, antwortet aber spürbar langsamer als sonst üblich.</p></li>
+<li><p>Das Image ist zu groß für den Speicher, den der Cluster dafür bereitstellt.</p></li>
+<li><p>Ein anderer Pod verwendet dasselbe Image gerade und sperrt es für alle.</p></li>
+</ul>
+</li>
+</ol>
+</div>
+<p>Hakt es bei einer Frage? Die Visualisierungen
+<a class="skr-doclink skr-doclink--visualization" href="../shared/visualisierungen/was-ist-kubernetes.html">Was ist Kubernetes?</a> und
+<a class="skr-doclink skr-doclink--visualization" href="../shared/visualisierungen/kubernetes-ressourcen/">Kubernetes-Ressourcen</a> sowie
+der <a class="skr-doclink skr-doclink--visualization" href="../shared/visualisierungen/cli-spickzettel.html">Spickzettel: kubectl und oc</a> zeigen
+die Zusammenhänge noch einmal im Überblick.</p>
+
+    </main><aside class="skr-guide-sidebar">
+  <details class="skr-guide-side skr-guide-side--toc skr-fold" data-skr-toc-box
+           data-skr-toc-limit="12" open hidden>
+    <summary class="skr-guide-side__label">Auf dieser Seite</summary>
+    <nav class="skr-toc skr-fold__body" data-skr-toc aria-label="Inhaltsverzeichnis"></nav>
+  </details>
+  <template data-skr-sidebar-cards></template>
+</aside>
+
+  </div>
+  <div class="skr-print-contact" aria-hidden="true">
+  <span>Kontakt: https://www.atvantage.com</span>
+  <span>academy@atvantage.com</span>
+</div>
+
+<footer class="skr-footer">
+  <div class="skr-footer__grid">
+    <div><strong>Containertechnologien (Academy)</strong>
+      <p>Schulungsunterlagen der ATVANTAGE Academy.</p>
+    </div><div>
+      <strong>Kontakt</strong>
+      <p><a href="https://www.atvantage.com" target="_blank" rel="noopener">Website</a><br><a href="mailto:academy@atvantage.com">academy@atvantage.com</a><br>
+      </p>
+    </div>
+  </div>
+  <div class="skr-footer__legal">
+    © <span data-skr-year>2026</span> ATVANTAGE
+  </div>
+</footer>
+
+</body>
+</html>
