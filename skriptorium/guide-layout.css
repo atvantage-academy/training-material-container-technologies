@@ -41,22 +41,12 @@
 .skr-guide-done > :last-child { margin-bottom: 0; }
 
 /* --- Anordnung der Panels und der Definition of Done -------------------------
-   Unter tabs, reveal oder fold (`arrangements.about`, Vorgabe fold) fasst der Bau die
-   Panels über die Anleitung (`guide.about`) und die Definition of Done vor dem Inhalt in
+   Unter accordion, tabs, reveal oder fold (`arrangements.about`, Vorgabe fold) fasst der Bau
+   die Panels über die Anleitung (`guide.about`) und die Definition of Done vor dem Inhalt in
    eine Hülle `skr-guide-panels` mit `data-skr-arrangement`; die Panels der Kontrolle
    (`guide.review`) nach dem Inhalt ebenso nach `arrangements.review` (Vorgabe stack), die
-   Hülle zusätzlich mit `skr-guide-review`. Jedes Element ist ein `<details>` des passenden
-   Bausteins (`skr-tabs__panel`, `skr-reveal`, `skr-fold`). Verhalten und Grundform kommen
-   von den Bausteinen (components.css, client.js); hier nur, was die Hülle braucht. Unter
-   stack gibt es keine Hülle – die Panels stehen als Abschnitte im Fluss. */
-
-/* Der Rhythmus im Element: Der Inhalt eines `skr-fold` und einer `skr-reveal` ohne
-   Skript steht direkt im `<details>`, nicht in einem Fluss-Container (guide.css).
-   `:where` hält die Spezifität bei 0-1-0 – die eigenen Abstände der Bausteine (etwa
-   das Panel der Reiter, die Mitte des Overlays) gewinnen. */
-.skr-guide-panels :where(details, .skr-guide-done) > * + * {
-  margin-top: var(--skr-rhythm-block);
-}
+   Hülle zusätzlich mit `skr-guide-review`. Die Form der Hülle gilt für jede Anordnung
+   (components.css, „Angeordnete Panels“); hier nur die Definition of Done darin. */
 
 /* Die Definition of Done im Element: schlicht. Rahmen und Fläche gibt schon das
    Element (Reiter, Overlay, Klappzeile); eine zweite Fläche darin wäre ein Kasten im
@@ -67,36 +57,6 @@
   border-radius: 0;
   padding: 0;
   margin: 0;
-}
-
-/* reveal: Die Auslöser stehen in einer Zeile und brechen bei Bedarf um. Ohne Skript
-   klappt ein geöffnetes Element an Ort und Stelle auf (kein Overlay) – es nimmt dann
-   die ganze Zeile. */
-.skr-guide-panels[data-skr-arrangement="reveal"] {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--skr-space-2) var(--skr-space-6);
-}
-.skr-guide-panels[data-skr-arrangement="reveal"] > .skr-reveal { margin: 0; }
-.skr-guide-panels[data-skr-arrangement="reveal"] > .skr-reveal[open]:not(:has(> .skr-reveal__body)) {
-  flex-basis: 100%;
-}
-
-/* fold: eine Linie je Element, wie das Akkordeon der Reiter ohne Skript – die
-   Klappzeilen stehen im Text und lesen sich als Liste von Abschnitten. */
-.skr-guide-panels[data-skr-arrangement="fold"] > .skr-fold {
-  border-top: 1px solid var(--skr-color-border);
-}
-.skr-guide-panels[data-skr-arrangement="fold"] > .skr-fold:last-child {
-  border-bottom: 1px solid var(--skr-color-border);
-}
-.skr-guide-panels[data-skr-arrangement="fold"] > .skr-fold > summary {
-  padding: var(--skr-space-3) 0;
-  font-weight: var(--skr-fw-bold, 600);
-}
-.skr-guide-panels[data-skr-arrangement="fold"] > .skr-fold[open] {
-  padding-bottom: var(--skr-space-4);
 }
 
 /* --- Karte „Fortschritt“ ----------------------------------------------------

@@ -4,13 +4,14 @@
   <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="skr-root" content="../../">
-<script src="../../skriptorium/skr.js?v=c06299bd"></script>
+<meta name="skr-scope" content="training-concept-container-technologies">
+<script src="../../skriptorium/skr.js?v=597e5686"></script>
 <title>Das Backend auf PostgreSQL umstellen · Containertechnologien (Academy)</title>
-<meta name="description" content="Das Backend von der eingebauten H2-Datenbank auf die PostgreSQL-Datenbank umstellen – erreichbar über einen Service, Zugangsdaten aus dem Secret.">
+<meta name="description" content="Die Datenbank über einen Service erreichbar machen und das Backend von der eingebauten H2-Datenbank auf PostgreSQL umstellen.">
 
 <meta property="og:site_name" content="Containertechnologien (Academy)">
 <meta property="og:title" content="Das Backend auf PostgreSQL umstellen">
-<meta property="og:description" content="Das Backend von der eingebauten H2-Datenbank auf die PostgreSQL-Datenbank umstellen – erreichbar über einen Service, Zugangsdaten aus dem Secret.">
+<meta property="og:description" content="Die Datenbank über einen Service erreichbar machen und das Backend von der eingebauten H2-Datenbank auf PostgreSQL umstellen.">
 <meta property="og:type" content="article">
 <link rel="preload" href="../../themes/atvantage/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../../themes/default/theme.css?v=b795c99c" data-skr-source="theme">
@@ -25,31 +26,32 @@
 <link rel="stylesheet" href="../../skriptorium/tokens.css?v=28abf864">
 <link rel="stylesheet" href="../../extensions/didaktikon/tokens.css?v=5966d76a">
 <link rel="stylesheet" href="../../skriptorium/base.css?v=86e37c43">
-<link rel="stylesheet" href="../../skriptorium/components.css?v=3a968127">
+<link rel="stylesheet" href="../../skriptorium/components.css?v=e3b517fb">
 <link rel="stylesheet" href="../../skriptorium/doclinks.css?v=2ef23515">
 <link rel="stylesheet" href="../../skriptorium/linkmarks.css?v=1643f80a">
-<link rel="stylesheet" href="../../skriptorium/site.css?v=2a7f5baf">
+<link rel="stylesheet" href="../../skriptorium/site.css?v=825d2514">
 <link rel="stylesheet" href="../../skriptorium/logo.css?v=43a7fbaf">
-<link rel="stylesheet" href="../../skriptorium/guide.css?v=1237e482">
-<link rel="stylesheet" media="print" href="../../skriptorium/print.css?v=6c7ec44c">
-<meta name="generator" content="Skriptorium 2.0.0-rc.15">
-<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"2.0.0-rc.11"}],"internal":false,"languages":["de"],"skriptorium":"2.0.0-rc.15","theme":"didaktikon","themeOptions":["didaktikon"],"themes":[{"name":"didaktikon","version":"2.0.0-rc.11"},{"name":"atvantage","version":"2.2.0"},{"name":"default","version":"2.0.0-rc.15"}]}</script>
-<script type="application/json" id="skr-page-info">{"clientApi":"full","defaultLanguage":"de","description":"Das Backend von der eingebauten H2-Datenbank auf die PostgreSQL-Datenbank umstellen – erreichbar über einen Service, Zugangsdaten aus dem Secret.","duration":20,"fields":null,"language":"de","languages":["de"],"layout":"didaktikon.exercise","pageId":"openshift-grundlagen-backend-auf-postgresql-issue","runtimeFragments":null,"siteIndex":"/skriptorium/site.json","title":"Das Backend auf PostgreSQL umstellen","topics":["Service","DNS","Secret","Umgebungsvariablen"],"untranslated":null,"url":"/openshift-grundlagen/backend-auf-postgresql/issue.html"}</script>
+<link rel="stylesheet" href="../../skriptorium/guide.css?v=b1acb596">
+<link rel="stylesheet" media="print" href="../../skriptorium/print.css?v=f344e618">
+<meta name="generator" content="Skriptorium 2.0.0-rc.20">
+<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"2.0.0-rc.11"}],"internal":false,"languages":["de"],"skriptorium":"2.0.0-rc.20","theme":"didaktikon","themeOptions":["didaktikon"],"themes":[{"name":"didaktikon","version":"2.0.0-rc.11"},{"name":"atvantage","version":"2.2.0"},{"name":"default","version":"2.0.0-rc.20"}]}</script>
+<script type="application/json" id="skr-page-info">{"clientApi":"full","defaultLanguage":"de","description":"Die Datenbank über einen Service erreichbar machen und das Backend von der eingebauten H2-Datenbank auf PostgreSQL umstellen.","duration":20,"fields":null,"language":"de","languages":["de"],"layout":"didaktikon.exercise","pageId":"openshift-grundlagen-backend-auf-postgresql-issue","runtimeFragments":null,"siteIndex":"/skriptorium/site.json","title":"Das Backend auf PostgreSQL umstellen","topics":["Services","Secrets","DNS"],"untranslated":null,"url":"/openshift-grundlagen/backend-auf-postgresql/issue.html"}</script>
 <script type="application/json" id="skr-texts">{"didaktikon.capture":"Capture-Modus","didaktikon.captureExit":"beenden","didaktikon.captureText":"Text einblenden","didaktikon.crosswordAcross":"Waagerecht","didaktikon.crosswordCellAcross":"{number} waagerecht, Buchstabe {position}","didaktikon.crosswordCellDown":"{number} senkrecht, Buchstabe {position}","didaktikon.crosswordDown":"Senkrecht","didaktikon.crosswordHintLetter":"Tipp: Buchstabe","didaktikon.crosswordHintWord":"Tipp: Wort","didaktikon.crosswordRestart":"Neu beginnen","didaktikon.crosswordRestartText":"Deine Eingaben in diesem Rätsel werden gelöscht.","didaktikon.crosswordRestartTitle":"Kreuzworträtsel neu beginnen?","didaktikon.crosswordReveal":"Auflösen","didaktikon.crosswordRevealText":"Alle Felder werden ausgefüllt.","didaktikon.crosswordRevealTitle":"Kreuzworträtsel auflösen?","didaktikon.crosswordSolution":"Lösungswort","didaktikon.crosswordSolutionCell":"Lösungswort, Buchstabe {position}","didaktikon.crosswordSolved":"Gelöst – alle Begriffe stimmen.","didaktikon.doclinkCrossword":"Kreuzworträtsel","didaktikon.doclinkExercise":"Übung","didaktikon.doclinkQuiz":"Wissens-Check","didaktikon.doclinkSimulation":"Simulation","didaktikon.doclinkVisualization":"Visualisierung","didaktikon.exerciseObjectives":"Lernziele","didaktikon.exerciseQuestionsDone":"Du hast die Kontrollfragen beantwortet","didaktikon.exerciseReflectiveQuestions":"Reflexionsfragen","didaktikon.exerciseUserStory":"User Story","didaktikon.moduleBlock":"Grobthema: {block}","didaktikon.moduleDuration":"{minutes} Minuten","didaktikon.moduleMaterial":"Material","didaktikon.moduleMaterialOver":"Das Material dauert zusammen {material}′ – länger als das Modul mit {module}′.","didaktikon.quizAgain":"Noch einmal","didaktikon.quizCorrect":"Richtig.","didaktikon.quizCorrectCount":"{count} richtig","didaktikon.quizCorrectWouldBe":"Richtig wäre gewesen:","didaktikon.quizDone":"Fertig","didaktikon.quizEvaluate":"Auswertung","didaktikon.quizJump":"Zu Frage springen","didaktikon.quizNext":"Weiter","didaktikon.quizOverview":"Alle Fragen","didaktikon.quizOverviewClose":"Zurück zum Check","didaktikon.quizOverviewCorrect":"(richtig)","didaktikon.quizOverviewGoTo":"Zu dieser Frage","didaktikon.quizProgress":"Fortschritt","didaktikon.quizQuestionOf":"Frage {current} von {total}","didaktikon.quizRestart":"Neu beginnen","didaktikon.quizRestartText":"Deine Antworten in diesem Wissens-Check werden gelöscht.","didaktikon.quizRestartTitle":"Wissens-Check neu beginnen?","didaktikon.quizResult":"{correct} von {total} richtig","didaktikon.quizResultLong":"{correct} von {total} Fragen richtig","didaktikon.quizTrainerOnly":"Nur für Trainer:innen","didaktikon.quizWrong":"Nicht ganz.","didaktikon.scenarios":"Szenarien","didaktikon.simAllScenarios":"Alle Szenarien (Taste 0)","didaktikon.simControls":"Simulation steuern","didaktikon.simNext":"Schritt vor (→)","didaktikon.simNextAria":"Schritt vor","didaktikon.simOverview":"Übersicht","didaktikon.simPause":"Pause (Leertaste)","didaktikon.simPauseAria":"Pause","didaktikon.simPlay":"Abspielen (Leertaste)","didaktikon.simPlayAria":"Abspielen","didaktikon.simPrev":"Schritt zurück (←)","didaktikon.simPrevAria":"Schritt zurück","didaktikon.simPrintHint":"Diese Simulation lebt von der Bewegung. Auf Papier steht nur der gerade sichtbare Schritt – der QR-Code oben führt zurück zur laufenden Fassung.","didaktikon.simReset":"Zurück auf Anfang (Taste R)","didaktikon.simResetAria":"Zurück auf Anfang","didaktikon.simResize":"Breite der Erklärspalte (Pfeiltasten)","didaktikon.simScenarioCount":"{count} Szenarien","didaktikon.simScenarioKey":"{title} (Taste {number})","didaktikon.simScenarioTitle":"Szenario {number}","didaktikon.simSpeed":"Tempo wählen (Taste T)","didaktikon.simSpeedAria":"Tempo wählen","didaktikon.simSpeedMenu":"Tempo","didaktikon.simStepCount":"{count} Schritte","didaktikon.simStepCountOne":"{count} Schritt","didaktikon.simStepCounter":"Schritt {current} / {total}","didaktikon.speedFast":"zügig","didaktikon.speedNormal":"normal","didaktikon.speedSlow":"langsam","didaktikon.speedTurbo":"im Zeitraffer","didaktikon.speedValue":"{speed}×","didaktikon.stepNote":"Erklärung zum aktuellen Schritt","didaktikon.trainerNoteClose":"Schließen","didaktikon.trainerNoteOpen":"Hinweis für Trainer:innen anzeigen","didaktikon.trainerNoteTitle":"Hinweis für Trainer:innen","didaktikon.trainingCatalogEmpty":"Hier gibt es noch keine Schulung.","didaktikon.trainingCatalogTrainings":"Schulungen","didaktikon.trainingDays":"{days} Tage","didaktikon.trainingDaysOne":"{days} Tag","didaktikon.trainingHomeInfo":"Kursbeschreibung","didaktikon.trainingHomeManifest":"Didaktisches Manifest","didaktikon.trainingHomeSales":"Sales-Asset","didaktikon.trainingInfoAudience":"Zielgruppe","didaktikon.trainingInfoObjectives":"Lernziele","didaktikon.trainingInfoObjectivesLead":"Die Lernenden …","didaktikon.trainingInfoOverview":"Überblick","didaktikon.trainingInfoPrerequisites":"Voraussetzungen","didaktikon.trainingMaterials":"Kursmaterial","didaktikon.trainingMaterialsExercises":"Übungen","didaktikon.trainingMaterialsLead":"Links stehen die **Übungen**, an denen Du selbst arbeitest, rechts das **Material zum Nachschlagen**.","didaktikon.trainingMaterialsMore":"Weitere Themen","didaktikon.trainingMaterialsOther":"Sonstige Unterlagen","didaktikon.trainingMaterialsReference":"Zum Nachschlagen","didaktikon.trainingModules":"Module","didaktikon.trainingModulesBlock":"Grobthema","didaktikon.trainingModulesDuration":"Dauer","didaktikon.trainingModulesMaterial":"Material","didaktikon.trainingModulesModule":"Modul","didaktikon.trainingModulesOver":"länger als das Modul","didaktikon.trainingSalesBuyers":"Käufer","didaktikon.trainingSalesPitch":"Pitch","didaktikon.trainingSalesPricing":"Preisrahmen","didaktikon.trainingSalesUsp":"Unterscheidungsmerkmale","didaktikon.trainingSalesValueProposition":"Nutzenversprechen"}</script>
 
-<script src="../../skriptorium/client.js?v=756a5d69" defer></script>
-<script src="../../skriptorium/site.js?v=6472c794" defer></script>
-<script src="../../skriptorium/search-trail.js?v=31279378" data-skr-search-trail
-        data-base="../../" data-index="../../skriptorium/search/de.json?v=c2fa893e" defer></script>
-<link rel="stylesheet" href="../../skriptorium/highlight.css?v=f8a3fc05">
-<script type="module" src="../../skriptorium/highlight.js?v=0b2d40aa" data-skr-highlight="[&#34;bash&#34;,&#34;dockerfile&#34;,&#34;python&#34;,&#34;sql&#34;,&#34;yaml&#34;]"></script>
+<script src="../../skriptorium/client.js?v=e9b75088" defer></script>
+<script src="../../skriptorium/site.js?v=bf4672b2" defer></script>
+
+<script src="../../skriptorium/search-trail.js?v=ca558440" data-skr-search-trail
+        data-base="../../" data-index="../../skriptorium/search/de.json?v=b137f70b" defer></script>
+<link rel="stylesheet" href="../../skriptorium/highlight.css?v=b66fa35b">
+<script type="module" src="../../skriptorium/highlight.js?v=bb894db9" data-skr-highlight></script>
 <link rel="apple-touch-icon" sizes="180x180" href="../../themes/atvantage/assets/icon-180.png">
 <link rel="icon" sizes="32x32" href="../../themes/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="../../themes/atvantage/assets/icon-16.png">
 
   <style>@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }</style>
   <link rel="stylesheet" href="../../skriptorium/page-transitions.css?v=716872f0">
-<link rel="stylesheet" href="../../skriptorium/guide-layout.css?v=cc0ce1dd">
+<link rel="stylesheet" href="../../skriptorium/guide-layout.css?v=ca7e6344">
 <link rel="stylesheet" href="../../extensions/didaktikon/exercise.css?v=485b7c1d">
 <script src="../../skriptorium/guide-layout.js?v=00fd0360" defer></script>
 
@@ -87,7 +89,7 @@
   <div class="skr-header__tools">
 <div class="skr-search" data-skr-search hidden
      data-mode="expand" data-shortcut="double_shift"
-     data-index="../../skriptorium/search/de.json?v=c2fa893e"
+     data-index="../../skriptorium/search/de.json?v=b137f70b"
      data-base="../../">
   <button type="button" class="skr-tool skr-tool--search" data-skr-search-toggle
           aria-expanded="false" aria-controls="skr-search-dialog"
@@ -101,6 +103,20 @@
           <option value="">Alle</option>
         </select>
       </label>
+      <div class="skr-search__field skr-search__field--kind" hidden>
+        <span class="skr-search__label" id="skr-search-kind-label">Art</span>
+        <button type="button" class="skr-search__kind" aria-expanded="false" aria-controls="skr-search-kinds"
+                aria-labelledby="skr-search-kind-label skr-search-kind-value"
+                data-all="Alle Arten" data-count="{n} Arten"
+                data-none="Keine Art"><span
+                class="skr-search__kind-value" id="skr-search-kind-value">Alle Arten</span></button>
+      </div>
+      <fieldset class="skr-search__kinds" id="skr-search-kinds" hidden
+                data-label-only="nur" data-none-selected="Keine Art gewählt.">
+        <legend class="skr-visually-hidden">Art</legend>
+        <ul class="skr-search__kind-list"></ul>
+        <button type="button" class="skr-search__kind-all">Alle auswählen</button>
+      </fieldset>
       <label class="skr-search__field skr-search__field--query">
         <span class="skr-search__label">Suchbegriff</span>
         <input type="search" class="skr-search__input"
@@ -114,7 +130,7 @@
     <ul class="skr-search__results" data-skr-search-results aria-label="Suchergebnisse"></ul>
   </dialog>
 </div>
-<script src="../../skriptorium/search.js?v=2be133a6" defer></script>
+<script src="../../skriptorium/search.js?v=679c2a13" defer></script>
 <button type="button" class="skr-qr" data-skr-qr hidden
         title="Diese Seite auf Deinem Smartphone öffnen"
         aria-label="Diese Seite auf Deinem Smartphone öffnen"></button>
@@ -128,53 +144,53 @@
 <section class="skr-guide-hero"
          aria-labelledby="skr-page-title"><nav class="skr-guide-hero__crumbs" aria-label="Brotkrumen"><a href="../../openshift-grundlagen/">OpenShift – Grundlagen für Entwickler</a><span>/</span><span aria-current="page">Das Backend auf PostgreSQL umstellen</span></nav>
   <div class="skr-guide-hero__meta">
-    <div class="skr-guide-hero__tags"><span class="skr-tag skr-tag--time">ca. 20 Minuten</span><span class="skr-tag">Service</span><span class="skr-tag">DNS</span><span class="skr-tag">Secret</span><span class="skr-tag">Umgebungsvariablen</span>
+    <div class="skr-guide-hero__tags"><span class="skr-tag skr-tag--time">ca. 20 Minuten</span><span class="skr-tag">Services</span><span class="skr-tag">Secrets</span><span class="skr-tag">DNS</span>
     </div>
     <div class="skr-guide-hero__actions">
-      <button type="button" class="skr-btn skr-btn--ghost skr-copy-md"
-              data-skr-copy-md="#skr-md-source"
-              title="Markdown kopieren" aria-label="Markdown kopieren"></button>
     </div>
   </div><h1 id="skr-page-title">Das Backend auf PostgreSQL umstellen</h1>
 </section>
 
   <div class="skr-guide-layout">
     <main class="skr-guide-main" id="skr-content"><div class="skr-guide-panels" data-skr-arrangement="fold">
-<details class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
+<details id="user-story" class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
 <summary>User Story</summary>
 <div class="skr-didaktikon-user-story" data-skr-field="didaktikon.user_story">
-<p><strong>Als</strong> Entwickler:in <strong>möchte ich</strong> das Backend von der eingebauten H2-Datenbank auf die PostgreSQL-Datenbank umstellen, <strong>damit</strong> die Daten in einer echten Datenbank liegen und einen Neustart des Backends überstehen.</p>
+<p><strong>Als</strong> Entwickler:in <strong>möchte ich</strong> das Backend von der eingebauten H2-Datenbank auf PostgreSQL umstellen, <strong>damit</strong> die Rezepte in einer echten Datenbank gespeichert werden.</p>
 </div>
 </details>
-<details class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
+<details id="lernziele" class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
 <summary>Lernziele</summary>
 <div class="skr-didaktikon-objectives" data-skr-field="didaktikon.objectives">
 <ul>
 <li>Du stellst ein bestehendes Deployment auf ein anderes Image-Tag um.</li>
-<li>Du kombinierst Umgebungsvariablen aus einem Secret mit festen Werten.</li>
-<li>Du machst eine Anwendung über einen Service unter einem stabilen DNS-Namen im Cluster erreichbar.</li>
+<li>Du kombinierst Umgebungsvariablen aus verschiedenen Quellen – Secret und fester Wert.</li>
+<li>Du erklärst, wie ein Service als interner DNS-Name die Kommunikation zwischen Pods ermöglicht.</li>
 </ul>
 </div>
 </details>
-<details class="skr-fold">
+<details id="definition-of-done" class="skr-fold">
 <summary>Definition of Done</summary>
 <div class="skr-guide-done">
 <ul class="task-list">
-<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Der Service postgres existiert und zeigt auf den Pod der Datenbank (Port 5432)." disabled="disabled"> Der Service <code>postgres</code> existiert und zeigt auf den Pod der Datenbank (Port 5432).</li>
-<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Das Backend-Deployment nutzt das Image ralfueberfuhr/recipes-backend:latest." disabled="disabled"> Das Backend-Deployment nutzt das Image <code>ralfueberfuhr/recipes-backend:latest</code>.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="oc get service postgres zeigt einen Service für die Datenbank auf Port 5432." disabled="disabled"> <code>oc get service postgres</code> zeigt einen Service für die Datenbank auf Port 5432.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Das Backend-Deployment verwendet das Image ralfueberfuhr/recipes-backend:latest." disabled="disabled"> Das Backend-Deployment verwendet das Image <code>ralfueberfuhr/recipes-backend:latest</code>.</li>
 <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="DB_USER und DB_PASSWORD kommen über secretKeyRef aus dem Secret der Datenbank." disabled="disabled"> <code>DB_USER</code> und <code>DB_PASSWORD</code> kommen über <code>secretKeyRef</code> aus dem Secret der Datenbank.</li>
-<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Ein über die API angelegtes Rezept ist nach einem Neustart des Backends weiterhin abrufbar." disabled="disabled"> Ein über die API angelegtes Rezept ist nach einem Neustart des Backends weiterhin abrufbar.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Die Logs des Backends zeigen eine erfolgreiche Verbindung zu PostgreSQL." disabled="disabled"> Die Logs des Backends zeigen eine erfolgreiche Verbindung zu PostgreSQL.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Ein über die API angelegtes Rezept ist nach einem Neustart des Backends noch da." disabled="disabled"> Ein über die API angelegtes Rezept ist nach einem Neustart des Backends noch da.</li>
 <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Du hast die Kontrollfragen beantwortet" disabled="disabled"> Du hast die Kontrollfragen beantwortet</li>
 </ul>
 </div>
 </details>
 </div>
 <h2 id="arbeitsschritte">Arbeitsschritte</h2>
-<p>Du arbeitest mit dem Backend aus „Das Backend deployen“ und der Datenbank aus „Eine
-PostgreSQL-Datenbank bereitstellen“ weiter.</p>
+<p>Du arbeitest mit dem Backend aus <a class="skr-doclink skr-doclink--exercise" href="../../openshift-grundlagen/backend-deployment/issue.html">„Das Backend deployen“</a>
+und der Datenbank aus <a class="skr-doclink skr-doclink--exercise" href="../../openshift-grundlagen/datenbank/issue.html">„Eine PostgreSQL-Datenbank bereitstellen“</a>
+weiter.</p>
 <h3 id="die-datenbank-über-einen-service-erreichbar-machen">Die Datenbank über einen Service erreichbar machen</h3>
 <p>Damit das Backend die Datenbank über einen <strong>stabilen Namen</strong> statt über eine wechselnde
-Pod-IP erreicht, braucht sie einen <strong>Service</strong> – nach demselben Muster wie beim Backend:</p>
+IP-Adresse erreicht, braucht die PostgreSQL-Datenbank aus der vorigen Übung einen
+<strong>Service</strong>. Leg ihn nach dem Muster des Backends an:</p>
 <table>
 	<thead>
 			<tr>
@@ -199,19 +215,18 @@ Pod-IP erreicht, braucht sie einen <strong>Service</strong> – nach demselben M
 </table>
 <blockquote>
 <p><strong>Hinweis:</strong> Der Name des Service ist zugleich der Hostname, unter dem die Datenbank im
-Cluster erreichbar ist. Du verwendest ihn gleich in der Adresse der Datenbank.</p>
+Cluster erreichbar ist – Du brauchst ihn gleich in der JDBC-URL.</p>
 </blockquote>
 <p>Prüf, ob der Service den Pod gefunden hat – unter <code>Endpoints</code> muss eine IP-Adresse
 stehen:</p>
 <pre><code class="language-bash">oc describe service postgres
 </code></pre>
 <h3 id="das-image-tag-ändern">Das Image-Tag ändern</h3>
-<p>Ändere im Deployment des Backends das Tag von <code>latest-dev</code> auf <code>latest</code>. Diese Fassung
-erwartet eine PostgreSQL-Datenbank:</p>
+<p>Ändere im Deployment des Backends das Image-Tag von <code>latest-dev</code> auf <code>latest</code>:</p>
 <pre><code class="language-yaml">image: ralfueberfuhr/recipes-backend:latest
 </code></pre>
 <h3 id="die-umgebungsvariablen-setzen">Die Umgebungsvariablen setzen</h3>
-<p>Ergänze im Deployment des Backends drei Umgebungsvariablen:</p>
+<p>Ergänze im Deployment des Backends diese Umgebungsvariablen:</p>
 <table>
 	<thead>
 			<tr>
@@ -234,10 +249,12 @@ erwartet eine PostgreSQL-Datenbank:</p>
 			</tr>
 	</tbody>
 </table>
-<p><code>postgres</code> in der JDBC-URL ist der Name des Service aus dem ersten Schritt; der Cluster
-löst ihn als DNS-Namen auf.</p>
-<p>Die Variablen im Backend heißen anders als die Schlüssel im Secret – deshalb holst Du
-jeden Wert einzeln. So sieht das für einen Wert aus:</p>
+<blockquote>
+<p><strong>Hinweis:</strong> Der Hostname <code>postgres</code> in der JDBC-URL ist der Name des Service. Das DNS
+des Clusters löst ihn auf. Und: Die Schlüssel im Secret heißen anders als die
+Variablen, die das Backend erwartet – <code>envFrom</code> hilft hier nicht.</p>
+</blockquote>
+<p>Deshalb holst Du jeden Wert einzeln aus dem Secret. So sieht das für einen Wert aus:</p>
 <pre><code class="language-yaml">env:
   - name: DB_USER
     valueFrom:
@@ -245,235 +262,58 @@ jeden Wert einzeln. So sieht das für einen Wert aus:</p>
         name: postgres-secret
         key: POSTGRES_USER
 </code></pre>
-<blockquote>
-<p><strong>Hinweis:</strong> Heißt Dein Secret anders als <code>postgres-secret</code>, setz Deinen Namen ein.</p>
-</blockquote>
-<h3 id="das-deployment-anwenden-und-prüfen">Das Deployment anwenden und prüfen</h3>
+<h3 id="anwenden-und-prüfen">Anwenden und prüfen</h3>
 <pre><code class="language-bash">oc apply -f backend-deployment.yaml
 </code></pre>
 <pre><code class="language-bash">oc get pods
 </code></pre>
-<p>Sieh in den Logs nach, ob das Backend die Datenbank erreicht:</p>
 <pre><code class="language-bash">oc logs &lt;backend-pod-name&gt;
+</code></pre>
+<p>In den Logs sollte die Verbindung zu PostgreSQL zu sehen sein. Hängt der Pod oder startet
+er neu, sieh in die Events:</p>
+<pre><code class="language-bash">oc describe pod &lt;backend-pod-name&gt;
 </code></pre>
 <blockquote>
 <p><strong>Hinweis:</strong> Startet das Backend, bevor die Datenbank erreichbar ist, landet es kurz in
-<code>CrashLoopBackOff</code> und versucht es dann erneut. Sieh in diesem Fall in die Events:</p>
-<pre><code class="language-bash">oc describe pod &lt;backend-pod-name&gt;
-</code></pre>
+<code>CrashLoopBackOff</code> und versucht es dann erneut.</p>
 </blockquote>
-<h3 id="einen-neustart-überstehen">Einen Neustart überstehen</h3>
+<h3 id="die-daten-auf-die-probe-stellen">Die Daten auf die Probe stellen</h3>
 <p>Leg über die API ein Rezept an:</p>
-<pre><code class="language-bash">curl -i -X POST https://&lt;backend-route-host&gt;/recipes -H &quot;Content-Type: application/json&quot; -d '{&quot;name&quot;:&quot;Test&quot;,&quot;servings&quot;:2,&quot;duration&quot;:10,&quot;ingredients&quot;:[{&quot;name&quot;:&quot;Tomate&quot;,&quot;quantity&quot;:1,&quot;unit&quot;:&quot;pieces&quot;}],&quot;preparation&quot;:&quot;Kochen.&quot;}'
+<pre><code class="language-bash">curl -i -X POST https://&lt;backend-host&gt;/recipes \
+  -H &quot;Content-Type: application/json&quot; \
+  -d '{&quot;name&quot;:&quot;Test&quot;,&quot;servings&quot;:2,&quot;duration&quot;:10,&quot;ingredients&quot;:[{&quot;name&quot;:&quot;Tomate&quot;,&quot;quantity&quot;:1,&quot;unit&quot;:&quot;pieces&quot;}],&quot;preparation&quot;:&quot;Kochen.&quot;}'
 </code></pre>
 <p>Starte das Backend neu:</p>
 <pre><code class="language-bash">oc rollout restart deployment/recipes-backend
 </code></pre>
-<p>Warte, bis der neue Pod läuft (<code>oc get pods</code>), und ruf die Rezepte ab:</p>
-<pre><code class="language-bash">curl -i https://&lt;backend-route-host&gt;/recipes
+<p>Warte, bis der neue Pod läuft (<code>oc get pods</code>), und frag die Rezepte ab:</p>
+<pre><code class="language-bash">curl -i https://&lt;backend-host&gt;/recipes
 </code></pre>
-<p>Dein Rezept ist noch da – es liegt jetzt in PostgreSQL, nicht mehr im Speicher des
-Backends.</p>
+<p>Das Rezept sollte noch da sein – es liegt jetzt in der Datenbank, nicht mehr im Speicher
+des Backends.</p>
 <div class="skr-didaktikon-guide-review" data-skr-slot="guide.review">
 <h2 id="reflexionsfragen">Reflexionsfragen</h2>
 <div class="skr-didaktikon-reflective-questions" data-skr-field="didaktikon.reflective_questions">
 <ul>
-<li>Braucht die Datenbank auch eine Route?</li>
-<li>Warum funktioniert hier der interne Name <code>postgres</code>, während das Frontend die Route des Backends brauchte?</li>
+<li>Braucht die Datenbank auch eine Route? Begründe es.</li>
+<li>Warum funktioniert hier der interne Name <code>postgres</code>, während das Frontend eine Route für das Backend brauchte?</li>
 <li>Was passiert mit Deinen Rezepten, wenn der Pod der Datenbank neu startet?</li>
 </ul>
 </div>
 </div>
-<textarea id="skr-md-source" hidden aria-hidden="true"># Das Backend auf PostgreSQL umstellen
-&lt;div class=&#34;skr-guide-panels&#34; data-skr-arrangement=&#34;fold&#34; markdown=&#34;1&#34;&gt;
 
-&lt;details class=&#34;skr-fold skr-didaktikon-guide-about&#34; data-skr-slot=&#34;guide.about&#34; markdown=&#34;1&#34;&gt;
-&lt;summary markdown=&#34;span&#34;&gt;User Story&lt;/summary&gt;
-
-&lt;div class=&#34;skr-didaktikon-user-story&#34; data-skr-field=&#34;didaktikon.user_story&#34; markdown=&#34;1&#34;&gt;
-
-**Als** Entwickler:in **möchte ich** das Backend von der eingebauten H2-Datenbank auf die PostgreSQL-Datenbank umstellen, **damit** die Daten in einer echten Datenbank liegen und einen Neustart des Backends überstehen.
-
-&lt;/div&gt;
-
-&lt;/details&gt;
-
-&lt;details class=&#34;skr-fold skr-didaktikon-guide-about&#34; data-skr-slot=&#34;guide.about&#34; markdown=&#34;1&#34;&gt;
-&lt;summary markdown=&#34;span&#34;&gt;Lernziele&lt;/summary&gt;
-
-&lt;div class=&#34;skr-didaktikon-objectives&#34; data-skr-field=&#34;didaktikon.objectives&#34; markdown=&#34;1&#34;&gt;
-
-- Du stellst ein bestehendes Deployment auf ein anderes Image-Tag um.
-- Du kombinierst Umgebungsvariablen aus einem Secret mit festen Werten.
-- Du machst eine Anwendung über einen Service unter einem stabilen DNS-Namen im Cluster erreichbar.
-
-&lt;/div&gt;
-
-&lt;/details&gt;
-
-&lt;details class=&#34;skr-fold&#34; markdown=&#34;1&#34;&gt;
-&lt;summary markdown=&#34;span&#34;&gt;Definition of Done&lt;/summary&gt;
-
-&lt;div class=&#34;skr-guide-done&#34; markdown=&#34;1&#34;&gt;
-
-- [ ] Der Service `postgres` existiert und zeigt auf den Pod der Datenbank (Port 5432).
-- [ ] Das Backend-Deployment nutzt das Image `ralfueberfuhr/recipes-backend:latest`.
-- [ ] `DB_USER` und `DB_PASSWORD` kommen über `secretKeyRef` aus dem Secret der Datenbank.
-- [ ] Ein über die API angelegtes Rezept ist nach einem Neustart des Backends weiterhin abrufbar.
-- [ ] Du hast die Kontrollfragen beantwortet
-
-&lt;/div&gt;
-
-&lt;/details&gt;
-
-&lt;/div&gt;
-
-
-
-
-
-
-## Arbeitsschritte
-
-Du arbeitest mit dem Backend aus „Das Backend deployen“ und der Datenbank aus „Eine
-PostgreSQL-Datenbank bereitstellen“ weiter.
-
-### Die Datenbank über einen Service erreichbar machen
-
-Damit das Backend die Datenbank über einen **stabilen Namen** statt über eine wechselnde
-Pod-IP erreicht, braucht sie einen **Service** – nach demselben Muster wie beim Backend:
-
-| | |
-| --- | --- |
-| Name | `postgres` |
-| Selektor | `app: postgres` |
-| Port | `5432` |
-
-&gt; **Hinweis:** Der Name des Service ist zugleich der Hostname, unter dem die Datenbank im
-&gt; Cluster erreichbar ist. Du verwendest ihn gleich in der Adresse der Datenbank.
-
-Prüf, ob der Service den Pod gefunden hat – unter `Endpoints` muss eine IP-Adresse
-stehen:
-
-```bash
-oc describe service postgres
-```
-
-### Das Image-Tag ändern
-
-Ändere im Deployment des Backends das Tag von `latest-dev` auf `latest`. Diese Fassung
-erwartet eine PostgreSQL-Datenbank:
-
-```yaml
-image: ralfueberfuhr/recipes-backend:latest
-```
-
-### Die Umgebungsvariablen setzen
-
-Ergänze im Deployment des Backends drei Umgebungsvariablen:
-
-| Variable | Wert |
-| --- | --- |
-| `DB_URL` | `jdbc:postgresql://postgres:5432/recipes` |
-| `DB_USER` | aus dem Secret der Datenbank, Schlüssel `POSTGRES_USER` |
-| `DB_PASSWORD` | aus dem Secret der Datenbank, Schlüssel `POSTGRES_PASSWORD` |
-
-`postgres` in der JDBC-URL ist der Name des Service aus dem ersten Schritt; der Cluster
-löst ihn als DNS-Namen auf.
-
-Die Variablen im Backend heißen anders als die Schlüssel im Secret – deshalb holst Du
-jeden Wert einzeln. So sieht das für einen Wert aus:
-
-```yaml
-env:
-  - name: DB_USER
-    valueFrom:
-      secretKeyRef:
-        name: postgres-secret
-        key: POSTGRES_USER
-```
-
-&gt; **Hinweis:** Heißt Dein Secret anders als `postgres-secret`, setz Deinen Namen ein.
-
-### Das Deployment anwenden und prüfen
-
-```bash
-oc apply -f backend-deployment.yaml
-```
-
-```bash
-oc get pods
-```
-
-Sieh in den Logs nach, ob das Backend die Datenbank erreicht:
-
-```bash
-oc logs &lt;backend-pod-name&gt;
-```
-
-&gt; **Hinweis:** Startet das Backend, bevor die Datenbank erreichbar ist, landet es kurz in
-&gt; `CrashLoopBackOff` und versucht es dann erneut. Sieh in diesem Fall in die Events:
-&gt;
-&gt; ```bash
-&gt; oc describe pod &lt;backend-pod-name&gt;
-&gt; ```
-
-### Einen Neustart überstehen
-
-Leg über die API ein Rezept an:
-
-```bash
-curl -i -X POST https://&lt;backend-route-host&gt;/recipes -H &#34;Content-Type: application/json&#34; -d &#39;{&#34;name&#34;:&#34;Test&#34;,&#34;servings&#34;:2,&#34;duration&#34;:10,&#34;ingredients&#34;:[{&#34;name&#34;:&#34;Tomate&#34;,&#34;quantity&#34;:1,&#34;unit&#34;:&#34;pieces&#34;}],&#34;preparation&#34;:&#34;Kochen.&#34;}&#39;
-```
-
-Starte das Backend neu:
-
-```bash
-oc rollout restart deployment/recipes-backend
-```
-
-Warte, bis der neue Pod läuft (`oc get pods`), und ruf die Rezepte ab:
-
-```bash
-curl -i https://&lt;backend-route-host&gt;/recipes
-```
-
-Dein Rezept ist noch da – es liegt jetzt in PostgreSQL, nicht mehr im Speicher des
-Backends.
-
-
-&lt;div class=&#34;skr-didaktikon-guide-review&#34; data-skr-slot=&#34;guide.review&#34; markdown=&#34;1&#34;&gt;
-
-## Reflexionsfragen
-
-&lt;div class=&#34;skr-didaktikon-reflective-questions&#34; data-skr-field=&#34;didaktikon.reflective_questions&#34; markdown=&#34;1&#34;&gt;
-
-- Braucht die Datenbank auch eine Route?
-- Warum funktioniert hier der interne Name `postgres`, während das Frontend die Route des Backends brauchte?
-- Was passiert mit Deinen Rezepten, wenn der Pod der Datenbank neu startet?
-
-&lt;/div&gt;
-
-&lt;/div&gt;
-## Weiterführende Informationen
-- [Kubernetes-Ressourcen](/shared/visualisierungen/kubernetes-ressourcen/)
-- [PostgreSQL auf Kubernetes](/shared/visualisierungen/postgresql-auf-kubernetes.html)
-- [Kubernetes: DNS für Services und Pods](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/)
-- [Kubernetes: Umgebungsvariablen aus Secrets beziehen](https://kubernetes.io/docs/tasks/inject-data-application/distribute-credentials-secure/#define-container-environment-variables-using-secret-data)
-- [Recipes-Backend auf Docker Hub](https://hub.docker.com/r/ralfueberfuhr/recipes-backend)
-</textarea>
     </main><aside class="skr-guide-sidebar">
   <details class="skr-guide-side skr-guide-side--toc skr-fold" data-skr-toc-box
            data-skr-toc-limit="12" open>
     <summary class="skr-guide-side__label">Auf dieser Seite</summary>
-    <nav class="skr-toc skr-fold__body" data-skr-toc aria-label="Inhaltsverzeichnis"><a href="#arbeitsschritte">Arbeitsschritte</a><a href="#die-datenbank-über-einen-service-erreichbar-machen" class="skr-toc--h3">Die Datenbank über einen Service erreichbar machen</a><a href="#das-image-tag-ändern" class="skr-toc--h3">Das Image-Tag ändern</a><a href="#die-umgebungsvariablen-setzen" class="skr-toc--h3">Die Umgebungsvariablen setzen</a><a href="#das-deployment-anwenden-und-prüfen" class="skr-toc--h3">Das Deployment anwenden und prüfen</a><a href="#einen-neustart-überstehen" class="skr-toc--h3">Einen Neustart überstehen</a><a href="#reflexionsfragen">Reflexionsfragen</a></nav>
+    <nav class="skr-toc skr-fold__body" data-skr-toc aria-label="Inhaltsverzeichnis"><a href="#user-story">User Story</a><a href="#lernziele">Lernziele</a><a href="#definition-of-done">Definition of Done</a><a href="#arbeitsschritte">Arbeitsschritte</a><a href="#die-datenbank-über-einen-service-erreichbar-machen" class="skr-toc--h3">Die Datenbank über einen Service erreichbar machen</a><a href="#das-image-tag-ändern" class="skr-toc--h3">Das Image-Tag ändern</a><a href="#die-umgebungsvariablen-setzen" class="skr-toc--h3">Die Umgebungsvariablen setzen</a><a href="#anwenden-und-prüfen" class="skr-toc--h3">Anwenden und prüfen</a><a href="#die-daten-auf-die-probe-stellen" class="skr-toc--h3">Die Daten auf die Probe stellen</a><a href="#reflexionsfragen">Reflexionsfragen</a></nav>
   </details>
   <section class="skr-guide-side skr-guide-side--bordered skr-guide-progress" data-skr-card="skriptorium.progress"
            aria-labelledby="skr-card-skriptorium-progress" data-skr-progress-text="{done} / {total} erledigt">
     <div class="skr-guide-side__label" id="skr-card-skriptorium-progress">Fortschritt</div>
     <div class="skr-guide-side__body">
       <div class="skr-guide-progress__bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-labelledby="skr-card-skriptorium-progress"><div class="skr-guide-progress__fill"></div></div>
-      <div class="skr-guide-progress__text" aria-live="polite">0 / 5 erledigt</div>
+      <div class="skr-guide-progress__text" aria-live="polite">0 / 6 erledigt</div>
     </div>
   </section>
   <template data-skr-sidebar-cards></template>
@@ -482,9 +322,9 @@ Backends.
     <div class="skr-guide-side__links">
       <a href="../../shared/visualisierungen/kubernetes-ressourcen/"><span>Kubernetes-Ressourcen</span></a>
       <a href="../../shared/visualisierungen/postgresql-auf-kubernetes.html"><span>PostgreSQL auf Kubernetes</span></a>
-      <a href="https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/" target="_blank" rel="noopener"><span>Kubernetes: DNS für Services und Pods</span></a>
-      <a href="https://kubernetes.io/docs/tasks/inject-data-application/distribute-credentials-secure/#define-container-environment-variables-using-secret-data" target="_blank" rel="noopener"><span>Kubernetes: Umgebungsvariablen aus Secrets beziehen</span></a>
-      <a href="https://hub.docker.com/r/ralfueberfuhr/recipes-backend" target="_blank" rel="noopener"><span>Recipes-Backend auf Docker Hub</span></a>
+      <a href="https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/" target="_blank" rel="noopener"><span>DNS für Services und Pods</span></a>
+      <a href="https://kubernetes.io/docs/tasks/inject-data-application/distribute-credentials-secure/#define-container-environment-variables-using-secret-data" target="_blank" rel="noopener"><span>Umgebungsvariablen aus Secrets beziehen</span></a>
+      <a href="https://hub.docker.com/r/ralfueberfuhr/recipes-backend" target="_blank" rel="noopener"><span>recipes-backend auf Docker Hub</span></a>
     </div>
   </div>
 </aside>

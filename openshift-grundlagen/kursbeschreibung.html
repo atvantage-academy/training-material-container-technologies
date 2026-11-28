@@ -4,7 +4,8 @@
   <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="skr-root" content="../">
-<script src="../skriptorium/skr.js?v=c06299bd"></script>
+<meta name="skr-scope" content="training-concept-container-technologies">
+<script src="../skriptorium/skr.js?v=597e5686"></script>
 <title>OpenShift – Grundlagen für Entwickler · Containertechnologien (Academy)</title>
 <meta name="description" content="Zwei Tage vom ersten Deployment bis zum Helm Chart – eine Anwendung mit Datenbank auf OpenShift betreiben, konfigurieren und paketieren.">
 
@@ -25,24 +26,25 @@
 <link rel="stylesheet" href="../skriptorium/tokens.css?v=28abf864">
 <link rel="stylesheet" href="../extensions/didaktikon/tokens.css?v=5966d76a">
 <link rel="stylesheet" href="../skriptorium/base.css?v=86e37c43">
-<link rel="stylesheet" href="../skriptorium/components.css?v=3a968127">
+<link rel="stylesheet" href="../skriptorium/components.css?v=e3b517fb">
 <link rel="stylesheet" href="../skriptorium/doclinks.css?v=2ef23515">
 <link rel="stylesheet" href="../skriptorium/linkmarks.css?v=1643f80a">
-<link rel="stylesheet" href="../skriptorium/site.css?v=2a7f5baf">
+<link rel="stylesheet" href="../skriptorium/site.css?v=825d2514">
 <link rel="stylesheet" href="../skriptorium/logo.css?v=43a7fbaf">
-<link rel="stylesheet" href="../skriptorium/guide.css?v=1237e482">
-<link rel="stylesheet" media="print" href="../skriptorium/print.css?v=6c7ec44c">
-<meta name="generator" content="Skriptorium 2.0.0-rc.15">
-<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"2.0.0-rc.11"}],"internal":false,"languages":["de"],"skriptorium":"2.0.0-rc.15","theme":"didaktikon","themeOptions":["didaktikon"],"themes":[{"name":"didaktikon","version":"2.0.0-rc.11"},{"name":"atvantage","version":"2.2.0"},{"name":"default","version":"2.0.0-rc.15"}]}</script>
+<link rel="stylesheet" href="../skriptorium/guide.css?v=b1acb596">
+<link rel="stylesheet" media="print" href="../skriptorium/print.css?v=f344e618">
+<meta name="generator" content="Skriptorium 2.0.0-rc.20">
+<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"2.0.0-rc.11"}],"internal":false,"languages":["de"],"skriptorium":"2.0.0-rc.20","theme":"didaktikon","themeOptions":["didaktikon"],"themes":[{"name":"didaktikon","version":"2.0.0-rc.11"},{"name":"atvantage","version":"2.2.0"},{"name":"default","version":"2.0.0-rc.20"}]}</script>
 <script type="application/json" id="skr-page-info">{"clientApi":"full","defaultLanguage":"de","description":"Zwei Tage vom ersten Deployment bis zum Helm Chart – eine Anwendung mit Datenbank auf OpenShift betreiben, konfigurieren und paketieren.","duration":null,"fields":null,"language":"de","languages":["de"],"layout":"didaktikon.training-info","pageId":"openshift-grundlagen-kursbeschreibung","runtimeFragments":null,"siteIndex":"/skriptorium/site.json","title":"OpenShift – Grundlagen für Entwickler","topics":null,"untranslated":null,"url":"/openshift-grundlagen/kursbeschreibung.html"}</script>
 <script type="application/json" id="skr-texts">{"didaktikon.capture":"Capture-Modus","didaktikon.captureExit":"beenden","didaktikon.captureText":"Text einblenden","didaktikon.crosswordAcross":"Waagerecht","didaktikon.crosswordCellAcross":"{number} waagerecht, Buchstabe {position}","didaktikon.crosswordCellDown":"{number} senkrecht, Buchstabe {position}","didaktikon.crosswordDown":"Senkrecht","didaktikon.crosswordHintLetter":"Tipp: Buchstabe","didaktikon.crosswordHintWord":"Tipp: Wort","didaktikon.crosswordRestart":"Neu beginnen","didaktikon.crosswordRestartText":"Deine Eingaben in diesem Rätsel werden gelöscht.","didaktikon.crosswordRestartTitle":"Kreuzworträtsel neu beginnen?","didaktikon.crosswordReveal":"Auflösen","didaktikon.crosswordRevealText":"Alle Felder werden ausgefüllt.","didaktikon.crosswordRevealTitle":"Kreuzworträtsel auflösen?","didaktikon.crosswordSolution":"Lösungswort","didaktikon.crosswordSolutionCell":"Lösungswort, Buchstabe {position}","didaktikon.crosswordSolved":"Gelöst – alle Begriffe stimmen.","didaktikon.doclinkCrossword":"Kreuzworträtsel","didaktikon.doclinkExercise":"Übung","didaktikon.doclinkQuiz":"Wissens-Check","didaktikon.doclinkSimulation":"Simulation","didaktikon.doclinkVisualization":"Visualisierung","didaktikon.exerciseObjectives":"Lernziele","didaktikon.exerciseQuestionsDone":"Du hast die Kontrollfragen beantwortet","didaktikon.exerciseReflectiveQuestions":"Reflexionsfragen","didaktikon.exerciseUserStory":"User Story","didaktikon.moduleBlock":"Grobthema: {block}","didaktikon.moduleDuration":"{minutes} Minuten","didaktikon.moduleMaterial":"Material","didaktikon.moduleMaterialOver":"Das Material dauert zusammen {material}′ – länger als das Modul mit {module}′.","didaktikon.quizAgain":"Noch einmal","didaktikon.quizCorrect":"Richtig.","didaktikon.quizCorrectCount":"{count} richtig","didaktikon.quizCorrectWouldBe":"Richtig wäre gewesen:","didaktikon.quizDone":"Fertig","didaktikon.quizEvaluate":"Auswertung","didaktikon.quizJump":"Zu Frage springen","didaktikon.quizNext":"Weiter","didaktikon.quizOverview":"Alle Fragen","didaktikon.quizOverviewClose":"Zurück zum Check","didaktikon.quizOverviewCorrect":"(richtig)","didaktikon.quizOverviewGoTo":"Zu dieser Frage","didaktikon.quizProgress":"Fortschritt","didaktikon.quizQuestionOf":"Frage {current} von {total}","didaktikon.quizRestart":"Neu beginnen","didaktikon.quizRestartText":"Deine Antworten in diesem Wissens-Check werden gelöscht.","didaktikon.quizRestartTitle":"Wissens-Check neu beginnen?","didaktikon.quizResult":"{correct} von {total} richtig","didaktikon.quizResultLong":"{correct} von {total} Fragen richtig","didaktikon.quizTrainerOnly":"Nur für Trainer:innen","didaktikon.quizWrong":"Nicht ganz.","didaktikon.scenarios":"Szenarien","didaktikon.simAllScenarios":"Alle Szenarien (Taste 0)","didaktikon.simControls":"Simulation steuern","didaktikon.simNext":"Schritt vor (→)","didaktikon.simNextAria":"Schritt vor","didaktikon.simOverview":"Übersicht","didaktikon.simPause":"Pause (Leertaste)","didaktikon.simPauseAria":"Pause","didaktikon.simPlay":"Abspielen (Leertaste)","didaktikon.simPlayAria":"Abspielen","didaktikon.simPrev":"Schritt zurück (←)","didaktikon.simPrevAria":"Schritt zurück","didaktikon.simPrintHint":"Diese Simulation lebt von der Bewegung. Auf Papier steht nur der gerade sichtbare Schritt – der QR-Code oben führt zurück zur laufenden Fassung.","didaktikon.simReset":"Zurück auf Anfang (Taste R)","didaktikon.simResetAria":"Zurück auf Anfang","didaktikon.simResize":"Breite der Erklärspalte (Pfeiltasten)","didaktikon.simScenarioCount":"{count} Szenarien","didaktikon.simScenarioKey":"{title} (Taste {number})","didaktikon.simScenarioTitle":"Szenario {number}","didaktikon.simSpeed":"Tempo wählen (Taste T)","didaktikon.simSpeedAria":"Tempo wählen","didaktikon.simSpeedMenu":"Tempo","didaktikon.simStepCount":"{count} Schritte","didaktikon.simStepCountOne":"{count} Schritt","didaktikon.simStepCounter":"Schritt {current} / {total}","didaktikon.speedFast":"zügig","didaktikon.speedNormal":"normal","didaktikon.speedSlow":"langsam","didaktikon.speedTurbo":"im Zeitraffer","didaktikon.speedValue":"{speed}×","didaktikon.stepNote":"Erklärung zum aktuellen Schritt","didaktikon.trainerNoteClose":"Schließen","didaktikon.trainerNoteOpen":"Hinweis für Trainer:innen anzeigen","didaktikon.trainerNoteTitle":"Hinweis für Trainer:innen","didaktikon.trainingCatalogEmpty":"Hier gibt es noch keine Schulung.","didaktikon.trainingCatalogTrainings":"Schulungen","didaktikon.trainingDays":"{days} Tage","didaktikon.trainingDaysOne":"{days} Tag","didaktikon.trainingHomeInfo":"Kursbeschreibung","didaktikon.trainingHomeManifest":"Didaktisches Manifest","didaktikon.trainingHomeSales":"Sales-Asset","didaktikon.trainingInfoAudience":"Zielgruppe","didaktikon.trainingInfoObjectives":"Lernziele","didaktikon.trainingInfoObjectivesLead":"Die Lernenden …","didaktikon.trainingInfoOverview":"Überblick","didaktikon.trainingInfoPrerequisites":"Voraussetzungen","didaktikon.trainingMaterials":"Kursmaterial","didaktikon.trainingMaterialsExercises":"Übungen","didaktikon.trainingMaterialsLead":"Links stehen die **Übungen**, an denen Du selbst arbeitest, rechts das **Material zum Nachschlagen**.","didaktikon.trainingMaterialsMore":"Weitere Themen","didaktikon.trainingMaterialsOther":"Sonstige Unterlagen","didaktikon.trainingMaterialsReference":"Zum Nachschlagen","didaktikon.trainingModules":"Module","didaktikon.trainingModulesBlock":"Grobthema","didaktikon.trainingModulesDuration":"Dauer","didaktikon.trainingModulesMaterial":"Material","didaktikon.trainingModulesModule":"Modul","didaktikon.trainingModulesOver":"länger als das Modul","didaktikon.trainingSalesBuyers":"Käufer","didaktikon.trainingSalesPitch":"Pitch","didaktikon.trainingSalesPricing":"Preisrahmen","didaktikon.trainingSalesUsp":"Unterscheidungsmerkmale","didaktikon.trainingSalesValueProposition":"Nutzenversprechen"}</script>
 
-<script src="../skriptorium/client.js?v=756a5d69" defer></script>
-<script src="../skriptorium/site.js?v=6472c794" defer></script>
-<script src="../skriptorium/search-trail.js?v=31279378" data-skr-search-trail
-        data-base="../" data-index="../skriptorium/search/de.json?v=c2fa893e" defer></script>
-<link rel="stylesheet" href="../skriptorium/highlight.css?v=f8a3fc05">
-<script type="module" src="../skriptorium/highlight.js?v=0b2d40aa" data-skr-highlight="[&#34;bash&#34;,&#34;dockerfile&#34;,&#34;python&#34;,&#34;sql&#34;,&#34;yaml&#34;]"></script>
+<script src="../skriptorium/client.js?v=e9b75088" defer></script>
+<script src="../skriptorium/site.js?v=bf4672b2" defer></script>
+
+<script src="../skriptorium/search-trail.js?v=ca558440" data-skr-search-trail
+        data-base="../" data-index="../skriptorium/search/de.json?v=b137f70b" defer></script>
+<link rel="stylesheet" href="../skriptorium/highlight.css?v=b66fa35b">
+<script type="module" src="../skriptorium/highlight.js?v=bb894db9" data-skr-highlight></script>
 <link rel="apple-touch-icon" sizes="180x180" href="../themes/atvantage/assets/icon-180.png">
 <link rel="icon" sizes="32x32" href="../themes/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="../themes/atvantage/assets/icon-16.png">
@@ -85,7 +87,7 @@
   <div class="skr-header__tools">
 <div class="skr-search" data-skr-search hidden
      data-mode="expand" data-shortcut="double_shift"
-     data-index="../skriptorium/search/de.json?v=c2fa893e"
+     data-index="../skriptorium/search/de.json?v=b137f70b"
      data-base="../">
   <button type="button" class="skr-tool skr-tool--search" data-skr-search-toggle
           aria-expanded="false" aria-controls="skr-search-dialog"
@@ -99,6 +101,20 @@
           <option value="">Alle</option>
         </select>
       </label>
+      <div class="skr-search__field skr-search__field--kind" hidden>
+        <span class="skr-search__label" id="skr-search-kind-label">Art</span>
+        <button type="button" class="skr-search__kind" aria-expanded="false" aria-controls="skr-search-kinds"
+                aria-labelledby="skr-search-kind-label skr-search-kind-value"
+                data-all="Alle Arten" data-count="{n} Arten"
+                data-none="Keine Art"><span
+                class="skr-search__kind-value" id="skr-search-kind-value">Alle Arten</span></button>
+      </div>
+      <fieldset class="skr-search__kinds" id="skr-search-kinds" hidden
+                data-label-only="nur" data-none-selected="Keine Art gewählt.">
+        <legend class="skr-visually-hidden">Art</legend>
+        <ul class="skr-search__kind-list"></ul>
+        <button type="button" class="skr-search__kind-all">Alle auswählen</button>
+      </fieldset>
       <label class="skr-search__field skr-search__field--query">
         <span class="skr-search__label">Suchbegriff</span>
         <input type="search" class="skr-search__input"
@@ -112,7 +128,7 @@
     <ul class="skr-search__results" data-skr-search-results aria-label="Suchergebnisse"></ul>
   </dialog>
 </div>
-<script src="../skriptorium/search.js?v=2be133a6" defer></script>
+<script src="../skriptorium/search.js?v=679c2a13" defer></script>
 <button type="button" class="skr-qr" data-skr-qr hidden
         title="Diese Seite auf Deinem Smartphone öffnen"
         aria-label="Diese Seite auf Deinem Smartphone öffnen"></button>
@@ -138,7 +154,7 @@
     <main class="skr-guide-main" id="skr-content"><div class="skr-didaktikon-content-before" data-skr-slot="content.before">
 <h2 id="berblick">Überblick</h2>
 <div class="skr-didaktikon-overview" data-skr-field="didaktikon.overview">
-<p>Ein Container auf dem eigenen Rechner ist schnell gestartet. Ihn so zu betreiben, dass er nach einem Absturz wieder hochkommt, seine Konfiguration von außen bekommt, eine Datenbank findet und sich mit einem Befehl in die nächste Umgebung bringen lässt, ist eine andere Aufgabe – und genau die übernimmt OpenShift, die Kubernetes-Plattform von Red Hat. In zwei Tagen bringen die Teilnehmenden eine Anwendung aus Backend, Frontend und Datenbank Schritt für Schritt in ein OpenShift-Projekt: erst von Hand mit YAML, am Ende als Helm Chart. Der Blick bleibt dabei auf der Anwendung und darauf, was die Plattform von ihr erwartet – einschließlich der strengeren Sicherheitsregeln, an denen Images von Docker Hub erfahrungsgemäß zum ersten Mal scheitern.</p>
+<p>Ein Container auf dem eigenen Rechner ist schnell gestartet. Ihn so zu betreiben, dass er nach einem Absturz wieder hochkommt, seine Konfiguration von außen bekommt, eine Datenbank findet und sich mit einem Befehl in die nächste Umgebung bringen lässt, ist eine andere Aufgabe – und genau die übernimmt OpenShift. In zwei Tagen bringen die Teilnehmenden eine Anwendung aus Backend, Frontend und Datenbank Schritt für Schritt auf einen Cluster: erst von Hand mit YAML, am Ende als Helm Chart. Der Blick bleibt dabei auf der Anwendung und darauf, was die Plattform von ihr erwartet – einschließlich der strengeren Sicherheitsregeln, an denen Images von Docker Hub erfahrungsgemäß zum ersten Mal scheitern.</p>
 </div>
 <h2 id="zielgruppe">Zielgruppe</h2>
 <div class="skr-didaktikon-audience" data-skr-field="didaktikon.audience">
@@ -149,17 +165,17 @@
 <div class="skr-didaktikon-objectives" data-skr-field="didaktikon.objectives">
 <ul>
 <li>erklären, welche Probleme Kubernetes gegenüber einzelnen Containern löst, und grenzen OpenShift als Kubernetes-Distribution davon ab.</li>
-<li>deployen eine Anwendung mit Deployments, Services und Routes in OpenShift und machen sie von außen erreichbar.</li>
+<li>deployen eine Anwendung mit Deployments, Services und Routes und machen sie von außen erreichbar.</li>
 <li>lagern Konfiguration in ConfigMaps und Secrets aus und begründen die Trennung von Image und Konfiguration.</li>
-<li>betreiben eine Datenbank in OpenShift, binden sie an die Anwendung an und lösen dabei die Rechte-Vorgaben der Plattform (<em>Security Context Constraints</em>).</li>
+<li>betreiben eine Datenbank im Cluster, binden sie an die Anwendung an und lösen dabei die Rechte-Vorgaben der Plattform (<em>Security Context Constraints</em>).</li>
 <li>sichern die Selbstheilung einer Anwendung mit Liveness- und Readiness-Probes ab und finden Fehler mit Logs, Events und <code>describe</code>.</li>
-<li>deployen Container mit Hilfe von Helm Charts in OpenShift und verwalten dabei Abhängigkeiten zwischen Charts.</li>
+<li>paketieren Anwendung und Datenbank als Helm Charts mit Abhängigkeiten und deployen sie damit.</li>
 </ul>
 </div>
 <h2 id="voraussetzungen">Voraussetzungen</h2>
 <div class="skr-didaktikon-prerequisites" data-skr-field="didaktikon.prerequisites">
 <ul>
-<li><strong>Container-Grundlagen:</strong> Aufbau und Verwendung von Container Images, Container starten, Umgebungsvariablen, Ports und Volumes – etwa aus dem Kurs <a href="../docker-grundlagen/kursbeschreibung.html">Docker-Grundlagen</a>. Kubernetes- oder OpenShift-Vorkenntnisse sind nicht nötig.</li>
+<li><strong>Container-Grundlagen:</strong> Aufbau und Verwendung von Container Images, Container starten, Umgebungsvariablen, Ports und Volumes – etwa aus dem Kurs <a href="../docker-grundlagen/kursbeschreibung.html">Docker-Grundlagen</a>. Kubernetes-Vorkenntnisse sind nicht nötig.</li>
 <li><strong>Etwas Routine auf der Kommandozeile</strong> (Bash) und im Umgang mit einem Texteditor; YAML lesen zu können hilft.</li>
 <li><strong>Zugang zu einem OpenShift-Cluster</strong> mit einem eigenen Projekt je Person – in der Regel die bereitgestellte Umgebung mit einer Shell im Browser; Einzelheiten: <a href="../shared/schulungsumgebung/">Die Schulungsumgebung nutzen</a>.</li>
 <li><strong>Internetzugang im Browser</strong> für Dokumentation und die Container Images auf Docker Hub.</li>
@@ -183,7 +199,7 @@
 </ul>
 <h3 id="datenbank-und-zustand">Datenbank und Zustand</h3>
 <ul>
-<li>Eine PostgreSQL-Datenbank in OpenShift einrichten – anforderungsbasiert, ohne Vorlage</li>
+<li>Eine PostgreSQL-Datenbank im Cluster betreiben – anforderungsbasiert, ohne Vorlage</li>
 <li>Zugangsdaten als Secret, Initialisierung per ConfigMap</li>
 <li>Warum ein Image von Docker Hub unter OpenShift an Dateirechten scheitert – und wie man es löst</li>
 <li>Backend und Datenbank verbinden (<em>Service Discovery, DNS</em>)</li>
@@ -191,9 +207,9 @@
 </ul>
 <h3 id="self-healing-und-paketierung">Self Healing und Paketierung</h3>
 <ul>
-<li>Woran OpenShift erkennt, dass eine Anwendung lebt und bereit ist (<em>Startup-, Liveness- und Readiness-Probes</em>)</li>
+<li>Woran Kubernetes erkennt, dass eine Anwendung lebt und bereit ist (<em>Startup-, Liveness- und Readiness-Probes</em>)</li>
 <li>Paketmanagement für Kubernetes: Aufbau eines Helm Charts, Werte und Templates</li>
-<li>Anwendung und Datenbank als Charts mit Abhängigkeiten in OpenShift deployen und aktualisieren</li>
+<li>Anwendung und Datenbank als Charts mit Abhängigkeiten deployen und aktualisieren</li>
 </ul>
 
     </main><aside class="skr-guide-sidebar">

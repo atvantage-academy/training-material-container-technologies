@@ -4,13 +4,14 @@
   <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="skr-root" content="../../">
-<script src="../../skriptorium/skr.js?v=c06299bd"></script>
+<meta name="skr-scope" content="training-concept-container-technologies">
+<script src="../../skriptorium/skr.js?v=597e5686"></script>
 <title>Health Checks mit Probes · Containertechnologien (Academy)</title>
-<meta name="description" content="Liveness- und Readiness-Probes für Backend, Frontend und Datenbank einrichten und beobachten, wie der Cluster auf fehlschlagende Probes reagiert.">
+<meta name="description" content="Liveness- und Readiness-Probes für Backend, Frontend und Datenbank einrichten und beobachten, wie Kubernetes auf einen Fehlschlag reagiert.">
 
 <meta property="og:site_name" content="Containertechnologien (Academy)">
 <meta property="og:title" content="Health Checks mit Probes">
-<meta property="og:description" content="Liveness- und Readiness-Probes für Backend, Frontend und Datenbank einrichten und beobachten, wie der Cluster auf fehlschlagende Probes reagiert.">
+<meta property="og:description" content="Liveness- und Readiness-Probes für Backend, Frontend und Datenbank einrichten und beobachten, wie Kubernetes auf einen Fehlschlag reagiert.">
 <meta property="og:type" content="article">
 <link rel="preload" href="../../themes/atvantage/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../../themes/default/theme.css?v=b795c99c" data-skr-source="theme">
@@ -25,31 +26,32 @@
 <link rel="stylesheet" href="../../skriptorium/tokens.css?v=28abf864">
 <link rel="stylesheet" href="../../extensions/didaktikon/tokens.css?v=5966d76a">
 <link rel="stylesheet" href="../../skriptorium/base.css?v=86e37c43">
-<link rel="stylesheet" href="../../skriptorium/components.css?v=3a968127">
+<link rel="stylesheet" href="../../skriptorium/components.css?v=e3b517fb">
 <link rel="stylesheet" href="../../skriptorium/doclinks.css?v=2ef23515">
 <link rel="stylesheet" href="../../skriptorium/linkmarks.css?v=1643f80a">
-<link rel="stylesheet" href="../../skriptorium/site.css?v=2a7f5baf">
+<link rel="stylesheet" href="../../skriptorium/site.css?v=825d2514">
 <link rel="stylesheet" href="../../skriptorium/logo.css?v=43a7fbaf">
-<link rel="stylesheet" href="../../skriptorium/guide.css?v=1237e482">
-<link rel="stylesheet" media="print" href="../../skriptorium/print.css?v=6c7ec44c">
-<meta name="generator" content="Skriptorium 2.0.0-rc.15">
-<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"2.0.0-rc.11"}],"internal":false,"languages":["de"],"skriptorium":"2.0.0-rc.15","theme":"didaktikon","themeOptions":["didaktikon"],"themes":[{"name":"didaktikon","version":"2.0.0-rc.11"},{"name":"atvantage","version":"2.2.0"},{"name":"default","version":"2.0.0-rc.15"}]}</script>
-<script type="application/json" id="skr-page-info">{"clientApi":"full","defaultLanguage":"de","description":"Liveness- und Readiness-Probes für Backend, Frontend und Datenbank einrichten und beobachten, wie der Cluster auf fehlschlagende Probes reagiert.","duration":50,"fields":null,"language":"de","languages":["de"],"layout":"didaktikon.exercise","pageId":"openshift-grundlagen-health-checks-issue","runtimeFragments":null,"siteIndex":"/skriptorium/site.json","title":"Health Checks mit Probes","topics":["Probes","Health Checks","Self-Healing"],"untranslated":null,"url":"/openshift-grundlagen/health-checks/issue.html"}</script>
+<link rel="stylesheet" href="../../skriptorium/guide.css?v=b1acb596">
+<link rel="stylesheet" media="print" href="../../skriptorium/print.css?v=f344e618">
+<meta name="generator" content="Skriptorium 2.0.0-rc.20">
+<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"2.0.0-rc.11"}],"internal":false,"languages":["de"],"skriptorium":"2.0.0-rc.20","theme":"didaktikon","themeOptions":["didaktikon"],"themes":[{"name":"didaktikon","version":"2.0.0-rc.11"},{"name":"atvantage","version":"2.2.0"},{"name":"default","version":"2.0.0-rc.20"}]}</script>
+<script type="application/json" id="skr-page-info">{"clientApi":"full","defaultLanguage":"de","description":"Liveness- und Readiness-Probes für Backend, Frontend und Datenbank einrichten und beobachten, wie Kubernetes auf einen Fehlschlag reagiert.","duration":50,"fields":null,"language":"de","languages":["de"],"layout":"didaktikon.exercise","pageId":"openshift-grundlagen-health-checks-issue","runtimeFragments":null,"siteIndex":"/skriptorium/site.json","title":"Health Checks mit Probes","topics":["Probes","Health Checks","Deployments"],"untranslated":null,"url":"/openshift-grundlagen/health-checks/issue.html"}</script>
 <script type="application/json" id="skr-texts">{"didaktikon.capture":"Capture-Modus","didaktikon.captureExit":"beenden","didaktikon.captureText":"Text einblenden","didaktikon.crosswordAcross":"Waagerecht","didaktikon.crosswordCellAcross":"{number} waagerecht, Buchstabe {position}","didaktikon.crosswordCellDown":"{number} senkrecht, Buchstabe {position}","didaktikon.crosswordDown":"Senkrecht","didaktikon.crosswordHintLetter":"Tipp: Buchstabe","didaktikon.crosswordHintWord":"Tipp: Wort","didaktikon.crosswordRestart":"Neu beginnen","didaktikon.crosswordRestartText":"Deine Eingaben in diesem Rätsel werden gelöscht.","didaktikon.crosswordRestartTitle":"Kreuzworträtsel neu beginnen?","didaktikon.crosswordReveal":"Auflösen","didaktikon.crosswordRevealText":"Alle Felder werden ausgefüllt.","didaktikon.crosswordRevealTitle":"Kreuzworträtsel auflösen?","didaktikon.crosswordSolution":"Lösungswort","didaktikon.crosswordSolutionCell":"Lösungswort, Buchstabe {position}","didaktikon.crosswordSolved":"Gelöst – alle Begriffe stimmen.","didaktikon.doclinkCrossword":"Kreuzworträtsel","didaktikon.doclinkExercise":"Übung","didaktikon.doclinkQuiz":"Wissens-Check","didaktikon.doclinkSimulation":"Simulation","didaktikon.doclinkVisualization":"Visualisierung","didaktikon.exerciseObjectives":"Lernziele","didaktikon.exerciseQuestionsDone":"Du hast die Kontrollfragen beantwortet","didaktikon.exerciseReflectiveQuestions":"Reflexionsfragen","didaktikon.exerciseUserStory":"User Story","didaktikon.moduleBlock":"Grobthema: {block}","didaktikon.moduleDuration":"{minutes} Minuten","didaktikon.moduleMaterial":"Material","didaktikon.moduleMaterialOver":"Das Material dauert zusammen {material}′ – länger als das Modul mit {module}′.","didaktikon.quizAgain":"Noch einmal","didaktikon.quizCorrect":"Richtig.","didaktikon.quizCorrectCount":"{count} richtig","didaktikon.quizCorrectWouldBe":"Richtig wäre gewesen:","didaktikon.quizDone":"Fertig","didaktikon.quizEvaluate":"Auswertung","didaktikon.quizJump":"Zu Frage springen","didaktikon.quizNext":"Weiter","didaktikon.quizOverview":"Alle Fragen","didaktikon.quizOverviewClose":"Zurück zum Check","didaktikon.quizOverviewCorrect":"(richtig)","didaktikon.quizOverviewGoTo":"Zu dieser Frage","didaktikon.quizProgress":"Fortschritt","didaktikon.quizQuestionOf":"Frage {current} von {total}","didaktikon.quizRestart":"Neu beginnen","didaktikon.quizRestartText":"Deine Antworten in diesem Wissens-Check werden gelöscht.","didaktikon.quizRestartTitle":"Wissens-Check neu beginnen?","didaktikon.quizResult":"{correct} von {total} richtig","didaktikon.quizResultLong":"{correct} von {total} Fragen richtig","didaktikon.quizTrainerOnly":"Nur für Trainer:innen","didaktikon.quizWrong":"Nicht ganz.","didaktikon.scenarios":"Szenarien","didaktikon.simAllScenarios":"Alle Szenarien (Taste 0)","didaktikon.simControls":"Simulation steuern","didaktikon.simNext":"Schritt vor (→)","didaktikon.simNextAria":"Schritt vor","didaktikon.simOverview":"Übersicht","didaktikon.simPause":"Pause (Leertaste)","didaktikon.simPauseAria":"Pause","didaktikon.simPlay":"Abspielen (Leertaste)","didaktikon.simPlayAria":"Abspielen","didaktikon.simPrev":"Schritt zurück (←)","didaktikon.simPrevAria":"Schritt zurück","didaktikon.simPrintHint":"Diese Simulation lebt von der Bewegung. Auf Papier steht nur der gerade sichtbare Schritt – der QR-Code oben führt zurück zur laufenden Fassung.","didaktikon.simReset":"Zurück auf Anfang (Taste R)","didaktikon.simResetAria":"Zurück auf Anfang","didaktikon.simResize":"Breite der Erklärspalte (Pfeiltasten)","didaktikon.simScenarioCount":"{count} Szenarien","didaktikon.simScenarioKey":"{title} (Taste {number})","didaktikon.simScenarioTitle":"Szenario {number}","didaktikon.simSpeed":"Tempo wählen (Taste T)","didaktikon.simSpeedAria":"Tempo wählen","didaktikon.simSpeedMenu":"Tempo","didaktikon.simStepCount":"{count} Schritte","didaktikon.simStepCountOne":"{count} Schritt","didaktikon.simStepCounter":"Schritt {current} / {total}","didaktikon.speedFast":"zügig","didaktikon.speedNormal":"normal","didaktikon.speedSlow":"langsam","didaktikon.speedTurbo":"im Zeitraffer","didaktikon.speedValue":"{speed}×","didaktikon.stepNote":"Erklärung zum aktuellen Schritt","didaktikon.trainerNoteClose":"Schließen","didaktikon.trainerNoteOpen":"Hinweis für Trainer:innen anzeigen","didaktikon.trainerNoteTitle":"Hinweis für Trainer:innen","didaktikon.trainingCatalogEmpty":"Hier gibt es noch keine Schulung.","didaktikon.trainingCatalogTrainings":"Schulungen","didaktikon.trainingDays":"{days} Tage","didaktikon.trainingDaysOne":"{days} Tag","didaktikon.trainingHomeInfo":"Kursbeschreibung","didaktikon.trainingHomeManifest":"Didaktisches Manifest","didaktikon.trainingHomeSales":"Sales-Asset","didaktikon.trainingInfoAudience":"Zielgruppe","didaktikon.trainingInfoObjectives":"Lernziele","didaktikon.trainingInfoObjectivesLead":"Die Lernenden …","didaktikon.trainingInfoOverview":"Überblick","didaktikon.trainingInfoPrerequisites":"Voraussetzungen","didaktikon.trainingMaterials":"Kursmaterial","didaktikon.trainingMaterialsExercises":"Übungen","didaktikon.trainingMaterialsLead":"Links stehen die **Übungen**, an denen Du selbst arbeitest, rechts das **Material zum Nachschlagen**.","didaktikon.trainingMaterialsMore":"Weitere Themen","didaktikon.trainingMaterialsOther":"Sonstige Unterlagen","didaktikon.trainingMaterialsReference":"Zum Nachschlagen","didaktikon.trainingModules":"Module","didaktikon.trainingModulesBlock":"Grobthema","didaktikon.trainingModulesDuration":"Dauer","didaktikon.trainingModulesMaterial":"Material","didaktikon.trainingModulesModule":"Modul","didaktikon.trainingModulesOver":"länger als das Modul","didaktikon.trainingSalesBuyers":"Käufer","didaktikon.trainingSalesPitch":"Pitch","didaktikon.trainingSalesPricing":"Preisrahmen","didaktikon.trainingSalesUsp":"Unterscheidungsmerkmale","didaktikon.trainingSalesValueProposition":"Nutzenversprechen"}</script>
 
-<script src="../../skriptorium/client.js?v=756a5d69" defer></script>
-<script src="../../skriptorium/site.js?v=6472c794" defer></script>
-<script src="../../skriptorium/search-trail.js?v=31279378" data-skr-search-trail
-        data-base="../../" data-index="../../skriptorium/search/de.json?v=c2fa893e" defer></script>
-<link rel="stylesheet" href="../../skriptorium/highlight.css?v=f8a3fc05">
-<script type="module" src="../../skriptorium/highlight.js?v=0b2d40aa" data-skr-highlight="[&#34;bash&#34;,&#34;dockerfile&#34;,&#34;python&#34;,&#34;sql&#34;,&#34;yaml&#34;]"></script>
+<script src="../../skriptorium/client.js?v=e9b75088" defer></script>
+<script src="../../skriptorium/site.js?v=bf4672b2" defer></script>
+
+<script src="../../skriptorium/search-trail.js?v=ca558440" data-skr-search-trail
+        data-base="../../" data-index="../../skriptorium/search/de.json?v=b137f70b" defer></script>
+<link rel="stylesheet" href="../../skriptorium/highlight.css?v=b66fa35b">
+<script type="module" src="../../skriptorium/highlight.js?v=bb894db9" data-skr-highlight></script>
 <link rel="apple-touch-icon" sizes="180x180" href="../../themes/atvantage/assets/icon-180.png">
 <link rel="icon" sizes="32x32" href="../../themes/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="../../themes/atvantage/assets/icon-16.png">
 
   <style>@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }</style>
   <link rel="stylesheet" href="../../skriptorium/page-transitions.css?v=716872f0">
-<link rel="stylesheet" href="../../skriptorium/guide-layout.css?v=cc0ce1dd">
+<link rel="stylesheet" href="../../skriptorium/guide-layout.css?v=ca7e6344">
 <link rel="stylesheet" href="../../extensions/didaktikon/exercise.css?v=485b7c1d">
 <script src="../../skriptorium/guide-layout.js?v=00fd0360" defer></script>
 
@@ -87,7 +89,7 @@
   <div class="skr-header__tools">
 <div class="skr-search" data-skr-search hidden
      data-mode="expand" data-shortcut="double_shift"
-     data-index="../../skriptorium/search/de.json?v=c2fa893e"
+     data-index="../../skriptorium/search/de.json?v=b137f70b"
      data-base="../../">
   <button type="button" class="skr-tool skr-tool--search" data-skr-search-toggle
           aria-expanded="false" aria-controls="skr-search-dialog"
@@ -101,6 +103,20 @@
           <option value="">Alle</option>
         </select>
       </label>
+      <div class="skr-search__field skr-search__field--kind" hidden>
+        <span class="skr-search__label" id="skr-search-kind-label">Art</span>
+        <button type="button" class="skr-search__kind" aria-expanded="false" aria-controls="skr-search-kinds"
+                aria-labelledby="skr-search-kind-label skr-search-kind-value"
+                data-all="Alle Arten" data-count="{n} Arten"
+                data-none="Keine Art"><span
+                class="skr-search__kind-value" id="skr-search-kind-value">Alle Arten</span></button>
+      </div>
+      <fieldset class="skr-search__kinds" id="skr-search-kinds" hidden
+                data-label-only="nur" data-none-selected="Keine Art gewählt.">
+        <legend class="skr-visually-hidden">Art</legend>
+        <ul class="skr-search__kind-list"></ul>
+        <button type="button" class="skr-search__kind-all">Alle auswählen</button>
+      </fieldset>
       <label class="skr-search__field skr-search__field--query">
         <span class="skr-search__label">Suchbegriff</span>
         <input type="search" class="skr-search__input"
@@ -114,7 +130,7 @@
     <ul class="skr-search__results" data-skr-search-results aria-label="Suchergebnisse"></ul>
   </dialog>
 </div>
-<script src="../../skriptorium/search.js?v=2be133a6" defer></script>
+<script src="../../skriptorium/search.js?v=679c2a13" defer></script>
 <button type="button" class="skr-qr" data-skr-qr hidden
         title="Diese Seite auf Deinem Smartphone öffnen"
         aria-label="Diese Seite auf Deinem Smartphone öffnen"></button>
@@ -128,261 +144,112 @@
 <section class="skr-guide-hero"
          aria-labelledby="skr-page-title"><nav class="skr-guide-hero__crumbs" aria-label="Brotkrumen"><a href="../../openshift-grundlagen/">OpenShift – Grundlagen für Entwickler</a><span>/</span><span aria-current="page">Health Checks mit Probes</span></nav>
   <div class="skr-guide-hero__meta">
-    <div class="skr-guide-hero__tags"><span class="skr-tag skr-tag--time">ca. 50 Minuten</span><span class="skr-tag">Probes</span><span class="skr-tag">Health Checks</span><span class="skr-tag">Self-Healing</span>
+    <div class="skr-guide-hero__tags"><span class="skr-tag skr-tag--time">ca. 50 Minuten</span><span class="skr-tag">Probes</span><span class="skr-tag">Health Checks</span><span class="skr-tag">Deployments</span>
     </div>
     <div class="skr-guide-hero__actions">
-      <button type="button" class="skr-btn skr-btn--ghost skr-copy-md"
-              data-skr-copy-md="#skr-md-source"
-              title="Markdown kopieren" aria-label="Markdown kopieren"></button>
     </div>
   </div><h1 id="skr-page-title">Health Checks mit Probes</h1>
 </section>
 
   <div class="skr-guide-layout">
     <main class="skr-guide-main" id="skr-content"><div class="skr-guide-panels" data-skr-arrangement="fold">
-<details class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
+<details id="user-story" class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
 <summary>User Story</summary>
 <div class="skr-didaktikon-user-story" data-skr-field="didaktikon.user_story">
-<p><strong>Als</strong> Entwickler:in <strong>möchte ich</strong> Liveness- und Readiness-Probes für meine Deployments einrichten, <strong>damit</strong> der Cluster fehlerhafte Pods von selbst neu startet und nur bereite Pods Anfragen bekommen.</p>
+<p><strong>Als</strong> Entwickler:in <strong>möchte ich</strong> Liveness- und Readiness-Probes für meine Deployments einrichten, <strong>damit</strong> Kubernetes hängende Pods von selbst neu startet und nur bereite Pods Anfragen bekommen.</p>
 </div>
 </details>
-<details class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
+<details id="lernziele" class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
 <summary>Lernziele</summary>
 <div class="skr-didaktikon-objectives" data-skr-field="didaktikon.objectives">
 <ul>
-<li>Du unterscheidest Liveness- und Readiness-Probe.</li>
-<li>Du richtest Probes im Deployment-Manifest ein.</li>
-<li>Du wählst für jede Anwendung einen passenden Mechanismus: HTTP-Endpunkt oder Kommando.</li>
-<li>Du beobachtest, wie Probes Services und Rollouts beeinflussen.</li>
+<li>Du erklärst den Unterschied zwischen Liveness- und Readiness-Probe.</li>
+<li>Du richtest Probes im Manifest eines Deployments ein.</li>
+<li>Du wählst für verschiedene Anwendungen einen passenden Mechanismus – Endpunkt oder Kommando.</li>
+<li>Du beobachtest, wie sich Probes auf Services und Pods auswirken.</li>
 </ul>
 </div>
 </details>
-<details class="skr-fold">
+<details id="definition-of-done" class="skr-fold">
 <summary>Definition of Done</summary>
 <div class="skr-guide-done">
 <ul class="task-list">
-<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Das Backend hat eine Liveness- und eine Readiness-Probe, und oc describe pod zeigt beide." disabled="disabled"> Das Backend hat eine Liveness- und eine Readiness-Probe, und <code>oc describe pod</code> zeigt beide.</li>
-<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Das Frontend hat mindestens eine Probe." disabled="disabled"> Das Frontend hat mindestens eine Probe.</li>
-<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Die Datenbank hat eine Probe mit pg_isready." disabled="disabled"> Die Datenbank hat eine Probe mit <code>pg_isready</code>.</li>
-<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Du hast beobachtet, wie das Backend ohne Datenbank auf 0/1 READY geht." disabled="disabled"> Du hast beobachtet, wie das Backend ohne Datenbank auf <code>0/1</code> READY geht.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="oc describe pod &lt;backend-pod-name&gt; zeigt eine Liveness- und eine Readiness-Probe." disabled="disabled"> <code>oc describe pod &lt;backend-pod-name&gt;</code> zeigt eine Liveness- und eine Readiness-Probe.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="oc describe pod &lt;frontend-pod-name&gt; zeigt mindestens eine Probe." disabled="disabled"> <code>oc describe pod &lt;frontend-pod-name&gt;</code> zeigt mindestens eine Probe.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="oc describe pod &lt;postgres-pod-name&gt; zeigt eine Probe mit pg_isready." disabled="disabled"> <code>oc describe pod &lt;postgres-pod-name&gt;</code> zeigt eine Probe mit <code>pg_isready</code>.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Bei gestoppter Datenbank zeigt oc get pods das Backend als 0/1 bereit – und danach wieder als 1/1." disabled="disabled"> Bei gestoppter Datenbank zeigt <code>oc get pods</code> das Backend als <code>0/1</code> bereit – und danach wieder als <code>1/1</code>.</li>
 <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Du hast die Kontrollfragen beantwortet" disabled="disabled"> Du hast die Kontrollfragen beantwortet</li>
 </ul>
 </div>
 </details>
 </div>
 <h2 id="arbeitsschritte">Arbeitsschritte</h2>
-<p>Du arbeitest mit den Deployments von Backend, Frontend und Datenbank aus den vorigen
-Übungen weiter.</p>
 <h3 id="probes-für-das-backend-einrichten">Probes für das Backend einrichten</h3>
-<p>Das Backend bringt eigene Endpunkte für Health Checks mit. Finde auf der
-<a href="https://hub.docker.com/r/ralfueberfuhr/recipes-backend">Docker-Hub-Seite des Backends</a>
-heraus, welche Endpunkte für Liveness und Readiness gedacht sind und auf welchem Port sie
+<p>Das Backend bringt eigene Endpunkte für Health Checks mit. Finde in seiner
+<a href="https://hub.docker.com/r/ralfueberfuhr/recipes-backend">Dokumentation auf Docker Hub</a>
+heraus, welche Endpunkte es für Liveness und Readiness gibt und <strong>auf welchem Port</strong> sie
 erreichbar sind.</p>
-<p>Finde danach in der
+<p>Finde dann in der
 <a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/">Kubernetes-Dokumentation</a>
-heraus, wie <code>livenessProbe</code> und <code>readinessProbe</code> im Container eines Deployments
-beschrieben werden.</p>
+heraus, wie <code>livenessProbe</code> und <code>readinessProbe</code> im Container eines Deployments stehen.</p>
 <p>Ergänze beide Probes im Deployment des Backends und wende es an:</p>
 <pre><code class="language-bash">oc apply -f backend-deployment.yaml
 </code></pre>
-<p>Prüf, ob die Probes angekommen sind – sie stehen in der Beschreibung des Pods unter
-<code>Liveness</code> und <code>Readiness</code>:</p>
+<p>Prüf, ob die Probes angekommen sind:</p>
 <pre><code class="language-bash">oc describe pod &lt;backend-pod-name&gt;
 </code></pre>
+<blockquote>
+<p><strong>Hinweis:</strong> Suche in der Ausgabe nach den Zeilen <code>Liveness:</code> und <code>Readiness:</code>. Ganz
+unten unter <strong>Events</strong> steht, wenn eine Probe fehlschlägt – und warum.</p>
+</blockquote>
 <h3 id="probes-für-das-frontend-einrichten">Probes für das Frontend einrichten</h3>
 <p>Das Frontend wird von NGINX ausgeliefert und hat keinen eigenen Health-Endpunkt. Überleg,
-was sich als Liveness- und/oder Readiness-Probe eignet. Ein HTTP-Check auf den Pfad <code>/</code>
-ist ein guter Ausgangspunkt.</p>
-<p>Ergänze die Probe(s) im Deployment des Frontends und wende es an.</p>
+was sich hier als Liveness- und/oder Readiness-Probe eignet. Ein einfacher HTTP-Aufruf auf
+den Pfad <code>/</code> ist ein guter Ausgangspunkt.</p>
+<p>Ergänze die Probes im Deployment des Frontends und wende es an.</p>
 <h3 id="probes-für-die-datenbank-einrichten">Probes für die Datenbank einrichten</h3>
-<p>Für PostgreSQL eignet sich eine Probe, die ein <strong>Kommando</strong> im Container ausführt
-(<code>exec</code>) und prüft, ob die Datenbank Verbindungen annimmt. Finde heraus, wie eine
-<code>exec</code>-Probe beschrieben wird und welches Kommando dafür passt – Tipp: <code>pg_isready</code>.</p>
-<p>Ergänze die Probe(s) im Deployment der Datenbank und wende es an.</p>
+<p>Für PostgreSQL eignet sich eine Probe, die ein <strong>Kommando im Container</strong> ausführt und
+prüft, ob die Datenbank Verbindungen annimmt. Finde heraus, wie eine <code>exec</code>-Probe aussieht
+und welches Kommando dafür passt – Tipp: <code>pg_isready</code>.</p>
+<p>Ergänze die Probes im Deployment der Datenbank und wende es an.</p>
 <h3 id="das-verhalten-beobachten">Das Verhalten beobachten</h3>
-<p>Lass in einem zweiten Terminal die Pods mitlaufen (Beenden mit <code>Strg</code>+<code>C</code>):</p>
+<p>Lass in einem eigenen Terminal den Watch laufen (Ende mit Strg+C):</p>
 <pre><code class="language-bash">oc get pods -w
 </code></pre>
-<p>Nimm die Datenbank weg – das Deployment bleibt, nur ohne Pod:</p>
+<p>Stopp die Datenbank, indem Du ihr Deployment auf null Pods skalierst:</p>
 <pre><code class="language-bash">oc scale deployment postgres --replicas=0
 </code></pre>
-<p>Beobachte die Spalten <code>READY</code> und <code>RESTARTS</code> des Backends. Was passiert, was passiert
-nicht? Sieh auch in die Events:</p>
+<p>Beobachte die Spalten <code>READY</code> und <code>RESTARTS</code> des Backends und ruf es auf:</p>
+<pre><code class="language-bash">curl -i https://&lt;backend-host&gt;/recipes
+</code></pre>
+<p>Wird das Backend neu gestartet? Sieh auch in die Events:</p>
 <pre><code class="language-bash">oc describe pod &lt;backend-pod-name&gt;
 </code></pre>
-<p>Hol die Datenbank zurück und beobachte, wie das Backend wieder bereit wird:</p>
+<p>Starte die Datenbank danach wieder:</p>
 <pre><code class="language-bash">oc scale deployment postgres --replicas=1
 </code></pre>
 <blockquote>
-<p><strong>Hinweis:</strong> Ohne persistenten Speicher sind die Rezepte danach weg – mit dem PVC aus
-„Persistenten Speicher einrichten“ bleiben sie.</p>
+<p><strong>Hinweis:</strong> Ohne persistenten Speicher sind die Rezepte nach dem Neustart der
+Datenbank weg – das Schema legt das Init-SQL neu an.</p>
 </blockquote>
 <div class="skr-didaktikon-guide-review" data-skr-slot="guide.review">
 <h2 id="reflexionsfragen">Reflexionsfragen</h2>
 <div class="skr-didaktikon-reflective-questions" data-skr-field="didaktikon.reflective_questions">
 <ul>
 <li>Was unterscheidet eine Liveness- von einer Readiness-Probe? Was passiert jeweils, wenn sie fehlschlägt?</li>
-<li>Warum hat das Backend getrennte Endpunkte für Liveness und Readiness? Wann schlägt die Readiness-Probe fehl, während die Liveness-Probe noch gelingt?</li>
+<li>Warum hat das Backend getrennte Endpunkte für Liveness und Readiness? Wann schlägt Readiness fehl, während Liveness noch gelingt?</li>
 <li>Welche Rolle spielen <code>initialDelaySeconds</code>, <code>periodSeconds</code> und <code>failureThreshold</code>? Was passiert, wenn sie zu knapp gewählt sind?</li>
 <li>Warum lohnen sich Probes auch für Frontend und Datenbank, obwohl sie keine eigenen Health-Endpunkte haben?</li>
 <li>Was ist eine Startup-Probe, und wann setzt Du sie zusätzlich ein?</li>
 </ul>
 </div>
 </div>
-<textarea id="skr-md-source" hidden aria-hidden="true"># Health Checks mit Probes
-&lt;div class=&#34;skr-guide-panels&#34; data-skr-arrangement=&#34;fold&#34; markdown=&#34;1&#34;&gt;
 
-&lt;details class=&#34;skr-fold skr-didaktikon-guide-about&#34; data-skr-slot=&#34;guide.about&#34; markdown=&#34;1&#34;&gt;
-&lt;summary markdown=&#34;span&#34;&gt;User Story&lt;/summary&gt;
-
-&lt;div class=&#34;skr-didaktikon-user-story&#34; data-skr-field=&#34;didaktikon.user_story&#34; markdown=&#34;1&#34;&gt;
-
-**Als** Entwickler:in **möchte ich** Liveness- und Readiness-Probes für meine Deployments einrichten, **damit** der Cluster fehlerhafte Pods von selbst neu startet und nur bereite Pods Anfragen bekommen.
-
-&lt;/div&gt;
-
-&lt;/details&gt;
-
-&lt;details class=&#34;skr-fold skr-didaktikon-guide-about&#34; data-skr-slot=&#34;guide.about&#34; markdown=&#34;1&#34;&gt;
-&lt;summary markdown=&#34;span&#34;&gt;Lernziele&lt;/summary&gt;
-
-&lt;div class=&#34;skr-didaktikon-objectives&#34; data-skr-field=&#34;didaktikon.objectives&#34; markdown=&#34;1&#34;&gt;
-
-- Du unterscheidest Liveness- und Readiness-Probe.
-- Du richtest Probes im Deployment-Manifest ein.
-- Du wählst für jede Anwendung einen passenden Mechanismus: HTTP-Endpunkt oder Kommando.
-- Du beobachtest, wie Probes Services und Rollouts beeinflussen.
-
-&lt;/div&gt;
-
-&lt;/details&gt;
-
-&lt;details class=&#34;skr-fold&#34; markdown=&#34;1&#34;&gt;
-&lt;summary markdown=&#34;span&#34;&gt;Definition of Done&lt;/summary&gt;
-
-&lt;div class=&#34;skr-guide-done&#34; markdown=&#34;1&#34;&gt;
-
-- [ ] Das Backend hat eine Liveness- und eine Readiness-Probe, und `oc describe pod` zeigt beide.
-- [ ] Das Frontend hat mindestens eine Probe.
-- [ ] Die Datenbank hat eine Probe mit `pg_isready`.
-- [ ] Du hast beobachtet, wie das Backend ohne Datenbank auf `0/1` READY geht.
-- [ ] Du hast die Kontrollfragen beantwortet
-
-&lt;/div&gt;
-
-&lt;/details&gt;
-
-&lt;/div&gt;
-
-
-
-
-
-
-## Arbeitsschritte
-
-Du arbeitest mit den Deployments von Backend, Frontend und Datenbank aus den vorigen
-Übungen weiter.
-
-### Probes für das Backend einrichten
-
-Das Backend bringt eigene Endpunkte für Health Checks mit. Finde auf der
-[Docker-Hub-Seite des Backends](https://hub.docker.com/r/ralfueberfuhr/recipes-backend)
-heraus, welche Endpunkte für Liveness und Readiness gedacht sind und auf welchem Port sie
-erreichbar sind.
-
-Finde danach in der
-[Kubernetes-Dokumentation](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)
-heraus, wie `livenessProbe` und `readinessProbe` im Container eines Deployments
-beschrieben werden.
-
-Ergänze beide Probes im Deployment des Backends und wende es an:
-
-```bash
-oc apply -f backend-deployment.yaml
-```
-
-Prüf, ob die Probes angekommen sind – sie stehen in der Beschreibung des Pods unter
-`Liveness` und `Readiness`:
-
-```bash
-oc describe pod &lt;backend-pod-name&gt;
-```
-
-### Probes für das Frontend einrichten
-
-Das Frontend wird von NGINX ausgeliefert und hat keinen eigenen Health-Endpunkt. Überleg,
-was sich als Liveness- und/oder Readiness-Probe eignet. Ein HTTP-Check auf den Pfad `/`
-ist ein guter Ausgangspunkt.
-
-Ergänze die Probe(s) im Deployment des Frontends und wende es an.
-
-### Probes für die Datenbank einrichten
-
-Für PostgreSQL eignet sich eine Probe, die ein **Kommando** im Container ausführt
-(`exec`) und prüft, ob die Datenbank Verbindungen annimmt. Finde heraus, wie eine
-`exec`-Probe beschrieben wird und welches Kommando dafür passt – Tipp: `pg_isready`.
-
-Ergänze die Probe(s) im Deployment der Datenbank und wende es an.
-
-### Das Verhalten beobachten
-
-Lass in einem zweiten Terminal die Pods mitlaufen (Beenden mit `Strg`&#43;`C`):
-
-```bash
-oc get pods -w
-```
-
-Nimm die Datenbank weg – das Deployment bleibt, nur ohne Pod:
-
-```bash
-oc scale deployment postgres --replicas=0
-```
-
-Beobachte die Spalten `READY` und `RESTARTS` des Backends. Was passiert, was passiert
-nicht? Sieh auch in die Events:
-
-```bash
-oc describe pod &lt;backend-pod-name&gt;
-```
-
-Hol die Datenbank zurück und beobachte, wie das Backend wieder bereit wird:
-
-```bash
-oc scale deployment postgres --replicas=1
-```
-
-&gt; **Hinweis:** Ohne persistenten Speicher sind die Rezepte danach weg – mit dem PVC aus
-&gt; „Persistenten Speicher einrichten“ bleiben sie.
-
-
-&lt;div class=&#34;skr-didaktikon-guide-review&#34; data-skr-slot=&#34;guide.review&#34; markdown=&#34;1&#34;&gt;
-
-## Reflexionsfragen
-
-&lt;div class=&#34;skr-didaktikon-reflective-questions&#34; data-skr-field=&#34;didaktikon.reflective_questions&#34; markdown=&#34;1&#34;&gt;
-
-- Was unterscheidet eine Liveness- von einer Readiness-Probe? Was passiert jeweils, wenn sie fehlschlägt?
-- Warum hat das Backend getrennte Endpunkte für Liveness und Readiness? Wann schlägt die Readiness-Probe fehl, während die Liveness-Probe noch gelingt?
-- Welche Rolle spielen `initialDelaySeconds`, `periodSeconds` und `failureThreshold`? Was passiert, wenn sie zu knapp gewählt sind?
-- Warum lohnen sich Probes auch für Frontend und Datenbank, obwohl sie keine eigenen Health-Endpunkte haben?
-- Was ist eine Startup-Probe, und wann setzt Du sie zusätzlich ein?
-
-&lt;/div&gt;
-
-&lt;/div&gt;
-## Weiterführende Informationen
-- [Health Checks mit Probes](/shared/visualisierungen/probes.html)
-- [Kubernetes: Liveness, Readiness und Startup Probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)
-- [Kubernetes: Pod Lifecycle – Container Probes](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes)
-- [Recipes-Backend auf Docker Hub](https://hub.docker.com/r/ralfueberfuhr/recipes-backend)
-- [PostgreSQL: pg_isready](https://www.postgresql.org/docs/current/app-pg-isready.html)
-</textarea>
     </main><aside class="skr-guide-sidebar">
   <details class="skr-guide-side skr-guide-side--toc skr-fold" data-skr-toc-box
            data-skr-toc-limit="12" open>
     <summary class="skr-guide-side__label">Auf dieser Seite</summary>
-    <nav class="skr-toc skr-fold__body" data-skr-toc aria-label="Inhaltsverzeichnis"><a href="#arbeitsschritte">Arbeitsschritte</a><a href="#probes-für-das-backend-einrichten" class="skr-toc--h3">Probes für das Backend einrichten</a><a href="#probes-für-das-frontend-einrichten" class="skr-toc--h3">Probes für das Frontend einrichten</a><a href="#probes-für-die-datenbank-einrichten" class="skr-toc--h3">Probes für die Datenbank einrichten</a><a href="#das-verhalten-beobachten" class="skr-toc--h3">Das Verhalten beobachten</a><a href="#reflexionsfragen">Reflexionsfragen</a></nav>
+    <nav class="skr-toc skr-fold__body" data-skr-toc aria-label="Inhaltsverzeichnis"><a href="#user-story">User Story</a><a href="#lernziele">Lernziele</a><a href="#definition-of-done">Definition of Done</a><a href="#arbeitsschritte">Arbeitsschritte</a><a href="#probes-für-das-backend-einrichten" class="skr-toc--h3">Probes für das Backend einrichten</a><a href="#probes-für-das-frontend-einrichten" class="skr-toc--h3">Probes für das Frontend einrichten</a><a href="#probes-für-die-datenbank-einrichten" class="skr-toc--h3">Probes für die Datenbank einrichten</a><a href="#das-verhalten-beobachten" class="skr-toc--h3">Das Verhalten beobachten</a><a href="#reflexionsfragen">Reflexionsfragen</a></nav>
   </details>
   <section class="skr-guide-side skr-guide-side--bordered skr-guide-progress" data-skr-card="skriptorium.progress"
            aria-labelledby="skr-card-skriptorium-progress" data-skr-progress-text="{done} / {total} erledigt">
@@ -397,9 +264,9 @@ oc scale deployment postgres --replicas=1
     <div class="skr-guide-side__label">Weiterführende Informationen</div>
     <div class="skr-guide-side__links">
       <a href="../../shared/visualisierungen/probes.html"><span>Health Checks mit Probes</span></a>
-      <a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/" target="_blank" rel="noopener"><span>Kubernetes: Liveness, Readiness und Startup Probes</span></a>
-      <a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes" target="_blank" rel="noopener"><span>Kubernetes: Pod Lifecycle – Container Probes</span></a>
-      <a href="https://hub.docker.com/r/ralfueberfuhr/recipes-backend" target="_blank" rel="noopener"><span>Recipes-Backend auf Docker Hub</span></a>
+      <a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/" target="_blank" rel="noopener"><span>Liveness, Readiness und Startup Probes konfigurieren</span></a>
+      <a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes" target="_blank" rel="noopener"><span>Pod Lifecycle: Container Probes</span></a>
+      <a href="https://hub.docker.com/r/ralfueberfuhr/recipes-backend" target="_blank" rel="noopener"><span>recipes-backend auf Docker Hub</span></a>
       <a href="https://www.postgresql.org/docs/current/app-pg-isready.html" target="_blank" rel="noopener"><span>PostgreSQL: pg_isready</span></a>
     </div>
   </div>

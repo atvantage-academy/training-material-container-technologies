@@ -131,14 +131,13 @@
   if (!slides.length) { ready(); return; }
 
   /* --- 2) Zustand + Anzeige ------------------------------------------------- */
-  var counter = document.querySelector("[data-skr-present-counter]");
-  var progress = document.querySelector("[data-skr-stage-progress]");
-  var controls = document.querySelector("[data-skr-stage-controls]");
   var prevBtn = document.querySelector("[data-skr-present-prev]");
   var nextBtn = document.querySelector("[data-skr-present-next]");
   var index = 0;
 
-  if (controls && slides.length > 1) controls.removeAttribute("hidden");
+  /* Die Gruppe zum Blättern (am Einschub stage.controls) steht ohne Skript verborgen. */
+  var nav = document.querySelector("[data-skr-present-nav]");
+  if (nav && slides.length > 1) nav.removeAttribute("hidden");
 
   function render() {
     track.style.transform = "translateX(-" + index * 100 + "%)";
@@ -152,8 +151,8 @@
       else { s.setAttribute("aria-hidden", "true"); s.setAttribute("inert", ""); }
     });
     reachable();
-    if (counter) counter.textContent = index + 1 + " / " + slides.length;
-    if (progress) progress.style.width = ((index + 1) / slides.length) * 100 + "%";
+    /* Zähler und Balken setzt die Bühne (stage.js) – dieselbe Anzeige wie bei jedem Erbe. */
+    window.skr._stageProgress(index + 1, slides.length);
     if (prevBtn) prevBtn.disabled = index === 0;
     if (nextBtn) nextBtn.disabled = index === slides.length - 1;
     if (slides[index].classList.contains("skr-slide--title")) {

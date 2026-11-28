@@ -5,6 +5,7 @@
    sich der Kern (client.js) und die Extensions hängen – gleich, in welcher
    Reihenfolge sie laden. Ein Skript in einer Seite darf ihn sofort nutzen.
 
+     skr.storage                          Speicher im Browser je Unterlage (hier, siehe unten)
      skr.state, skr.dialog                Helfer für Seiten und Extensions (client.js)
      skr.buildInfo, skr.colorScheme() …   Client-API: Bauauskunft und Steuerung (client.js)
      skr.ext.«name»                       die Teile einer Extension
@@ -14,7 +15,8 @@
      skr.componentData(element)          die Daten eines Bausteins in YAML (`forms` am Baustein)
                                           oder seine Teile (`inserts` am Baustein)
 
-   `ctx` je Extension: `readonly`, `guard(part, fn)`, `sidebarCard(id, options)`
+   `ctx` je Extension: `readonly`, `with`, `guard(part, fn)`, `conditions` – die Bedingungen
+   der Navigation, die sie meldet (`get(name)`, `set(name, on)`, siehe unten) –, `sidebarCard(id, options)`
    – eine Karte in der Seitenleiste der Seite (siehe unten) –, `text(key, values)`
    – ein Text des Pakets in der Sprache der Seite – und `page.fields` – die Felder, die
    die Extension für das Layout der Seite erklärt und für den Browser freigibt, mit ihren
@@ -33,6 +35,21 @@
    – Steuerndes wirft mit Verweis auf die Einstellung; `off` – keine Bauauskunft und
    keine Steuerung. Die HELFER für Seiten bleiben immer: Ohne sie brächen die Seiten.
 
+   SPEICHER JE UNTERLAGE (`skr.storage`, #487): Jeder Schlüssel steht hinter dem Bereich der
+   Unterlage (`«bereich»:«schlüssel»`, <meta name="skr-scope">, Vorgabe ihr Name) – Unterlagen
+   unter derselben Adresse, lokal etwa localhost:1313, teilen so nichts.
+
+     skr.storage.get(key) → Wert | null      skr.storage.set(key, value)   Werte als JSON
+     skr.storage.remove(key)                  skr.storage.keys(prefix?)     ohne den Bereich
+     skr.storage.clear(prefix?)               skr.storage.available        dauerhaft gespeichert?
+     skr.storage.scope                        skr.storage.session           dasselbe je Tab
+     skr.storage.adopt(from, to) → Wert | null    fremden Schlüssel ohne Bereich übernehmen
+
+   Ohne Speicher (privates Fenster, gesperrte Website-Daten) wirft er nicht: Die Werte gelten
+   dann für die Seite. Ein Wert unter dem bisherigen Schlüssel ohne Bereich (`skr-…`) zieht beim
+   ersten Lesen in den Bereich um; einen anderen Schlüssel ohne Bereich übernimmt `adopt`. Der
+   Kern speichert selbst nur darüber.
+
    VOR DEM ERSTEN MALEN setzt diese Datei, was sonst ein Skript im Dokument täte – die
    Seiten tragen keins (Content Security Policy ohne `unsafe-inline`):
      - das gewählte Farbschema (`data-skr-scheme`, gespeichert im Browser unter `skr-scheme`);
@@ -42,30 +59,99 @@
      - die Rolle der Navigation (`data-skr-role`) aus dem Datenblock `skr-roles`, der vor
        dieser Datei steht: die gespeicherte Wahl je Site, sonst die erste Rolle; steht die
        Seite nur in der Navigation anderer Rollen, deren erste – ohne die Wahl zu ändern;
+     - die gemeldeten Bedingungen der Navigation (`data-skr-conditions`, gespeichert unter
+       `skr-conditions`, skriptorium#517) – conditions.css blendet Einträge aus, deren
+       Bedingung dort fehlt;
      - die Lademarke einer Präsentation (`data-skr-present-loading`, angefordert mit
        `data-skr-present-mark` am <html>), samt Frist, falls presentation.js ausbleibt.
    ========================================================================== */
 (function () {
   "use strict";
   var h = document.documentElement;
-  try {
-    var t = localStorage.getItem("skr-scheme");
-    /* Bis 1.x hieß der Eintrag `skr-theme`; heute trägt er das Theme. Ein Farbschema dort
-       zieht einmal um. */
-    var former = localStorage.getItem("skr-theme");
-    if (!t && (former === "dark" || former === "light")) {
-      t = former;
-      localStorage.setItem("skr-scheme", t);
-      localStorage.removeItem("skr-theme");
+  var scopeMeta = document.querySelector('meta[name="skr-scope"]');
+  var scope = (scopeMeta && scopeMeta.getAttribute("content")) || "";
+
+  /* Ein Speicher (`localStorage` oder `sessionStorage`) mit dem Bereich vor jedem Schlüssel. */
+  function area(name) {
+    var s = null, mem = {};
+    try { s = window[name]; s.setItem("skr-probe", "1"); s.removeItem("skr-probe"); } catch (e) { s = null; }
+    var prefix = scope ? scope + ":" : "";
+    function raw(full) {
+      try { if (s) return s.getItem(full); } catch (e) { /* weiter ohne Speicher */ }
+      return Object.prototype.hasOwnProperty.call(mem, full) ? mem[full] : null;
     }
-    if (t === "dark" || t === "light") h.setAttribute("data-skr-scheme", t);
-    var offered = document.querySelector('meta[name="skr-themes"]');
-    if (offered) {
-      var theme = localStorage.getItem("skr-theme");
-      if (theme && (" " + offered.getAttribute("content") + " ").indexOf(" " + theme + " ") >= 0) h.setAttribute("data-skr-theme", theme);
-      else if (theme) localStorage.removeItem("skr-theme");
+    function put(full, v) { try { if (s) { s.setItem(full, v); return; } } catch (e) { /* voll oder gesperrt */ } mem[full] = v; }
+    function drop(full) { try { if (s) s.removeItem(full); } catch (e) { /* gesperrt */ } delete mem[full]; }
+    // Werte als JSON; was davor ohne JSON gespeichert wurde, gilt als Text.
+    function decode(v) { try { return JSON.parse(v); } catch (e) { return v; } }
+    function check(key) { if (typeof key !== "string" || !key) throw new TypeError("skr.storage: a key is a non-empty string"); }
+    function all() {
+      var out = Object.keys(mem);
+      try { if (s) for (var i = 0; i < s.length; i++) out.push(s.key(i)); } catch (e) { /* gesperrt */ }
+      return out;
     }
-  } catch (e) { /* kein Speicher */ }
+    var a = {
+      get: function (key) {
+        check(key);
+        var v = raw(prefix + key);
+        // ÜBERNAHME: ein Wert des Kerns oder einer Extension unter dem bisherigen Schlüssel ohne
+        // Bereich zieht einmal um.
+        if (v === null && prefix && key.indexOf("skr-") === 0) {
+          var old = raw(key);
+          if (old !== null) { v = decode(old); a.set(key, v); drop(key); return v; }
+        }
+        return v === null ? null : decode(v);
+      },
+      set: function (key, value) {
+        check(key);
+        if (value === undefined || value === null) drop(prefix + key);
+        else put(prefix + key, JSON.stringify(value));
+      },
+      remove: function (key) { check(key); drop(prefix + key); },
+      keys: function (start) {
+        var p = prefix + (start || ""), seen = {};
+        return all().filter(function (k) { if (seen[k] || k.indexOf(p) !== 0) return false; seen[k] = true; return true; })
+          .map(function (k) { return k.slice(prefix.length); });
+      },
+      clear: function (start) { a.keys(start).forEach(function (k) { drop(prefix + k); }); },
+      // ÜBERNAHME FREMDER SCHLÜSSEL: ein Eintrag ohne Bereich (etwa einer Anwendung vor dem
+      // Skriptorium) zieht einmal unter `to` um – ein Wert dort bleibt –, der alte verschwindet.
+      adopt: function (from, to) {
+        check(from);
+        check(to);
+        var old = prefix + to === from ? null : raw(from);
+        if (old !== null) {
+          if (a.get(to) === null) a.set(to, decode(old));
+          drop(from);
+        }
+        return a.get(to);
+      }
+    };
+    Object.defineProperty(a, "available", { value: !!s, enumerable: true });
+    Object.defineProperty(a, "scope", { value: scope, enumerable: true });
+    return a;
+  }
+  var storage = area("localStorage");
+  Object.defineProperty(storage, "session", { value: area("sessionStorage"), enumerable: true });
+  /* Übergabe an den Namensraum (unten) – nicht aufzählbar, danach entfernt. */
+  Object.defineProperty(window, "__skrStorage", { value: storage, configurable: true });
+
+  var t = storage.get("skr-scheme");
+  /* Bis 1.x hieß der Eintrag `skr-theme`; heute trägt er das Theme. Ein Farbschema dort
+     zieht einmal um. */
+  var former = storage.get("skr-theme");
+  if (!t && (former === "dark" || former === "light")) {
+    t = former;
+    storage.set("skr-scheme", t);
+    storage.remove("skr-theme");
+  }
+  if (t === "dark" || t === "light") h.setAttribute("data-skr-scheme", t);
+  var offered = document.querySelector('meta[name="skr-themes"]');
+  if (offered) {
+    var theme = storage.get("skr-theme");
+    if (theme && (" " + offered.getAttribute("content") + " ").indexOf(" " + theme + " ") >= 0) h.setAttribute("data-skr-theme", theme);
+    else if (theme) storage.remove("skr-theme");
+  }
   addEventListener("unhandledrejection", function (e) {
     var r = e.reason;
     if (r && r.name === "InvalidStateError" && /ViewTransition opt-in disabled/.test(r.message || "")) e.preventDefault();
@@ -76,12 +162,52 @@
       var data = JSON.parse(roles.textContent) || {};
       var ids = data.ids || [], page = data.page || [], r = null;
       var m = document.querySelector('meta[name="skr-root"]');
-      try { r = localStorage.getItem("skr-role:" + new URL((m && m.getAttribute("content")) || "/", location.href).pathname); } catch (e) { /* kein Speicher */ }
+      try { r = storage.get("skr-role:" + new URL((m && m.getAttribute("content")) || "/", location.href).pathname); } catch (e) { /* keine Rolle gespeichert */ }
       if (ids.indexOf(r) < 0) r = ids[0];
       if (page.length && page.indexOf(r) < 0) r = page[0];
       if (r) h.setAttribute("data-skr-role", r);
     } catch (e) { /* Rolle bleibt die aus dem Markup */ }
   }
+  /* BEDINGUNGEN DER NAVIGATION (`when`, skriptorium#517): die Bedingungen, die Extensions über
+     `ctx.conditions` als erfüllt gemeldet haben, mit vollem Namen («extension».«bedingung») im
+     Speicher der Unterlage – vor dem ersten Malen am <html>, damit kein Eintrag aufblitzt. */
+  function conditionsOn() {
+    var v = null;
+    try { v = storage.get("skr-conditions"); } catch (e) { /* nichts gemeldet */ }
+    return Array.isArray(v) ? v.filter(function (x) { return typeof x === "string"; }) : [];
+  }
+  function showConditions(list) {
+    if (list.length) h.setAttribute("data-skr-conditions", list.join(" "));
+    else h.removeAttribute("data-skr-conditions");
+  }
+  if (conditionsOn().length) showConditions(conditionsOn());
+  /* Die Bedingungen einer Extension: `get(name)` und `set(name, on)` mit dem kurzen Namen aus
+     ihrer extension.yml; den Namen der Extension setzt der Kern davor. Eine Änderung gilt
+     sofort, bleibt gespeichert und geht als `skr-conditionschange` an `window`. */
+  function conditions(extensionName) {
+    function full(name) {
+      if (typeof name !== "string" || !/^[a-z][a-z0-9]*(-[a-z0-9]+)*$/.test(name)) {
+        throw new TypeError("ctx.conditions: a condition is the short name from conditions in extension.yml, such as \"kpi\"");
+      }
+      return extensionName + "." + name;
+    }
+    return Object.freeze({
+      get: function (name) { return conditionsOn().indexOf(full(name)) >= 0; },
+      set: function (name, on) {
+        var id = full(name);
+        if (typeof on !== "boolean") throw new TypeError("ctx.conditions.set(name, on): on is true or false");
+        var list = conditionsOn().filter(function (x) { return x !== id; });
+        var before = list.length !== conditionsOn().length;
+        if (on) list.push(id);
+        list.sort();
+        try { storage.set("skr-conditions", list.length ? list : null); } catch (e) { /* gilt dann für die Seite */ }
+        showConditions(list);
+        if (before !== on) window.dispatchEvent(new CustomEvent("skr-conditionschange"));
+        return on;
+      }
+    });
+  }
+  Object.defineProperty(window, "__skrConditions", { value: conditions, configurable: true });
   if (h.hasAttribute("data-skr-present-mark")) {
     h.setAttribute("data-skr-present-loading", "");
     h.setAttribute("aria-busy", "true");
@@ -90,6 +216,8 @@
 })();
 (function () {
   "use strict";
+  var conditions = window.__skrConditions;
+  delete window.__skrConditions;
   if (window.skriptorium) return;
 
   /* Die Einstellung lesen, wenn sie gebraucht wird – der Seitenblock kann beim Laden
@@ -213,6 +341,10 @@
         guard: function (part, fn) { return guard("ext." + name + "." + part, fn); },
         sidebarCard: function (id, o) { return card(extensionName + "." + id, o || {}); },
         text: function (key, values) { return text(extensionName, key, values); },
+        conditions: conditions(extensionName),
+        /* Die Einstellungen der ganzen Extension (`with` am Eintrag, Vorgaben aus ihrem Schema,
+           skriptorium#490), eingefroren; ohne Einstellungen ein leeres Objekt. */
+        get with() { return freeze(JSON.parse(JSON.stringify(block("skr-extension-with")[extensionName] || {}))); },
         /* Die Felder der Extension für das Layout der Seite, die für den Browser freigegeben
            sind (`x-skr-browser`) – `field(name)` liefert den Wert eines Feldes, ohne Wert oder
            ohne Freigabe `undefined`. */
@@ -366,6 +498,8 @@
   });
 
   var skr = {};
+  Object.defineProperty(skr, "storage", { value: window.__skrStorage, enumerable: true });
+  delete window.__skrStorage;
   Object.defineProperty(skr, "ext", { value: ext, enumerable: true });
   Object.defineProperty(skr, "layouts", { value: layouts, enumerable: true });
   Object.defineProperty(skr, "ready", { value: function (fn) { ready(fn, false); }, enumerable: true });

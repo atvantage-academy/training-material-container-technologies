@@ -4,7 +4,8 @@
   <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="skr-root" content="../../">
-<script src="../../skriptorium/skr.js?v=c06299bd"></script>
+<meta name="skr-scope" content="training-concept-container-technologies">
+<script src="../../skriptorium/skr.js?v=597e5686"></script>
 <title>Konfiguration in ConfigMaps auslagern · Containertechnologien (Academy)</title>
 <meta name="description" content="Die Adresse des Backends aus dem Deployment des Frontends in eine ConfigMap verlegen und ändern, ohne das Deployment anzufassen.">
 
@@ -25,31 +26,32 @@
 <link rel="stylesheet" href="../../skriptorium/tokens.css?v=28abf864">
 <link rel="stylesheet" href="../../extensions/didaktikon/tokens.css?v=5966d76a">
 <link rel="stylesheet" href="../../skriptorium/base.css?v=86e37c43">
-<link rel="stylesheet" href="../../skriptorium/components.css?v=3a968127">
+<link rel="stylesheet" href="../../skriptorium/components.css?v=e3b517fb">
 <link rel="stylesheet" href="../../skriptorium/doclinks.css?v=2ef23515">
 <link rel="stylesheet" href="../../skriptorium/linkmarks.css?v=1643f80a">
-<link rel="stylesheet" href="../../skriptorium/site.css?v=2a7f5baf">
+<link rel="stylesheet" href="../../skriptorium/site.css?v=825d2514">
 <link rel="stylesheet" href="../../skriptorium/logo.css?v=43a7fbaf">
-<link rel="stylesheet" href="../../skriptorium/guide.css?v=1237e482">
-<link rel="stylesheet" media="print" href="../../skriptorium/print.css?v=6c7ec44c">
-<meta name="generator" content="Skriptorium 2.0.0-rc.15">
-<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"2.0.0-rc.11"}],"internal":false,"languages":["de"],"skriptorium":"2.0.0-rc.15","theme":"didaktikon","themeOptions":["didaktikon"],"themes":[{"name":"didaktikon","version":"2.0.0-rc.11"},{"name":"atvantage","version":"2.2.0"},{"name":"default","version":"2.0.0-rc.15"}]}</script>
+<link rel="stylesheet" href="../../skriptorium/guide.css?v=b1acb596">
+<link rel="stylesheet" media="print" href="../../skriptorium/print.css?v=f344e618">
+<meta name="generator" content="Skriptorium 2.0.0-rc.20">
+<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"2.0.0-rc.11"}],"internal":false,"languages":["de"],"skriptorium":"2.0.0-rc.20","theme":"didaktikon","themeOptions":["didaktikon"],"themes":[{"name":"didaktikon","version":"2.0.0-rc.11"},{"name":"atvantage","version":"2.2.0"},{"name":"default","version":"2.0.0-rc.20"}]}</script>
 <script type="application/json" id="skr-page-info">{"clientApi":"full","defaultLanguage":"de","description":"Die Adresse des Backends aus dem Deployment des Frontends in eine ConfigMap verlegen und ändern, ohne das Deployment anzufassen.","duration":15,"fields":null,"language":"de","languages":["de"],"layout":"didaktikon.exercise","pageId":"kubernetes-grundlagen-konfiguration-issue","runtimeFragments":null,"siteIndex":"/skriptorium/site.json","title":"Konfiguration in ConfigMaps auslagern","topics":["ConfigMaps","Umgebungsvariablen","Konfiguration"],"untranslated":null,"url":"/kubernetes-grundlagen/konfiguration/issue.html"}</script>
 <script type="application/json" id="skr-texts">{"didaktikon.capture":"Capture-Modus","didaktikon.captureExit":"beenden","didaktikon.captureText":"Text einblenden","didaktikon.crosswordAcross":"Waagerecht","didaktikon.crosswordCellAcross":"{number} waagerecht, Buchstabe {position}","didaktikon.crosswordCellDown":"{number} senkrecht, Buchstabe {position}","didaktikon.crosswordDown":"Senkrecht","didaktikon.crosswordHintLetter":"Tipp: Buchstabe","didaktikon.crosswordHintWord":"Tipp: Wort","didaktikon.crosswordRestart":"Neu beginnen","didaktikon.crosswordRestartText":"Deine Eingaben in diesem Rätsel werden gelöscht.","didaktikon.crosswordRestartTitle":"Kreuzworträtsel neu beginnen?","didaktikon.crosswordReveal":"Auflösen","didaktikon.crosswordRevealText":"Alle Felder werden ausgefüllt.","didaktikon.crosswordRevealTitle":"Kreuzworträtsel auflösen?","didaktikon.crosswordSolution":"Lösungswort","didaktikon.crosswordSolutionCell":"Lösungswort, Buchstabe {position}","didaktikon.crosswordSolved":"Gelöst – alle Begriffe stimmen.","didaktikon.doclinkCrossword":"Kreuzworträtsel","didaktikon.doclinkExercise":"Übung","didaktikon.doclinkQuiz":"Wissens-Check","didaktikon.doclinkSimulation":"Simulation","didaktikon.doclinkVisualization":"Visualisierung","didaktikon.exerciseObjectives":"Lernziele","didaktikon.exerciseQuestionsDone":"Du hast die Kontrollfragen beantwortet","didaktikon.exerciseReflectiveQuestions":"Reflexionsfragen","didaktikon.exerciseUserStory":"User Story","didaktikon.moduleBlock":"Grobthema: {block}","didaktikon.moduleDuration":"{minutes} Minuten","didaktikon.moduleMaterial":"Material","didaktikon.moduleMaterialOver":"Das Material dauert zusammen {material}′ – länger als das Modul mit {module}′.","didaktikon.quizAgain":"Noch einmal","didaktikon.quizCorrect":"Richtig.","didaktikon.quizCorrectCount":"{count} richtig","didaktikon.quizCorrectWouldBe":"Richtig wäre gewesen:","didaktikon.quizDone":"Fertig","didaktikon.quizEvaluate":"Auswertung","didaktikon.quizJump":"Zu Frage springen","didaktikon.quizNext":"Weiter","didaktikon.quizOverview":"Alle Fragen","didaktikon.quizOverviewClose":"Zurück zum Check","didaktikon.quizOverviewCorrect":"(richtig)","didaktikon.quizOverviewGoTo":"Zu dieser Frage","didaktikon.quizProgress":"Fortschritt","didaktikon.quizQuestionOf":"Frage {current} von {total}","didaktikon.quizRestart":"Neu beginnen","didaktikon.quizRestartText":"Deine Antworten in diesem Wissens-Check werden gelöscht.","didaktikon.quizRestartTitle":"Wissens-Check neu beginnen?","didaktikon.quizResult":"{correct} von {total} richtig","didaktikon.quizResultLong":"{correct} von {total} Fragen richtig","didaktikon.quizTrainerOnly":"Nur für Trainer:innen","didaktikon.quizWrong":"Nicht ganz.","didaktikon.scenarios":"Szenarien","didaktikon.simAllScenarios":"Alle Szenarien (Taste 0)","didaktikon.simControls":"Simulation steuern","didaktikon.simNext":"Schritt vor (→)","didaktikon.simNextAria":"Schritt vor","didaktikon.simOverview":"Übersicht","didaktikon.simPause":"Pause (Leertaste)","didaktikon.simPauseAria":"Pause","didaktikon.simPlay":"Abspielen (Leertaste)","didaktikon.simPlayAria":"Abspielen","didaktikon.simPrev":"Schritt zurück (←)","didaktikon.simPrevAria":"Schritt zurück","didaktikon.simPrintHint":"Diese Simulation lebt von der Bewegung. Auf Papier steht nur der gerade sichtbare Schritt – der QR-Code oben führt zurück zur laufenden Fassung.","didaktikon.simReset":"Zurück auf Anfang (Taste R)","didaktikon.simResetAria":"Zurück auf Anfang","didaktikon.simResize":"Breite der Erklärspalte (Pfeiltasten)","didaktikon.simScenarioCount":"{count} Szenarien","didaktikon.simScenarioKey":"{title} (Taste {number})","didaktikon.simScenarioTitle":"Szenario {number}","didaktikon.simSpeed":"Tempo wählen (Taste T)","didaktikon.simSpeedAria":"Tempo wählen","didaktikon.simSpeedMenu":"Tempo","didaktikon.simStepCount":"{count} Schritte","didaktikon.simStepCountOne":"{count} Schritt","didaktikon.simStepCounter":"Schritt {current} / {total}","didaktikon.speedFast":"zügig","didaktikon.speedNormal":"normal","didaktikon.speedSlow":"langsam","didaktikon.speedTurbo":"im Zeitraffer","didaktikon.speedValue":"{speed}×","didaktikon.stepNote":"Erklärung zum aktuellen Schritt","didaktikon.trainerNoteClose":"Schließen","didaktikon.trainerNoteOpen":"Hinweis für Trainer:innen anzeigen","didaktikon.trainerNoteTitle":"Hinweis für Trainer:innen","didaktikon.trainingCatalogEmpty":"Hier gibt es noch keine Schulung.","didaktikon.trainingCatalogTrainings":"Schulungen","didaktikon.trainingDays":"{days} Tage","didaktikon.trainingDaysOne":"{days} Tag","didaktikon.trainingHomeInfo":"Kursbeschreibung","didaktikon.trainingHomeManifest":"Didaktisches Manifest","didaktikon.trainingHomeSales":"Sales-Asset","didaktikon.trainingInfoAudience":"Zielgruppe","didaktikon.trainingInfoObjectives":"Lernziele","didaktikon.trainingInfoObjectivesLead":"Die Lernenden …","didaktikon.trainingInfoOverview":"Überblick","didaktikon.trainingInfoPrerequisites":"Voraussetzungen","didaktikon.trainingMaterials":"Kursmaterial","didaktikon.trainingMaterialsExercises":"Übungen","didaktikon.trainingMaterialsLead":"Links stehen die **Übungen**, an denen Du selbst arbeitest, rechts das **Material zum Nachschlagen**.","didaktikon.trainingMaterialsMore":"Weitere Themen","didaktikon.trainingMaterialsOther":"Sonstige Unterlagen","didaktikon.trainingMaterialsReference":"Zum Nachschlagen","didaktikon.trainingModules":"Module","didaktikon.trainingModulesBlock":"Grobthema","didaktikon.trainingModulesDuration":"Dauer","didaktikon.trainingModulesMaterial":"Material","didaktikon.trainingModulesModule":"Modul","didaktikon.trainingModulesOver":"länger als das Modul","didaktikon.trainingSalesBuyers":"Käufer","didaktikon.trainingSalesPitch":"Pitch","didaktikon.trainingSalesPricing":"Preisrahmen","didaktikon.trainingSalesUsp":"Unterscheidungsmerkmale","didaktikon.trainingSalesValueProposition":"Nutzenversprechen"}</script>
 
-<script src="../../skriptorium/client.js?v=756a5d69" defer></script>
-<script src="../../skriptorium/site.js?v=6472c794" defer></script>
-<script src="../../skriptorium/search-trail.js?v=31279378" data-skr-search-trail
-        data-base="../../" data-index="../../skriptorium/search/de.json?v=c2fa893e" defer></script>
-<link rel="stylesheet" href="../../skriptorium/highlight.css?v=f8a3fc05">
-<script type="module" src="../../skriptorium/highlight.js?v=0b2d40aa" data-skr-highlight="[&#34;bash&#34;,&#34;dockerfile&#34;,&#34;python&#34;,&#34;sql&#34;,&#34;yaml&#34;]"></script>
+<script src="../../skriptorium/client.js?v=e9b75088" defer></script>
+<script src="../../skriptorium/site.js?v=bf4672b2" defer></script>
+
+<script src="../../skriptorium/search-trail.js?v=ca558440" data-skr-search-trail
+        data-base="../../" data-index="../../skriptorium/search/de.json?v=b137f70b" defer></script>
+<link rel="stylesheet" href="../../skriptorium/highlight.css?v=b66fa35b">
+<script type="module" src="../../skriptorium/highlight.js?v=bb894db9" data-skr-highlight></script>
 <link rel="apple-touch-icon" sizes="180x180" href="../../themes/atvantage/assets/icon-180.png">
 <link rel="icon" sizes="32x32" href="../../themes/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="../../themes/atvantage/assets/icon-16.png">
 
   <style>@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }</style>
   <link rel="stylesheet" href="../../skriptorium/page-transitions.css?v=716872f0">
-<link rel="stylesheet" href="../../skriptorium/guide-layout.css?v=cc0ce1dd">
+<link rel="stylesheet" href="../../skriptorium/guide-layout.css?v=ca7e6344">
 <link rel="stylesheet" href="../../extensions/didaktikon/exercise.css?v=485b7c1d">
 <script src="../../skriptorium/guide-layout.js?v=00fd0360" defer></script>
 
@@ -87,7 +89,7 @@
   <div class="skr-header__tools">
 <div class="skr-search" data-skr-search hidden
      data-mode="expand" data-shortcut="double_shift"
-     data-index="../../skriptorium/search/de.json?v=c2fa893e"
+     data-index="../../skriptorium/search/de.json?v=b137f70b"
      data-base="../../">
   <button type="button" class="skr-tool skr-tool--search" data-skr-search-toggle
           aria-expanded="false" aria-controls="skr-search-dialog"
@@ -101,6 +103,20 @@
           <option value="">Alle</option>
         </select>
       </label>
+      <div class="skr-search__field skr-search__field--kind" hidden>
+        <span class="skr-search__label" id="skr-search-kind-label">Art</span>
+        <button type="button" class="skr-search__kind" aria-expanded="false" aria-controls="skr-search-kinds"
+                aria-labelledby="skr-search-kind-label skr-search-kind-value"
+                data-all="Alle Arten" data-count="{n} Arten"
+                data-none="Keine Art"><span
+                class="skr-search__kind-value" id="skr-search-kind-value">Alle Arten</span></button>
+      </div>
+      <fieldset class="skr-search__kinds" id="skr-search-kinds" hidden
+                data-label-only="nur" data-none-selected="Keine Art gewählt.">
+        <legend class="skr-visually-hidden">Art</legend>
+        <ul class="skr-search__kind-list"></ul>
+        <button type="button" class="skr-search__kind-all">Alle auswählen</button>
+      </fieldset>
       <label class="skr-search__field skr-search__field--query">
         <span class="skr-search__label">Suchbegriff</span>
         <input type="search" class="skr-search__input"
@@ -114,7 +130,7 @@
     <ul class="skr-search__results" data-skr-search-results aria-label="Suchergebnisse"></ul>
   </dialog>
 </div>
-<script src="../../skriptorium/search.js?v=2be133a6" defer></script>
+<script src="../../skriptorium/search.js?v=679c2a13" defer></script>
 <button type="button" class="skr-qr" data-skr-qr hidden
         title="Diese Seite auf Deinem Smartphone öffnen"
         aria-label="Diese Seite auf Deinem Smartphone öffnen"></button>
@@ -131,22 +147,19 @@
     <div class="skr-guide-hero__tags"><span class="skr-tag skr-tag--time">ca. 15 Minuten</span><span class="skr-tag">ConfigMaps</span><span class="skr-tag">Umgebungsvariablen</span><span class="skr-tag">Konfiguration</span>
     </div>
     <div class="skr-guide-hero__actions">
-      <button type="button" class="skr-btn skr-btn--ghost skr-copy-md"
-              data-skr-copy-md="#skr-md-source"
-              title="Markdown kopieren" aria-label="Markdown kopieren"></button>
     </div>
   </div><h1 id="skr-page-title">Konfiguration in ConfigMaps auslagern</h1>
 </section>
 
   <div class="skr-guide-layout">
     <main class="skr-guide-main" id="skr-content"><div class="skr-guide-panels" data-skr-arrangement="fold">
-<details class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
+<details id="user-story" class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
 <summary>User Story</summary>
 <div class="skr-didaktikon-user-story" data-skr-field="didaktikon.user_story">
 <p><strong>Als</strong> Entwickler:in <strong>möchte ich</strong> die Adresse des Backends in einer ConfigMap verwalten, <strong>damit</strong> ich die Konfiguration ändern kann, ohne das Deployment anzufassen.</p>
 </div>
 </details>
-<details class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
+<details id="lernziele" class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
 <summary>Lernziele</summary>
 <div class="skr-didaktikon-objectives" data-skr-field="didaktikon.objectives">
 <ul>
@@ -157,7 +170,7 @@
 </ul>
 </div>
 </details>
-<details class="skr-fold">
+<details id="definition-of-done" class="skr-fold">
 <summary>Definition of Done</summary>
 <div class="skr-guide-done">
 <ul class="task-list">
@@ -171,6 +184,7 @@
 </details>
 </div>
 <h2 id="arbeitsschritte">Arbeitsschritte</h2>
+<p>Du arbeitest mit dem Frontend aus der vorigen Übung weiter.</p>
 <h3 id="eine-configmap-anlegen">Eine ConfigMap anlegen</h3>
 <p>Diesmal legst Du die Ressource nicht als Datei an, sondern direkt per Befehl. Setz die
 Adresse Deines Backends ein:</p>
@@ -213,7 +227,7 @@ Cluster.</p>
 <p>Du hast die ConfigMap per Befehl angelegt. Überleg, wie Du sie stattdessen als eigene
 Datei <code>frontend-config.yaml</code> beschreiben und mit <code>kubectl apply -f</code> anlegen würdest. Sieh
 Dir dazu noch einmal die Ausgabe von <code>kubectl get configmap frontend-config -o yaml</code> an:
-Was davon brauchst Du, was kannst Du weglassen?</p>
+Was davon brauchst Du, was trägt der Cluster selbst ein und kann weg?</p>
 <div class="skr-didaktikon-guide-review" data-skr-slot="guide.review">
 <h2 id="reflexionsfragen">Reflexionsfragen</h2>
 <div class="skr-didaktikon-reflective-questions" data-skr-field="didaktikon.reflective_questions">
@@ -224,154 +238,12 @@ Was davon brauchst Du, was kannst Du weglassen?</p>
 </ul>
 </div>
 </div>
-<textarea id="skr-md-source" hidden aria-hidden="true"># Konfiguration in ConfigMaps auslagern
-&lt;div class=&#34;skr-guide-panels&#34; data-skr-arrangement=&#34;fold&#34; markdown=&#34;1&#34;&gt;
 
-&lt;details class=&#34;skr-fold skr-didaktikon-guide-about&#34; data-skr-slot=&#34;guide.about&#34; markdown=&#34;1&#34;&gt;
-&lt;summary markdown=&#34;span&#34;&gt;User Story&lt;/summary&gt;
-
-&lt;div class=&#34;skr-didaktikon-user-story&#34; data-skr-field=&#34;didaktikon.user_story&#34; markdown=&#34;1&#34;&gt;
-
-**Als** Entwickler:in **möchte ich** die Adresse des Backends in einer ConfigMap verwalten, **damit** ich die Konfiguration ändern kann, ohne das Deployment anzufassen.
-
-&lt;/div&gt;
-
-&lt;/details&gt;
-
-&lt;details class=&#34;skr-fold skr-didaktikon-guide-about&#34; data-skr-slot=&#34;guide.about&#34; markdown=&#34;1&#34;&gt;
-&lt;summary markdown=&#34;span&#34;&gt;Lernziele&lt;/summary&gt;
-
-&lt;div class=&#34;skr-didaktikon-objectives&#34; data-skr-field=&#34;didaktikon.objectives&#34; markdown=&#34;1&#34;&gt;
-
-- Du erklärst, wofür eine ConfigMap da ist.
-- Du legst eine ConfigMap mit `kubectl` an.
-- Du beziehst eine Umgebungsvariable eines Containers aus einer ConfigMap.
-- Du trennst Konfiguration und Deployment.
-
-&lt;/div&gt;
-
-&lt;/details&gt;
-
-&lt;details class=&#34;skr-fold&#34; markdown=&#34;1&#34;&gt;
-&lt;summary markdown=&#34;span&#34;&gt;Definition of Done&lt;/summary&gt;
-
-&lt;div class=&#34;skr-guide-done&#34; markdown=&#34;1&#34;&gt;
-
-- [ ] `kubectl get configmap frontend-config -o yaml` zeigt den Schlüssel `API_BASE_URL` mit der Adresse Deines Backends.
-- [ ] Das Deployment des Frontends bezieht `API_BASE_URL` über `configMapKeyRef` aus der ConfigMap.
-- [ ] Das Frontend zeigt weiterhin die Rezepte vom Backend.
-- [ ] Nach einer Änderung an der ConfigMap und einem `rollout restart` zeigt `kubectl exec &lt;pod-name&gt; -- env` den neuen Wert.
-- [ ] Du hast die Kontrollfragen beantwortet
-
-&lt;/div&gt;
-
-&lt;/details&gt;
-
-&lt;/div&gt;
-
-
-
-
-
-
-## Arbeitsschritte
-
-### Eine ConfigMap anlegen
-
-Diesmal legst Du die Ressource nicht als Datei an, sondern direkt per Befehl. Setz die
-Adresse Deines Backends ein:
-
-```bash
-kubectl create configmap frontend-config --from-literal=API_BASE_URL=http://&lt;backend-host&gt;
-```
-
-Sieh Dir das Ergebnis an:
-
-```bash
-kubectl get configmap frontend-config -o yaml
-```
-
-### Das Deployment des Frontends anpassen
-
-Ersetze in `frontend-deployment.yaml` den festen Wert von `API_BASE_URL` durch einen
-Verweis auf die ConfigMap:
-
-```yaml
-env:
-  - name: API_BASE_URL
-    valueFrom:
-      configMapKeyRef:
-        name: frontend-config
-        key: API_BASE_URL
-```
-
-Wende das geänderte Deployment an:
-
-```bash
-kubectl apply -f frontend-deployment.yaml
-```
-
-Prüf im Browser, ob das Frontend weiterhin die Rezepte zeigt.
-
-### Die Konfiguration ändern
-
-Ändere den Wert in der ConfigMap testweise – etwa auf eine Adresse, die es nicht gibt:
-
-```bash
-kubectl edit configmap frontend-config
-```
-
-&gt; **Hinweis:** `kubectl edit` öffnet die Ressource im Editor der Shell (meist `vi`:
-&gt; `i` zum Schreiben, `Esc` und `:wq` zum Speichern). Gespeichert wird sie direkt im
-&gt; Cluster.
-
-Sieh nach, ob der Pod den neuen Wert schon kennt:
-
-```bash
-kubectl exec &lt;pod-name&gt; -- env
-```
-
-Starte das Deployment neu, damit neue Pods mit dem neuen Wert starten:
-
-```bash
-kubectl rollout restart deployment/recipes-frontend
-```
-
-Prüf den Wert im **neuen** Pod und stell die richtige Adresse danach wieder her.
-
-### Optional: Die ConfigMap als YAML verwalten
-
-Du hast die ConfigMap per Befehl angelegt. Überleg, wie Du sie stattdessen als eigene
-Datei `frontend-config.yaml` beschreiben und mit `kubectl apply -f` anlegen würdest. Sieh
-Dir dazu noch einmal die Ausgabe von `kubectl get configmap frontend-config -o yaml` an:
-Was davon brauchst Du, was kannst Du weglassen?
-
-
-&lt;div class=&#34;skr-didaktikon-guide-review&#34; data-skr-slot=&#34;guide.review&#34; markdown=&#34;1&#34;&gt;
-
-## Reflexionsfragen
-
-&lt;div class=&#34;skr-didaktikon-reflective-questions&#34; data-skr-field=&#34;didaktikon.reflective_questions&#34; markdown=&#34;1&#34;&gt;
-
-- Was gewinnst Du mit einer ConfigMap gegenüber einer Umgebungsvariable, die direkt im Deployment steht?
-- Wann wird eine Änderung an einer ConfigMap wirksam? Muss der Pod neu starten?
-- Für welche Daten ist eine ConfigMap geeignet, und für welche nicht?
-
-&lt;/div&gt;
-
-&lt;/div&gt;
-## Weiterführende Informationen
-- [Die zwölf Faktoren](/docker-grundlagen/konfiguration-und-zustand/zwoelf-faktoren.html)
-- [Sind Secrets sicher?](/shared/visualisierungen/secrets-sicherheit.html)
-- [ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/)
-- [Umgebungsvariablen aus einer ConfigMap beziehen](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#define-container-environment-variables-using-configmap-data)
-- [The Twelve-Factor App: Config](https://12factor.net/config)
-</textarea>
     </main><aside class="skr-guide-sidebar">
   <details class="skr-guide-side skr-guide-side--toc skr-fold" data-skr-toc-box
            data-skr-toc-limit="12" open>
     <summary class="skr-guide-side__label">Auf dieser Seite</summary>
-    <nav class="skr-toc skr-fold__body" data-skr-toc aria-label="Inhaltsverzeichnis"><a href="#arbeitsschritte">Arbeitsschritte</a><a href="#eine-configmap-anlegen" class="skr-toc--h3">Eine ConfigMap anlegen</a><a href="#das-deployment-des-frontends-anpassen" class="skr-toc--h3">Das Deployment des Frontends anpassen</a><a href="#die-konfiguration-ändern" class="skr-toc--h3">Die Konfiguration ändern</a><a href="#optional-die-configmap-als-yaml-verwalten" class="skr-toc--h3">Optional: Die ConfigMap als YAML verwalten</a><a href="#reflexionsfragen">Reflexionsfragen</a></nav>
+    <nav class="skr-toc skr-fold__body" data-skr-toc aria-label="Inhaltsverzeichnis"><a href="#user-story">User Story</a><a href="#lernziele">Lernziele</a><a href="#definition-of-done">Definition of Done</a><a href="#arbeitsschritte">Arbeitsschritte</a><a href="#eine-configmap-anlegen" class="skr-toc--h3">Eine ConfigMap anlegen</a><a href="#das-deployment-des-frontends-anpassen" class="skr-toc--h3">Das Deployment des Frontends anpassen</a><a href="#die-konfiguration-ändern" class="skr-toc--h3">Die Konfiguration ändern</a><a href="#optional-die-configmap-als-yaml-verwalten" class="skr-toc--h3">Optional: Die ConfigMap als YAML verwalten</a><a href="#reflexionsfragen">Reflexionsfragen</a></nav>
   </details>
   <section class="skr-guide-side skr-guide-side--bordered skr-guide-progress" data-skr-card="skriptorium.progress"
            aria-labelledby="skr-card-skriptorium-progress" data-skr-progress-text="{done} / {total} erledigt">

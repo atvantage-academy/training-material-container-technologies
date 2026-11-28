@@ -41,13 +41,11 @@
   gap: 1rem; margin-bottom: 1rem;
 }
 .skr-guide-hero__tags { display: flex; gap: 12px; flex-wrap: wrap; }
-/* Werkzeuge der Meta-Zeile („Markdown kopieren“, QR-Code) als EINE Gruppe:
-   `justify-content: space-between` würde sie sonst über die Zeile verteilen und
-   den Kopier-Button in die Mitte stellen. */
+/* Werkzeuge der Meta-Zeile (QR-Code, Adresse …) als EINE Gruppe:
+   `justify-content: space-between` würde sie sonst über die Zeile verteilen. */
 .skr-guide-hero__actions {
   display: flex; align-items: center; gap: var(--skr-space-2); flex: none;
 }
-.skr-guide-hero__meta .skr-copy-md { flex: none; }
 /* Grafik neben der Überschrift (`hero_image` im Front Matter). Die Umhüllung entsteht
    NUR mit Grafik – ohne sie bleibt die H1 ein unmittelbares Kind des Heros. */
 .skr-guide-hero__headline {
@@ -270,8 +268,6 @@
    keinen Strich – da wäre nichts zu unterstreichen ausser Luft. */
 .skr-guide-main a:has(> img),
 .skr-guide-main a:has(> svg) { text-decoration: none; }
-
-/* „Markdown kopieren“-Leiste, dezent oben rechts */
 
 /* Einleitung / User Story: erster Absatz (Titel steht im Hero). */
 .skr-guide-lead,

@@ -13,16 +13,30 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
 .skr-skip-link:focus { top: var(--skr-space-2); }
 
 /* Hinweis über dem Inhalt einer unübersetzten Fassung (ADR-0200) – in der Sprache des
-   Sprachbaums, der Inhalt darunter in seiner eigenen. */
+   Sprachbaums, der Inhalt darunter in seiner eigenen. Er soll auffallen: wer ihn übersieht,
+   wundert sich über die Sprache des Inhalts. Darum wie eine Hinweisbox (.skr-callout) mit
+   Linie in der Warnfarbe, einem Grund aus ihr und der vollen Schriftfarbe, dazu ein Symbol.
+   Der Grund mischt die Warnfarbe in den Seitengrund – so folgt er dem Farbschema. */
 .skr-untranslated {
+  display: flex;
+  align-items: baseline;
+  gap: var(--skr-space-2);
   margin: 0 0 var(--skr-space-4);
-  padding: var(--skr-space-2) var(--skr-space-3);
-  border-left: 3px solid var(--skr-color-accent);
-  background: var(--skr-color-bg-subtle);
-  color: var(--skr-color-ink-muted);
-  font-size: 0.9rem;
+  padding: var(--skr-space-3) var(--skr-space-4);
+  border-left: 4px solid var(--skr-color-warning);
+  border-radius: 0 var(--skr-radius) var(--skr-radius) 0;
+  background: color-mix(in srgb, var(--skr-color-warning) 14%, var(--skr-color-bg));
+  color: var(--skr-color-ink);
 }
-.skr-stage__bar .skr-untranslated { margin: 0; padding: 0 var(--skr-space-2); border: 0; background: none; }
+.skr-untranslated > svg { flex: 0 0 auto; align-self: center; color: var(--skr-color-warning-ink); }
+/* Auf der Bühne als Plakette in der Kopfleiste: Eine eigene Zeile nähme den Folien Höhe. */
+.skr-stage__bar .skr-untranslated {
+  margin: 0;
+  padding: 0.15em var(--skr-space-3);
+  border: 1px solid var(--skr-color-warning);
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
 
 .skr-toc { display: flex; flex-direction: column; gap: 10px; }
 .skr-toc a { color: var(--skr-color-ink); text-decoration: none; font-size: 1rem; }
@@ -70,11 +84,15 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
 
 /* Die Leiste steht unten bündig: Über den Feldern sitzen ihre Beschriftungen, der
    Schließen-Knopf hat keine und gehört auf die Höhe der Felder. */
-.skr-search__bar { display: flex; gap: var(--skr-space-2); align-items: flex-end; }
+.skr-search__bar { display: flex; flex-wrap: wrap; gap: var(--skr-space-2); align-items: flex-end; }
 .skr-search__field { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .skr-search__field[hidden] { display: none; }
-.skr-search__field--scope { flex: none; max-width: 12rem; }
-.skr-search__field--query { flex: 1 1 auto; }
+/* Die Leiste bricht um (die Liste der Arten steht in eigener Zeile): Jedes Feld meldet
+   darum eine feste, kleine Grundbreite – lange Titel und Bezeichnungen kürzt die Auswahl
+   selbst bzw. eine Ellipse, statt die Leiste beim Umschalten umbrechen zu lassen. Das
+   Suchfeld wächst in den Rest. */
+.skr-search__field--scope { flex: 0 1 9rem; }
+.skr-search__field--query { flex: 1 1 8rem; }
 .skr-search__label {
   font-size: .75rem;
   font-weight: 600;
@@ -100,9 +118,132 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
   background: color-mix(in srgb, var(--skr-color-ink) 12%, var(--skr-topbar-bg));
   color: var(--skr-color-headline);
   font-weight: 500;
+  text-overflow: ellipsis;
   cursor: pointer;
 }
 .skr-search__input { width: 100%; padding: 0 var(--skr-space-3); }
+
+/* ARTEN: Die Schaltfläche sieht aus wie die Auswahl der Bereiche; die Liste klappt
+   unter der Leiste auf, im Fluss des Dialogs – in beiden Darstellungen gleich, ohne
+   über den Rand des Dialogs zu ragen. Im Markup folgt sie der Schaltfläche (Tab-Folge);
+   `order` stellt sie als eigene Zeile ans Ende der Leiste. */
+.skr-search__field--kind { flex: 0 1 9rem; }
+.skr-search__kind {
+  min-height: 34px;
+  width: 100%;
+  padding: 0 var(--skr-space-2);
+  border: 1px solid var(--skr-color-border);
+  border-radius: var(--skr-radius);
+  background: color-mix(in srgb, var(--skr-color-ink) 12%, var(--skr-topbar-bg));
+  color: var(--skr-color-headline);
+  font: inherit;
+  font-weight: 500;
+  text-align: left;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+/* Eine lange Bezeichnung endet mit „…“; der Winkel daneben bleibt sichtbar. Der volle
+   Text steht im Namen der Schaltfläche und im `title` (search.js). */
+.skr-search__kind-value {
+  flex: 0 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Der Winkel zeigt, ob die Liste offen ist – gezeichnet, kein Schriftzeichen. */
+.skr-search__kind::after {
+  content: "";
+  flex: none;
+  display: inline-block;
+  width: .4em;
+  height: .4em;
+  margin: 0 .15em .2em .5em;
+  border: solid currentColor;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.skr-search__kind[aria-expanded="true"]::after { margin-bottom: -.1em; transform: rotate(-135deg); }
+.skr-search__kinds {
+  order: 10;
+  flex: 1 0 100%;
+  min-width: 0;
+  margin: 0;
+  padding: var(--skr-space-2) var(--skr-space-3);
+  border: 1px solid var(--skr-color-border);
+  border-radius: var(--skr-radius);
+  background: var(--skr-color-bg);
+}
+.skr-search__kinds[hidden] { display: none; }
+.skr-search__kind-list { list-style: none; margin: 0; padding: 0; }
+.skr-search__kind-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--skr-space-2);
+  min-height: 32px;
+}
+.skr-search__kind-option {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--skr-space-2);
+  cursor: pointer;
+}
+.skr-search__kind-only,
+.skr-search__kind-all {
+  padding: 2px var(--skr-space-2);
+  border: 1px solid var(--skr-color-border);
+  border-radius: var(--skr-radius);
+  background: transparent;
+  color: var(--skr-color-link);
+  font: inherit;
+  font-size: .8125rem;
+  cursor: pointer;
+}
+.skr-search__kind-all { margin-top: var(--skr-space-2); }
+.skr-search__kind-only:hover,
+.skr-search__kind-all:hover { background: var(--skr-color-bg-subtle); }
+
+/* DAS SYMBOL EINER ART – wie am Dokumentlink: Kachel und darüber das Zeichen als Maske
+   (`--skr-doclink-icon`, je Art aus doclinks.css). Ohne Art bleibt die Lücke, damit die
+   Bezeichnungen bündig stehen. */
+.skr-search__kind-icon {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: 1.05em;
+  height: 1.05em;
+  border-radius: 3px;
+  vertical-align: -.15em;
+}
+.skr-search__kind-icon[class*="skr-doclink--"] {
+  background: var(--skr-doclink-tile);
+  box-shadow: 0 0 0 1px var(--skr-color-border);
+}
+.skr-search__kind-icon[class*="skr-doclink--"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--skr-doclink-glyph);
+  mask: var(--skr-doclink-icon) center / contain no-repeat;
+}
+/* SCHMAL: Suchfeld und Schließen-Knopf in der ersten Zeile, das Feld in voller Breite;
+   die Auswahlen teilen sich die Zeile darunter, die Liste der Arten folgt ganz unten. */
+@media (max-width: 600px) {
+  .skr-search__field--query { order: -2; flex-basis: calc(100% - var(--skr-tool-size, 34px) - var(--skr-space-2)); }
+  .skr-search__close { order: -1; }
+  .skr-search__field--scope,
+  .skr-search__field--kind { flex: 1 1 0; }
+}
+.skr-search__kind-tag {
+  display: flex;
+  align-items: center;
+  gap: var(--skr-space-2);
+  margin-bottom: 2px;
+  font-size: .8125rem;
+  color: var(--skr-color-ink-muted);
+}
 .skr-search__close { flex: none; font-size: 15px; }
 
 .skr-search__status {
@@ -280,6 +421,83 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
 }
 .skr-dialog__text { margin: 0 0 1.25rem; }
 .skr-dialog__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .6rem; }
+
+/* --- Einwilligung (`skr.consent` in client.js, #483) -----------------------
+   Eine Leiste über die ganze Breite am unteren Rand des Fensters, nicht modal:
+   Titel, Text mit Verweis auf die Datenschutzerklärung, wahlweise die Zwecke zum
+   Ankreuzen, die Knöpfe – der Inhalt mittig in Lesebreite, ab mittlerer Breite die
+   Knöpfe rechts neben dem Text. Oben ein Streifen im Verlauf der Primär- zur
+   Akzentfarbe; sie fährt von unten herein, ohne Bewegung, wo die Lesenden sie
+   abgeschaltet haben. Steht im <body> vorn, damit die Tastatur sie zuerst
+   erreicht; liegt über dem Inhalt, unter Dialogen. Der Knopf in der Fußzeile
+   sieht aus wie ein Verweis. */
+.skr-consent {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 90;
+  box-sizing: border-box;
+  max-height: 80vh;
+  overflow: auto;
+  padding-block: var(--skr-space-6, 1.5rem) var(--skr-space-5, 1.25rem);
+  padding-inline: max(var(--skr-space-4, 1rem), calc((100% - 72rem) / 2));
+  background: var(--skr-color-bg-subtle);
+  color: var(--skr-color-ink);
+  box-shadow: 0 -10px 36px rgba(0, 0, 0, .22);
+  animation: skr-consent-in .45s cubic-bezier(.2, .8, .2, 1) both;
+}
+.skr-consent::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: linear-gradient(90deg, var(--skr-color-primary), var(--skr-color-accent));
+}
+@keyframes skr-consent-in {
+  from { transform: translateY(100%); }
+  to { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skr-consent { animation: none; }
+}
+@media (min-width: 48rem) {
+  .skr-consent {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: var(--skr-space-8, 2rem);
+  }
+  .skr-consent > * { grid-column: 1; }
+  .skr-consent > .skr-consent__actions { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+  .skr-consent > .skr-consent__purposes { grid-column: 1 / -1; }
+}
+.skr-consent__title { margin: 0 0 .5rem; font-size: 1.05rem; line-height: 1.35; color: var(--skr-color-headline); }
+.skr-consent__title:focus { outline: none; }
+.skr-consent__text { margin: 0 0 1rem; }
+.skr-consent__purposes { margin: 0 0 1rem; padding: 0; list-style: none; display: grid; gap: .5rem; }
+.skr-consent__purposes > li {
+  padding: .6rem .8rem;
+  background: var(--skr-color-bg);
+  border: 1px solid var(--skr-color-border);
+  border-radius: var(--skr-radius, 6px);
+}
+.skr-consent__purposes label { display: block; }
+.skr-consent__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .6rem; }
+/* Die Zustimmung in der Akzentfarbe – sie steht für den Streifen oben und hebt sich
+   in beiden Farbschemata von der getönten Fläche ab. */
+.skr-consent .skr-btn--primary { background: var(--skr-color-accent); border-color: var(--skr-color-accent); color: var(--skr-color-accent-contrast); }
+.skr-consent .skr-btn--primary:hover,
+.skr-consent .skr-btn--primary:focus-visible { background: var(--skr-color-accent-ink); border-color: var(--skr-color-accent-ink); color: var(--skr-color-accent-contrast); }
+/* Zugeklappt bis „Auswählen“: `hidden` geht den Regeln für Liste und Knöpfe vor. */
+.skr-consent [hidden] { display: none; }
+.skr-footer__consent {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+@media print { .skr-consent { display: none; } }
 
 .skr-qr-dialog {
   box-sizing: border-box;

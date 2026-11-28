@@ -194,17 +194,6 @@
 }
 .skr-slide--title p { color: var(--skr-color-ink-muted); }
 
-/* --- Foliennummer ------------------------------------------------------------
-   Zwischen Zurück und Weiter in der Steuerleiste der Bühne. */
-.skr-present__counter {
-  align-self: center;
-  min-width: 3.5em;
-  text-align: center;
-  font-size: var(--skr-fs-sm);
-  font-variant-numeric: tabular-nums;
-  color: var(--skr-color-ink-muted);
-}
-
 /* --- Drucklayout ------------------------------------------------------------
    Jede Folie auf einer eigenen Seite; Kopfleiste und Bedienelemente druckt die
    Bühne (stage.css). */

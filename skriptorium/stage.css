@@ -21,20 +21,51 @@
   width: 100%;
   box-sizing: border-box;
 }
+/* VERWEISE IM FLIESSTEXT DER BÜHNE SIND UNTERSTRICHEN – aus demselben Grund wie im
+   Fließtext einer Seite (guide.css, WCAG 1.4.1): Die Farbe allein unterscheidet sie nicht
+   genug vom umgebenden Text. Knöpfe sind keine Verweise im Text. */
+.skr-stage__main :is(p, li, td, th) > a:not(.skr-btn) {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  text-decoration-thickness: from-font;
+}
 
 /* --- Kopfleiste ------------------------------------------------------------- */
+/* DER TITEL GIBT ZUERST NACH: Er nimmt nur, was Wortmarke, Werkzeuge und Einschübe übrig
+   lassen, und endet dann mit „…“. Erst wenn auch die übrigen Elemente nicht mehr in die
+   Zeile passen, bricht die Leiste um – die letzte Rückfallebene, auch ohne Skript. */
 .skr-stage__bar {
   flex: 0 0 auto;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--skr-space-4);
   padding: var(--skr-space-2) var(--skr-space-6);
   background: var(--skr-topbar-bg);
   border-bottom: 1px solid var(--skr-border-soft);
-  /* Über dem Inhalt: Der vergrößerte QR-Code in den Werkzeugen ragt in die Fläche
-     hinein. Ohne z-index läge er darunter – der Inhalt steht später im Baum. */
-  position: relative;
-  z-index: 1;
+  /* BLEIBT OBEN STEHEN, wenn die Bühne scrollt – wie die Kopfzeile einer Seite; das ✕ hängt
+     an ihr und bleibt mit ihr im Bild. Über dem Inhalt: Der vergrößerte QR-Code in den
+     Werkzeugen ragt in die Fläche hinein. Ohne z-index läge er darunter – der Inhalt steht
+     später im Baum. */
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+/* LESEFORTSCHRITT wie auf einer Seite (site.css, Schalter effects.reading_progress): 2 px in der
+   Schulungsfarbe am oberen Rand der Leiste, wächst mit dem Scrollweg der Bühne. Die Leiste
+   bringt ihn mit (skr/stage-bar) – auch in eigenen Vorlagen, ohne `data-skr-effects` am <html>.
+   Scrollt die Bühne nicht – die Folien scrollen nur in sich –, hat die Scroll-Timeline keinen
+   Weg, und der Balken bleibt leer. */
+@supports (animation-timeline: scroll()) {
+  .skr-stage__bar > .skr-reading-progress {
+    display: block;
+    position: absolute; inset: 0 0 auto 0; height: 2px;
+    background: var(--skr-color-accent);
+    transform-origin: 0 50%; transform: scaleX(0);
+    pointer-events: none;
+    animation: skr-reading-progress linear both;
+    animation-timeline: scroll(root block);
+  }
 }
 .skr-stage__logo { height: var(--skr-stage-logo-height); width: auto; flex: 0 0 auto; }
 /* DIE WORTMARKE TRÄGT DIE SCHULUNGSFARBE – dieselbe Konstruktion wie im Kopfbereich
@@ -60,6 +91,8 @@
   font-size: var(--skr-fs-sm);
   font-weight: var(--skr-fw-medium);
   color: var(--skr-color-ink-muted);
+  flex: 1 1 0;
+  min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -78,6 +111,21 @@
   --skr-tool-ink-hover: var(--skr-color-accent);
 }
 .skr-stage__tools .skr-qr { --skr-qr-size: 2rem; }
+
+/* --- Enge Kopfleiste (`skr-stage__bar--compact`, stabil) -------------------------
+   Passt die Leiste nicht in eine Zeile oder bliebe vom Titel kaum etwas, setzt stage.js
+   die Klasse – gemessen am Inhalt, nicht an der Fensterbreite. Dann rücken Abstände
+   zusammen, und der QR-Code tritt zurück wie in der Kopfzeile (site.css): Er bringt die
+   Adresse vom Beamer aufs Handy, auf dem Handy braucht ihn niemand. Einschübe verdichten
+   sich an derselben Klasse, etwa indem sie Beschriftungen ausblenden. Nur am Bildschirm;
+   im Ausdruck steht der QR-Code weiter. */
+@media screen {
+  .skr-stage__bar--compact { gap: var(--skr-space-2); padding-inline: var(--skr-space-3); }
+  .skr-stage__bar--compact .skr-stage__tools { gap: var(--skr-space-1); }
+  .skr-stage__bar--compact .skr-stage__tools .skr-qr { display: none; }
+  /* Nur das erste globale Menü: Weitere stehen ohnehin hinter seinem Trennstrich (components.css). */
+  .skr-stage__bar--compact :not([data-skr-slot="menu.global"]) + [data-skr-slot="menu.global"] { margin-left: var(--skr-space-1); padding-left: var(--skr-space-2); }
+}
 
 /* --- Steuerleiste ------------------------------------------------------------ */
 .skr-stage__controls {
@@ -99,13 +147,32 @@
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--skr-color-accent) 35%, var(--skr-border-soft)), var(--skr-shadow-1);
 }
 /* Ohne Skript gibt es nichts zu steuern: `hidden` gilt auch gegen `display: flex`; das
-   Skript des Layouts nimmt es ab. */
-.skr-stage__controls[hidden] { display: none; }
+   Skript des Layouts nimmt es ab. Ist alles im Einschub verborgen – etwa das Blättern der
+   Folien ohne Skript –, entfällt die Leiste ganz, statt als leerer Fleck zu stehen. */
+.skr-stage__controls[hidden],
+.skr-stage__controls:not(:has(> [data-skr-slot] > :not([hidden]))) { display: none; }
 /* Der Inhalt des Einschubs stage.controls steht in einer Hülle; er reiht sich ein. */
 .skr-stage__controls > [data-skr-slot] { display: contents; }
 
-/* Ein runder Knopf der Bühne – Blättern, Schließen; Knöpfe eines Erben dürfen die Klasse
-   tragen. */
+/* STABILE TEILE DER LEISTE (skriptorium#446): Ein Erbe ergänzt seine Schaltflächen mit diesen
+   Klassen im selben Aussehen, ohne eigenes CSS – eine Gruppe (`skr-stage__group`) hält
+   zusammengehörige Knöpfe beieinander, der Zähler (`skr-stage__counter`) zeigt, was
+   skr.stage.progress() schreibt. */
+.skr-stage__group {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--skr-space-2);
+}
+.skr-stage__counter {
+  align-self: center;
+  min-width: 3.5em;
+  text-align: center;
+  font-size: var(--skr-fs-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--skr-color-ink-muted);
+}
+
+/* Ein runder Knopf der Bühne – Blättern, Schließen und die Knöpfe eines Erben. */
 .skr-stage__nav {
   width: 2.75rem; height: 2.75rem;
   border-radius: 999px;
@@ -148,6 +215,15 @@ body > .skr-stage__close {
   flex: 0 0 auto;
   height: 3px;
   background: var(--skr-border-soft);
+}
+/* In einer eigenen Vorlage fehlt die Fläche der Bühne, die den Balken nach unten schiebt: Dort
+   steht er fest am unteren Rand, gleich wie kurz der Inhalt ist (skriptorium#446). */
+body:not(.skr-stage) > .skr-stage__progress {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
 }
 .skr-stage__progress-fill {
   height: 100%;

@@ -11,7 +11,6 @@
      - "Kopieren"-Buttons an Code-Blöcken (<pre>)
      - Verkleinerte Bilder vergrößern (Bilder im Inhalt, `skr-zoom`)
      - Mobiles Aufklappen der Header-Navigation ([data-skr-nav-toggle])
-     - "Markdown kopieren" auf Übungsseiten ([data-skr-copy-md])
      - QR-Code der Seiten-URL ([data-skr-qr])
      - Client-API `skr` (= `skriptorium`; Bauauskunft und Steuerung, siehe unten)
 
@@ -65,6 +64,11 @@
          skr.state.register({ key, read, apply })
              - alles andere: ein gewählter Datensatz, eine Zoomstufe, ein Filter.
                `read` liefert den Wert (leer = Standard), `apply` stellt ihn her.
+
+         skr.state.register({ key, list: true, read, apply })
+             - mehrere Werte unter einem Schlüssel: `read` liefert ein Array,
+               `apply` bekommt eines. In der Adresse steht jedes Element für
+               sich kodiert, verbunden mit nacktem Komma: `aus=M%C3%BCller%2C%20GmbH,Acme`.
 
          skr.state.update()
              - nach jeder Bedienung aufrufen; schreibt die Adresse neu.
@@ -138,20 +142,46 @@
     function address() {
       var raw = location.hash || "";
       if (raw.charAt(0) === "#") { raw = raw.slice(1); }
-      if (raw.charAt(0) !== "/") { return { anchor: owner ? "" : decode(raw), path: "", values: {} }; }
+      if (raw.charAt(0) !== "/") { return { anchor: owner ? "" : decode(raw), path: "", values: {}, raw: {} }; }
       raw = raw.slice(1);
       var sep = raw.indexOf("?");
       var anchor = decode(sep === -1 ? raw : raw.slice(0, sep));
       var values = {};
+      var undecoded = {};   /* je Schlüssel der Wert, wie er dasteht - für Listen */
       if (sep !== -1) {
         raw.slice(sep + 1).split("&").forEach(function (pair) {
           if (!pair) { return; }
           var i = pair.indexOf("=");
           var k = decode(i === -1 ? pair : pair.slice(0, i));
-          values[k] = decode(i === -1 ? "" : pair.slice(i + 1));
+          undecoded[k] = i === -1 ? "" : pair.slice(i + 1);
+          values[k] = decode(undecoded[k]);
         });
       }
-      return owner ? { anchor: "", path: anchor, values: values } : { anchor: anchor, path: "", values: values };
+      return owner ? { anchor: "", path: anchor, values: values, raw: undecoded } : { anchor: anchor, path: "", values: values, raw: undecoded };
+    }
+
+    /* LISTEN: Jedes Element ist für sich kodiert, das trennende Komma steht nackt da.
+       Ein Komma IM Element wird so `%2C` und bleibt von dem trennenden unterscheidbar.
+       Leere Elemente entfallen - `[]` und `[""]` sähen sonst gleich aus. */
+    function listWire(value) {
+      return [].concat(value).map(function (v) {
+        return (v === null || v === undefined) ? "" : String(v);
+      }).filter(function (v) { return v !== ""; }).map(encodeURIComponent).join(",");
+    }
+
+    function listOf(raw) {
+      return raw ? raw.split(",").map(decode).filter(function (v) { return v !== ""; }) : [];
+    }
+
+    /* Der Wert so, wie er in der Adresse steht; `null`, wenn `read` keinen liefert. */
+    function wire(t, value) {
+      if (value === null || value === undefined) { return null; }
+      return t.list ? listWire(value) : encode(String(value));
+    }
+
+    /* Was `apply` bekommt: eine Zeichenkette, bei Listen ein Array. */
+    function given(t, now) {
+      return t.list ? listOf(now.raw[t.key]) : now.values[t.key];
     }
 
     /* Eine von Hand getippte Adresse darf kaputt sein - sie führt dann in den
@@ -171,13 +201,13 @@
       return encode(text).replace(/%2F/g, "/");
     }
 
+    /* Je Schlüssel, der vom Ausgangszustand abweicht, sein Wert - schon kodiert. */
     function valuesNow() {
       var values = {};
       parts.forEach(function (t) {
         var value;
-        try { value = t.read(); } catch (e) { return; }
-        if (value === null || value === undefined) { return; }
-        value = String(value);
+        try { value = wire(t, t.read()); } catch (e) { return; }
+        if (value === null) { return; }
         if (value !== t.standard) { values[t.key] = value; }
       });
       return values;
@@ -200,7 +230,7 @@
         fresh = !head ? "" : owner ? "#/" + head : "#" + head;
       } else {
         fresh = "#/" + head + "?" + key.map(function (k) {
-          return encode(k) + "=" + encode(values[k]);
+          return encode(k) + "=" + values[k];
         }).join("&");
       }
       if (fresh === (location.hash || "")) { return; }
@@ -232,10 +262,10 @@
       applying = true;
       window.setTimeout(function () { applying = false; }, 0);
       applyOwner();
-      var values = address().values;
+      var now = address();
       parts.forEach(function (t) {
-        if (!Object.prototype.hasOwnProperty.call(values, t.key)) { return; }
-        try { t.apply(values[t.key]); } catch (e) { /* ein Baustein darf scheitern */ }
+        if (!Object.prototype.hasOwnProperty.call(now.values, t.key)) { return; }
+        try { t.apply(given(t, now)); } catch (e) { /* ein Baustein darf scheitern */ }
       });
     }
 
@@ -261,11 +291,11 @@
        Themes kennen. */
     function backfill(t) {
       if (!ready) { return; }   /* vor dem ersten `restore()` erledigt das `apply()` */
-      var values = address().values;
-      if (!Object.prototype.hasOwnProperty.call(values, t.key)) { return; }
+      var now = address();
+      if (!Object.prototype.hasOwnProperty.call(now.values, t.key)) { return; }
       applying = true;
       window.setTimeout(function () { applying = false; }, 0);
-      try { t.apply(values[t.key]); } catch (e) { /* ein Baustein darf scheitern */ }
+      try { t.apply(given(t, now)); } catch (e) { /* ein Baustein darf scheitern */ }
     }
 
     /* DER AUSGANGSZUSTAND IST DAS MARKUP, nicht der gerade sichtbare Stand. Beides
@@ -322,18 +352,18 @@
         }
         /* Der Ausgangszustand waechst mit jedem Baustein, der sich anmeldet -
            deshalb nach jeder Anmeldung neu bestimmt. */
-        openPart.standard = openDefault();
+        openPart.standard = encode(openDefault());
         backfill(openPart);
       },
       /* Alles, was kein Auf und Zu ist: ein gewählter Datensatz, eine Zoomstufe,
          ein Filter. `read()` liefert den aktuellen Wert, `apply(value)` stellt ihn
          her; was `read()` beim Anmelden liefert, gilt als Standard und steht
-         deshalb nicht in der Adresse. */
+         deshalb nicht in der Adresse. Mit `list: true` sind beide Werte Arrays. */
       register: function (t) {
         if (!t || !t.key || typeof t.read !== "function" || typeof t.apply !== "function") { return; }
         var value;
-        try { value = t.read(); } catch (e) { value = ""; }
-        t.standard = (value === null || value === undefined) ? "" : String(value);
+        try { value = wire(t, t.read()); } catch (e) { value = null; }
+        t.standard = value === null ? "" : value;
         parts.push(t);
         noted();
         backfill(t);
@@ -561,11 +591,10 @@
      `Cannot read properties of undefined (reading 'writeText')` - der Knopf
      tut dann gar nichts, und in der Konsole steht ein Fehler.
 
-     GEMESSEN GENAU SO: Der Knopf an den Code-Bloecken und der an
-     "Markdown kopieren" riefen die Schnittstelle direkt auf. Der Adressknopf
-     hatte laengst einen Rueckfall - der lag aber IN seiner eigenen Funktion
-     und war fuer die anderen beiden nicht erreichbar. Ein Rueckfall, den nur
-     eine von drei gleichartigen Stellen kennt, ist keiner.
+     GEMESSEN GENAU SO: Der Knopf an den Code-Bloecken rief die Schnittstelle
+     direkt auf. Der Adressknopf hatte laengst einen Rueckfall - der lag aber
+     IN seiner eigenen Funktion und war fuer den anderen nicht erreichbar. Ein
+     Rueckfall, den nur eine von zwei gleichartigen Stellen kennt, ist keiner.
 
      AUCH EINE ABLEHNUNG FAELLT ZURUECK: Die Schnittstelle kann da sein und
      trotzdem ablehnen - fehlende Berechtigung, Seite nicht im Vordergrund.
@@ -636,17 +665,12 @@
       var dark = current() === "dark" ? "true" : "false";
       buttons.forEach(function (btn) { btn.setAttribute("aria-pressed", dark); });
     }
-    try {
-      var saved = localStorage.getItem("skr-scheme");
-      if (saved === "dark" || saved === "light") root.setAttribute("data-skr-scheme", saved);
-    } catch (e) { /* egal */ }
+    var saved = window.skr.storage.get("skr-scheme");
+    if (saved === "dark" || saved === "light") root.setAttribute("data-skr-scheme", saved);
     function choose(choice) {
       if (choice) root.setAttribute("data-skr-scheme", choice);
       else root.removeAttribute("data-skr-scheme");
-      try {
-        if (choice) localStorage.setItem("skr-scheme", choice);
-        else localStorage.removeItem("skr-scheme");
-      } catch (e) { /* egal */ }
+      window.skr.storage.set("skr-scheme", choice || null);
       sync();
     }
     ColorScheme.choose = choose;
@@ -724,7 +748,7 @@
     ThemeChoice.choose = function (name) {
       if (name === currentTheme()) return;
       root.setAttribute("data-skr-theme", name);
-      try { localStorage.setItem("skr-theme", name); } catch (e) { /* egal */ }
+      window.skr.storage.set("skr-theme", name);
       sync();
       window.dispatchEvent(new CustomEvent("skr-themechange"));
     };
@@ -783,12 +807,22 @@
           step: "Arbeitsschritt",
           moreTabs: "Weitere Reiter", cancel: "Abbrechen", zoom: "Vergrößern",
           carousel: "Karussell", panel: "Folie", of: "von", previous: "Zurück", next: "Weiter",
-          autoplay: "Automatisch weiterschalten", show: "Zeige" },
+          autoplay: "Automatisch weiterschalten", show: "Zeige",
+          consentTitle: "Datenschutz-Einstellungen",
+          consentText: "Diese Unterlage möchte für die folgenden Zwecke Daten in Deinem Browser speichern oder senden – Erforderliches immer, alles andere nur mit Deiner Einwilligung. Die Wahl lässt sich jederzeit in der Fußzeile ändern.",
+          consentPrivacy: "Datenschutz", consentAll: "Alle akzeptieren", consentRequired: "Nur erforderliche",
+          consentChoose: "Auswählen", consentSave: "Auswahl speichern",
+          consentKindRequired: "erforderlich", consentKindOptional: "optional" },
     en: { copy: "Copy",     copied: "Copied!",  close: "Close",
           step: "Step",
           moreTabs: "More tabs", cancel: "Cancel", zoom: "Enlarge",
           carousel: "Carousel", panel: "Slide", of: "of", previous: "Previous", next: "Next",
-          autoplay: "Advance automatically", show: "Show" }
+          autoplay: "Advance automatically", show: "Show",
+          consentTitle: "Privacy settings",
+          consentText: "This site would like to store or send data in your browser for the purposes below – what is required always, everything else only with your consent. You can change your choice at any time in the footer.",
+          consentPrivacy: "Privacy", consentAll: "Accept all", consentRequired: "Only required",
+          consentChoose: "Choose", consentSave: "Save choice",
+          consentKindRequired: "required", consentKindOptional: "optional" }
   };
   var T = TEXTS[(document.documentElement.getAttribute("lang") || "de").split("-")[0].toLowerCase()] || TEXTS.de;
 
@@ -1098,25 +1132,156 @@
   };
   toSkr("dialog", Dialog);
 
-  /* --- "Markdown kopieren" ---------------------------------------------------
-     Kopiert den rohen Markdown-Inhalt aus dem versteckten <textarea>, auf das
-     der Button per [data-skr-copy-md="#id"] zeigt. */
-  function initCopyMarkdown() {
-    document.querySelectorAll("[data-skr-copy-md]").forEach(function (btn) {
-      var src = document.querySelector(btn.getAttribute("data-skr-copy-md"));
-      if (!src) return;
-      btn.addEventListener("click", function () {
-        var text = (src.value != null) ? src.value : src.textContent;
-        copyText(text).then(function () {
-          var oldTitle = btn.title || btn.getAttribute("aria-label");
-          btn.classList.add("is-copied");
-          btn.title = T.copied;
-          setTimeout(function () {
-            btn.classList.remove("is-copied");
-            btn.title = oldTitle;
-          }, 1500);
-        }).catch(function () { /* beide Wege versperrt - siehe copyText */ });
-      });
+  /* --- Einwilligung (#483) -------------------------------------------------
+     ZWECKE STATT COOKIES. Extensions melden in ihrer extension.yml Zwecke an –
+     erforderlich oder optional –, der Bau schreibt die angemeldeten in den
+     Datenblock `skr-consent` ({ key, purposes: [{ id, kind, description }] },
+     die Beschreibung in der Sprache der Seite). Ein erforderlicher Zweck gilt
+     immer, ein optionaler erst mit Einwilligung, ein unbekannter nie.
+
+       skr.consent.granted(id)   → true | false
+       skr.consent.purposes()    → [{ id, kind, granted }]
+       skr.consent.open()        das Banner öffnen, mit der geltenden Wahl
+
+     DIE WAHL steht über skr.storage unter `skr-consent` ({ v, key, granted, at })
+     – wie alles im Speicher hinter dem Bereich der Unterlage (skr.js), damit
+     Unterlagen unter derselben Adresse (lokal localhost:1313) keine Wahl teilen –
+     nur, solange `key` zu den angemeldeten Zwecken passt; sonst fragt das Banner
+     erneut. Ohne Speicher gilt kein optionaler Zweck. Jede gespeicherte Wahl
+     meldet `skr-consentchange` (window, ohne detail) – ein Widerruf ebenso; die
+     Extension liest dann `granted` und löscht, was sie nicht mehr behalten darf.
+
+     DAS BANNER erscheint, solange keine Wahl gilt und ein optionaler Zweck
+     angemeldet ist – als Bereich am Anfang des <body>, damit die Tastatur es
+     zuerst erreicht, nicht modal; geöffnet über den Knopf der Fußzeile
+     (`data-skr-consent-open`) steht der Fokus darin und kehrt danach zurück.
+     Gestaltet in site.css (`skr-consent`). */
+  var consentInfo = (function () {
+    try {
+      var el = document.getElementById("skr-consent");
+      var v = el ? JSON.parse(el.textContent) : null;
+      return v && Array.isArray(v.purposes) ? v : { key: "", purposes: [] };
+    } catch (e) { return { key: "", purposes: [] }; }
+  })();
+  var CONSENT_KEY = "skr-consent";
+  function consentStored() {
+    var v = window.skr.storage.get(CONSENT_KEY);
+    return v && v.key === consentInfo.key && Array.isArray(v.granted) ? v : null;
+  }
+  function consentPurpose(id) {
+    return consentInfo.purposes.filter(function (p) { return p.id === id; })[0] || null;
+  }
+  var Consent = {
+    granted: function (id) {
+      var p = consentPurpose(id);
+      if (!p) return false;
+      if (p.kind === "required") return true;
+      var s = consentStored();
+      return !!(s && s.granted.indexOf(id) >= 0);
+    },
+    purposes: function () {
+      return consentInfo.purposes.map(function (p) { return { id: p.id, kind: p.kind, granted: Consent.granted(p.id) }; });
+    },
+    open: function () { showConsent(document.activeElement, true); }
+  };
+  toSkr("consent", Consent);
+
+  function consentSave(ids) {
+    window.skr.storage.set(CONSENT_KEY, { v: 1, key: consentInfo.key, granted: ids, at: new Date().toISOString().slice(0, 10) });
+    window.dispatchEvent(new CustomEvent("skr-consentchange"));
+  }
+  function optionalPurposes() {
+    return consentInfo.purposes.filter(function (p) { return p.kind === "optional"; });
+  }
+  function showConsent(trigger, focus) {
+    if (!optionalPurposes().length) return;
+    var old = document.querySelector(".skr-consent");
+    if (old) old.remove();
+    var box = document.createElement("section");
+    box.className = "skr-consent";
+    box.setAttribute("aria-labelledby", "skr-consent-title");
+    var h = document.createElement("h2");
+    h.id = "skr-consent-title";
+    h.className = "skr-consent__title";
+    h.textContent = T.consentTitle;
+    h.tabIndex = -1;
+    box.appendChild(h);
+    var p = document.createElement("p");
+    p.className = "skr-consent__text";
+    p.textContent = T.consentText + " ";
+    var privacy = document.querySelector("link[rel=privacy-policy]");
+    if (privacy) {
+      var a = document.createElement("a");
+      a.href = privacy.getAttribute("href");
+      a.textContent = T.consentPrivacy;
+      p.appendChild(a);
+    }
+    box.appendChild(p);
+    var list = document.createElement("ul");
+    list.className = "skr-consent__purposes";
+    list.setAttribute("role", "list");
+    consentInfo.purposes.forEach(function (x) {
+      var li = document.createElement("li");
+      var label = document.createElement("label");
+      var input = document.createElement("input");
+      input.type = "checkbox";
+      input.value = x.id;
+      input.checked = Consent.granted(x.id);
+      input.disabled = x.kind === "required";
+      var kind = document.createElement("strong");
+      kind.textContent = x.kind === "required" ? T.consentKindRequired : T.consentKindOptional;
+      label.appendChild(input);
+      label.appendChild(document.createTextNode(" "));
+      label.appendChild(kind);
+      label.appendChild(document.createTextNode(" – " + x.description));
+      li.appendChild(label);
+      list.appendChild(li);
+    });
+    // Aufgeklappt, wenn das Banner auf Wunsch kommt – dann geht es um die einzelne Wahl.
+    list.hidden = !focus;
+    box.appendChild(list);
+    var bar = document.createElement("div");
+    bar.className = "skr-consent__actions";
+    function close(ids) {
+      consentSave(ids);
+      box.remove();
+      if (focus && trigger && trigger.focus && document.contains(trigger)) trigger.focus();
+    }
+    function button(text, cls, attr, action) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "skr-btn " + cls;
+      b.textContent = text;
+      b.setAttribute(attr, "");
+      b.addEventListener("click", action);
+      bar.appendChild(b);
+      return b;
+    }
+    button(T.consentRequired, "skr-btn--ghost", "data-skr-consent-required", function () { close([]); });
+    var choose = button(T.consentChoose, "skr-btn--ghost", "data-skr-consent-choose", function () {
+      list.hidden = false;
+      choose.hidden = true;
+      save.hidden = false;
+      var first = list.querySelector("input:not([disabled])");
+      if (first) first.focus();
+    });
+    var save = button(T.consentSave, "skr-btn--ghost", "data-skr-consent-save", function () {
+      close([].slice.call(list.querySelectorAll("input:checked:not([disabled])")).map(function (i) { return i.value; }));
+    });
+    choose.hidden = !list.hidden;
+    save.hidden = list.hidden;
+    button(T.consentAll, "skr-btn--primary", "data-skr-consent-all", function () {
+      close(optionalPurposes().map(function (x) { return x.id; }));
+    });
+    box.appendChild(bar);
+    document.body.insertBefore(box, document.body.firstChild);
+    if (focus) h.focus();
+  }
+  function initConsent() {
+    if (optionalPurposes().length && !consentStored()) showConsent(null, false);
+    document.addEventListener("click", function (e) {
+      var b = e.target.closest && e.target.closest("[data-skr-consent-open]");
+      if (b) showConsent(b, true);
     });
   }
 
@@ -1126,11 +1291,44 @@
     var main = document.querySelector(".skr-guide-main");
     // Karte, die das Inhaltsverzeichnis trägt.
     var tocCard = toc && toc.closest(".skr-guide-side, [data-skr-toc-box]");
+    if (!main) return;
 
-    if (toc && main) {
+    /* SPRUNG IN EIN GESCHLOSSENES ELEMENT: Ist das Ziel einer Sprungmarke ein zugeklapptes
+       `<details>` – ein angeordnetes Panel – oder steht es in einem – etwa eine Überschrift im
+       Panel mit dem Inhalt der Seite unter accordion oder tabs (ADR-0337) –, öffnet es sich,
+       dann scrollt die Seite hin. Unter accordion und tabs schließen sich die anderen Elemente
+       dabei, wie bei einem Klick; ein Reiter kommt nach vorn. Das gilt für einen Klick im
+       Inhaltsverzeichnis, für einen Verweis von außen mit Anker und für jeden Wechsel des
+       Ankers – auch ohne Karte des Verzeichnisses (skriptorium#463). */
+    var reveal = function (id) {
+      var t = id && document.getElementById(id);
+      var closed = false;
+      for (var d = t && t.closest("details"); d; d = d.parentElement && d.parentElement.closest("details")) {
+        if (!d.open) { d.open = true; closed = true; }
+      }
+      if (closed) t.scrollIntoView();
+    };
+    var plain = function () {
+      var h = location.hash || "";
+      if (h.length < 2 || h.slice(0, 2) === "#/") return "";
+      try { return decodeURIComponent(h.slice(1)); } catch (e) { return h.slice(1); }
+    };
+    reveal(plain());
+    window.addEventListener("hashchange", function () { reveal(plain()); });
+
+    if (toc) {
       // Nur Überschriften auf oberster Ebene (nicht in Karten/Zitaten verschachtelte) –
-      // dazu die der Definition of Done, deren Block zur Gliederung gehört (sidebar.mjs).
-      var heads = main.querySelectorAll(":scope > h2, :scope > h3, :scope > .skr-guide-done > h2, :scope > .skr-guide-done > h3, :scope > [data-skr-slot] > h2, :scope > [data-skr-slot] > h3");
+      // dazu die der Definition of Done, deren Block zur Gliederung gehört; die angeordneten
+      // Panels auf der Ebene von h2 samt den Überschriften auf ihrer obersten Ebene, außer die
+      // Karte stellt `data-skr-toc-panels="false"` (sidebar.mjs).
+      var panels = !tocCard || tocCard.getAttribute("data-skr-toc-panels") !== "false";
+      var heads = main.querySelectorAll(":scope > h2, :scope > h3, :scope > .skr-guide-done > h2, :scope > .skr-guide-done > h3, :scope > [data-skr-slot] > h2, :scope > [data-skr-slot] > h3" +
+        (panels ? ", :scope > [data-skr-arrangement] > details, :scope > [data-skr-arrangement] > details > h2, :scope > [data-skr-arrangement] > details > h3" : ""));
+      // Der Titel eines Eintrags: bei einem Panel sein <summary>.
+      var label = function (h) {
+        var summary = h.tagName === "DETAILS" && h.querySelector(":scope > summary");
+        return ((summary || h).textContent || "").replace(/\s+/g, " ").trim();
+      };
       /* GEBAUT: Der Bau legt das Verzeichnis schon ins HTML (adapter/sidebar.mjs), samt
          Anfangszustand – dann bleibt hier nur, was erst der Browser weiß: schmal zuklappen
          und den Abschnitt markieren, der gerade zu sehen ist. */
@@ -1141,12 +1339,12 @@
         // Inhaltsverzeichnis erst ab mindestens ZWEI Überschriften anzeigen.
         heads.forEach(function (h) {
           if (!h.id) {
-            h.id = (h.textContent || "").toLowerCase().trim()
+            h.id = label(h).toLowerCase().trim()
               .replace(/[^\w\s-]/g, "").replace(/\s+/g, "-");
           }
           var a = document.createElement("a");
           a.href = "#" + h.id;
-          a.textContent = h.textContent;
+          a.textContent = label(h);
           if (h.tagName === "H3") a.className = "skr-toc--h3";
           toc.appendChild(a);
         });
@@ -1181,6 +1379,10 @@
       } else if (tocCard) {
         tocCard.hidden = true;
       }
+      toc.addEventListener("click", function (e) {
+        var a = e.target.closest && e.target.closest("a[href^='#']");
+        if (a) reveal(a.getAttribute("href").slice(1));
+      });
       if (heads.length >= 2 && "IntersectionObserver" in window) {
         var links = toc.querySelectorAll("a");
         var byId = {};
@@ -1453,7 +1655,7 @@
     }
     function choose(role) {
       document.documentElement.setAttribute("data-skr-role", role);
-      try { localStorage.setItem(key, role); } catch (e) { /* ohne Speicher */ }
+      window.skr.storage.set(key, role);
       show(role);
       window.dispatchEvent(new Event("resize"));
     }
@@ -1567,6 +1769,9 @@
       window.requestAnimationFrame(function () { waiting = false; remeasure(); });
     }
     window.addEventListener("resize", schedule);
+    /* Eine gemeldete Bedingung blendet Einträge ein oder aus (skriptorium#517) – die Leiste
+       wird breiter oder schmaler, ohne `resize`. */
+    window.addEventListener("skr-conditionschange", schedule);
 
     /* UND WENN DIE WORTMARKE DA IST. Ihre Bilder haben keine feste Breite; lädt eines
        erst nach dem ersten Messen, wird der Balken breiter – ohne `resize`, und
@@ -2353,7 +2558,7 @@
     function nameOff() {
       namesRemembered = [];
       document.querySelectorAll(
-        "details.skr-tabs__panel[name], details.skr-walkthrough__line[name]"
+        "details.skr-tabs__panel[name], details.skr-walkthrough__line[name], details.skr-fold[name]"
       ).forEach(function (d) {
         namesRemembered.push([d, d.getAttribute("name")]);
         d.removeAttribute("name");
@@ -2509,7 +2714,7 @@
       function announceGroup(panel) {
         if (!group) return;
         var choice = label(panel);
-        try { localStorage.setItem(tabsKey(group), choice); } catch (e) { /* ohne Speicher */ }
+        window.skr.storage.set(tabsKey(group), choice);
         document.dispatchEvent(new CustomEvent("skr-tabs-group", { detail: { group: group, tab: choice, source: box } }));
       }
       function followGroup(choice) {
@@ -2523,7 +2728,7 @@
           if (followGroup(e.detail.tab)) { State.update(); }
         });
         var remembered = null;
-        try { remembered = localStorage.getItem(tabsKey(group)); } catch (e) { /* ohne Speicher */ }
+        remembered = window.skr.storage.get(tabsKey(group));
         if (remembered) { followGroup(remembered); }
       }
 
@@ -3292,9 +3497,9 @@
        Spannen, und die sind breiter. Gemessen davor, fehlte dem Codeblock der
        Haltepunkt in der Tabulatorreihenfolge - und der Befund tauchte je nach
        Rechnertempo mal auf und mal nicht.
-       `ResizeObserver` beendet das Raten: Er meldet JEDE Groessenaenderung - die
-       Hervorhebung, den Schriftwechsel, das Fenster. Wo es ihn nicht gibt, bleibt
-       es beim einmaligen Messen und einem Blick nach dem Schriftwechsel. */
+       `ResizeObserver` meldet jede Größenänderung – den Schriftwechsel, das Fenster.
+       Wo es ihn nicht gibt, bleibt es beim einmaligen Messen und einem Blick nach dem
+       Schriftwechsel. */
     var observer = window.ResizeObserver ? new ResizeObserver(function (entries) {
       entries.forEach(function (e) { check(e.target); });
     }) : null;
@@ -3310,6 +3515,11 @@
         window.clearTimeout(t); t = window.setTimeout(remeasure, 150);
       });
     }
+    /* NACH DER HERVORHEBUNG SOFORT MESSEN, nicht erst im nächsten Frame. Sie macht den
+       Inhalt breiter, aber den Block nicht unbedingt größer – und auch wenn, meldet der
+       Observer das erst im Frame danach. Wer auf `skr-highlight-ready` wartet und gleich
+       misst, wie `skr a11y`, fand den Block sonst ohne Haltepunkt (skriptorium#511). */
+    document.addEventListener("skr-highlight-ready", function () { candidates.forEach(check); });
 
     /* SPAETER EINGEHAENGTER INHALT. Was ein Baustein erst im Browser baut – etwa
        eine Karte mit geklontem Code –, meldet er mit dem
@@ -3349,7 +3559,7 @@
      etwas falsch macht.
 
      ZUM ABLAGEFACH geht es ueber `copyText` - denselben Weg wie bei den
-     Code-Bloecken und bei "Markdown kopieren". */
+     Code-Bloecken. */
   function initAddressCopy() {
     var buttons = document.querySelectorAll("[data-skr-copy]");
     if (!buttons.length) return;
@@ -3631,7 +3841,7 @@
     var handover = State._carry();
     url.hash = "";
     handover.to = url.pathname;
-    try { sessionStorage.setItem(LANG_HANDOVER, JSON.stringify(handover)); } catch (e) { /* dann nur gleiche Kennungen */ }
+    window.skr.storage.session.set(LANG_HANDOVER, handover);
     return go(url.href + handover.hash);
   }
 
@@ -3660,24 +3870,17 @@
         var lang = link.getAttribute("hreflang");
         if (lang && lang !== "x-default") alternates[lang] = new URL(link.getAttribute("href"), location.href).href;
       });
-      try {
-        sessionStorage.setItem(LAST_PAGE, JSON.stringify({
-          href: location.href, lang: document.documentElement.lang || "", alternates: alternates, carry: State._carry()
-        }));
-      } catch (e) { /* dann ohne Fragment und ohne Fassungen */ }
+      window.skr.storage.session.set(LAST_PAGE, {
+        href: location.href, lang: document.documentElement.lang || "", alternates: alternates, carry: State._carry()
+      });
     });
   }
 
   /* Auf der Zielseite, vor dem ersten Herstellen des Zustands. */
   function takeLangHandover() {
-    var raw = null;
-    try {
-      raw = sessionStorage.getItem(LANG_HANDOVER);
-      sessionStorage.removeItem(LANG_HANDOVER);
-    } catch (e) { return; }
-    var handover = null;
-    try { handover = JSON.parse(raw); } catch (e) { return; }
-    if (handover && handover.to === location.pathname) State._arrive(handover);
+    var handover = window.skr.storage.session.get(LANG_HANDOVER);
+    window.skr.storage.session.remove(LANG_HANDOVER);
+    if (handover && typeof handover === "object" && handover.to === location.pathname) State._arrive(handover);
   }
 
   /* Dieselbe Seite in einer anderen Sprache – ueber die `hreflang`-Verweise im <head>,
@@ -3746,6 +3949,7 @@
   }
 
   function init() {
+    initConsent();
     initBackButtons();
     initSchemeToggle();
     initThemeChoice();
@@ -3755,7 +3959,6 @@
     initNavDropdown();
     initRoles();
     initNavLayout();
-    initCopyMarkdown();
     initPrintButtons();
     initTabs();
     initAccordion();

@@ -4,13 +4,14 @@
   <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="skr-root" content="../../">
-<script src="../../skriptorium/skr.js?v=c06299bd"></script>
+<meta name="skr-scope" content="training-concept-container-technologies">
+<script src="../../skriptorium/skr.js?v=597e5686"></script>
 <title>Eine PostgreSQL-Datenbank bereitstellen · Containertechnologien (Academy)</title>
-<meta name="description" content="Eine PostgreSQL-Datenbank in OpenShift betreiben – Zugangsdaten sicher, Konfiguration von außen, Schema per Init-SQL. Diesmal ist nur das Ziel vorgegeben.">
+<meta name="description" content="Eine PostgreSQL-Datenbank im Cluster betreiben – nur Ziel und Parameter sind vorgegeben, den Weg dorthin findest Du selbst.">
 
 <meta property="og:site_name" content="Containertechnologien (Academy)">
 <meta property="og:title" content="Eine PostgreSQL-Datenbank bereitstellen">
-<meta property="og:description" content="Eine PostgreSQL-Datenbank in OpenShift betreiben – Zugangsdaten sicher, Konfiguration von außen, Schema per Init-SQL. Diesmal ist nur das Ziel vorgegeben.">
+<meta property="og:description" content="Eine PostgreSQL-Datenbank im Cluster betreiben – nur Ziel und Parameter sind vorgegeben, den Weg dorthin findest Du selbst.">
 <meta property="og:type" content="article">
 <link rel="preload" href="../../themes/atvantage/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../../themes/default/theme.css?v=b795c99c" data-skr-source="theme">
@@ -25,31 +26,32 @@
 <link rel="stylesheet" href="../../skriptorium/tokens.css?v=28abf864">
 <link rel="stylesheet" href="../../extensions/didaktikon/tokens.css?v=5966d76a">
 <link rel="stylesheet" href="../../skriptorium/base.css?v=86e37c43">
-<link rel="stylesheet" href="../../skriptorium/components.css?v=3a968127">
+<link rel="stylesheet" href="../../skriptorium/components.css?v=e3b517fb">
 <link rel="stylesheet" href="../../skriptorium/doclinks.css?v=2ef23515">
 <link rel="stylesheet" href="../../skriptorium/linkmarks.css?v=1643f80a">
-<link rel="stylesheet" href="../../skriptorium/site.css?v=2a7f5baf">
+<link rel="stylesheet" href="../../skriptorium/site.css?v=825d2514">
 <link rel="stylesheet" href="../../skriptorium/logo.css?v=43a7fbaf">
-<link rel="stylesheet" href="../../skriptorium/guide.css?v=1237e482">
-<link rel="stylesheet" media="print" href="../../skriptorium/print.css?v=6c7ec44c">
-<meta name="generator" content="Skriptorium 2.0.0-rc.15">
-<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"2.0.0-rc.11"}],"internal":false,"languages":["de"],"skriptorium":"2.0.0-rc.15","theme":"didaktikon","themeOptions":["didaktikon"],"themes":[{"name":"didaktikon","version":"2.0.0-rc.11"},{"name":"atvantage","version":"2.2.0"},{"name":"default","version":"2.0.0-rc.15"}]}</script>
-<script type="application/json" id="skr-page-info">{"clientApi":"full","defaultLanguage":"de","description":"Eine PostgreSQL-Datenbank in OpenShift betreiben – Zugangsdaten sicher, Konfiguration von außen, Schema per Init-SQL. Diesmal ist nur das Ziel vorgegeben.","duration":40,"fields":null,"language":"de","languages":["de"],"layout":"didaktikon.exercise","pageId":"openshift-grundlagen-datenbank-issue","runtimeFragments":null,"siteIndex":"/skriptorium/site.json","title":"Eine PostgreSQL-Datenbank bereitstellen","topics":["Secret","ConfigMap","Volumes","Security Context Constraints"],"untranslated":null,"url":"/openshift-grundlagen/datenbank/issue.html"}</script>
+<link rel="stylesheet" href="../../skriptorium/guide.css?v=b1acb596">
+<link rel="stylesheet" media="print" href="../../skriptorium/print.css?v=f344e618">
+<meta name="generator" content="Skriptorium 2.0.0-rc.20">
+<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"2.0.0-rc.11"}],"internal":false,"languages":["de"],"skriptorium":"2.0.0-rc.20","theme":"didaktikon","themeOptions":["didaktikon"],"themes":[{"name":"didaktikon","version":"2.0.0-rc.11"},{"name":"atvantage","version":"2.2.0"},{"name":"default","version":"2.0.0-rc.20"}]}</script>
+<script type="application/json" id="skr-page-info">{"clientApi":"full","defaultLanguage":"de","description":"Eine PostgreSQL-Datenbank im Cluster betreiben – nur Ziel und Parameter sind vorgegeben, den Weg dorthin findest Du selbst.","duration":40,"fields":null,"language":"de","languages":["de"],"layout":"didaktikon.exercise","pageId":"openshift-grundlagen-datenbank-issue","runtimeFragments":null,"siteIndex":"/skriptorium/site.json","title":"Eine PostgreSQL-Datenbank bereitstellen","topics":["Secrets","ConfigMaps","Volumes","PostgreSQL","Security Context Constraints"],"untranslated":null,"url":"/openshift-grundlagen/datenbank/issue.html"}</script>
 <script type="application/json" id="skr-texts">{"didaktikon.capture":"Capture-Modus","didaktikon.captureExit":"beenden","didaktikon.captureText":"Text einblenden","didaktikon.crosswordAcross":"Waagerecht","didaktikon.crosswordCellAcross":"{number} waagerecht, Buchstabe {position}","didaktikon.crosswordCellDown":"{number} senkrecht, Buchstabe {position}","didaktikon.crosswordDown":"Senkrecht","didaktikon.crosswordHintLetter":"Tipp: Buchstabe","didaktikon.crosswordHintWord":"Tipp: Wort","didaktikon.crosswordRestart":"Neu beginnen","didaktikon.crosswordRestartText":"Deine Eingaben in diesem Rätsel werden gelöscht.","didaktikon.crosswordRestartTitle":"Kreuzworträtsel neu beginnen?","didaktikon.crosswordReveal":"Auflösen","didaktikon.crosswordRevealText":"Alle Felder werden ausgefüllt.","didaktikon.crosswordRevealTitle":"Kreuzworträtsel auflösen?","didaktikon.crosswordSolution":"Lösungswort","didaktikon.crosswordSolutionCell":"Lösungswort, Buchstabe {position}","didaktikon.crosswordSolved":"Gelöst – alle Begriffe stimmen.","didaktikon.doclinkCrossword":"Kreuzworträtsel","didaktikon.doclinkExercise":"Übung","didaktikon.doclinkQuiz":"Wissens-Check","didaktikon.doclinkSimulation":"Simulation","didaktikon.doclinkVisualization":"Visualisierung","didaktikon.exerciseObjectives":"Lernziele","didaktikon.exerciseQuestionsDone":"Du hast die Kontrollfragen beantwortet","didaktikon.exerciseReflectiveQuestions":"Reflexionsfragen","didaktikon.exerciseUserStory":"User Story","didaktikon.moduleBlock":"Grobthema: {block}","didaktikon.moduleDuration":"{minutes} Minuten","didaktikon.moduleMaterial":"Material","didaktikon.moduleMaterialOver":"Das Material dauert zusammen {material}′ – länger als das Modul mit {module}′.","didaktikon.quizAgain":"Noch einmal","didaktikon.quizCorrect":"Richtig.","didaktikon.quizCorrectCount":"{count} richtig","didaktikon.quizCorrectWouldBe":"Richtig wäre gewesen:","didaktikon.quizDone":"Fertig","didaktikon.quizEvaluate":"Auswertung","didaktikon.quizJump":"Zu Frage springen","didaktikon.quizNext":"Weiter","didaktikon.quizOverview":"Alle Fragen","didaktikon.quizOverviewClose":"Zurück zum Check","didaktikon.quizOverviewCorrect":"(richtig)","didaktikon.quizOverviewGoTo":"Zu dieser Frage","didaktikon.quizProgress":"Fortschritt","didaktikon.quizQuestionOf":"Frage {current} von {total}","didaktikon.quizRestart":"Neu beginnen","didaktikon.quizRestartText":"Deine Antworten in diesem Wissens-Check werden gelöscht.","didaktikon.quizRestartTitle":"Wissens-Check neu beginnen?","didaktikon.quizResult":"{correct} von {total} richtig","didaktikon.quizResultLong":"{correct} von {total} Fragen richtig","didaktikon.quizTrainerOnly":"Nur für Trainer:innen","didaktikon.quizWrong":"Nicht ganz.","didaktikon.scenarios":"Szenarien","didaktikon.simAllScenarios":"Alle Szenarien (Taste 0)","didaktikon.simControls":"Simulation steuern","didaktikon.simNext":"Schritt vor (→)","didaktikon.simNextAria":"Schritt vor","didaktikon.simOverview":"Übersicht","didaktikon.simPause":"Pause (Leertaste)","didaktikon.simPauseAria":"Pause","didaktikon.simPlay":"Abspielen (Leertaste)","didaktikon.simPlayAria":"Abspielen","didaktikon.simPrev":"Schritt zurück (←)","didaktikon.simPrevAria":"Schritt zurück","didaktikon.simPrintHint":"Diese Simulation lebt von der Bewegung. Auf Papier steht nur der gerade sichtbare Schritt – der QR-Code oben führt zurück zur laufenden Fassung.","didaktikon.simReset":"Zurück auf Anfang (Taste R)","didaktikon.simResetAria":"Zurück auf Anfang","didaktikon.simResize":"Breite der Erklärspalte (Pfeiltasten)","didaktikon.simScenarioCount":"{count} Szenarien","didaktikon.simScenarioKey":"{title} (Taste {number})","didaktikon.simScenarioTitle":"Szenario {number}","didaktikon.simSpeed":"Tempo wählen (Taste T)","didaktikon.simSpeedAria":"Tempo wählen","didaktikon.simSpeedMenu":"Tempo","didaktikon.simStepCount":"{count} Schritte","didaktikon.simStepCountOne":"{count} Schritt","didaktikon.simStepCounter":"Schritt {current} / {total}","didaktikon.speedFast":"zügig","didaktikon.speedNormal":"normal","didaktikon.speedSlow":"langsam","didaktikon.speedTurbo":"im Zeitraffer","didaktikon.speedValue":"{speed}×","didaktikon.stepNote":"Erklärung zum aktuellen Schritt","didaktikon.trainerNoteClose":"Schließen","didaktikon.trainerNoteOpen":"Hinweis für Trainer:innen anzeigen","didaktikon.trainerNoteTitle":"Hinweis für Trainer:innen","didaktikon.trainingCatalogEmpty":"Hier gibt es noch keine Schulung.","didaktikon.trainingCatalogTrainings":"Schulungen","didaktikon.trainingDays":"{days} Tage","didaktikon.trainingDaysOne":"{days} Tag","didaktikon.trainingHomeInfo":"Kursbeschreibung","didaktikon.trainingHomeManifest":"Didaktisches Manifest","didaktikon.trainingHomeSales":"Sales-Asset","didaktikon.trainingInfoAudience":"Zielgruppe","didaktikon.trainingInfoObjectives":"Lernziele","didaktikon.trainingInfoObjectivesLead":"Die Lernenden …","didaktikon.trainingInfoOverview":"Überblick","didaktikon.trainingInfoPrerequisites":"Voraussetzungen","didaktikon.trainingMaterials":"Kursmaterial","didaktikon.trainingMaterialsExercises":"Übungen","didaktikon.trainingMaterialsLead":"Links stehen die **Übungen**, an denen Du selbst arbeitest, rechts das **Material zum Nachschlagen**.","didaktikon.trainingMaterialsMore":"Weitere Themen","didaktikon.trainingMaterialsOther":"Sonstige Unterlagen","didaktikon.trainingMaterialsReference":"Zum Nachschlagen","didaktikon.trainingModules":"Module","didaktikon.trainingModulesBlock":"Grobthema","didaktikon.trainingModulesDuration":"Dauer","didaktikon.trainingModulesMaterial":"Material","didaktikon.trainingModulesModule":"Modul","didaktikon.trainingModulesOver":"länger als das Modul","didaktikon.trainingSalesBuyers":"Käufer","didaktikon.trainingSalesPitch":"Pitch","didaktikon.trainingSalesPricing":"Preisrahmen","didaktikon.trainingSalesUsp":"Unterscheidungsmerkmale","didaktikon.trainingSalesValueProposition":"Nutzenversprechen"}</script>
 
-<script src="../../skriptorium/client.js?v=756a5d69" defer></script>
-<script src="../../skriptorium/site.js?v=6472c794" defer></script>
-<script src="../../skriptorium/search-trail.js?v=31279378" data-skr-search-trail
-        data-base="../../" data-index="../../skriptorium/search/de.json?v=c2fa893e" defer></script>
-<link rel="stylesheet" href="../../skriptorium/highlight.css?v=f8a3fc05">
-<script type="module" src="../../skriptorium/highlight.js?v=0b2d40aa" data-skr-highlight="[&#34;bash&#34;,&#34;dockerfile&#34;,&#34;python&#34;,&#34;sql&#34;,&#34;yaml&#34;]"></script>
+<script src="../../skriptorium/client.js?v=e9b75088" defer></script>
+<script src="../../skriptorium/site.js?v=bf4672b2" defer></script>
+
+<script src="../../skriptorium/search-trail.js?v=ca558440" data-skr-search-trail
+        data-base="../../" data-index="../../skriptorium/search/de.json?v=b137f70b" defer></script>
+<link rel="stylesheet" href="../../skriptorium/highlight.css?v=b66fa35b">
+<script type="module" src="../../skriptorium/highlight.js?v=bb894db9" data-skr-highlight></script>
 <link rel="apple-touch-icon" sizes="180x180" href="../../themes/atvantage/assets/icon-180.png">
 <link rel="icon" sizes="32x32" href="../../themes/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="../../themes/atvantage/assets/icon-16.png">
 
   <style>@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }</style>
   <link rel="stylesheet" href="../../skriptorium/page-transitions.css?v=716872f0">
-<link rel="stylesheet" href="../../skriptorium/guide-layout.css?v=cc0ce1dd">
+<link rel="stylesheet" href="../../skriptorium/guide-layout.css?v=ca7e6344">
 <link rel="stylesheet" href="../../extensions/didaktikon/exercise.css?v=485b7c1d">
 <script src="../../skriptorium/guide-layout.js?v=00fd0360" defer></script>
 
@@ -87,7 +89,7 @@
   <div class="skr-header__tools">
 <div class="skr-search" data-skr-search hidden
      data-mode="expand" data-shortcut="double_shift"
-     data-index="../../skriptorium/search/de.json?v=c2fa893e"
+     data-index="../../skriptorium/search/de.json?v=b137f70b"
      data-base="../../">
   <button type="button" class="skr-tool skr-tool--search" data-skr-search-toggle
           aria-expanded="false" aria-controls="skr-search-dialog"
@@ -101,6 +103,20 @@
           <option value="">Alle</option>
         </select>
       </label>
+      <div class="skr-search__field skr-search__field--kind" hidden>
+        <span class="skr-search__label" id="skr-search-kind-label">Art</span>
+        <button type="button" class="skr-search__kind" aria-expanded="false" aria-controls="skr-search-kinds"
+                aria-labelledby="skr-search-kind-label skr-search-kind-value"
+                data-all="Alle Arten" data-count="{n} Arten"
+                data-none="Keine Art"><span
+                class="skr-search__kind-value" id="skr-search-kind-value">Alle Arten</span></button>
+      </div>
+      <fieldset class="skr-search__kinds" id="skr-search-kinds" hidden
+                data-label-only="nur" data-none-selected="Keine Art gewählt.">
+        <legend class="skr-visually-hidden">Art</legend>
+        <ul class="skr-search__kind-list"></ul>
+        <button type="button" class="skr-search__kind-all">Alle auswählen</button>
+      </fieldset>
       <label class="skr-search__field skr-search__field--query">
         <span class="skr-search__label">Suchbegriff</span>
         <input type="search" class="skr-search__input"
@@ -114,7 +130,7 @@
     <ul class="skr-search__results" data-skr-search-results aria-label="Suchergebnisse"></ul>
   </dialog>
 </div>
-<script src="../../skriptorium/search.js?v=2be133a6" defer></script>
+<script src="../../skriptorium/search.js?v=679c2a13" defer></script>
 <button type="button" class="skr-qr" data-skr-qr hidden
         title="Diese Seite auf Deinem Smartphone öffnen"
         aria-label="Diese Seite auf Deinem Smartphone öffnen"></button>
@@ -128,56 +144,53 @@
 <section class="skr-guide-hero"
          aria-labelledby="skr-page-title"><nav class="skr-guide-hero__crumbs" aria-label="Brotkrumen"><a href="../../openshift-grundlagen/">OpenShift – Grundlagen für Entwickler</a><span>/</span><span aria-current="page">Eine PostgreSQL-Datenbank bereitstellen</span></nav>
   <div class="skr-guide-hero__meta">
-    <div class="skr-guide-hero__tags"><span class="skr-tag skr-tag--time">ca. 40 Minuten</span><span class="skr-tag">Secret</span><span class="skr-tag">ConfigMap</span><span class="skr-tag">Volumes</span><span class="skr-tag">Security Context Constraints</span>
+    <div class="skr-guide-hero__tags"><span class="skr-tag skr-tag--time">ca. 40 Minuten</span><span class="skr-tag">Secrets</span><span class="skr-tag">ConfigMaps</span><span class="skr-tag">Volumes</span><span class="skr-tag">PostgreSQL</span><span class="skr-tag">Security Context Constraints</span>
     </div>
     <div class="skr-guide-hero__actions">
-      <button type="button" class="skr-btn skr-btn--ghost skr-copy-md"
-              data-skr-copy-md="#skr-md-source"
-              title="Markdown kopieren" aria-label="Markdown kopieren"></button>
     </div>
   </div><h1 id="skr-page-title">Eine PostgreSQL-Datenbank bereitstellen</h1>
 </section>
 
   <div class="skr-guide-layout">
     <main class="skr-guide-main" id="skr-content"><div class="skr-guide-panels" data-skr-arrangement="fold">
-<details class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
+<details id="user-story" class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
 <summary>User Story</summary>
 <div class="skr-didaktikon-user-story" data-skr-field="didaktikon.user_story">
 <p><strong>Als</strong> Entwickler:in <strong>möchte ich</strong> eine PostgreSQL-Datenbank in OpenShift betreiben, deren Konfiguration sauber und sicher bereitgestellt wird, <strong>damit</strong> das Backend später auf eine echte Datenbank umgestellt werden kann.</p>
 </div>
 </details>
-<details class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
+<details id="lernziele" class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
 <summary>Lernziele</summary>
 <div class="skr-didaktikon-objectives" data-skr-field="didaktikon.objectives">
 <ul>
-<li>Du betreibst eine Datenbank als Workload im Cluster.</li>
-<li>Du stellst die Konfiguration einer Anwendung von außen bereit – getrennt nach sensiblen und nicht sensiblen Werten.</li>
+<li>Du betreibst eine Datenbank als Workload in OpenShift – auch unter einer beliebigen User-ID, wie OpenShift sie vergibt.</li>
+<li>Du stellst die Konfiguration einer Anwendung von außen bereit – getrennt nach sensiblen und unkritischen Werten.</li>
 <li>Du bringst eine Datei in einen Container, die nicht Teil des Images ist.</li>
-<li>Du erklärst, warum ein Container unter OpenShift mit einer beliebigen User-ID zurechtkommen muss.</li>
 </ul>
 </div>
 </details>
-<details class="skr-fold">
+<details id="definition-of-done" class="skr-fold">
 <summary>Definition of Done</summary>
 <div class="skr-guide-done">
 <ul class="task-list">
-<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Ein PostgreSQL-Pod läuft mit den geforderten Parametern und steht auf Running." disabled="disabled"> Ein PostgreSQL-Pod läuft mit den geforderten Parametern und steht auf <code>Running</code>.</li>
-<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Die Zugangsdaten kommen aus einem Secret; das Deployment-Manifest verweist nur darauf." disabled="disabled"> Die Zugangsdaten kommen aus einem Secret; das Deployment-Manifest verweist nur darauf.</li>
-<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Der Datenbankname kommt aus einer ConfigMap." disabled="disabled"> Der Datenbankname kommt aus einer ConfigMap.</li>
-<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Die Logs zeigen, dass init.sql beim ersten Start ausgeführt wurde." disabled="disabled"> Die Logs zeigen, dass <code>init.sql</code> beim ersten Start ausgeführt wurde.</li>
-<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="PostgreSQL schreibt in ein eigenes Datenverzeichnis (PGDATA) auf einem Volume." disabled="disabled"> PostgreSQL schreibt in ein eigenes Datenverzeichnis (<code>PGDATA</code>) auf einem Volume.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="oc get pods zeigt einen PostgreSQL-Pod im Status Running, gestartet mit den geforderten Parametern." disabled="disabled"> <code>oc get pods</code> zeigt einen PostgreSQL-Pod im Status <code>Running</code>, gestartet mit den geforderten Parametern.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Benutzer und Passwort stehen in einem Secret; das Deployment verweist nur darauf." disabled="disabled"> Benutzer und Passwort stehen in einem Secret; das Deployment verweist nur darauf.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Der Datenbankname steht in einer ConfigMap; das Deployment verweist nur darauf." disabled="disabled"> Der Datenbankname steht in einer ConfigMap; das Deployment verweist nur darauf.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Die Logs des Pods zeigen, dass init.sql ausgeführt wurde und die Tabellen angelegt sind." disabled="disabled"> Die Logs des Pods zeigen, dass <code>init.sql</code> ausgeführt wurde und die Tabellen angelegt sind.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="PostgreSQL schreibt seine Daten in ein eigenes Verzeichnis (PGDATA auf einem Volume)." disabled="disabled"> PostgreSQL schreibt seine Daten in ein eigenes Verzeichnis (<code>PGDATA</code> auf einem Volume).</li>
 <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Du hast die Kontrollfragen beantwortet" disabled="disabled"> Du hast die Kontrollfragen beantwortet</li>
 </ul>
 </div>
 </details>
 </div>
-<h2 id="aufgabe">Aufgabe</h2>
-<div class="skr-callout skr-callout--info">
-<p><strong>Diese Übung beschreibt nur das Ziel und die Parameter – nicht den Weg.</strong> Überleg
-selbst, mit welchen Ressourcen Du das umsetzt. Alles, was Du dafür brauchst, kennst Du
-aus den bisherigen Übungen oder findest es in den Links unter „Selbstlernmaterial“ und
-mit <code>oc explain</code>.</p>
-</div>
+<blockquote>
+<p><strong>Hinweis:</strong> Diese Übung beschreibt bewusst nur das <strong>Ziel</strong> und die nötigen
+<strong>Parameter</strong> – nicht den Weg. Überleg selbst, mit welchen Kubernetes-Ressourcen Du
+das umsetzt. Alles, was Du dafür brauchst, kennst Du aus den bisherigen Übungen oder
+findest es in den verlinkten Quellen dieser Übung und mit <code>oc explain</code>.</p>
+</blockquote>
+<h2 id="arbeitsschritte">Arbeitsschritte</h2>
+<h3 id="die-datenbank-bereitstellen">Die Datenbank bereitstellen</h3>
 <p>Benötigt wird ein <strong>Pod mit einer PostgreSQL-Datenbank</strong>, der diese Parameter erfüllt:</p>
 <table>
 	<thead>
@@ -197,11 +210,11 @@ mit <code>oc explain</code>.</p>
 			</tr>
 			<tr>
 					<td><code>POSTGRES_USER</code> (Umgebungsvariable)</td>
-					<td>frei wählbar, zum Beispiel <code>recipes</code></td>
+					<td>frei wählbar, etwa <code>recipes</code></td>
 			</tr>
 			<tr>
 					<td><code>POSTGRES_PASSWORD</code> (Umgebungsvariable)</td>
-					<td>frei wählbar, zum Beispiel <code>recipes-secret-pw</code></td>
+					<td>frei wählbar, etwa <code>recipes-secret-pw</code></td>
 			</tr>
 			<tr>
 					<td><code>POSTGRES_DB</code> (Umgebungsvariable)</td>
@@ -219,8 +232,38 @@ mit <code>oc explain</code>.</p>
 im Deployment.</li>
 <li>Der Datenbankname (<code>POSTGRES_DB</code>) ist unkritisch, soll aber ebenfalls von außen
 konfigurierbar sein.</li>
-<li>Nenne das Deployment <code>postgres</code> und gib ihm das Label <code>app: postgres</code> – die
-nächsten Übungen bauen darauf auf.</li>
+<li>Halte Dich an diese Namen – die nächsten Übungen bauen darauf auf:
+<table>
+	<thead>
+			<tr>
+					<th>Ressource</th>
+					<th>Name</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Deployment</td>
+					<td><code>postgres</code>, mit dem Label <code>app: postgres</code></td>
+			</tr>
+			<tr>
+					<td>Secret mit den Zugangsdaten</td>
+					<td><code>postgres-secret</code>, Schlüssel <code>POSTGRES_USER</code> und <code>POSTGRES_PASSWORD</code></td>
+			</tr>
+			<tr>
+					<td>ConfigMap mit dem Datenbanknamen</td>
+					<td><code>postgres-config</code>, Schlüssel <code>POSTGRES_DB</code></td>
+			</tr>
+			<tr>
+					<td>ConfigMap mit dem Init-SQL</td>
+					<td><code>postgres-init-sql</code>, Schlüssel <code>init.sql</code></td>
+			</tr>
+			<tr>
+					<td>Volume für das Init-SQL im Deployment</td>
+					<td><code>init-sql</code></td>
+			</tr>
+	</tbody>
+</table>
+</li>
 </ul>
 <p>Das Init-SQL, das beim ersten Start das Schema anlegt:</p>
 <pre><code class="language-sql">CREATE TABLE recipes (
@@ -242,15 +285,12 @@ CREATE TABLE ingredients (
     recipe_id VARCHAR(36)  REFERENCES recipes(id) ON DELETE CASCADE
 );
 </code></pre>
-<h2 id="arbeitsschritte">Arbeitsschritte</h2>
-<h3 id="die-ressourcen-anlegen">Die Ressourcen anlegen</h3>
-<p>Leg die Ressourcen an, die die Aufgabe verlangt, und das Deployment der Datenbank. Zwei
-Hinweise helfen Dir dabei:</p>
-<p><strong>Das Init-SQL in den Container bringen.</strong> Das offizielle PostgreSQL-Image führt beim
-ersten Start alle <code>*.sql</code>-Dateien aus <code>/docker-entrypoint-initdb.d/</code> aus. Eine Datei, die
-nicht im Image liegt, legst Du als <strong>ConfigMap</strong> an und hängst sie als <strong>Volume</strong> ein. Das
-Muster, abstrakt:</p>
-<pre><code class="language-yaml"># Ausschnitt aus einem Pod- bzw. Deployment-Template
+<blockquote>
+<p><strong>Hinweis – Init-SQL in den Container bringen:</strong> Das offizielle PostgreSQL-Image führt
+beim ersten Start alle <code>*.sql</code>-Dateien aus <code>/docker-entrypoint-initdb.d/</code> aus. Eine
+Datei, die nicht im Image liegt, legst Du als <strong>ConfigMap</strong> an und hängst sie als
+<strong>Volume</strong> ein. Das Muster, abstrakt:</p>
+<pre><code class="language-yaml"># Ausschnitt aus dem Template eines Deployments
 spec:
   containers:
     - name: my-app
@@ -263,11 +303,14 @@ spec:
       configMap:
         name: meine-configmap
 </code></pre>
-<p><strong>Kein persistenter Speicher nötig.</strong> Für diese Übung genügt flüchtiger Speicher.
-Produktionsreif wäre ein StatefulSet mit PersistentVolumeClaim – siehe
+</blockquote>
+<blockquote>
+<p><strong>Hinweis – kein persistenter Speicher nötig:</strong> Für diese Übung genügt flüchtiger
+Speicher. Produktionsreif wäre ein StatefulSet mit PersistentVolumeClaim – siehe
 <a class="skr-doclink skr-doclink--visualization" href="../../shared/visualisierungen/postgresql-auf-kubernetes.html">PostgreSQL auf Kubernetes</a>.</p>
+</blockquote>
 <h3 id="den-zwischenstand-prüfen">Den Zwischenstand prüfen</h3>
-<p>Wende Deine Ressourcen an und sieh Dir Status und Logs des Pods an:</p>
+<p>Wende Deine Ressourcen an und sieh Dir Status und Logs an:</p>
 <pre><code class="language-bash">oc get pods
 </code></pre>
 <pre><code class="language-bash">oc logs &lt;postgres-pod-name&gt;
@@ -278,7 +321,8 @@ des Datenverzeichnisses:</p>
 </code></pre>
 <p>Die Ursache: OpenShift startet den Container mit einer <strong>zufällig vergebenen User-ID</strong>
 (Security Context Constraint). Dieser User-ID gehört das Standard-Datenverzeichnis
-<code>/var/lib/postgresql/data</code> nicht, und PostgreSQL darf dessen Rechte nicht ändern.</p>
+<code>/var/lib/postgresql/data</code> nicht, und PostgreSQL darf dessen Rechte nicht ändern. Der
+nächste Schritt löst das Problem sauber – und bereitet den persistenten Speicher vor.</p>
 <blockquote>
 <p><strong>Hinweis:</strong> Welche User-ID Dein Pod bekommen hat, steht in seiner Beschreibung – such
 in der Ausgabe nach <code>runAsUser</code>:</p>
@@ -286,19 +330,18 @@ in der Ausgabe nach <code>runAsUser</code>:</p>
 </code></pre>
 </blockquote>
 <h3 id="postgresql-ein-eigenes-datenverzeichnis-geben">PostgreSQL ein eigenes Datenverzeichnis geben</h3>
-<p>Behebe den Fehler, indem PostgreSQL ein <strong>eigenes, beschreibbares</strong> Datenverzeichnis
-bekommt. Ergänze im Deployment drei Dinge:</p>
+<p>Gib PostgreSQL ein <strong>eigenes, beschreibbares</strong> Datenverzeichnis. Ergänze im Deployment
+drei Dinge:</p>
 <ol>
 <li>die Umgebungsvariable <strong><code>PGDATA</code></strong> auf ein <strong>Unterverzeichnis</strong>,</li>
 <li>einen <strong><code>volumeMount</code></strong> für die Daten,</li>
-<li>das zugehörige <strong><code>volume</code></strong> – hier <code>emptyDir</code>, flüchtig und für diese Übung
-ausreichend.</li>
+<li>das zugehörige <strong><code>volume</code></strong> – hier ein <code>emptyDir</code>, flüchtig, für diese Übung genug.</li>
 </ol>
 <pre><code class="language-yaml">    spec:
       containers:
         - name: postgres
           image: postgres:17-alpine
-          # Ports, envFrom (Secret und ConfigMap) und das Init-SQL wie zuvor …
+          # Ports und Verweise auf Secret und ConfigMap wie zuvor …
           env:
             - name: PGDATA
               value: /var/lib/postgresql/data/pgdata
@@ -313,7 +356,7 @@ ausreichend.</li>
 <code>/var/lib/postgresql/data</code>. Mit <code>PGDATA=/var/lib/postgresql/data/pgdata</code> legt PostgreSQL
 sein Datenverzeichnis in ein <strong>selbst angelegtes Unterverzeichnis</strong> – das gehört ihm, und
 dessen Rechte darf es setzen.</p>
-<p>Wende das Deployment erneut an:</p>
+<p>Wende das Deployment erneut an und prüf Status und Logs:</p>
 <pre><code class="language-bash">oc apply -f postgres-deployment.yaml
 </code></pre>
 <pre><code class="language-bash">oc get pods
@@ -331,10 +374,10 @@ dessen Rechte darf es setzen.</p>
 <h2 id="musterlösung">Musterlösung</h2>
 <details class="skr-reveal">
 <summary>Musterlösung aufdecken – erst, wenn Du es selbst versucht hast</summary>
-<p>Eine mögliche, vollständige Lösung – als YAML <strong>und</strong> als Befehle. Andere Wege sind
-genauso gültig, solange die Parameter erfüllt sind.</p>
-<h4 id="secret-mit-den-zugangsdaten">Secret mit den Zugangsdaten</h4>
-<p>Deklarativ, als Datei <code>postgres-secret.yaml</code>:</p>
+<p>Eine mögliche Lösung – als YAML <strong>und</strong> als Befehle. Es gibt andere gültige Wege;
+wichtig ist, dass die geforderten Parameter erfüllt sind.</p>
+<h4 id="secret-fr-die-zugangsdaten">Secret für die Zugangsdaten</h4>
+<p>Deklarativ – <code>postgres-secret.yaml</code>:</p>
 <pre><code class="language-yaml">apiVersion: v1
 kind: Secret
 metadata:
@@ -346,26 +389,27 @@ stringData:
 </code></pre>
 <pre><code class="language-bash">oc apply -f postgres-secret.yaml
 </code></pre>
-<p><code>stringData</code> nimmt Klartext entgegen; Kubernetes kodiert ihn selbst in Base64. Unter
+<p><code>stringData</code> nimmt Klartext entgegen; Kubernetes kodiert ihn selbst nach Base64. Unter
 <code>data</code> müsstest Du die Werte selbst kodieren.</p>
-<p>Oder per Befehl:</p>
+<p>Oder imperativ:</p>
 <pre><code class="language-bash">oc create secret generic postgres-secret --from-literal=POSTGRES_USER=recipes --from-literal=POSTGRES_PASSWORD=recipes-secret-pw
 </code></pre>
-<p><strong>Noch sauberer: ein Zufallspasswort.</strong> Dann steht das Passwort in keiner Datei. Da es
-nur über das Secret referenziert wird, muss es niemand kennen:</p>
-<pre><code class="language-bash"># 32 zufällige Zeichen aus 0–9 und a–f
-PW=$(openssl rand -hex 16)
+<p>Noch sauberer ist ein <strong>zufälliges Passwort</strong>, das in keiner Datei landet. Lass Dir eines
+erzeugen:</p>
+<pre><code class="language-bash">openssl rand -hex 16
 </code></pre>
-<pre><code class="language-bash">oc create secret generic postgres-secret --from-literal=POSTGRES_USER=recipes --from-literal=POSTGRES_PASSWORD=&quot;$PW&quot;
-</code></pre>
+<p>und setz die Ausgabe statt <code>recipes-secret-pw</code> in den Befehl oben ein. Das Backend liest
+das Passwort später aus demselben Secret – niemand muss es kennen.</p>
 <blockquote>
-<p><strong>Hinweis:</strong> Base64 ist <strong>keine</strong> Verschlüsselung. Wer das Secret lesen darf, sieht die
-Werte im Klartext:</p>
+<p><strong>Gut zu wissen:</strong> Base64 ist <strong>keine</strong> Verschlüsselung. Wer das Secret lesen darf,
+kann den Wert dekodieren. Mehr dazu:
+<a class="skr-doclink skr-doclink--visualization" href="../../shared/visualisierungen/secrets-sicherheit.html">Sind Secrets sicher?</a></p>
+</blockquote>
+<p>Mit <code>oc</code> siehst Du die Werte eines Secrets direkt im Klartext:</p>
 <pre><code class="language-bash">oc extract secret/postgres-secret --to=-
 </code></pre>
-</blockquote>
-<h4 id="configmap-mit-dem-datenbanknamen">ConfigMap mit dem Datenbanknamen</h4>
-<p>Als Datei <code>postgres-config.yaml</code>:</p>
+<h4 id="configmap-fr-den-datenbanknamen">ConfigMap für den Datenbanknamen</h4>
+<p>Deklarativ – <code>postgres-config.yaml</code>:</p>
 <pre><code class="language-yaml">apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -375,14 +419,14 @@ data:
 </code></pre>
 <pre><code class="language-bash">oc apply -f postgres-config.yaml
 </code></pre>
-<p>Oder per Befehl:</p>
+<p>Oder imperativ:</p>
 <pre><code class="language-bash">oc create configmap postgres-config --from-literal=POSTGRES_DB=recipes
 </code></pre>
-<h4 id="configmap-mit-dem-init-sql">ConfigMap mit dem Init-SQL</h4>
+<h4 id="configmap-fr-das-init-sql">ConfigMap für das Init-SQL</h4>
 <p>Am einfachsten aus der Datei <code>init.sql</code>:</p>
 <pre><code class="language-bash">oc create configmap postgres-init-sql --from-file=init.sql
 </code></pre>
-<p>Oder deklarativ mit eingebettetem Inhalt, als Datei <code>postgres-init-sql.yaml</code>:</p>
+<p>Oder deklarativ mit eingebettetem Inhalt – <code>postgres-init-sql.yaml</code>:</p>
 <pre><code class="language-yaml">apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -411,7 +455,7 @@ data:
 <pre><code class="language-bash">oc apply -f postgres-init-sql.yaml
 </code></pre>
 <h4 id="deployment">Deployment</h4>
-<p>Als Datei <code>postgres-deployment.yaml</code>:</p>
+<p><code>postgres-deployment.yaml</code>:</p>
 <pre><code class="language-yaml">apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -455,517 +499,59 @@ spec:
 </code></pre>
 <p><strong>Worauf es ankommt:</strong></p>
 <ul>
-<li><strong><code>envFrom</code></strong> übernimmt <strong>alle</strong> Schlüssel aus Secret und ConfigMap als
-Umgebungsvariablen (<code>POSTGRES_USER</code>, <code>POSTGRES_PASSWORD</code>, <code>POSTGRES_DB</code>). Einzeln geht
-es mit <code>env</code> und <code>valueFrom.secretKeyRef</code> – das brauchst Du in der nächsten Übung.</li>
-<li><strong>Das Volume <code>init-sql</code></strong> liegt unter <code>/docker-entrypoint-initdb.d</code>. Das offizielle
-Image führt die <code>*.sql</code>-Dateien <strong>nur beim ersten Start</strong> aus, solange das
-Datenverzeichnis leer ist.</li>
-<li><strong><code>PGDATA</code> und das Volume <code>data</code>:</strong> Ohne sie scheitert der Start auf OpenShift, weil die
-zufällig vergebene User-ID <code>/var/lib/postgresql/data</code> nicht anpassen darf. Das
-<code>emptyDir</code> ist beschreibbar, <code>PGDATA</code> legt die Daten in ein selbst angelegtes
-Unterverzeichnis.</li>
+<li><strong><code>envFrom</code></strong> übernimmt <em>alle</em> Schlüssel aus Secret und ConfigMap als
+Umgebungsvariablen (<code>POSTGRES_USER</code>, <code>POSTGRES_PASSWORD</code>, <code>POSTGRES_DB</code>). Alternativ
+einzeln mit <code>env</code> und <code>valueFrom.secretKeyRef</code> – das brauchst Du in der nächsten Übung.</li>
+<li><strong><code>init-sql</code> als Volume</strong> landet unter <code>/docker-entrypoint-initdb.d</code>; das Image führt
+<code>*.sql</code> <strong>nur beim ersten Start</strong> aus, solange das Datenverzeichnis leer ist.</li>
+<li><strong><code>PGDATA</code> und ein eigenes Volume <code>data</code>:</strong> Ohne beide scheitert der Start auf
+Clustern mit zufälliger User-ID. Persistent ist das noch nicht – das <code>emptyDir</code> lebt
+so lange wie der Pod.</li>
 </ul>
 <h4 id="prfen">Prüfen</h4>
 <pre><code class="language-bash">oc get pods
 </code></pre>
-<pre><code class="language-bash"># Wurde das Init-SQL ausgeführt?
+<pre><code class="language-bash"># Ist die Ausführung von init.sql zu sehen?
 oc logs deployment/postgres
 </code></pre>
-<pre><code class="language-bash"># Gegenprobe in der Datenbank
+<pre><code class="language-bash"># Gegenprobe in der Datenbank: die Tabellen auflisten
 oc exec deployment/postgres -- psql -U recipes -d recipes -c '\dt'
 </code></pre>
-<h4 id="nachtrag-emptydir-und-der-weg-zur-persistenz">Nachtrag: <code>emptyDir</code> und der Weg zur Persistenz</h4>
+<h4 id="zum-weiterlesen-emptydir-und-der-weg-zur-persistenz">Zum Weiterlesen: <code>emptyDir</code> und der Weg zur Persistenz</h4>
 <p>Ein <code>emptyDir</code> ist ein leeres Verzeichnis <strong>auf dem Node</strong>, auf dem der Pod läuft. Es lebt
-so lange wie der <strong>Pod</strong>: Ein Neustart des Containers behält die Daten, beim Löschen oder
-Umziehen des Pods sind sie weg. Es ist also <strong>kein</strong> persistenter Speicher.</p>
-<p><code>PGDATA</code> auf einem Unterverzeichnis hilft in zwei Fällen: auf OpenShift wegen der
-zufälligen User-ID – und bei manchen PersistentVolumes, deren Wurzel nicht leer ist (etwa
-mit einem Ordner <code>lost+found</code>). In der Übung „Persistenten Speicher einrichten“ wird das
-<code>emptyDir</code> durch einen PersistentVolumeClaim ersetzt; <code>volumeMount</code> und <code>PGDATA</code> bleiben,
-wie sie sind.</p>
+so lange wie der <strong>Pod</strong>: Startet nur der Container neu (Absturz, Liveness-Probe), bleiben
+die Daten; wird der Pod gelöscht oder zieht er um, sind sie weg. Das unterscheidet es von
+einem PersistentVolume, das unabhängig vom Pod existiert.</p>
+<p>Würde PostgreSQL direkt in die Wurzel des Volumes schreiben, scheiterte es in zwei Fällen:
+auf Clustern mit zufälliger User-ID, weil diese die Rechte der Wurzel nicht ändern darf;
+und bei manchen PersistentVolumes, deren Wurzel nicht leer ist (etwa <code>lost+found</code>). Das
+Unterverzeichnis aus <code>PGDATA</code> löst beides.</p>
+<p>Für persistenten Speicher wird später <strong>nur</strong> das <code>emptyDir</code> durch einen
+<code>persistentVolumeClaim</code> ersetzt – <code>volumeMount</code> und <code>PGDATA</code> bleiben, wie sie sind.</p>
 </details>
+<div data-skr-slot="guide.review">
+<h2 id="reflexionsfrage-zu-openshift">Reflexionsfrage zu OpenShift</h2>
+<p>Warum startete PostgreSQL zuerst nicht, und warum hilft ein eigenes Datenverzeichnis?</p>
+</div>
 <div class="skr-didaktikon-guide-review" data-skr-slot="guide.review">
 <h2 id="reflexionsfragen">Reflexionsfragen</h2>
 <div class="skr-didaktikon-reflective-questions" data-skr-field="didaktikon.reflective_questions">
 <ul>
-<li>Wie hast Du dafür gesorgt, dass die Zugangsdaten nicht im Klartext im Deployment stehen? Welche Ressource ist dafür gedacht?</li>
+<li>Wie hast Du verhindert, dass die Zugangsdaten im Klartext im Deployment stehen? Welche Ressource ist dafür gedacht?</li>
 <li>Warum gehören Datenbankname und Zugangsdaten in unterschiedliche Ressourcentypen?</li>
-<li>Wie sicher ist ein Secret wirklich?</li>
+<li>Wie sicher ist ein Kubernetes-Secret wirklich?</li>
 <li>Warum bindest Du das Init-SQL von außen ein, statt es ins Image zu packen?</li>
-<li>Was unterscheidet <code>envFrom</code> (ganze Ressource) von einzelnen <code>env</code>-Einträgen mit <code>valueFrom</code>?</li>
-<li>Warum startete PostgreSQL zuerst nicht, und warum hilft ein eigenes Datenverzeichnis?</li>
-<li>Was ist an diesem Aufbau noch nicht produktionsreif?</li>
+<li>Worin unterscheidet sich <code>envFrom</code> (ganze Ressource) von einzelnen <code>env</code>-Einträgen mit <code>valueFrom</code>?</li>
+<li>Inwiefern ist dieses PostgreSQL-Setup nicht produktionsreif?</li>
 </ul>
 </div>
 </div>
-<textarea id="skr-md-source" hidden aria-hidden="true"># Eine PostgreSQL-Datenbank bereitstellen
-&lt;div class=&#34;skr-guide-panels&#34; data-skr-arrangement=&#34;fold&#34; markdown=&#34;1&#34;&gt;
 
-&lt;details class=&#34;skr-fold skr-didaktikon-guide-about&#34; data-skr-slot=&#34;guide.about&#34; markdown=&#34;1&#34;&gt;
-&lt;summary markdown=&#34;span&#34;&gt;User Story&lt;/summary&gt;
-
-&lt;div class=&#34;skr-didaktikon-user-story&#34; data-skr-field=&#34;didaktikon.user_story&#34; markdown=&#34;1&#34;&gt;
-
-**Als** Entwickler:in **möchte ich** eine PostgreSQL-Datenbank in OpenShift betreiben, deren Konfiguration sauber und sicher bereitgestellt wird, **damit** das Backend später auf eine echte Datenbank umgestellt werden kann.
-
-&lt;/div&gt;
-
-&lt;/details&gt;
-
-&lt;details class=&#34;skr-fold skr-didaktikon-guide-about&#34; data-skr-slot=&#34;guide.about&#34; markdown=&#34;1&#34;&gt;
-&lt;summary markdown=&#34;span&#34;&gt;Lernziele&lt;/summary&gt;
-
-&lt;div class=&#34;skr-didaktikon-objectives&#34; data-skr-field=&#34;didaktikon.objectives&#34; markdown=&#34;1&#34;&gt;
-
-- Du betreibst eine Datenbank als Workload im Cluster.
-- Du stellst die Konfiguration einer Anwendung von außen bereit – getrennt nach sensiblen und nicht sensiblen Werten.
-- Du bringst eine Datei in einen Container, die nicht Teil des Images ist.
-- Du erklärst, warum ein Container unter OpenShift mit einer beliebigen User-ID zurechtkommen muss.
-
-&lt;/div&gt;
-
-&lt;/details&gt;
-
-&lt;details class=&#34;skr-fold&#34; markdown=&#34;1&#34;&gt;
-&lt;summary markdown=&#34;span&#34;&gt;Definition of Done&lt;/summary&gt;
-
-&lt;div class=&#34;skr-guide-done&#34; markdown=&#34;1&#34;&gt;
-
-- [ ] Ein PostgreSQL-Pod läuft mit den geforderten Parametern und steht auf `Running`.
-- [ ] Die Zugangsdaten kommen aus einem Secret; das Deployment-Manifest verweist nur darauf.
-- [ ] Der Datenbankname kommt aus einer ConfigMap.
-- [ ] Die Logs zeigen, dass `init.sql` beim ersten Start ausgeführt wurde.
-- [ ] PostgreSQL schreibt in ein eigenes Datenverzeichnis (`PGDATA`) auf einem Volume.
-- [ ] Du hast die Kontrollfragen beantwortet
-
-&lt;/div&gt;
-
-&lt;/details&gt;
-
-&lt;/div&gt;
-
-
-
-
-
-
-## Aufgabe
-
-&lt;div class=&#34;skr-callout skr-callout--info&#34; markdown=&#34;1&#34;&gt;
-
-**Diese Übung beschreibt nur das Ziel und die Parameter – nicht den Weg.** Überleg
-selbst, mit welchen Ressourcen Du das umsetzt. Alles, was Du dafür brauchst, kennst Du
-aus den bisherigen Übungen oder findest es in den Links unter „Selbstlernmaterial“ und
-mit `oc explain`.
-
-&lt;/div&gt;
-
-Benötigt wird ein **Pod mit einer PostgreSQL-Datenbank**, der diese Parameter erfüllt:
-
-| Parameter | Wert |
-| --- | --- |
-| Image | `postgres:17-alpine` |
-| Port | `5432` |
-| `POSTGRES_USER` (Umgebungsvariable) | frei wählbar, zum Beispiel `recipes` |
-| `POSTGRES_PASSWORD` (Umgebungsvariable) | frei wählbar, zum Beispiel `recipes-secret-pw` |
-| `POSTGRES_DB` (Umgebungsvariable) | `recipes` |
-| Init-SQL | Datei `init.sql` im Verzeichnis `/docker-entrypoint-initdb.d/` |
-
-Dabei gilt:
-
-- Die Zugangsdaten (`POSTGRES_USER`, `POSTGRES_PASSWORD`) stehen **nicht im Klartext**
-  im Deployment.
-- Der Datenbankname (`POSTGRES_DB`) ist unkritisch, soll aber ebenfalls von außen
-  konfigurierbar sein.
-- Nenne das Deployment `postgres` und gib ihm das Label `app: postgres` – die
-  nächsten Übungen bauen darauf auf.
-
-Das Init-SQL, das beim ersten Start das Schema anlegt:
-
-```sql
-CREATE TABLE recipes (
-    id          VARCHAR(36)   PRIMARY KEY,
-    name        VARCHAR(100)  NOT NULL,
-    img         VARCHAR(255),
-    servings    INTEGER       NOT NULL,
-    lastEdited  TIMESTAMP WITH TIME ZONE,
-    duration    INTEGER       NOT NULL,
-    difficulty  VARCHAR(10),
-    preparation VARCHAR(2000) NOT NULL
-);
-
-CREATE TABLE ingredients (
-    id        BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
-    name      VARCHAR(100) NOT NULL,
-    quantity  DOUBLE PRECISION NOT NULL,
-    unit      VARCHAR(20)  NOT NULL,
-    recipe_id VARCHAR(36)  REFERENCES recipes(id) ON DELETE CASCADE
-);
-```
-
-## Arbeitsschritte
-
-### Die Ressourcen anlegen
-
-Leg die Ressourcen an, die die Aufgabe verlangt, und das Deployment der Datenbank. Zwei
-Hinweise helfen Dir dabei:
-
-**Das Init-SQL in den Container bringen.** Das offizielle PostgreSQL-Image führt beim
-ersten Start alle `*.sql`-Dateien aus `/docker-entrypoint-initdb.d/` aus. Eine Datei, die
-nicht im Image liegt, legst Du als **ConfigMap** an und hängst sie als **Volume** ein. Das
-Muster, abstrakt:
-
-```yaml
-# Ausschnitt aus einem Pod- bzw. Deployment-Template
-spec:
-  containers:
-    - name: my-app
-      image: my-image
-      volumeMounts:
-        - name: my-files
-          mountPath: /pfad/im/container
-  volumes:
-    - name: my-files
-      configMap:
-        name: meine-configmap
-```
-
-**Kein persistenter Speicher nötig.** Für diese Übung genügt flüchtiger Speicher.
-Produktionsreif wäre ein StatefulSet mit PersistentVolumeClaim – siehe
-[PostgreSQL auf Kubernetes](../../shared/visualisierungen/postgresql-auf-kubernetes.md).
-
-### Den Zwischenstand prüfen
-
-Wende Deine Ressourcen an und sieh Dir Status und Logs des Pods an:
-
-```bash
-oc get pods
-```
-
-```bash
-oc logs &lt;postgres-pod-name&gt;
-```
-
-Der Pod wird **noch nicht** sauber starten. In den Logs steht ein Fehler beim Anlegen
-des Datenverzeichnisses:
-
-```text
-fixing permissions on existing directory /var/lib/postgresql/data ... initdb: error: could not change permissions of directory &#34;/var/lib/postgresql/data&#34;: Operation not permitted
-```
-
-Die Ursache: OpenShift startet den Container mit einer **zufällig vergebenen User-ID**
-(Security Context Constraint). Dieser User-ID gehört das Standard-Datenverzeichnis
-`/var/lib/postgresql/data` nicht, und PostgreSQL darf dessen Rechte nicht ändern.
-
-&gt; **Hinweis:** Welche User-ID Dein Pod bekommen hat, steht in seiner Beschreibung – such
-&gt; in der Ausgabe nach `runAsUser`:
-&gt;
-&gt; ```bash
-&gt; oc get pod &lt;postgres-pod-name&gt; -o yaml
-&gt; ```
-
-### PostgreSQL ein eigenes Datenverzeichnis geben
-
-Behebe den Fehler, indem PostgreSQL ein **eigenes, beschreibbares** Datenverzeichnis
-bekommt. Ergänze im Deployment drei Dinge:
-
-1. die Umgebungsvariable **`PGDATA`** auf ein **Unterverzeichnis**,
-2. einen **`volumeMount`** für die Daten,
-3. das zugehörige **`volume`** – hier `emptyDir`, flüchtig und für diese Übung
-   ausreichend.
-
-```yaml
-    spec:
-      containers:
-        - name: postgres
-          image: postgres:17-alpine
-          # Ports, envFrom (Secret und ConfigMap) und das Init-SQL wie zuvor …
-          env:
-            - name: PGDATA
-              value: /var/lib/postgresql/data/pgdata
-          volumeMounts:
-            - name: data
-              mountPath: /var/lib/postgresql/data
-      volumes:
-        - name: data
-          emptyDir: {}
-```
-
-**Warum das hilft:** Das leere, beschreibbare Volume `data` liegt auf
-`/var/lib/postgresql/data`. Mit `PGDATA=/var/lib/postgresql/data/pgdata` legt PostgreSQL
-sein Datenverzeichnis in ein **selbst angelegtes Unterverzeichnis** – das gehört ihm, und
-dessen Rechte darf es setzen.
-
-Wende das Deployment erneut an:
-
-```bash
-oc apply -f postgres-deployment.yaml
-```
-
-```bash
-oc get pods
-```
-
-```bash
-oc logs &lt;postgres-pod-name&gt;
-```
-
-Jetzt läuft der Pod, und in den Logs siehst Du, wie `init.sql` ausgeführt wird.
-
-### Die Tabellen prüfen
-
-Frag die Datenbank im Container nach ihren Tabellen:
-
-```bash
-oc exec deployment/postgres -- psql -U recipes -d recipes -c &#39;\dt&#39;
-```
-
-&gt; **Hinweis:** Hast Du einen anderen Benutzer gewählt, setz ihn hinter `-U` ein.
-
-## Musterlösung
-
-&lt;details class=&#34;skr-reveal&#34; markdown=&#34;1&#34;&gt;
-&lt;summary&gt;Musterlösung aufdecken – erst, wenn Du es selbst versucht hast&lt;/summary&gt;
-
-Eine mögliche, vollständige Lösung – als YAML **und** als Befehle. Andere Wege sind
-genauso gültig, solange die Parameter erfüllt sind.
-
-#### Secret mit den Zugangsdaten
-
-Deklarativ, als Datei `postgres-secret.yaml`:
-
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: postgres-secret
-type: Opaque
-stringData:
-  POSTGRES_USER: recipes
-  POSTGRES_PASSWORD: recipes-secret-pw
-```
-
-```bash
-oc apply -f postgres-secret.yaml
-```
-
-`stringData` nimmt Klartext entgegen; Kubernetes kodiert ihn selbst in Base64. Unter
-`data` müsstest Du die Werte selbst kodieren.
-
-Oder per Befehl:
-
-```bash
-oc create secret generic postgres-secret --from-literal=POSTGRES_USER=recipes --from-literal=POSTGRES_PASSWORD=recipes-secret-pw
-```
-
-**Noch sauberer: ein Zufallspasswort.** Dann steht das Passwort in keiner Datei. Da es
-nur über das Secret referenziert wird, muss es niemand kennen:
-
-```bash
-# 32 zufällige Zeichen aus 0–9 und a–f
-PW=$(openssl rand -hex 16)
-```
-
-```bash
-oc create secret generic postgres-secret --from-literal=POSTGRES_USER=recipes --from-literal=POSTGRES_PASSWORD=&#34;$PW&#34;
-```
-
-&gt; **Hinweis:** Base64 ist **keine** Verschlüsselung. Wer das Secret lesen darf, sieht die
-&gt; Werte im Klartext:
-&gt;
-&gt; ```bash
-&gt; oc extract secret/postgres-secret --to=-
-&gt; ```
-
-#### ConfigMap mit dem Datenbanknamen
-
-Als Datei `postgres-config.yaml`:
-
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: postgres-config
-data:
-  POSTGRES_DB: recipes
-```
-
-```bash
-oc apply -f postgres-config.yaml
-```
-
-Oder per Befehl:
-
-```bash
-oc create configmap postgres-config --from-literal=POSTGRES_DB=recipes
-```
-
-#### ConfigMap mit dem Init-SQL
-
-Am einfachsten aus der Datei `init.sql`:
-
-```bash
-oc create configmap postgres-init-sql --from-file=init.sql
-```
-
-Oder deklarativ mit eingebettetem Inhalt, als Datei `postgres-init-sql.yaml`:
-
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: postgres-init-sql
-data:
-  init.sql: |
-    CREATE TABLE recipes (
-        id          VARCHAR(36)   PRIMARY KEY,
-        name        VARCHAR(100)  NOT NULL,
-        img         VARCHAR(255),
-        servings    INTEGER       NOT NULL,
-        lastEdited  TIMESTAMP WITH TIME ZONE,
-        duration    INTEGER       NOT NULL,
-        difficulty  VARCHAR(10),
-        preparation VARCHAR(2000) NOT NULL
-    );
-
-    CREATE TABLE ingredients (
-        id        BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
-        name      VARCHAR(100) NOT NULL,
-        quantity  DOUBLE PRECISION NOT NULL,
-        unit      VARCHAR(20)  NOT NULL,
-        recipe_id VARCHAR(36)  REFERENCES recipes(id) ON DELETE CASCADE
-    );
-```
-
-```bash
-oc apply -f postgres-init-sql.yaml
-```
-
-#### Deployment
-
-Als Datei `postgres-deployment.yaml`:
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: postgres
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: postgres
-  template:
-    metadata:
-      labels:
-        app: postgres
-    spec:
-      containers:
-        - name: postgres
-          image: postgres:17-alpine
-          ports:
-            - containerPort: 5432
-          env:
-            - name: PGDATA
-              value: /var/lib/postgresql/data/pgdata
-          envFrom:
-            - secretRef:
-                name: postgres-secret
-            - configMapRef:
-                name: postgres-config
-          volumeMounts:
-            - name: init-sql
-              mountPath: /docker-entrypoint-initdb.d
-            - name: data
-              mountPath: /var/lib/postgresql/data
-      volumes:
-        - name: init-sql
-          configMap:
-            name: postgres-init-sql
-        - name: data
-          emptyDir: {}
-```
-
-```bash
-oc apply -f postgres-deployment.yaml
-```
-
-**Worauf es ankommt:**
-
-- **`envFrom`** übernimmt **alle** Schlüssel aus Secret und ConfigMap als
-  Umgebungsvariablen (`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`). Einzeln geht
-  es mit `env` und `valueFrom.secretKeyRef` – das brauchst Du in der nächsten Übung.
-- **Das Volume `init-sql`** liegt unter `/docker-entrypoint-initdb.d`. Das offizielle
-  Image führt die `*.sql`-Dateien **nur beim ersten Start** aus, solange das
-  Datenverzeichnis leer ist.
-- **`PGDATA` und das Volume `data`:** Ohne sie scheitert der Start auf OpenShift, weil die
-  zufällig vergebene User-ID `/var/lib/postgresql/data` nicht anpassen darf. Das
-  `emptyDir` ist beschreibbar, `PGDATA` legt die Daten in ein selbst angelegtes
-  Unterverzeichnis.
-
-#### Prüfen
-
-```bash
-oc get pods
-```
-
-```bash
-# Wurde das Init-SQL ausgeführt?
-oc logs deployment/postgres
-```
-
-```bash
-# Gegenprobe in der Datenbank
-oc exec deployment/postgres -- psql -U recipes -d recipes -c &#39;\dt&#39;
-```
-
-#### Nachtrag: `emptyDir` und der Weg zur Persistenz
-
-Ein `emptyDir` ist ein leeres Verzeichnis **auf dem Node**, auf dem der Pod läuft. Es lebt
-so lange wie der **Pod**: Ein Neustart des Containers behält die Daten, beim Löschen oder
-Umziehen des Pods sind sie weg. Es ist also **kein** persistenter Speicher.
-
-`PGDATA` auf einem Unterverzeichnis hilft in zwei Fällen: auf OpenShift wegen der
-zufälligen User-ID – und bei manchen PersistentVolumes, deren Wurzel nicht leer ist (etwa
-mit einem Ordner `lost&#43;found`). In der Übung „Persistenten Speicher einrichten“ wird das
-`emptyDir` durch einen PersistentVolumeClaim ersetzt; `volumeMount` und `PGDATA` bleiben,
-wie sie sind.
-
-&lt;/details&gt;
-
-
-&lt;div class=&#34;skr-didaktikon-guide-review&#34; data-skr-slot=&#34;guide.review&#34; markdown=&#34;1&#34;&gt;
-
-## Reflexionsfragen
-
-&lt;div class=&#34;skr-didaktikon-reflective-questions&#34; data-skr-field=&#34;didaktikon.reflective_questions&#34; markdown=&#34;1&#34;&gt;
-
-- Wie hast Du dafür gesorgt, dass die Zugangsdaten nicht im Klartext im Deployment stehen? Welche Ressource ist dafür gedacht?
-- Warum gehören Datenbankname und Zugangsdaten in unterschiedliche Ressourcentypen?
-- Wie sicher ist ein Secret wirklich?
-- Warum bindest Du das Init-SQL von außen ein, statt es ins Image zu packen?
-- Was unterscheidet `envFrom` (ganze Ressource) von einzelnen `env`-Einträgen mit `valueFrom`?
-- Warum startete PostgreSQL zuerst nicht, und warum hilft ein eigenes Datenverzeichnis?
-- Was ist an diesem Aufbau noch nicht produktionsreif?
-
-&lt;/div&gt;
-
-&lt;/div&gt;
-## Weiterführende Informationen
-- [PostgreSQL auf Kubernetes](/shared/visualisierungen/postgresql-auf-kubernetes.html)
-- [Sind Secrets sicher?](/shared/visualisierungen/secrets-sicherheit.html)
-- [Kubernetes: Konfiguration (ConfigMaps und Secrets)](https://kubernetes.io/docs/concepts/configuration/)
-- [Kubernetes: ConfigMap als Volume einbinden](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#add-configmap-data-to-a-volume)
-- [Kubernetes: Volumes](https://kubernetes.io/docs/concepts/storage/volumes/)
-- [OpenShift: Managing security context constraints](https://docs.openshift.com/container-platform/latest/authentication/managing-security-context-constraints.html)
-- [PostgreSQL-Image auf Docker Hub](https://hub.docker.com/_/postgres)
-</textarea>
     </main><aside class="skr-guide-sidebar">
   <details class="skr-guide-side skr-guide-side--toc skr-fold" data-skr-toc-box
            data-skr-toc-limit="12" open>
     <summary class="skr-guide-side__label">Auf dieser Seite</summary>
-    <nav class="skr-toc skr-fold__body" data-skr-toc aria-label="Inhaltsverzeichnis"><a href="#aufgabe">Aufgabe</a><a href="#arbeitsschritte">Arbeitsschritte</a><a href="#die-ressourcen-anlegen" class="skr-toc--h3">Die Ressourcen anlegen</a><a href="#den-zwischenstand-prüfen" class="skr-toc--h3">Den Zwischenstand prüfen</a><a href="#postgresql-ein-eigenes-datenverzeichnis-geben" class="skr-toc--h3">PostgreSQL ein eigenes Datenverzeichnis geben</a><a href="#die-tabellen-prüfen" class="skr-toc--h3">Die Tabellen prüfen</a><a href="#musterlösung">Musterlösung</a><a href="#reflexionsfragen">Reflexionsfragen</a></nav>
+    <nav class="skr-toc skr-fold__body" data-skr-toc aria-label="Inhaltsverzeichnis"><a href="#user-story">User Story</a><a href="#lernziele">Lernziele</a><a href="#definition-of-done">Definition of Done</a><a href="#arbeitsschritte">Arbeitsschritte</a><a href="#die-datenbank-bereitstellen" class="skr-toc--h3">Die Datenbank bereitstellen</a><a href="#den-zwischenstand-prüfen" class="skr-toc--h3">Den Zwischenstand prüfen</a><a href="#postgresql-ein-eigenes-datenverzeichnis-geben" class="skr-toc--h3">PostgreSQL ein eigenes Datenverzeichnis geben</a><a href="#die-tabellen-prüfen" class="skr-toc--h3">Die Tabellen prüfen</a><a href="#musterlösung">Musterlösung</a><a href="#reflexionsfrage-zu-openshift">Reflexionsfrage zu OpenShift</a><a href="#reflexionsfragen">Reflexionsfragen</a></nav>
   </details>
   <section class="skr-guide-side skr-guide-side--bordered skr-guide-progress" data-skr-card="skriptorium.progress"
            aria-labelledby="skr-card-skriptorium-progress" data-skr-progress-text="{done} / {total} erledigt">
@@ -981,9 +567,10 @@ wie sie sind.
     <div class="skr-guide-side__links">
       <a href="../../shared/visualisierungen/postgresql-auf-kubernetes.html"><span>PostgreSQL auf Kubernetes</span></a>
       <a href="../../shared/visualisierungen/secrets-sicherheit.html"><span>Sind Secrets sicher?</span></a>
-      <a href="https://kubernetes.io/docs/concepts/configuration/" target="_blank" rel="noopener"><span>Kubernetes: Konfiguration (ConfigMaps und Secrets)</span></a>
-      <a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#add-configmap-data-to-a-volume" target="_blank" rel="noopener"><span>Kubernetes: ConfigMap als Volume einbinden</span></a>
-      <a href="https://kubernetes.io/docs/concepts/storage/volumes/" target="_blank" rel="noopener"><span>Kubernetes: Volumes</span></a>
+      <a href="../../shared/schulungsumgebung/"><span>Schulungsumgebung</span></a>
+      <a href="https://kubernetes.io/docs/concepts/configuration/" target="_blank" rel="noopener"><span>Konfiguration von Pods (ConfigMaps und Secrets)</span></a>
+      <a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#add-configmap-data-to-a-volume" target="_blank" rel="noopener"><span>ConfigMap als Volume einhängen</span></a>
+      <a href="https://kubernetes.io/docs/concepts/storage/volumes/" target="_blank" rel="noopener"><span>Volumes</span></a>
       <a href="https://docs.openshift.com/container-platform/latest/authentication/managing-security-context-constraints.html" target="_blank" rel="noopener"><span>OpenShift: Managing security context constraints</span></a>
       <a href="https://hub.docker.com/_/postgres" target="_blank" rel="noopener"><span>PostgreSQL-Image auf Docker Hub</span></a>
     </div>

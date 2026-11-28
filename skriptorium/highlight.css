@@ -14,6 +14,11 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
 /* Theme-Anbindung: Hintergrund/Abstand vom <pre> uebernehmen. */
 .skr-guide-main pre code.hljs { background: transparent; padding: 0; }
 
+/* Überschriften (Markdown u. a.): Das Blau aus GitHub Dark (#1f6feb) erreicht auf der
+   dunklen Codeblock-Fläche nur 2,9–3,4:1. Das hellere Blau derselben Palette trägt AA –
+   gemessen gegen #1A2627, #1F2A30 und #24332F: 6,2, 5,8 und 5,2:1. */
+.hljs-section { color: #58a6ff; }
+
 /* -----------------------------------------------------------------------------
    Statuszeile eines HTTP-Mitschnitts nach KLASSE einfaerben.
 

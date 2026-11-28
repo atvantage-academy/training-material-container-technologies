@@ -55,20 +55,14 @@
     return path.replace(/\/index\.html$/, "/");
   }
 
-  function parse(text) {
-    try {
-      var t = JSON.parse(text || "[]");
-      return Array.isArray(t) ? t : [];
-    } catch (e) { return []; }
-  }
-
   function read() {
-    try { return parse(sessionStorage.getItem(KEY)); } catch (e) { return []; }
+    var t = window.skr.storage.session.get(KEY);
+    return Array.isArray(t) ? t : [];
   }
 
   function write(trail) {
     if (trail.length > HARD_MAX) trail = trail.slice(-MAX);
-    try { sessionStorage.setItem(KEY, JSON.stringify(trail)); } catch (e) { /* ohne Speicher */ }
+    window.skr.storage.session.set(KEY, trail);
     if (trail.length > MAX) shorten();
   }
 
@@ -125,7 +119,7 @@
       var cut = trail.length - (MAX - 1);
       var ctx = m && m.pages ? contextOf(trail.slice(0, cut), m.pages, { source: m.source, visible: visibleIn(m) }) : "";
       trail = [{ s: ctx }].concat(trail.slice(cut));
-      try { sessionStorage.setItem(KEY, JSON.stringify(trail)); } catch (e) { /* ohne Speicher */ }
+      window.skr.storage.session.set(KEY, trail);
     }).catch(function () { /* Weg bleibt lang; HARD_MAX begrenzt ihn */ })
       .then(function () { shortening = null; });
   }
@@ -133,10 +127,8 @@
   /* Der Weg, mit dem ein neuer Tab beginnt: der letzte Stand der Seite, von der er
      geöffnet wurde – sonst nur diese Seite. */
   function seed(from) {
-    try {
-      var last = JSON.parse(localStorage.getItem(LAST_KEY) || "null");
-      if (last && last.p === from && Array.isArray(last.t)) return last.t;
-    } catch (e) { /* ohne Speicher */ }
+    var last = window.skr.storage.get(LAST_KEY);
+    if (last && last.p === from && Array.isArray(last.t)) return last.t;
     return [{ p: from }];
   }
 
@@ -166,7 +158,7 @@
     var last = trail[trail.length - 1];
     if (!last || last.p !== here) trail.push({ p: here });
     write(trail);
-    try { localStorage.setItem(LAST_KEY, JSON.stringify({ p: here, t: trail })); } catch (e) { /* ohne Speicher */ }
+    window.skr.storage.set(LAST_KEY, { p: here, t: trail });
   }
 
   if (window.skr && !window.skr._searchTrail) Object.defineProperty(window.skr, "_searchTrail", { value: { read: read, contextOf: contextOf, visibleIn: visibleIn, indexPath: indexPath } });

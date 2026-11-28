@@ -20,9 +20,7 @@
   function initLangChoice() {
     document.querySelectorAll("[data-skr-lang-choice]").forEach(function (a) {
       a.addEventListener("click", function () {
-        try {
-          localStorage.setItem("skr-lang", a.getAttribute("data-skr-lang-choice"));
-        } catch (e) { /* localStorage gesperrt - dann eben ohne Gedaechtnis */ }
+        window.skr.storage.set("skr-lang", a.getAttribute("data-skr-lang-choice"));
       });
     });
   }

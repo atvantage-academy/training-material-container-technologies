@@ -4,7 +4,8 @@
   <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="skr-root" content="../../">
-<script src="../../skriptorium/skr.js?v=c06299bd"></script>
+<meta name="skr-scope" content="training-concept-container-technologies">
+<script src="../../skriptorium/skr.js?v=597e5686"></script>
 <title>Eine Datenbank konfigurieren · Containertechnologien (Academy)</title>
 <meta name="description" content="Eine PostgreSQL-Datenbank allein über Umgebungsvariablen einrichten, zwei Container aus demselben Image betreiben – und die Daten in ein Volume retten.">
 
@@ -25,31 +26,32 @@
 <link rel="stylesheet" href="../../skriptorium/tokens.css?v=28abf864">
 <link rel="stylesheet" href="../../extensions/didaktikon/tokens.css?v=5966d76a">
 <link rel="stylesheet" href="../../skriptorium/base.css?v=86e37c43">
-<link rel="stylesheet" href="../../skriptorium/components.css?v=3a968127">
+<link rel="stylesheet" href="../../skriptorium/components.css?v=e3b517fb">
 <link rel="stylesheet" href="../../skriptorium/doclinks.css?v=2ef23515">
 <link rel="stylesheet" href="../../skriptorium/linkmarks.css?v=1643f80a">
-<link rel="stylesheet" href="../../skriptorium/site.css?v=2a7f5baf">
+<link rel="stylesheet" href="../../skriptorium/site.css?v=825d2514">
 <link rel="stylesheet" href="../../skriptorium/logo.css?v=43a7fbaf">
-<link rel="stylesheet" href="../../skriptorium/guide.css?v=1237e482">
-<link rel="stylesheet" media="print" href="../../skriptorium/print.css?v=6c7ec44c">
-<meta name="generator" content="Skriptorium 2.0.0-rc.15">
-<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"2.0.0-rc.11"}],"internal":false,"languages":["de"],"skriptorium":"2.0.0-rc.15","theme":"didaktikon","themeOptions":["didaktikon"],"themes":[{"name":"didaktikon","version":"2.0.0-rc.11"},{"name":"atvantage","version":"2.2.0"},{"name":"default","version":"2.0.0-rc.15"}]}</script>
+<link rel="stylesheet" href="../../skriptorium/guide.css?v=b1acb596">
+<link rel="stylesheet" media="print" href="../../skriptorium/print.css?v=f344e618">
+<meta name="generator" content="Skriptorium 2.0.0-rc.20">
+<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"2.0.0-rc.11"}],"internal":false,"languages":["de"],"skriptorium":"2.0.0-rc.20","theme":"didaktikon","themeOptions":["didaktikon"],"themes":[{"name":"didaktikon","version":"2.0.0-rc.11"},{"name":"atvantage","version":"2.2.0"},{"name":"default","version":"2.0.0-rc.20"}]}</script>
 <script type="application/json" id="skr-page-info">{"clientApi":"full","defaultLanguage":"de","description":"Eine PostgreSQL-Datenbank allein über Umgebungsvariablen einrichten, zwei Container aus demselben Image betreiben – und die Daten in ein Volume retten.","duration":45,"fields":null,"language":"de","languages":["de"],"layout":"didaktikon.exercise","pageId":"docker-grundlagen-konfiguration-und-zustand-issue","runtimeFragments":null,"siteIndex":"/skriptorium/site.json","title":"Eine Datenbank konfigurieren","topics":["Umgebungsvariablen","Volumes","12-Factor-App","Zustandslosigkeit"],"untranslated":null,"url":"/docker-grundlagen/konfiguration-und-zustand/issue.html"}</script>
 <script type="application/json" id="skr-texts">{"didaktikon.capture":"Capture-Modus","didaktikon.captureExit":"beenden","didaktikon.captureText":"Text einblenden","didaktikon.crosswordAcross":"Waagerecht","didaktikon.crosswordCellAcross":"{number} waagerecht, Buchstabe {position}","didaktikon.crosswordCellDown":"{number} senkrecht, Buchstabe {position}","didaktikon.crosswordDown":"Senkrecht","didaktikon.crosswordHintLetter":"Tipp: Buchstabe","didaktikon.crosswordHintWord":"Tipp: Wort","didaktikon.crosswordRestart":"Neu beginnen","didaktikon.crosswordRestartText":"Deine Eingaben in diesem Rätsel werden gelöscht.","didaktikon.crosswordRestartTitle":"Kreuzworträtsel neu beginnen?","didaktikon.crosswordReveal":"Auflösen","didaktikon.crosswordRevealText":"Alle Felder werden ausgefüllt.","didaktikon.crosswordRevealTitle":"Kreuzworträtsel auflösen?","didaktikon.crosswordSolution":"Lösungswort","didaktikon.crosswordSolutionCell":"Lösungswort, Buchstabe {position}","didaktikon.crosswordSolved":"Gelöst – alle Begriffe stimmen.","didaktikon.doclinkCrossword":"Kreuzworträtsel","didaktikon.doclinkExercise":"Übung","didaktikon.doclinkQuiz":"Wissens-Check","didaktikon.doclinkSimulation":"Simulation","didaktikon.doclinkVisualization":"Visualisierung","didaktikon.exerciseObjectives":"Lernziele","didaktikon.exerciseQuestionsDone":"Du hast die Kontrollfragen beantwortet","didaktikon.exerciseReflectiveQuestions":"Reflexionsfragen","didaktikon.exerciseUserStory":"User Story","didaktikon.moduleBlock":"Grobthema: {block}","didaktikon.moduleDuration":"{minutes} Minuten","didaktikon.moduleMaterial":"Material","didaktikon.moduleMaterialOver":"Das Material dauert zusammen {material}′ – länger als das Modul mit {module}′.","didaktikon.quizAgain":"Noch einmal","didaktikon.quizCorrect":"Richtig.","didaktikon.quizCorrectCount":"{count} richtig","didaktikon.quizCorrectWouldBe":"Richtig wäre gewesen:","didaktikon.quizDone":"Fertig","didaktikon.quizEvaluate":"Auswertung","didaktikon.quizJump":"Zu Frage springen","didaktikon.quizNext":"Weiter","didaktikon.quizOverview":"Alle Fragen","didaktikon.quizOverviewClose":"Zurück zum Check","didaktikon.quizOverviewCorrect":"(richtig)","didaktikon.quizOverviewGoTo":"Zu dieser Frage","didaktikon.quizProgress":"Fortschritt","didaktikon.quizQuestionOf":"Frage {current} von {total}","didaktikon.quizRestart":"Neu beginnen","didaktikon.quizRestartText":"Deine Antworten in diesem Wissens-Check werden gelöscht.","didaktikon.quizRestartTitle":"Wissens-Check neu beginnen?","didaktikon.quizResult":"{correct} von {total} richtig","didaktikon.quizResultLong":"{correct} von {total} Fragen richtig","didaktikon.quizTrainerOnly":"Nur für Trainer:innen","didaktikon.quizWrong":"Nicht ganz.","didaktikon.scenarios":"Szenarien","didaktikon.simAllScenarios":"Alle Szenarien (Taste 0)","didaktikon.simControls":"Simulation steuern","didaktikon.simNext":"Schritt vor (→)","didaktikon.simNextAria":"Schritt vor","didaktikon.simOverview":"Übersicht","didaktikon.simPause":"Pause (Leertaste)","didaktikon.simPauseAria":"Pause","didaktikon.simPlay":"Abspielen (Leertaste)","didaktikon.simPlayAria":"Abspielen","didaktikon.simPrev":"Schritt zurück (←)","didaktikon.simPrevAria":"Schritt zurück","didaktikon.simPrintHint":"Diese Simulation lebt von der Bewegung. Auf Papier steht nur der gerade sichtbare Schritt – der QR-Code oben führt zurück zur laufenden Fassung.","didaktikon.simReset":"Zurück auf Anfang (Taste R)","didaktikon.simResetAria":"Zurück auf Anfang","didaktikon.simResize":"Breite der Erklärspalte (Pfeiltasten)","didaktikon.simScenarioCount":"{count} Szenarien","didaktikon.simScenarioKey":"{title} (Taste {number})","didaktikon.simScenarioTitle":"Szenario {number}","didaktikon.simSpeed":"Tempo wählen (Taste T)","didaktikon.simSpeedAria":"Tempo wählen","didaktikon.simSpeedMenu":"Tempo","didaktikon.simStepCount":"{count} Schritte","didaktikon.simStepCountOne":"{count} Schritt","didaktikon.simStepCounter":"Schritt {current} / {total}","didaktikon.speedFast":"zügig","didaktikon.speedNormal":"normal","didaktikon.speedSlow":"langsam","didaktikon.speedTurbo":"im Zeitraffer","didaktikon.speedValue":"{speed}×","didaktikon.stepNote":"Erklärung zum aktuellen Schritt","didaktikon.trainerNoteClose":"Schließen","didaktikon.trainerNoteOpen":"Hinweis für Trainer:innen anzeigen","didaktikon.trainerNoteTitle":"Hinweis für Trainer:innen","didaktikon.trainingCatalogEmpty":"Hier gibt es noch keine Schulung.","didaktikon.trainingCatalogTrainings":"Schulungen","didaktikon.trainingDays":"{days} Tage","didaktikon.trainingDaysOne":"{days} Tag","didaktikon.trainingHomeInfo":"Kursbeschreibung","didaktikon.trainingHomeManifest":"Didaktisches Manifest","didaktikon.trainingHomeSales":"Sales-Asset","didaktikon.trainingInfoAudience":"Zielgruppe","didaktikon.trainingInfoObjectives":"Lernziele","didaktikon.trainingInfoObjectivesLead":"Die Lernenden …","didaktikon.trainingInfoOverview":"Überblick","didaktikon.trainingInfoPrerequisites":"Voraussetzungen","didaktikon.trainingMaterials":"Kursmaterial","didaktikon.trainingMaterialsExercises":"Übungen","didaktikon.trainingMaterialsLead":"Links stehen die **Übungen**, an denen Du selbst arbeitest, rechts das **Material zum Nachschlagen**.","didaktikon.trainingMaterialsMore":"Weitere Themen","didaktikon.trainingMaterialsOther":"Sonstige Unterlagen","didaktikon.trainingMaterialsReference":"Zum Nachschlagen","didaktikon.trainingModules":"Module","didaktikon.trainingModulesBlock":"Grobthema","didaktikon.trainingModulesDuration":"Dauer","didaktikon.trainingModulesMaterial":"Material","didaktikon.trainingModulesModule":"Modul","didaktikon.trainingModulesOver":"länger als das Modul","didaktikon.trainingSalesBuyers":"Käufer","didaktikon.trainingSalesPitch":"Pitch","didaktikon.trainingSalesPricing":"Preisrahmen","didaktikon.trainingSalesUsp":"Unterscheidungsmerkmale","didaktikon.trainingSalesValueProposition":"Nutzenversprechen"}</script>
 
-<script src="../../skriptorium/client.js?v=756a5d69" defer></script>
-<script src="../../skriptorium/site.js?v=6472c794" defer></script>
-<script src="../../skriptorium/search-trail.js?v=31279378" data-skr-search-trail
-        data-base="../../" data-index="../../skriptorium/search/de.json?v=c2fa893e" defer></script>
-<link rel="stylesheet" href="../../skriptorium/highlight.css?v=f8a3fc05">
-<script type="module" src="../../skriptorium/highlight.js?v=0b2d40aa" data-skr-highlight="[&#34;bash&#34;,&#34;dockerfile&#34;,&#34;python&#34;,&#34;sql&#34;,&#34;yaml&#34;]"></script>
+<script src="../../skriptorium/client.js?v=e9b75088" defer></script>
+<script src="../../skriptorium/site.js?v=bf4672b2" defer></script>
+
+<script src="../../skriptorium/search-trail.js?v=ca558440" data-skr-search-trail
+        data-base="../../" data-index="../../skriptorium/search/de.json?v=b137f70b" defer></script>
+<link rel="stylesheet" href="../../skriptorium/highlight.css?v=b66fa35b">
+<script type="module" src="../../skriptorium/highlight.js?v=bb894db9" data-skr-highlight></script>
 <link rel="apple-touch-icon" sizes="180x180" href="../../themes/atvantage/assets/icon-180.png">
 <link rel="icon" sizes="32x32" href="../../themes/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="../../themes/atvantage/assets/icon-16.png">
 
   <style>@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }</style>
   <link rel="stylesheet" href="../../skriptorium/page-transitions.css?v=716872f0">
-<link rel="stylesheet" href="../../skriptorium/guide-layout.css?v=cc0ce1dd">
+<link rel="stylesheet" href="../../skriptorium/guide-layout.css?v=ca7e6344">
 <link rel="stylesheet" href="../../extensions/didaktikon/exercise.css?v=485b7c1d">
 <script src="../../skriptorium/guide-layout.js?v=00fd0360" defer></script>
 
@@ -87,7 +89,7 @@
   <div class="skr-header__tools">
 <div class="skr-search" data-skr-search hidden
      data-mode="expand" data-shortcut="double_shift"
-     data-index="../../skriptorium/search/de.json?v=c2fa893e"
+     data-index="../../skriptorium/search/de.json?v=b137f70b"
      data-base="../../">
   <button type="button" class="skr-tool skr-tool--search" data-skr-search-toggle
           aria-expanded="false" aria-controls="skr-search-dialog"
@@ -101,6 +103,20 @@
           <option value="">Alle</option>
         </select>
       </label>
+      <div class="skr-search__field skr-search__field--kind" hidden>
+        <span class="skr-search__label" id="skr-search-kind-label">Art</span>
+        <button type="button" class="skr-search__kind" aria-expanded="false" aria-controls="skr-search-kinds"
+                aria-labelledby="skr-search-kind-label skr-search-kind-value"
+                data-all="Alle Arten" data-count="{n} Arten"
+                data-none="Keine Art"><span
+                class="skr-search__kind-value" id="skr-search-kind-value">Alle Arten</span></button>
+      </div>
+      <fieldset class="skr-search__kinds" id="skr-search-kinds" hidden
+                data-label-only="nur" data-none-selected="Keine Art gewählt.">
+        <legend class="skr-visually-hidden">Art</legend>
+        <ul class="skr-search__kind-list"></ul>
+        <button type="button" class="skr-search__kind-all">Alle auswählen</button>
+      </fieldset>
       <label class="skr-search__field skr-search__field--query">
         <span class="skr-search__label">Suchbegriff</span>
         <input type="search" class="skr-search__input"
@@ -114,7 +130,7 @@
     <ul class="skr-search__results" data-skr-search-results aria-label="Suchergebnisse"></ul>
   </dialog>
 </div>
-<script src="../../skriptorium/search.js?v=2be133a6" defer></script>
+<script src="../../skriptorium/search.js?v=679c2a13" defer></script>
 <button type="button" class="skr-qr" data-skr-qr hidden
         title="Diese Seite auf Deinem Smartphone öffnen"
         aria-label="Diese Seite auf Deinem Smartphone öffnen"></button>
@@ -131,22 +147,19 @@
     <div class="skr-guide-hero__tags"><span class="skr-tag skr-tag--time">ca. 45 Minuten</span><span class="skr-tag">Umgebungsvariablen</span><span class="skr-tag">Volumes</span><span class="skr-tag">12-Factor-App</span><span class="skr-tag">Zustandslosigkeit</span>
     </div>
     <div class="skr-guide-hero__actions">
-      <button type="button" class="skr-btn skr-btn--ghost skr-copy-md"
-              data-skr-copy-md="#skr-md-source"
-              title="Markdown kopieren" aria-label="Markdown kopieren"></button>
     </div>
   </div><h1 id="skr-page-title">Eine Datenbank konfigurieren</h1>
 </section>
 
   <div class="skr-guide-layout">
     <main class="skr-guide-main" id="skr-content"><div class="skr-guide-panels" data-skr-arrangement="fold">
-<details class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
+<details id="user-story" class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
 <summary>User Story</summary>
 <div class="skr-didaktikon-user-story" data-skr-field="didaktikon.user_story">
 <p><strong>Als</strong> Entwickler <strong>möchte ich</strong> eine Datenbank einrichten, ohne ihr Image anzufassen, <strong>damit</strong> dasselbe Artefakt in Entwicklung, Test und Produktion unterschiedlich arbeiten kann.</p>
 </div>
 </details>
-<details class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
+<details id="lernziele" class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
 <summary>Lernziele</summary>
 <div class="skr-didaktikon-objectives" data-skr-field="didaktikon.objectives">
 <ul>
@@ -157,7 +170,7 @@
 </ul>
 </div>
 </details>
-<details class="skr-fold">
+<details id="definition-of-done" class="skr-fold">
 <summary>Definition of Done</summary>
 <div class="skr-guide-done">
 <ul class="task-list">
@@ -315,266 +328,12 @@ in den, für den Du es angelegt hast.</p>
 </ul>
 </div>
 </div>
-<textarea id="skr-md-source" hidden aria-hidden="true"># Eine Datenbank konfigurieren
-&lt;div class=&#34;skr-guide-panels&#34; data-skr-arrangement=&#34;fold&#34; markdown=&#34;1&#34;&gt;
 
-&lt;details class=&#34;skr-fold skr-didaktikon-guide-about&#34; data-skr-slot=&#34;guide.about&#34; markdown=&#34;1&#34;&gt;
-&lt;summary markdown=&#34;span&#34;&gt;User Story&lt;/summary&gt;
-
-&lt;div class=&#34;skr-didaktikon-user-story&#34; data-skr-field=&#34;didaktikon.user_story&#34; markdown=&#34;1&#34;&gt;
-
-**Als** Entwickler **möchte ich** eine Datenbank einrichten, ohne ihr Image anzufassen, **damit** dasselbe Artefakt in Entwicklung, Test und Produktion unterschiedlich arbeiten kann.
-
-&lt;/div&gt;
-
-&lt;/details&gt;
-
-&lt;details class=&#34;skr-fold skr-didaktikon-guide-about&#34; data-skr-slot=&#34;guide.about&#34; markdown=&#34;1&#34;&gt;
-&lt;summary markdown=&#34;span&#34;&gt;Lernziele&lt;/summary&gt;
-
-&lt;div class=&#34;skr-didaktikon-objectives&#34; data-skr-field=&#34;didaktikon.objectives&#34; markdown=&#34;1&#34;&gt;
-
-- Du nutzt Umgebungsvariablen, um einen Container umgebungsspezifisch zu konfigurieren.
-- Du richtest eine PostgreSQL-Datenbank ein.
-- Du überprüfst die Log-Ausgabe eines Containers, um einen Fehler zu finden.
-- Du legst ein **Volume** an und weist nach, dass Daten darin das Löschen des Containers überleben.
-
-&lt;/div&gt;
-
-&lt;/details&gt;
-
-&lt;details class=&#34;skr-fold&#34; markdown=&#34;1&#34;&gt;
-&lt;summary markdown=&#34;span&#34;&gt;Definition of Done&lt;/summary&gt;
-
-&lt;div class=&#34;skr-guide-done&#34; markdown=&#34;1&#34;&gt;
-
-- [ ] In einem Container läuft eine Datenbank.
-- [ ] Die Tabellen sind angelegt und im Container mit `psql` abrufbar.
-- [ ] Die Datenbank ist auch außerhalb des Containers erreichbar.
-- [ ] Die Daten der Datenbank sind auch nach Löschen und Neuerzeugen des Containers vorhanden.
-- [ ] Du hast die Kontrollfragen beantwortet
-
-&lt;/div&gt;
-
-&lt;/details&gt;
-
-&lt;/div&gt;
-
-
-
-
-
-
-## Arbeitsschritte
-
-### Einen Container ohne Konfiguration starten
-
-```bash
-docker container run -d --name meine-db postgres:16
-```
-
-Der Container läuft nicht. Sieh nach, warum:
-
-```bash
-docker container logs meine-db
-```
-
-&gt; **Hinweis:** Die Meldung sagt Dir genau, welche Angabe fehlt.
-&gt; `docker container logs` ist ab jetzt Dein erster Griff, wenn etwas nicht tut.
-
-Räum den gescheiterten Versuch weg – den Namen brauchst Du gleich wieder.
-
-### Umgebungsvariablen setzen
-
-Jede Angabe kommt mit einem eigenen `-e` von außen dazu:
-
-```bash
-docker container run -d \
-  --name meine-db \
-  -p 5432:5432 \
-  -e POSTGRES_DB=helloworld \
-  -e POSTGRES_USER=kurs \
-  -e POSTGRES_PASSWORD=geheim \
-  postgres:16
-```
-
-Prüfe in der Log-Ausgabe, dass die Datenbank bereit ist:
-
-```bash
-docker container logs meine-db
-```
-
-&gt; **Hinweis:** Woher kommen die Namen `POSTGRES_DB`, `POSTGRES_USER` und
-&gt; `POSTGRES_PASSWORD`? Sieh im Datenblatt des Images auf Docker Hub nach. Merk
-&gt; Dir, wo diese Information steht – bei jedem anderen Image wirst Du sie dort
-&gt; wieder suchen.
-
-### Ein Schema mit Tabellen anlegen
-
-Das Schema gehört nicht in einen Befehl, sondern in eine Datei. Leg auf Deinem
-Rechner `schema.sql` an:
-
-```sql
-CREATE TABLE gruss (
-  id   SERIAL PRIMARY KEY,
-  text TEXT NOT NULL
-);
-
-INSERT INTO gruss (text)
-VALUES (&#39;Hallo Welt&#39;), (&#39;Hello World&#39;), (&#39;Bonjour le monde&#39;);
-```
-
-Das Image führt beim **ersten** Start jede `.sql`-Datei aus, die in
-`/docker-entrypoint-initdb.d/` liegt. Reich Deine Datei also dorthin hinein –
-der Container von eben hat seine Datenbank schon angelegt, also weg damit und
-neu:
-
-```bash
-docker container run -d \
-  --name meine-db \
-  -p 5432:5432 \
-  -e POSTGRES_DB=helloworld \
-  -e POSTGRES_USER=kurs \
-  -e POSTGRES_PASSWORD=geheim \
-  -v &#34;$(pwd)/schema.sql&#34;:/docker-entrypoint-initdb.d/1-schema.sql \
-  postgres:16
-```
-
-Zum Prüfen – und nur dafür – fragst Du die Datenbank mit `psql` ab, von **innen**:
-
-```bash
-docker container exec meine-db psql -U kurs -d helloworld -c &#34;SELECT * FROM gruss&#34;
-```
-
-### Nachsehen, ob die Datenbank auch von außen erreichbar ist
-
-`psql` im Container beweist nur, dass die Datenbank **sich selbst** erreicht. Ob
-der veröffentlichte Port wirklich auf Deinem Rechner liegt, zeigt ein Blick auf
-die offenen Ports – **außerhalb** von Docker:
-
-**Linux:**
-
-```bash
-ss -ltn | grep 5432
-```
-
-**macOS:**
-
-```bash
-netstat -an | grep LISTEN | grep 5432
-```
-
-**Windows:**
-
-```bash
-netstat -ano | find &#34;5432&#34;
-```
-
-&gt; **Hinweis:** Eine Zeile mit `LISTEN` auf Port 5432 heißt: **Dein Rechner** nimmt
-&gt; dort Verbindungen an und reicht sie in den Container weiter. Mach die
-&gt; Gegenprobe – stopp den Container und sieh noch einmal nach. Dann ist die Zeile
-&gt; weg.
-
-### Die Daten der Datenbank außerhalb des Containers speichern
-
-Bisher liegen die Daten im Container. Leg einen Ablageort an, der ihn überdauert:
-
-```bash
-docker volume create kurs-daten
-```
-
-Erzeuge die Datenbank neu – mit dem Volume und mit `PGDATA`:
-
-```bash
-docker container run -d \
-  --name meine-db \
-  -p 5432:5432 \
-  -e POSTGRES_DB=helloworld \
-  -e POSTGRES_USER=kurs \
-  -e POSTGRES_PASSWORD=geheim \
-  -e PGDATA=/var/lib/postgresql/data/pgdata \
-  -v kurs-daten:/var/lib/postgresql/data \
-  -v &#34;$(pwd)/schema.sql&#34;:/docker-entrypoint-initdb.d/1-schema.sql \
-  postgres:16
-```
-
-&gt; **Hinweis:** `PGDATA` sagt dem Image, **wo** es seine Dateien ablegen soll.
-&gt; Ohne die Angabe hängt das Verzeichnis von der Image-Version ab – mit ihr liegt
-&gt; es immer an derselben Stelle unter Deinem Volume.
-
-Jetzt die Probe: **Lösch den Container und erzeuge ihn neu** – mit denselben
-Angaben wie eben. Frag danach wieder die Tabelle ab.
-
-&gt; **Hinweis:** Überleg Dir **vorher**, was Du erwartest. Zwei Dinge sind zu
-&gt; beobachten: ob Deine Zeilen noch da sind – und ob `schema.sql` ein zweites Mal
-&gt; gelaufen ist.
-
-### Optional: Das Passwort aus einer Datei lesen
-
-Das Passwort steht bisher im Befehl – und damit in Deiner Shell-History und in
-`docker container inspect`. Das Image kennt zu seinen `POSTGRES_*`-Variablen
-jeweils eine Schwester mit dem Zusatz `_FILE`: Sie enthält nicht den Wert,
-sondern den **Pfad zu einer Datei**, in der der Wert steht.
-
-Leg die Datei an:
-
-```bash
-echo &#39;geheim&#39; &gt; passwort.txt
-```
-
-Erzeuge die Datenbank noch einmal neu – mit diesen beiden Angaben **statt**
-`-e POSTGRES_PASSWORD=geheim`:
-
-```bash
--v &#34;$(pwd)/passwort.txt&#34;:/run/secrets/db-passwort
--e POSTGRES_PASSWORD_FILE=/run/secrets/db-passwort
-```
-
-&gt; **Hinweis:** Nimm dafür ein **frisches** Volume, sonst ist die Datenbank schon
-&gt; eingerichtet und behält ihr altes Passwort. Dass es geklappt hat, siehst Du
-&gt; daran, dass der Container läuft: Ohne Passwort – egal auf welchem Weg – bricht
-&gt; er ab, wie beim ersten Versuch.
-
-Auf einer Betriebsplattform legt genau diese Datei nicht der Mensch an, sondern
-die Plattform – aus ihrer eigenen Verwaltung für Geheimnisse.
-
-### Optional: In das Volume hineinsehen
-
-Das Volume `kurs-daten` hat keinen Pfad, den Du auf Deinem Rechner einfach
-öffnen könntest. **Wie kannst Du die Dateien und Ordner im Volume `kurs-daten`
-ansehen – oder gar verändern?**
-
-&gt; **Hinweis:** Ein Volume lässt sich in **jeden** Container einhängen, nicht nur
-&gt; in den, für den Du es angelegt hast.
-
-
-
-
-&lt;div class=&#34;skr-didaktikon-guide-review&#34; data-skr-slot=&#34;guide.review&#34; markdown=&#34;1&#34;&gt;
-
-## Reflexionsfragen
-
-&lt;div class=&#34;skr-didaktikon-reflective-questions&#34; data-skr-field=&#34;didaktikon.reflective_questions&#34; markdown=&#34;1&#34;&gt;
-
-- Woher weißt Du, welche Umgebungsvariablen ein fremdes Image auswertet? Was passiert, wenn Du einen Namen falsch schreibst?
-- Mit dem Volume haben Deine Daten das Löschen des Containers überlebt. **Wo liegen sie jetzt eigentlich**, und wem gehören sie? Was wäre ohne Volume passiert?
-- Wo landen die Log-Ausgaben der Datenbank, und warum ist das für eine Betriebsplattform praktischer als eine Logdatei im Container?
-- Aus welchen Gründen ist `POSTGRES_PASSWORD_FILE` besser als `POSTGRES_PASSWORD`?
-
-&lt;/div&gt;
-
-&lt;/div&gt;
-## Weiterführende Informationen
-- [Das PostgreSQL-Image auf Docker Hub](https://hub.docker.com/_/postgres)
-- [The Twelve-Factor App](https://12factor.net/de/)
-- [Musterlösung (PR)](https://github.com/atvantage-academy/code-template-docker-basics/pull/3)
-- [Musterlösung (Pages)](https://atvantage-academy.github.io/code-template-docker-basics/konfiguration-und-zustand/)
-</textarea>
     </main><aside class="skr-guide-sidebar">
   <details class="skr-guide-side skr-guide-side--toc skr-fold" data-skr-toc-box
            data-skr-toc-limit="12" open>
     <summary class="skr-guide-side__label">Auf dieser Seite</summary>
-    <nav class="skr-toc skr-fold__body" data-skr-toc aria-label="Inhaltsverzeichnis"><a href="#arbeitsschritte">Arbeitsschritte</a><a href="#einen-container-ohne-konfiguration-starten" class="skr-toc--h3">Einen Container ohne Konfiguration starten</a><a href="#umgebungsvariablen-setzen" class="skr-toc--h3">Umgebungsvariablen setzen</a><a href="#ein-schema-mit-tabellen-anlegen" class="skr-toc--h3">Ein Schema mit Tabellen anlegen</a><a href="#nachsehen-ob-die-datenbank-auch-von-außen-erreichbar-ist" class="skr-toc--h3">Nachsehen, ob die Datenbank auch von außen erreichbar ist</a><a href="#die-daten-der-datenbank-außerhalb-des-containers-speichern" class="skr-toc--h3">Die Daten der Datenbank außerhalb des Containers speichern</a><a href="#optional-das-passwort-aus-einer-datei-lesen" class="skr-toc--h3">Optional: Das Passwort aus einer Datei lesen</a><a href="#optional-in-das-volume-hineinsehen" class="skr-toc--h3">Optional: In das Volume hineinsehen</a><a href="#reflexionsfragen">Reflexionsfragen</a></nav>
+    <nav class="skr-toc skr-fold__body" data-skr-toc aria-label="Inhaltsverzeichnis"><a href="#user-story">User Story</a><a href="#lernziele">Lernziele</a><a href="#definition-of-done">Definition of Done</a><a href="#arbeitsschritte">Arbeitsschritte</a><a href="#einen-container-ohne-konfiguration-starten" class="skr-toc--h3">Einen Container ohne Konfiguration starten</a><a href="#umgebungsvariablen-setzen" class="skr-toc--h3">Umgebungsvariablen setzen</a><a href="#ein-schema-mit-tabellen-anlegen" class="skr-toc--h3">Ein Schema mit Tabellen anlegen</a><a href="#nachsehen-ob-die-datenbank-auch-von-außen-erreichbar-ist" class="skr-toc--h3">Nachsehen, ob die Datenbank auch von außen erreichbar ist</a><a href="#die-daten-der-datenbank-außerhalb-des-containers-speichern" class="skr-toc--h3">Die Daten der Datenbank außerhalb des Containers speichern</a><a href="#optional-das-passwort-aus-einer-datei-lesen" class="skr-toc--h3">Optional: Das Passwort aus einer Datei lesen</a><a href="#optional-in-das-volume-hineinsehen" class="skr-toc--h3">Optional: In das Volume hineinsehen</a><a href="#reflexionsfragen">Reflexionsfragen</a></nav>
   </details>
   <section class="skr-guide-side skr-guide-side--bordered skr-guide-progress" data-skr-card="skriptorium.progress"
            aria-labelledby="skr-card-skriptorium-progress" data-skr-progress-text="{done} / {total} erledigt">

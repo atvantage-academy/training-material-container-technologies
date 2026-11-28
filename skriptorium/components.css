@@ -22,14 +22,14 @@
    CSS-Mask in currentColor – KEIN Emoji). „Kopieren“/„Kopiert!“ nur als Tooltip
    (title) und aria-label; nach dem Kopieren wechselt das Icon per .is-copied auf
    einen Haken. */
-.skr-copy, .skr-copy-md { padding: 7px; gap: 0; line-height: 0; }
-.skr-copy::before, .skr-copy-md::before {
+.skr-copy { padding: 7px; gap: 0; line-height: 0; }
+.skr-copy::before {
   content: ""; display: block; width: 18px; height: 18px;
   background-color: currentColor;
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E") center / contain no-repeat;
           mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E") center / contain no-repeat;
 }
-.skr-copy.is-copied::before, .skr-copy-md.is-copied::before {
+.skr-copy.is-copied::before {
   -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
           mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
 }
@@ -71,6 +71,49 @@
 .skr-tool:focus-visible {
   color: var(--skr-tool-ink-hover, var(--skr-color-headline));
   border-color: currentColor;
+}
+
+/* EIN BILD IM WERKZEUG (etwa ein Benutzerbild in tools.after): mittig, auf die Fläche des
+   Knopfs zugeschnitten – jedes Werkzeug hat denselben Rahmen, gleich welches Format das Bild
+   mitbringt. */
+.skr-tool:has(> img) { overflow: hidden; }
+.skr-tool > img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+}
+
+/* DIE EINSCHÜBE DER KOPFLEISTE (slots.mjs): tools.before und tools.after reihen ihre Knöpfe
+   in die Werkzeuge ein – im Abstand der Gruppe, ein Absatz um Inline-HTML zählt nicht.
+   menu.global steht abgesetzt ganz rechts: mit Abstand und Trennstrich, ein Bild darin
+   unbeschnitten, höchstens etwas höher als ein Werkzeug. */
+[data-skr-slot="tools.before"],
+[data-skr-slot="tools.after"],
+[data-skr-slot="menu.global"] {
+  display: flex; align-items: center; gap: var(--skr-space-2);
+  flex: none;
+}
+:is([data-skr-slot="tools.before"], [data-skr-slot="tools.after"], [data-skr-slot="menu.global"]) > p { display: contents; }
+[data-skr-slot="menu.global"] {
+  margin-left: var(--skr-space-3);
+  padding-left: var(--skr-space-3);
+  border-left: 1px solid var(--skr-border-soft);
+}
+/* footer.notes steht in der Zeile mit dem Copyright: im Fluss der Zeile, ein Absatz um den
+   Text zählt nicht; mehrere Beiträge (je Extension ein Block) trennt „·“ wie die übrigen
+   Angaben der Zeile. */
+[data-skr-slot="footer.notes"],
+[data-skr-slot="footer.notes"] > p { display: inline; margin: 0; }
+[data-skr-slot="footer.notes"] + [data-skr-slot="footer.notes"]::before { content: " · "; }
+
+/* Mehrere globale Menüs (je Extension ein Block) stehen hinter EINEM Trennstrich. */
+[data-skr-slot="menu.global"] + [data-skr-slot="menu.global"] {
+  margin-left: var(--skr-space-2);
+  padding-left: 0;
+  border-left: 0;
+}
+[data-skr-slot="menu.global"] img {
+  max-height: calc(var(--skr-tool-size, 34px) + 6px);
+  width: auto;
 }
 
 /* Sprachumschalter – der einzige Werkzeugknopf mit TEXT statt Zeichen: Er trägt den
@@ -166,8 +209,7 @@
    unsichtbaren Button anspringen. `.is-copied` bleibt sichtbar, damit die
    Haken-Rückmeldung nicht verschwindet, wenn die Maus den Block sofort verlässt.
 
-   Betrifft nur den Code-Button: `.skr-copy-md` im Hero steht nicht in einem
-   `pre` und bleibt unverändert. Die Transition neutralisiert
+   Die Transition neutralisiert
    `prefers-reduced-motion` global (base.css). */
 /* LAGE: oben rechts im Block, über die Stellschrauben `--skr-copy-top` und
    `--skr-copy-right` (stabil) – kein `style` des Skripts steht dagegen. */
@@ -694,7 +736,7 @@ code + .skr-reveal--info { vertical-align: baseline; }
 }
 @media print { .skr-header__roles, .skr-header__role-select { display: none !important; } }
 
-/* --- Anhang der Wortmarke (`badge.label`, sonst Titel der Site) -----------------
+/* --- Anhang der Wortmarke (`badge.label`, sonst `brand.label`, sonst Titel der Site)
    Durch einen Strich abgesetzt. Er WEICHT ALS ERSTES: Sein hoher Schrumpffaktor lässt
    ihn kleiner werden, bevor Wortmarke oder Kennzeichen nachgeben, und schmal
    (Burger-Menü) entfällt er ganz. Der Abstand der Kopfzeile (32 px) ist halbiert,
@@ -1418,6 +1460,53 @@ a.skr-header__badge:focus-visible { outline: 2px solid currentColor; outline-off
 .skr-fold > summary:focus-visible { outline: 2px solid var(--skr-color-accent); outline-offset: 3px; }
 /* Der Inhalt bekommt Abstand zum Titel – im Fluss, nicht als Panel. */
 .skr-fold[open] > .skr-fold__body { margin-top: 1rem; }
+
+/* --- Angeordnete Panels (`skr-arranged`, `skr-guide-panels`) ------------------
+   Ein Layout ordnet die Panels eines Einschubs an (`arrange`, ADR-0337) – die Anleitung die
+   über sie und die der Kontrolle (`skr-guide-panels`), eine Extension ihre eigenen
+   (`skr-arranged`, wahlweise mit dem Inhalt der Seite als letztem Panel). Die Hülle trägt
+   `data-skr-arrangement`, jedes Element ist ein `<details>` des passenden Bausteins
+   (`skr-tabs__panel`, `skr-reveal`, `skr-fold`). Verhalten und Grundform kommen von den
+   Bausteinen; hier nur, was die Hülle braucht. Unter stack gibt es keine Hülle. */
+
+/* Der Rhythmus im Element: Der Inhalt eines `skr-fold` und einer `skr-reveal` ohne
+   Skript steht direkt im `<details>`, nicht in einem Fluss-Container (guide.css).
+   `:where` hält die Spezifität bei 0-1-0 – die eigenen Abstände der Bausteine (etwa
+   das Panel der Reiter, die Mitte des Overlays) gewinnen. */
+:is(.skr-guide-panels, .skr-arranged) :where(details, .skr-guide-done) > * + * {
+  margin-top: var(--skr-rhythm-block);
+}
+
+/* reveal: Die Auslöser stehen in einer Zeile und brechen bei Bedarf um. Ohne Skript
+   klappt ein geöffnetes Element an Ort und Stelle auf (kein Overlay) – es nimmt dann
+   die ganze Zeile. */
+:is(.skr-guide-panels, .skr-arranged)[data-skr-arrangement="reveal"] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--skr-space-2) var(--skr-space-6);
+}
+:is(.skr-guide-panels, .skr-arranged)[data-skr-arrangement="reveal"] > .skr-reveal { margin: 0; }
+:is(.skr-guide-panels, .skr-arranged)[data-skr-arrangement="reveal"] > .skr-reveal[open]:not(:has(> .skr-reveal__body)) {
+  flex-basis: 100%;
+}
+
+/* fold und accordion: eine Linie je Element, wie das Akkordeon der Reiter ohne Skript –
+   die Klappzeilen stehen im Text und lesen sich als Liste von Abschnitten. Unter accordion
+   tragen alle Elemente denselben `name`: Der Browser hält höchstens eines offen. */
+:is(.skr-guide-panels, .skr-arranged):is([data-skr-arrangement="fold"], [data-skr-arrangement="accordion"]) > .skr-fold {
+  border-top: 1px solid var(--skr-color-border);
+}
+:is(.skr-guide-panels, .skr-arranged):is([data-skr-arrangement="fold"], [data-skr-arrangement="accordion"]) > .skr-fold:last-child {
+  border-bottom: 1px solid var(--skr-color-border);
+}
+:is(.skr-guide-panels, .skr-arranged):is([data-skr-arrangement="fold"], [data-skr-arrangement="accordion"]) > .skr-fold > summary {
+  padding: var(--skr-space-3) 0;
+  font-weight: var(--skr-fw-bold, 600);
+}
+:is(.skr-guide-panels, .skr-arranged):is([data-skr-arrangement="fold"], [data-skr-arrangement="accordion"]) > .skr-fold[open] {
+  padding-bottom: var(--skr-space-4);
+}
 
 /* --- Feldtabelle (`skr-fieldtable`) --------------------------------
    Eine Tabelle, deren erste Spalte NAMEN traegt – YAML-Schluessel, Optionen,

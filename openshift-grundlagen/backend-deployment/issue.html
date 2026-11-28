@@ -4,13 +4,14 @@
   <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="skr-root" content="../../">
-<script src="../../skriptorium/skr.js?v=c06299bd"></script>
+<meta name="skr-scope" content="training-concept-container-technologies">
+<script src="../../skriptorium/skr.js?v=597e5686"></script>
 <title>Das Backend deployen · Containertechnologien (Academy)</title>
-<meta name="description" content="Das Backend der Rezeptverwaltung als Deployment in OpenShift starten und über Service und Route von außen erreichbar machen.">
+<meta name="description" content="Das Backend der Rezeptverwaltung mit Deployment, Service und Route in den Cluster bringen und von außen aufrufen.">
 
 <meta property="og:site_name" content="Containertechnologien (Academy)">
 <meta property="og:title" content="Das Backend deployen">
-<meta property="og:description" content="Das Backend der Rezeptverwaltung als Deployment in OpenShift starten und über Service und Route von außen erreichbar machen.">
+<meta property="og:description" content="Das Backend der Rezeptverwaltung mit Deployment, Service und Route in den Cluster bringen und von außen aufrufen.">
 <meta property="og:type" content="article">
 <link rel="preload" href="../../themes/atvantage/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../../themes/default/theme.css?v=b795c99c" data-skr-source="theme">
@@ -25,31 +26,32 @@
 <link rel="stylesheet" href="../../skriptorium/tokens.css?v=28abf864">
 <link rel="stylesheet" href="../../extensions/didaktikon/tokens.css?v=5966d76a">
 <link rel="stylesheet" href="../../skriptorium/base.css?v=86e37c43">
-<link rel="stylesheet" href="../../skriptorium/components.css?v=3a968127">
+<link rel="stylesheet" href="../../skriptorium/components.css?v=e3b517fb">
 <link rel="stylesheet" href="../../skriptorium/doclinks.css?v=2ef23515">
 <link rel="stylesheet" href="../../skriptorium/linkmarks.css?v=1643f80a">
-<link rel="stylesheet" href="../../skriptorium/site.css?v=2a7f5baf">
+<link rel="stylesheet" href="../../skriptorium/site.css?v=825d2514">
 <link rel="stylesheet" href="../../skriptorium/logo.css?v=43a7fbaf">
-<link rel="stylesheet" href="../../skriptorium/guide.css?v=1237e482">
-<link rel="stylesheet" media="print" href="../../skriptorium/print.css?v=6c7ec44c">
-<meta name="generator" content="Skriptorium 2.0.0-rc.15">
-<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"2.0.0-rc.11"}],"internal":false,"languages":["de"],"skriptorium":"2.0.0-rc.15","theme":"didaktikon","themeOptions":["didaktikon"],"themes":[{"name":"didaktikon","version":"2.0.0-rc.11"},{"name":"atvantage","version":"2.2.0"},{"name":"default","version":"2.0.0-rc.15"}]}</script>
-<script type="application/json" id="skr-page-info">{"clientApi":"full","defaultLanguage":"de","description":"Das Backend der Rezeptverwaltung als Deployment in OpenShift starten und über Service und Route von außen erreichbar machen.","duration":45,"fields":null,"language":"de","languages":["de"],"layout":"didaktikon.exercise","pageId":"openshift-grundlagen-backend-deployment-issue","runtimeFragments":null,"siteIndex":"/skriptorium/site.json","title":"Das Backend deployen","topics":["Deployment","Service","Route"],"untranslated":null,"url":"/openshift-grundlagen/backend-deployment/issue.html"}</script>
+<link rel="stylesheet" href="../../skriptorium/guide.css?v=b1acb596">
+<link rel="stylesheet" media="print" href="../../skriptorium/print.css?v=f344e618">
+<meta name="generator" content="Skriptorium 2.0.0-rc.20">
+<script type="application/json" id="skr-build-info">{"audience":"learner","extensions":[{"name":"didaktikon","version":"2.0.0-rc.11"}],"internal":false,"languages":["de"],"skriptorium":"2.0.0-rc.20","theme":"didaktikon","themeOptions":["didaktikon"],"themes":[{"name":"didaktikon","version":"2.0.0-rc.11"},{"name":"atvantage","version":"2.2.0"},{"name":"default","version":"2.0.0-rc.20"}]}</script>
+<script type="application/json" id="skr-page-info">{"clientApi":"full","defaultLanguage":"de","description":"Das Backend der Rezeptverwaltung mit Deployment, Service und Route in den Cluster bringen und von außen aufrufen.","duration":45,"fields":null,"language":"de","languages":["de"],"layout":"didaktikon.exercise","pageId":"openshift-grundlagen-backend-deployment-issue","runtimeFragments":null,"siteIndex":"/skriptorium/site.json","title":"Das Backend deployen","topics":["Deployments","Services","Route"],"untranslated":null,"url":"/openshift-grundlagen/backend-deployment/issue.html"}</script>
 <script type="application/json" id="skr-texts">{"didaktikon.capture":"Capture-Modus","didaktikon.captureExit":"beenden","didaktikon.captureText":"Text einblenden","didaktikon.crosswordAcross":"Waagerecht","didaktikon.crosswordCellAcross":"{number} waagerecht, Buchstabe {position}","didaktikon.crosswordCellDown":"{number} senkrecht, Buchstabe {position}","didaktikon.crosswordDown":"Senkrecht","didaktikon.crosswordHintLetter":"Tipp: Buchstabe","didaktikon.crosswordHintWord":"Tipp: Wort","didaktikon.crosswordRestart":"Neu beginnen","didaktikon.crosswordRestartText":"Deine Eingaben in diesem Rätsel werden gelöscht.","didaktikon.crosswordRestartTitle":"Kreuzworträtsel neu beginnen?","didaktikon.crosswordReveal":"Auflösen","didaktikon.crosswordRevealText":"Alle Felder werden ausgefüllt.","didaktikon.crosswordRevealTitle":"Kreuzworträtsel auflösen?","didaktikon.crosswordSolution":"Lösungswort","didaktikon.crosswordSolutionCell":"Lösungswort, Buchstabe {position}","didaktikon.crosswordSolved":"Gelöst – alle Begriffe stimmen.","didaktikon.doclinkCrossword":"Kreuzworträtsel","didaktikon.doclinkExercise":"Übung","didaktikon.doclinkQuiz":"Wissens-Check","didaktikon.doclinkSimulation":"Simulation","didaktikon.doclinkVisualization":"Visualisierung","didaktikon.exerciseObjectives":"Lernziele","didaktikon.exerciseQuestionsDone":"Du hast die Kontrollfragen beantwortet","didaktikon.exerciseReflectiveQuestions":"Reflexionsfragen","didaktikon.exerciseUserStory":"User Story","didaktikon.moduleBlock":"Grobthema: {block}","didaktikon.moduleDuration":"{minutes} Minuten","didaktikon.moduleMaterial":"Material","didaktikon.moduleMaterialOver":"Das Material dauert zusammen {material}′ – länger als das Modul mit {module}′.","didaktikon.quizAgain":"Noch einmal","didaktikon.quizCorrect":"Richtig.","didaktikon.quizCorrectCount":"{count} richtig","didaktikon.quizCorrectWouldBe":"Richtig wäre gewesen:","didaktikon.quizDone":"Fertig","didaktikon.quizEvaluate":"Auswertung","didaktikon.quizJump":"Zu Frage springen","didaktikon.quizNext":"Weiter","didaktikon.quizOverview":"Alle Fragen","didaktikon.quizOverviewClose":"Zurück zum Check","didaktikon.quizOverviewCorrect":"(richtig)","didaktikon.quizOverviewGoTo":"Zu dieser Frage","didaktikon.quizProgress":"Fortschritt","didaktikon.quizQuestionOf":"Frage {current} von {total}","didaktikon.quizRestart":"Neu beginnen","didaktikon.quizRestartText":"Deine Antworten in diesem Wissens-Check werden gelöscht.","didaktikon.quizRestartTitle":"Wissens-Check neu beginnen?","didaktikon.quizResult":"{correct} von {total} richtig","didaktikon.quizResultLong":"{correct} von {total} Fragen richtig","didaktikon.quizTrainerOnly":"Nur für Trainer:innen","didaktikon.quizWrong":"Nicht ganz.","didaktikon.scenarios":"Szenarien","didaktikon.simAllScenarios":"Alle Szenarien (Taste 0)","didaktikon.simControls":"Simulation steuern","didaktikon.simNext":"Schritt vor (→)","didaktikon.simNextAria":"Schritt vor","didaktikon.simOverview":"Übersicht","didaktikon.simPause":"Pause (Leertaste)","didaktikon.simPauseAria":"Pause","didaktikon.simPlay":"Abspielen (Leertaste)","didaktikon.simPlayAria":"Abspielen","didaktikon.simPrev":"Schritt zurück (←)","didaktikon.simPrevAria":"Schritt zurück","didaktikon.simPrintHint":"Diese Simulation lebt von der Bewegung. Auf Papier steht nur der gerade sichtbare Schritt – der QR-Code oben führt zurück zur laufenden Fassung.","didaktikon.simReset":"Zurück auf Anfang (Taste R)","didaktikon.simResetAria":"Zurück auf Anfang","didaktikon.simResize":"Breite der Erklärspalte (Pfeiltasten)","didaktikon.simScenarioCount":"{count} Szenarien","didaktikon.simScenarioKey":"{title} (Taste {number})","didaktikon.simScenarioTitle":"Szenario {number}","didaktikon.simSpeed":"Tempo wählen (Taste T)","didaktikon.simSpeedAria":"Tempo wählen","didaktikon.simSpeedMenu":"Tempo","didaktikon.simStepCount":"{count} Schritte","didaktikon.simStepCountOne":"{count} Schritt","didaktikon.simStepCounter":"Schritt {current} / {total}","didaktikon.speedFast":"zügig","didaktikon.speedNormal":"normal","didaktikon.speedSlow":"langsam","didaktikon.speedTurbo":"im Zeitraffer","didaktikon.speedValue":"{speed}×","didaktikon.stepNote":"Erklärung zum aktuellen Schritt","didaktikon.trainerNoteClose":"Schließen","didaktikon.trainerNoteOpen":"Hinweis für Trainer:innen anzeigen","didaktikon.trainerNoteTitle":"Hinweis für Trainer:innen","didaktikon.trainingCatalogEmpty":"Hier gibt es noch keine Schulung.","didaktikon.trainingCatalogTrainings":"Schulungen","didaktikon.trainingDays":"{days} Tage","didaktikon.trainingDaysOne":"{days} Tag","didaktikon.trainingHomeInfo":"Kursbeschreibung","didaktikon.trainingHomeManifest":"Didaktisches Manifest","didaktikon.trainingHomeSales":"Sales-Asset","didaktikon.trainingInfoAudience":"Zielgruppe","didaktikon.trainingInfoObjectives":"Lernziele","didaktikon.trainingInfoObjectivesLead":"Die Lernenden …","didaktikon.trainingInfoOverview":"Überblick","didaktikon.trainingInfoPrerequisites":"Voraussetzungen","didaktikon.trainingMaterials":"Kursmaterial","didaktikon.trainingMaterialsExercises":"Übungen","didaktikon.trainingMaterialsLead":"Links stehen die **Übungen**, an denen Du selbst arbeitest, rechts das **Material zum Nachschlagen**.","didaktikon.trainingMaterialsMore":"Weitere Themen","didaktikon.trainingMaterialsOther":"Sonstige Unterlagen","didaktikon.trainingMaterialsReference":"Zum Nachschlagen","didaktikon.trainingModules":"Module","didaktikon.trainingModulesBlock":"Grobthema","didaktikon.trainingModulesDuration":"Dauer","didaktikon.trainingModulesMaterial":"Material","didaktikon.trainingModulesModule":"Modul","didaktikon.trainingModulesOver":"länger als das Modul","didaktikon.trainingSalesBuyers":"Käufer","didaktikon.trainingSalesPitch":"Pitch","didaktikon.trainingSalesPricing":"Preisrahmen","didaktikon.trainingSalesUsp":"Unterscheidungsmerkmale","didaktikon.trainingSalesValueProposition":"Nutzenversprechen"}</script>
 
-<script src="../../skriptorium/client.js?v=756a5d69" defer></script>
-<script src="../../skriptorium/site.js?v=6472c794" defer></script>
-<script src="../../skriptorium/search-trail.js?v=31279378" data-skr-search-trail
-        data-base="../../" data-index="../../skriptorium/search/de.json?v=c2fa893e" defer></script>
-<link rel="stylesheet" href="../../skriptorium/highlight.css?v=f8a3fc05">
-<script type="module" src="../../skriptorium/highlight.js?v=0b2d40aa" data-skr-highlight="[&#34;bash&#34;,&#34;dockerfile&#34;,&#34;python&#34;,&#34;sql&#34;,&#34;yaml&#34;]"></script>
+<script src="../../skriptorium/client.js?v=e9b75088" defer></script>
+<script src="../../skriptorium/site.js?v=bf4672b2" defer></script>
+
+<script src="../../skriptorium/search-trail.js?v=ca558440" data-skr-search-trail
+        data-base="../../" data-index="../../skriptorium/search/de.json?v=b137f70b" defer></script>
+<link rel="stylesheet" href="../../skriptorium/highlight.css?v=b66fa35b">
+<script type="module" src="../../skriptorium/highlight.js?v=bb894db9" data-skr-highlight></script>
 <link rel="apple-touch-icon" sizes="180x180" href="../../themes/atvantage/assets/icon-180.png">
 <link rel="icon" sizes="32x32" href="../../themes/atvantage/assets/icon-32.png">
 <link rel="icon" sizes="16x16" href="../../themes/atvantage/assets/icon-16.png">
 
   <style>@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }</style>
   <link rel="stylesheet" href="../../skriptorium/page-transitions.css?v=716872f0">
-<link rel="stylesheet" href="../../skriptorium/guide-layout.css?v=cc0ce1dd">
+<link rel="stylesheet" href="../../skriptorium/guide-layout.css?v=ca7e6344">
 <link rel="stylesheet" href="../../extensions/didaktikon/exercise.css?v=485b7c1d">
 <script src="../../skriptorium/guide-layout.js?v=00fd0360" defer></script>
 
@@ -87,7 +89,7 @@
   <div class="skr-header__tools">
 <div class="skr-search" data-skr-search hidden
      data-mode="expand" data-shortcut="double_shift"
-     data-index="../../skriptorium/search/de.json?v=c2fa893e"
+     data-index="../../skriptorium/search/de.json?v=b137f70b"
      data-base="../../">
   <button type="button" class="skr-tool skr-tool--search" data-skr-search-toggle
           aria-expanded="false" aria-controls="skr-search-dialog"
@@ -101,6 +103,20 @@
           <option value="">Alle</option>
         </select>
       </label>
+      <div class="skr-search__field skr-search__field--kind" hidden>
+        <span class="skr-search__label" id="skr-search-kind-label">Art</span>
+        <button type="button" class="skr-search__kind" aria-expanded="false" aria-controls="skr-search-kinds"
+                aria-labelledby="skr-search-kind-label skr-search-kind-value"
+                data-all="Alle Arten" data-count="{n} Arten"
+                data-none="Keine Art"><span
+                class="skr-search__kind-value" id="skr-search-kind-value">Alle Arten</span></button>
+      </div>
+      <fieldset class="skr-search__kinds" id="skr-search-kinds" hidden
+                data-label-only="nur" data-none-selected="Keine Art gewählt.">
+        <legend class="skr-visually-hidden">Art</legend>
+        <ul class="skr-search__kind-list"></ul>
+        <button type="button" class="skr-search__kind-all">Alle auswählen</button>
+      </fieldset>
       <label class="skr-search__field skr-search__field--query">
         <span class="skr-search__label">Suchbegriff</span>
         <input type="search" class="skr-search__input"
@@ -114,7 +130,7 @@
     <ul class="skr-search__results" data-skr-search-results aria-label="Suchergebnisse"></ul>
   </dialog>
 </div>
-<script src="../../skriptorium/search.js?v=2be133a6" defer></script>
+<script src="../../skriptorium/search.js?v=679c2a13" defer></script>
 <button type="button" class="skr-qr" data-skr-qr hidden
         title="Diese Seite auf Deinem Smartphone öffnen"
         aria-label="Diese Seite auf Deinem Smartphone öffnen"></button>
@@ -128,25 +144,22 @@
 <section class="skr-guide-hero"
          aria-labelledby="skr-page-title"><nav class="skr-guide-hero__crumbs" aria-label="Brotkrumen"><a href="../../openshift-grundlagen/">OpenShift – Grundlagen für Entwickler</a><span>/</span><span aria-current="page">Das Backend deployen</span></nav>
   <div class="skr-guide-hero__meta">
-    <div class="skr-guide-hero__tags"><span class="skr-tag skr-tag--time">ca. 45 Minuten</span><span class="skr-tag">Deployment</span><span class="skr-tag">Service</span><span class="skr-tag">Route</span>
+    <div class="skr-guide-hero__tags"><span class="skr-tag skr-tag--time">ca. 45 Minuten</span><span class="skr-tag">Deployments</span><span class="skr-tag">Services</span><span class="skr-tag">Route</span>
     </div>
     <div class="skr-guide-hero__actions">
-      <button type="button" class="skr-btn skr-btn--ghost skr-copy-md"
-              data-skr-copy-md="#skr-md-source"
-              title="Markdown kopieren" aria-label="Markdown kopieren"></button>
     </div>
   </div><h1 id="skr-page-title">Das Backend deployen</h1>
 </section>
 
   <div class="skr-guide-layout">
     <main class="skr-guide-main" id="skr-content"><div class="skr-guide-panels" data-skr-arrangement="fold">
-<details class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
+<details id="user-story" class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
 <summary>User Story</summary>
 <div class="skr-didaktikon-user-story" data-skr-field="didaktikon.user_story">
-<p><strong>Als</strong> Entwickler:in <strong>möchte ich</strong> das Backend der Rezeptverwaltung als Container in OpenShift deployen, <strong>damit</strong> es über eine öffentliche Adresse erreichbar ist.</p>
+<p><strong>Als</strong> Entwickler:in <strong>möchte ich</strong> das Backend der Rezeptverwaltung als Container in OpenShift deployen, <strong>damit</strong> es über eine öffentliche URL erreichbar ist.</p>
 </div>
 </details>
-<details class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
+<details id="lernziele" class="skr-fold skr-didaktikon-guide-about" data-skr-slot="guide.about">
 <summary>Lernziele</summary>
 <div class="skr-didaktikon-objectives" data-skr-field="didaktikon.objectives">
 <ul>
@@ -156,24 +169,24 @@
 </ul>
 </div>
 </details>
-<details class="skr-fold">
+<details id="definition-of-done" class="skr-fold">
 <summary>Definition of Done</summary>
 <div class="skr-guide-done">
 <ul class="task-list">
-<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Das Deployment recipes-backend existiert, und sein Pod steht auf Running." disabled="disabled"> Das Deployment <code>recipes-backend</code> existiert, und sein Pod steht auf <code>Running</code>.</li>
-<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Der Service recipes-backend und die Route recipes-backend existieren." disabled="disabled"> Der Service <code>recipes-backend</code> und die Route <code>recipes-backend</code> existieren.</li>
-<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="curl -i https://&lt;route-host&gt;/recipes antwortet mit 200 OK." disabled="disabled"> <code>curl -i https://&lt;route-host&gt;/recipes</code> antwortet mit <code>200 OK</code>.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="oc get pods zeigt den Pod recipes-backend-… im Status Running." disabled="disabled"> <code>oc get pods</code> zeigt den Pod <code>recipes-backend-…</code> im Status <code>Running</code>.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="oc get service,route zeigt einen Service und eine Route namens recipes-backend." disabled="disabled"> <code>oc get service,route</code> zeigt einen Service und eine Route namens <code>recipes-backend</code>.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="curl -i https://&lt;backend-host&gt;/recipes antwortet mit HTTP/1.1 200 OK und einer JSON-Liste." disabled="disabled"> <code>curl -i https://&lt;backend-host&gt;/recipes</code> antwortet mit <code>HTTP/1.1 200 OK</code> und einer JSON-Liste.</li>
 <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" aria-label="Du hast die Kontrollfragen beantwortet" disabled="disabled"> Du hast die Kontrollfragen beantwortet</li>
 </ul>
 </div>
 </details>
 </div>
 <h2 id="arbeitsschritte">Arbeitsschritte</h2>
+<p>Leg die Dateien in einem eigenen Ordner an, zum Beispiel <code>rezepte</code> – Du brauchst sie in
+den nächsten Übungen wieder.</p>
 <p>Du arbeitest in Deinem Projekt in der <a href="../../shared/schulungsumgebung/">Schulungsumgebung</a>.
-Prüf vorher mit <code>oc project</code>, dass Du im richtigen bist. Leg die Dateien in einem
-eigenen Ordner an, zum Beispiel <code>rezepte</code> – Du brauchst sie in den nächsten Übungen
-wieder.</p>
-<h3 id="ein-deployment-erstellen">Ein Deployment erstellen</h3>
+Prüf vorher mit <code>oc project</code>, dass Du im richtigen bist.</p>
+<h3 id="das-deployment-erstellen">Das Deployment erstellen</h3>
 <p>Erstelle eine Datei <code>backend-deployment.yaml</code> mit folgendem Inhalt:</p>
 <pre><code class="language-yaml">apiVersion: apps/v1
 kind: Deployment
@@ -196,8 +209,8 @@ spec:
             - containerPort: 8080
 </code></pre>
 <blockquote>
-<p><strong>Hinweis:</strong> Das Tag <code>latest-dev</code> enthält eine eingebaute H2-Datenbank im Speicher und
-braucht keine externe Datenbank – ideal für den ersten Schritt.</p>
+<p><strong>Hinweis:</strong> Das Tag <code>latest-dev</code> enthält eine eingebaute H2-Datenbank im Speicher
+und braucht keine externe Datenbank – ideal für den ersten Schritt.</p>
 </blockquote>
 <p>Wende das Manifest an:</p>
 <pre><code class="language-bash">oc apply -f backend-deployment.yaml
@@ -208,9 +221,12 @@ braucht keine externe Datenbank – ideal für den ersten Schritt.</p>
 <p>Nach kurzer Zeit sollte der Pod im Status <code>Running</code> sein.</p>
 <blockquote>
 <p><strong>Hinweis:</strong> Bleibt der Pod bei <code>ErrImagePull</code> oder <code>ImagePullBackOff</code> stehen, liegt
-das meist am Rate Limit von Docker Hub für anonyme Zugriffe. Leg dann ein <strong>Pull
+das meist am Rate Limiting von Docker Hub für anonyme Zugriffe. Leg dann ein <strong>Pull
 Secret</strong> mit Deinem Docker-Hub-Konto an:</p>
-<pre><code class="language-bash">oc create secret docker-registry dockerhub-pull-secret --docker-server=docker.io --docker-username=&lt;dein-dockerhub-name&gt; --docker-password=&lt;dein-dockerhub-token&gt;
+<pre><code class="language-bash">oc create secret docker-registry dockerhub-pull-secret \
+  --docker-server=docker.io \
+  --docker-username=&lt;dein-dockerhub-benutzer&gt; \
+  --docker-password=&lt;dein-dockerhub-token&gt;
 </code></pre>
 <p>und ergänze es im Deployment unter <code>template.spec</code>:</p>
 <pre><code class="language-yaml">    spec:
@@ -219,7 +235,7 @@ Secret</strong> mit Deinem Docker-Hub-Konto an:</p>
       containers:
         - name: recipes-backend
 </code></pre>
-<p>Danach erneut <code>oc apply -f backend-deployment.yaml</code> ausführen.</p>
+<p>Danach erneut <code>oc apply -f backend-deployment.yaml</code>.</p>
 </blockquote>
 <h3 id="einen-service-erstellen">Einen Service erstellen</h3>
 <p>Erstelle eine Datei <code>backend-service.yaml</code>:</p>
@@ -253,237 +269,36 @@ spec:
 </code></pre>
 <pre><code class="language-bash">oc apply -f backend-route.yaml
 </code></pre>
-<p>Den Hostnamen, den OpenShift der Route gegeben hat, liest Du in der Spalte <code>HOST/PORT</code> ab:</p>
+<p>Den Hostnamen, den OpenShift der Route gegeben hat, liest Du in der Spalte <code>HOST/PORT</code>
+ab. Diesen Hostnamen nennen die folgenden Übungen <code>&lt;backend-host&gt;</code>:</p>
 <pre><code class="language-bash">oc get route recipes-backend
 </code></pre>
-<h3 id="die-api-aufrufen">Die API aufrufen</h3>
-<p>Ruf die Liste der Rezepte über die Route auf:</p>
-<pre><code class="language-bash">curl -i https://&lt;route-host&gt;/recipes
+<h3 id="die-route-testen">Die Route testen</h3>
+<p>Ruf die API auf:</p>
+<pre><code class="language-bash">curl -i https://&lt;backend-host&gt;/recipes
 </code></pre>
 <blockquote>
 <p><strong>Hinweis:</strong> Die Route ist mit TLS abgesichert – die Adresse beginnt mit <code>https://</code>.
 Entscheidend ist die Antwort <code>200 OK</code> mit einer Liste in JSON – ob sie schon Rezepte
 enthält, spielt keine Rolle.</p>
 </blockquote>
+<p>Dieselbe Adresse kannst Du auch im Browser öffnen.</p>
 <div class="skr-didaktikon-guide-review" data-skr-slot="guide.review">
 <h2 id="reflexionsfragen">Reflexionsfragen</h2>
 <div class="skr-didaktikon-reflective-questions" data-skr-field="didaktikon.reflective_questions">
 <ul>
-<li>Wie hängen Deployment und Pod zusammen?</li>
+<li>Wie hängen ein Deployment und ein Pod zusammen?</li>
 <li>Wozu brauchst Du einen Service, wenn der Pod doch eine eigene IP-Adresse hat?</li>
-<li>Welche Rolle spielt die Route in OpenShift?</li>
+<li>Welche Rolle spielt die Route, und warum reicht der Service allein nicht?</li>
 </ul>
 </div>
 </div>
-<textarea id="skr-md-source" hidden aria-hidden="true"># Das Backend deployen
-&lt;div class=&#34;skr-guide-panels&#34; data-skr-arrangement=&#34;fold&#34; markdown=&#34;1&#34;&gt;
 
-&lt;details class=&#34;skr-fold skr-didaktikon-guide-about&#34; data-skr-slot=&#34;guide.about&#34; markdown=&#34;1&#34;&gt;
-&lt;summary markdown=&#34;span&#34;&gt;User Story&lt;/summary&gt;
-
-&lt;div class=&#34;skr-didaktikon-user-story&#34; data-skr-field=&#34;didaktikon.user_story&#34; markdown=&#34;1&#34;&gt;
-
-**Als** Entwickler:in **möchte ich** das Backend der Rezeptverwaltung als Container in OpenShift deployen, **damit** es über eine öffentliche Adresse erreichbar ist.
-
-&lt;/div&gt;
-
-&lt;/details&gt;
-
-&lt;details class=&#34;skr-fold skr-didaktikon-guide-about&#34; data-skr-slot=&#34;guide.about&#34; markdown=&#34;1&#34;&gt;
-&lt;summary markdown=&#34;span&#34;&gt;Lernziele&lt;/summary&gt;
-
-&lt;div class=&#34;skr-didaktikon-objectives&#34; data-skr-field=&#34;didaktikon.objectives&#34; markdown=&#34;1&#34;&gt;
-
-- Du erstellst ein Deployment mit einem YAML-Manifest und wendest es auf den Cluster an.
-- Du prüfst den Status eines Pods.
-- Du machst eine Anwendung mit einem Service im Cluster und mit einer Route von außen erreichbar.
-
-&lt;/div&gt;
-
-&lt;/details&gt;
-
-&lt;details class=&#34;skr-fold&#34; markdown=&#34;1&#34;&gt;
-&lt;summary markdown=&#34;span&#34;&gt;Definition of Done&lt;/summary&gt;
-
-&lt;div class=&#34;skr-guide-done&#34; markdown=&#34;1&#34;&gt;
-
-- [ ] Das Deployment `recipes-backend` existiert, und sein Pod steht auf `Running`.
-- [ ] Der Service `recipes-backend` und die Route `recipes-backend` existieren.
-- [ ] `curl -i https://&lt;route-host&gt;/recipes` antwortet mit `200 OK`.
-- [ ] Du hast die Kontrollfragen beantwortet
-
-&lt;/div&gt;
-
-&lt;/details&gt;
-
-&lt;/div&gt;
-
-
-
-
-
-
-## Arbeitsschritte
-
-Du arbeitest in Deinem Projekt in der [Schulungsumgebung](../../shared/schulungsumgebung/index.md).
-Prüf vorher mit `oc project`, dass Du im richtigen bist. Leg die Dateien in einem
-eigenen Ordner an, zum Beispiel `rezepte` – Du brauchst sie in den nächsten Übungen
-wieder.
-
-### Ein Deployment erstellen
-
-Erstelle eine Datei `backend-deployment.yaml` mit folgendem Inhalt:
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: recipes-backend
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: recipes-backend
-  template:
-    metadata:
-      labels:
-        app: recipes-backend
-    spec:
-      containers:
-        - name: recipes-backend
-          image: ralfueberfuhr/recipes-backend:latest-dev
-          ports:
-            - containerPort: 8080
-```
-
-&gt; **Hinweis:** Das Tag `latest-dev` enthält eine eingebaute H2-Datenbank im Speicher und
-&gt; braucht keine externe Datenbank – ideal für den ersten Schritt.
-
-Wende das Manifest an:
-
-```bash
-oc apply -f backend-deployment.yaml
-```
-
-### Den Status des Pods prüfen
-
-```bash
-oc get pods
-```
-
-Nach kurzer Zeit sollte der Pod im Status `Running` sein.
-
-&gt; **Hinweis:** Bleibt der Pod bei `ErrImagePull` oder `ImagePullBackOff` stehen, liegt
-&gt; das meist am Rate Limit von Docker Hub für anonyme Zugriffe. Leg dann ein **Pull
-&gt; Secret** mit Deinem Docker-Hub-Konto an:
-&gt;
-&gt; ```bash
-&gt; oc create secret docker-registry dockerhub-pull-secret --docker-server=docker.io --docker-username=&lt;dein-dockerhub-name&gt; --docker-password=&lt;dein-dockerhub-token&gt;
-&gt; ```
-&gt;
-&gt; und ergänze es im Deployment unter `template.spec`:
-&gt;
-&gt; ```yaml
-&gt;     spec:
-&gt;       imagePullSecrets:
-&gt;         - name: dockerhub-pull-secret
-&gt;       containers:
-&gt;         - name: recipes-backend
-&gt; ```
-&gt;
-&gt; Danach erneut `oc apply -f backend-deployment.yaml` ausführen.
-
-### Einen Service erstellen
-
-Erstelle eine Datei `backend-service.yaml`:
-
-```yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: recipes-backend
-spec:
-  selector:
-    app: recipes-backend
-  ports:
-    - port: 8080
-      targetPort: 8080
-```
-
-```bash
-oc apply -f backend-service.yaml
-```
-
-### Eine Route erstellen
-
-Erstelle eine Datei `backend-route.yaml`:
-
-```yaml
-apiVersion: route.openshift.io/v1
-kind: Route
-metadata:
-  name: recipes-backend
-spec:
-  to:
-    kind: Service
-    name: recipes-backend
-  port:
-    targetPort: 8080
-  tls:
-    termination: edge
-```
-
-```bash
-oc apply -f backend-route.yaml
-```
-
-Den Hostnamen, den OpenShift der Route gegeben hat, liest Du in der Spalte `HOST/PORT` ab:
-
-```bash
-oc get route recipes-backend
-```
-
-### Die API aufrufen
-
-Ruf die Liste der Rezepte über die Route auf:
-
-```bash
-curl -i https://&lt;route-host&gt;/recipes
-```
-
-&gt; **Hinweis:** Die Route ist mit TLS abgesichert – die Adresse beginnt mit `https://`.
-&gt; Entscheidend ist die Antwort `200 OK` mit einer Liste in JSON – ob sie schon Rezepte
-&gt; enthält, spielt keine Rolle.
-
-
-&lt;div class=&#34;skr-didaktikon-guide-review&#34; data-skr-slot=&#34;guide.review&#34; markdown=&#34;1&#34;&gt;
-
-## Reflexionsfragen
-
-&lt;div class=&#34;skr-didaktikon-reflective-questions&#34; data-skr-field=&#34;didaktikon.reflective_questions&#34; markdown=&#34;1&#34;&gt;
-
-- Wie hängen Deployment und Pod zusammen?
-- Wozu brauchst Du einen Service, wenn der Pod doch eine eigene IP-Adresse hat?
-- Welche Rolle spielt die Route in OpenShift?
-
-&lt;/div&gt;
-
-&lt;/div&gt;
-## Weiterführende Informationen
-- [Kubernetes-Ressourcen](/shared/visualisierungen/kubernetes-ressourcen/)
-- [Spickzettel: kubectl und oc](/shared/visualisierungen/cli-spickzettel.html)
-- [Die Schulungsumgebung nutzen](/shared/schulungsumgebung/)
-- [Kubernetes: Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
-- [Kubernetes: Services](https://kubernetes.io/docs/concepts/services-networking/service/)
-- [OpenShift: Route configuration](https://docs.openshift.com/container-platform/latest/networking/routes/route-configuration.html)
-- [Kubernetes-API-Referenz: Deployment](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/deployment-v1/)
-- [Recipes-Backend auf Docker Hub](https://hub.docker.com/r/ralfueberfuhr/recipes-backend)
-</textarea>
     </main><aside class="skr-guide-sidebar">
   <details class="skr-guide-side skr-guide-side--toc skr-fold" data-skr-toc-box
            data-skr-toc-limit="12" open>
     <summary class="skr-guide-side__label">Auf dieser Seite</summary>
-    <nav class="skr-toc skr-fold__body" data-skr-toc aria-label="Inhaltsverzeichnis"><a href="#arbeitsschritte">Arbeitsschritte</a><a href="#ein-deployment-erstellen" class="skr-toc--h3">Ein Deployment erstellen</a><a href="#den-status-des-pods-prüfen" class="skr-toc--h3">Den Status des Pods prüfen</a><a href="#einen-service-erstellen" class="skr-toc--h3">Einen Service erstellen</a><a href="#eine-route-erstellen" class="skr-toc--h3">Eine Route erstellen</a><a href="#die-api-aufrufen" class="skr-toc--h3">Die API aufrufen</a><a href="#reflexionsfragen">Reflexionsfragen</a></nav>
+    <nav class="skr-toc skr-fold__body" data-skr-toc aria-label="Inhaltsverzeichnis"><a href="#user-story">User Story</a><a href="#lernziele">Lernziele</a><a href="#definition-of-done">Definition of Done</a><a href="#arbeitsschritte">Arbeitsschritte</a><a href="#das-deployment-erstellen" class="skr-toc--h3">Das Deployment erstellen</a><a href="#den-status-des-pods-prüfen" class="skr-toc--h3">Den Status des Pods prüfen</a><a href="#einen-service-erstellen" class="skr-toc--h3">Einen Service erstellen</a><a href="#eine-route-erstellen" class="skr-toc--h3">Eine Route erstellen</a><a href="#die-route-testen" class="skr-toc--h3">Die Route testen</a><a href="#reflexionsfragen">Reflexionsfragen</a></nav>
   </details>
   <section class="skr-guide-side skr-guide-side--bordered skr-guide-progress" data-skr-card="skriptorium.progress"
            aria-labelledby="skr-card-skriptorium-progress" data-skr-progress-text="{done} / {total} erledigt">
@@ -499,12 +314,12 @@ curl -i https://&lt;route-host&gt;/recipes
     <div class="skr-guide-side__links">
       <a href="../../shared/visualisierungen/kubernetes-ressourcen/"><span>Kubernetes-Ressourcen</span></a>
       <a href="../../shared/visualisierungen/cli-spickzettel.html"><span>Spickzettel: kubectl und oc</span></a>
-      <a href="../../shared/schulungsumgebung/"><span>Die Schulungsumgebung nutzen</span></a>
-      <a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/" target="_blank" rel="noopener"><span>Kubernetes: Deployments</span></a>
-      <a href="https://kubernetes.io/docs/concepts/services-networking/service/" target="_blank" rel="noopener"><span>Kubernetes: Services</span></a>
+      <a href="../../shared/schulungsumgebung/"><span>Schulungsumgebung</span></a>
+      <a href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/" target="_blank" rel="noopener"><span>Deployments</span></a>
+      <a href="https://kubernetes.io/docs/concepts/services-networking/service/" target="_blank" rel="noopener"><span>Services</span></a>
       <a href="https://docs.openshift.com/container-platform/latest/networking/routes/route-configuration.html" target="_blank" rel="noopener"><span>OpenShift: Route configuration</span></a>
-      <a href="https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/deployment-v1/" target="_blank" rel="noopener"><span>Kubernetes-API-Referenz: Deployment</span></a>
-      <a href="https://hub.docker.com/r/ralfueberfuhr/recipes-backend" target="_blank" rel="noopener"><span>Recipes-Backend auf Docker Hub</span></a>
+      <a href="https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/deployment-v1/" target="_blank" rel="noopener"><span>Kubernetes API Reference: Deployment</span></a>
+      <a href="https://hub.docker.com/r/ralfueberfuhr/recipes-backend" target="_blank" rel="noopener"><span>recipes-backend auf Docker Hub</span></a>
     </div>
   </div>
 </aside>

@@ -27,6 +27,29 @@
    Bereichen aus der Navigation der Bereich, aus dem man kommt. Ob
    vorausgewählt wird, steht im Manifest – abgeleitet an EINER Stelle, beim Bau
    des Index.
+
+   Auswahlen (`search.filters` → `filters` im Manifest): `scope: false` blendet die
+   Bereiche aus und sucht immer überall – eine Vorauswahl gilt dann nicht.
+   `doclinks: false` blendet die Arten aus.
+
+   Arten (`doclinks` im Manifest, `k` am Eintrag): Jeder Treffer nennt die Art seiner
+   Seite – Symbol und Bezeichnung –, eine Seite ohne Art („Seite“, Kennung "") ohne
+   Symbol, mit der Lücke dafür; immer, auch bei nur einer Art und bei
+   `filters.doclinks: false`. Die Auswahl der Arten ist eine Mehrfachauswahl, zu Beginn
+   alle; zur Wahl erst ab zwei Arten. Ohne Haken gibt es keine Treffer: Die Schaltfläche
+   sagt dann „Keine Art“, der Status „Keine Art gewählt.“, „Alle auswählen“ stellt
+   zurück. Die Liste schließt mit Escape und sobald der Fokus Schaltfläche und Liste
+   verlässt (Disclosure).
+
+   Gemerkt wird die Auswahl der Arten im localStorage, je Unterlage unter
+   `skr-search-doclinks:«Pfad der Wurzel»` (wie die Tabs; Wurzel unbekannt: „/“), für
+   alle Sprachen gemeinsam – die Kennungen sind Langnamen bzw. "" für „Seite“. Der
+   Eintrag ist ein JSON-Array der ABGEWÄHLTEN Arten: Eine Art, die später hinzukommt, ist
+   so angehakt. Eine Sprache setzt nur die Arten, die ihr Manifest kennt; die Abwahl
+   von Arten, die nur eine andere Sprache hat, bleibt stehen. Nichts abgewählt – kein
+   Eintrag; auch die leere Auswahl bleibt gemerkt.
+   Unbekannte Kennungen und ungültiger Inhalt zählen nicht. Bei `filters.doclinks: false`
+   wird nichts gelesen – eine unsichtbare Einschränkung darf nicht wirken.
    ============================================================================= */
 (function () {
   "use strict";
@@ -134,6 +157,11 @@
     this.dialog = root.querySelector("dialog");
     this.input = root.querySelector("input[type=search]");
     this.scope = root.querySelector("select");
+    this.kindField = root.querySelector(".skr-search__field--kind");
+    this.kindButton = root.querySelector(".skr-search__kind");
+    this.kindValue = root.querySelector(".skr-search__kind-value");
+    this.kinds = root.querySelector(".skr-search__kinds");
+    this.kindList = root.querySelector(".skr-search__kind-list");
     this.list = root.querySelector("[data-skr-search-results]");
     this.status = root.querySelector("[data-skr-search-status]");
     this.close = root.querySelector("[data-skr-search-close]");
@@ -161,6 +189,33 @@
       self.timer = setTimeout(function () { self.run(); }, 80);
     });
     if (this.scope) this.scope.addEventListener("change", function () { self.run(); });
+    if (this.kinds) {
+      this.kindButton.addEventListener("click", function () { self.openKinds(self.kinds.hidden); });
+      this.kindButton.addEventListener("pointerenter", function () { self.fitKindTitle(); });
+      this.kindButton.addEventListener("focus", function () { self.fitKindTitle(); });
+      this.kindList.addEventListener("change", function () { self.kindsChanged(); });
+      /* „nur“ hakt nur seine Art an. Die Liste bleibt stehen – ein neu gebautes
+         Element wäre beim Klick schon aus dem Dokument, und die Suche schlösse sich. */
+      this.kindList.addEventListener("click", function (e) {
+        var only = e.target.closest(".skr-search__kind-only");
+        if (!only) return;
+        self.kindBoxes().forEach(function (c) { c.checked = c.value === only.value; });
+        self.kindsChanged();
+      });
+      this.kinds.querySelector(".skr-search__kind-all").addEventListener("click", function () {
+        self.kindBoxes().forEach(function (c) { c.checked = true; });
+        self.kindsChanged();
+      });
+      /* Verlässt der Fokus Schaltfläche und Liste – zu einem anderen Element –, klappt
+         die Liste zu. Ein Klick auf eine Stelle ohne Fokus (relatedTarget leer) lässt sie
+         offen: Ein Klick auf eine Beschriftung soll sie nicht schließen. */
+      var leave = function (e) {
+        var to = e.relatedTarget;
+        if (to && to !== self.kindButton && !self.kinds.contains(to)) self.openKinds(false, true);
+      };
+      this.kindButton.addEventListener("focusout", leave);
+      this.kinds.addEventListener("focusout", leave);
+    }
     this.dialog.addEventListener("keydown", function (e) { self.keys(e); });
     /* Der native Dialog schließt modal von sich aus mit Escape; das Ereignis
        kommt hier an, damit der Fokus zurück aufs Icon geht. */
@@ -176,6 +231,8 @@
 
   Search.prototype.show = function () {
     if (this.manifest && this.shownRole !== role()) this.fillScopes(this.manifest.scopes || []);
+    /* Die gemerkte Auswahl der Arten – ein anderer Tab kann sie geändert haben. */
+    if (this.manifest) { this.restoreKinds(); this.run(); }
     var modal = this.mode === "dialog" || window.matchMedia(NARROW).matches;
     this.root.setAttribute("data-open", modal ? "dialog" : "expand");
     if (modal) this.dialog.showModal(); else this.dialog.show();
@@ -187,14 +244,38 @@
 
   Search.prototype.hide = function () {
     if (!this.dialog.open) return;
+    this.openKinds(false);
     this.dialog.close();
     this.root.removeAttribute("data-open");
     this.toggle.setAttribute("aria-expanded", "false");
     this.toggle.focus();
   };
 
-  /* Pfeiltasten zwischen Feld und Treffern; Escape schließt. */
+  /* Pfeiltasten zwischen Feld und Treffern; Escape schließt. In der Liste der Arten
+     wandern die Pfeiltasten zwischen den Kontrollkästchen, und Escape schließt erst
+     die Liste – der Fokus geht auf ihre Schaltfläche. */
   Search.prototype.keys = function (e) {
+    if (this.kinds && !this.kinds.hidden) {
+      var inKinds = this.kinds.contains(document.activeElement);
+      if (e.key === "Escape" && (inKinds || document.activeElement === this.kindButton)) {
+        e.preventDefault();
+        this.openKinds(false);
+        this.kindButton.focus();
+        return;
+      }
+      if (inKinds && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+        e.preventDefault();
+        var boxes = this.kindBoxes();
+        /* Aus einer Zeile (Kontrollkästchen oder „nur“) zur nächsten bzw. vorigen; von
+           „Alle auswählen“ unter der Liste hoch zur letzten Art, abwärts bleibt er. */
+        var item = document.activeElement.closest(".skr-search__kind-item");
+        var at = item ? boxes.indexOf(item.querySelector("input")) : boxes.length;
+        var next = e.key === "ArrowDown" ? at + 1 : at - 1;
+        if (next >= 0 && next < boxes.length) boxes[next].focus();
+        return;
+      }
+      if (inKinds) return;
+    }
     var links = Array.prototype.slice.call(this.list.querySelectorAll("a"));
     var i = links.indexOf(document.activeElement);
     if (e.key === "Escape") {
@@ -227,6 +308,7 @@
     }).then(function (m) {
       self.manifest = m;
       self.fillScopes(m.scopes || []);
+      self.fillKinds();
       self.setStatus("");
       self.run();
       return m;
@@ -264,6 +346,11 @@
     var preset = "";
     var scopes = all.filter(forRole);
     this.shownRole = role();
+    if (!this.scopeChoice()) {
+      this.scope.value = "";
+      this.scope.closest(".skr-search__field").hidden = true;
+      return;
+    }
     while (this.scope.options.length > 1) this.scope.remove(1);
     scopes.forEach(function (s) {
       var o = document.createElement("option");
@@ -276,6 +363,155 @@
     this.scope.value = preset;
     this.scope.closest(".skr-search__field").hidden = scopes.length === 0;
   };
+
+  /* Steht der Bereich zur Wahl? Nicht bei `filters.scope: false` – dann immer „Alle“. */
+  Search.prototype.scopeChoice = function () {
+    return !(this.manifest && this.manifest.filters && this.manifest.filters.scope === false);
+  };
+
+  /* DIE ARTEN – aus dem Manifest, in seiner Reihenfolge („Seite“ zuerst). Zu Beginn
+     ist jede angehakt; zur Wahl stehen sie erst ab zwei und nicht bei
+     `filters.doclinks: false`. */
+  Search.prototype.fillKinds = function () {
+    if (!this.kinds) return;
+    var self = this;
+    var kinds = this.manifest.doclinks || [];
+    var only = this.kinds.getAttribute("data-label-only") || "";
+    this.kindList.textContent = "";
+    kinds.forEach(function (k) {
+      var li = document.createElement("li");
+      li.className = "skr-search__kind-item";
+      var label = document.createElement("label");
+      label.className = "skr-search__kind-option";
+      var box = document.createElement("input");
+      box.type = "checkbox";
+      box.value = k.id;
+      box.checked = true;
+      label.appendChild(box);
+      label.appendChild(kindIcon(k.id));
+      var text = document.createElement("span");
+      text.textContent = k.label;
+      label.appendChild(text);
+      /* „nur“ sichtbar, für Screenreader mit der Art: „nur Präsentation“. */
+      var button = document.createElement("button");
+      button.type = "button";
+      button.className = "skr-search__kind-only";
+      button.value = k.id;
+      button.textContent = only;
+      var hidden = document.createElement("span");
+      hidden.className = "skr-visually-hidden";
+      hidden.textContent = " " + k.label;
+      button.appendChild(hidden);
+      li.appendChild(label);
+      li.appendChild(button);
+      self.kindList.appendChild(li);
+    });
+    var doclinksOff = this.manifest.filters && this.manifest.filters.doclinks === false;
+    this.kindField.hidden = kinds.length < 2 || !!doclinksOff;
+    this.openKinds(false);
+    this.restoreKinds();
+  };
+
+  function doclinksKey() {
+    var root = "/";
+    try { root = new URL(window.skr._root()).pathname; } catch (e) { /* Wurzel unbekannt */ }
+    return "skr-search-doclinks:" + root;
+  }
+
+  Search.prototype.doclinksOff = function () {
+    return !!(this.manifest && this.manifest.filters && this.manifest.filters.doclinks === false);
+  };
+
+  /* Wendet die gemerkte Auswahl an: abgewählt, was im Eintrag steht, sonst angehakt. */
+  Search.prototype.restoreKinds = function () {
+    if (!this.kinds || this.doclinksOff()) return;
+    var stored = window.skr.storage.get(doclinksKey());
+    var off = Array.isArray(stored) ? stored : [];
+    this.kindBoxes().forEach(function (c) { c.checked = off.indexOf(c.value) < 0; });
+    this.showKinds();
+  };
+
+  /* Merkt die abgewählten Arten. Das Manifest einer Sprache kennt nur ihre Arten: Was
+     der Eintrag über Arten anderer Sprachen sagt, bleibt stehen; neu gesetzt werden nur
+     die bekannten. Bleibt nichts abgewählt – kein Eintrag. */
+  Search.prototype.storeKinds = function () {
+    if (this.doclinksOff()) return;
+    var boxes = this.kindBoxes();
+    var known = boxes.map(function (c) { return c.value; });
+    var stored = window.skr.storage.get(doclinksKey());
+    var kept = Array.isArray(stored) ? stored.filter(function (id) { return known.indexOf(id) < 0; }) : [];
+    var off = kept.concat(boxes.filter(function (c) { return !c.checked; }).map(function (c) { return c.value; }));
+    window.skr.storage.set(doclinksKey(), off.length ? off : null);
+  };
+
+  Search.prototype.kindBoxes = function () {
+    return this.kindList ? Array.prototype.slice.call(this.kindList.querySelectorAll("input[type=checkbox]")) : [];
+  };
+
+  /* Die angehakten Arten – oder null, wenn nicht nach Art gewählt wird. */
+  Search.prototype.chosenKinds = function () {
+    if (!this.kindField || this.kindField.hidden) return null;
+    return this.kindBoxes().filter(function (c) { return c.checked; }).map(function (c) { return c.value; });
+  };
+
+  /* Die Schaltfläche nennt die Wahl: „Alle Arten“, die eine Bezeichnung, „{n} Arten“
+     oder „Keine Art“. */
+  Search.prototype.showKinds = function () {
+    var boxes = this.kindBoxes();
+    var on = boxes.filter(function (c) { return c.checked; });
+    var text = on.length === boxes.length ? this.kindButton.getAttribute("data-all")
+      : on.length === 0 ? this.kindButton.getAttribute("data-none")
+      : on.length === 1 ? on[0].closest("label").textContent
+      : (this.kindButton.getAttribute("data-count") || "").replace("{n}", on.length);
+    this.kindValue.textContent = text;
+    this.fitKindTitle();
+  };
+
+  /* Den vollen Text als `title` nur, solange er gekürzt („…“) ist – sonst sagten
+     Screenreader die Bezeichnung doppelt an. Geprüft, wenn der Zeiger oder der Fokus
+     kommt: Erst dann steht fest, wie breit die Schaltfläche ist. */
+  Search.prototype.fitKindTitle = function () {
+    var v = this.kindValue;
+    if (v.scrollWidth > v.clientWidth) this.kindButton.title = v.textContent;
+    else this.kindButton.removeAttribute("title");
+  };
+
+  Search.prototype.kindsChanged = function () {
+    this.storeKinds();
+    this.showKinds();
+    this.run();
+  };
+
+  /* Klappt die Liste auf oder zu; auf führt den Fokus zur ersten Art – außer
+     `keepFocus`, dann bleibt er, wo er ist. */
+  Search.prototype.openKinds = function (open, keepFocus) {
+    if (!this.kinds) return;
+    /* Lag der Fokus in der Liste (ein Klick, der nicht fokussiert, etwa auf Touch),
+       geht er beim Zuklappen auf die Schaltfläche – sonst fiele er ins Leere. */
+    if (!open && this.kinds.contains(document.activeElement)) this.kindButton.focus();
+    this.kinds.hidden = !open;
+    this.kindButton.setAttribute("aria-expanded", open ? "true" : "false");
+    if (open && !keepFocus && this.kindBoxes().length) this.kindBoxes()[0].focus();
+  };
+
+  Search.prototype.kindOf = function (id) {
+    return (this.manifest.doclinks || []).filter(function (k) { return k.id === id; })[0];
+  };
+
+  /* Das Symbol einer Art – die Maske, die das Theme an `skr-doclink--«kurzname»` setzt
+     (doclinks.css). Der Kurzname ist der Teil des Langnamens «paket».«art» nach dem
+     Punkt. Ein eigenes Element ohne die Klasse `skr-doclink`: Das Zeichen zeichnet
+     sein `::after` (site.css). Das `::before` mit der Bezeichnung als Alternativtext,
+     das doclinks.css an die Klasse der Art hängt, entsteht auch hier; `aria-hidden`
+     hält es von Screenreadern fern – die Bezeichnung steht daneben als Text. Ohne Art
+     bleibt das Element leer. */
+  function kindIcon(id) {
+    var icon = document.createElement("span");
+    icon.className = "skr-search__kind-icon";
+    icon.setAttribute("aria-hidden", "true");
+    if (id) icon.classList.add("skr-doclink--" + id.slice(id.lastIndexOf(".") + 1));
+    return icon;
+  }
 
   /* Die Dateien, die die Auswahl verlangt – für „Alle“ jede. Ein Bereich, der
      Seiten von anderswo einbindet, nennt seine Dateien selbst. */
@@ -355,17 +591,28 @@
     var raw = this.input.value.trim();
     var query = tokens(raw, this.manifest.case_sensitive);
     this.list.textContent = "";
+    /* Jede frühe Rückkehr zählt die Marke weiter: Eine ältere Suche, die noch lädt,
+       überschreibt dann weder Liste noch Status. */
     if (raw.length < MIN || !query.length) {
+      this.ticket = (this.ticket || 0) + 1;
       this.setStatus(raw.length ? say("short") : "");
       return;
     }
     var scope = this.scope ? this.scope.value : "";
+    var kinds = this.chosenKinds();
+    if (kinds && !kinds.length) {
+      this.ticket = (this.ticket || 0) + 1;
+      this.setStatus(this.kinds.getAttribute("data-none-selected") || say("none"));
+      return;
+    }
     var ticket = this.ticket = (this.ticket || 0) + 1;
     Promise.all(this.filesFor(scope).map(function (f) { return self.fetchFile(f); })).then(function (indexes) {
       if (ticket !== self.ticket) return;
       var found = [];
       indexes.forEach(function (idx) {
-        found = found.concat(score(idx, query).filter(function (hit) { return inScope(hit.doc, scope); }));
+        found = found.concat(score(idx, query).filter(function (hit) {
+          return inScope(hit.doc, scope) && (!kinds || kinds.indexOf(hit.doc.k || "") >= 0);
+        }));
       });
       found.sort(function (a, b) { return b.score - a.score || a.doc.t.localeCompare(b.doc.t); });
       self.render(found, raw);
@@ -388,8 +635,20 @@
       /* Der gewählte Bereich reist mit – auch in einen neuen Tab. Die Zielseite
          nimmt ihn aus der Adresse, sobald sie ihn gelesen hat. „Alle“ als leerer
          Wert: Wer überall gesucht hat, soll nicht in einem Bereich landen. */
-      if (self.manifest.preselect === "current") href += "?scope=" + encodeURIComponent(self.scope ? self.scope.value : "");
+      if (self.manifest.preselect === "current" && self.scopeChoice()) href += "?scope=" + encodeURIComponent(self.scope ? self.scope.value : "");
       a.href = href;
+      /* Die Art vorn – an jedem Treffer. */
+      var kind = self.kindOf(hit.doc.k || "");
+      if (kind) {
+        var tagKind = document.createElement("span");
+        tagKind.className = "skr-search__kind-tag";
+        tagKind.appendChild(kindIcon(kind.id));
+        var kindLabel = document.createElement("span");
+        kindLabel.className = "skr-search__kind-label";
+        kindLabel.textContent = kind.label;
+        tagKind.appendChild(kindLabel);
+        a.appendChild(tagKind);
+      }
       var title = document.createElement("span");
       title.className = "skr-search__title";
       mark(title, hit.doc.t, raw);
@@ -497,10 +756,13 @@
       var s = new Search(root);
       root.hidden = false;
       /* Zurück aus dem Cache des Browsers: Die Seite steht wieder am Ende des Wegs
-         (`search-trail.js`) – und die Vorauswahl folgt ihr. */
+         (`search-trail.js`) – und die Vorauswahl folgt ihr. Die gemerkte Auswahl der
+         Arten kann sich inzwischen geändert haben; ist die Suche offen, läuft sie neu. */
       window.addEventListener("pageshow", function (e) {
-        if (!e.persisted || !s.manifest || !s.scope) return;
-        if (s.manifest.preselect === "current") s.scope.value = s.currentScope();
+        if (!e.persisted || !s.manifest) return;
+        if (s.scope && s.manifest.preselect === "current" && s.scopeChoice()) s.scope.value = s.currentScope();
+        s.restoreKinds();
+        if (s.dialog.open) s.run();
       });
       var open = function () { if (!s.dialog.open) s.show(); };
       var shortcut = root.getAttribute("data-shortcut");
